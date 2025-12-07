@@ -36,15 +36,6 @@ const Hero = () => {
               💜 New Account Setup
             </motion.div>
 
-            {/* <h1 className="text-2xl sm:text-4xl font-extrabold leading-tight text-[#0f172a]">
-              Create Your First <br />
-              <span className="bg-[#6C3BFF] bg-clip-text text-transparent">
-                Form Account
-              </span>
-            </h1> */}
-
-
-
             <motion.h1
               className="text-2xl sm:text-4xl font-extrabold leading-tight text-[#0f172a]"
             >
