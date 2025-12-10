@@ -1,14 +1,14 @@
 import React from 'react'
-import About from './components/landingPage/About'
-import Footer from './components/landingPage/Footer'
 
+import  About  from './components/landingPage/About.jsx'
+import Footer from './components/landingPage/Footer.jsx'
 const App = () => {
   return (
-    <div>
-      <About/>
-      <Footer/>
-     
-    </div>
+    <>
+     <About/>
+    <Footer/>
+    </>
+   
   )
 }
 

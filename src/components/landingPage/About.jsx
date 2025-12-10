@@ -117,7 +117,7 @@ return (
   whileInView={{ opacity: 1, y: 0 }}
   transition={{ duration: 1 }}
   viewport={{ once: true }}>
-  <div className='bg-purple-500 rounded-full p-1 w-fit mt-6 flex flex-col justify-center items-center mx-auto'>
+  <div   className='bg-purple-500 rounded-full p-1 w-fit mt-6 flex flex-col justify-center items-center mx-auto'>
     <p className='text-white text-sm text-center p-2'>Powerful Features</p>
   </div>
 <h2 className='text-2xl mt-4 font-bold text-center'>
@@ -136,7 +136,7 @@ return (
   </p>
 </motion.div>
 
-<div className='grid grid-cols-1 md:grid-cols-2 mt-4 lg:grid-cols-3   justify-items-center p-4 gap-4 max-w-4xl  mx-auto'>
+<div className='grid grid-cols-1 md:grid-cols-2   mt-4 lg:grid-cols-3   justify-items-center p-4 gap-4 max-w-4xl lg:max-w-4xl md:max-w-2xl  mx-auto'>
             
              {
               features.map((item,index)=> 
@@ -152,8 +152,8 @@ return (
     }}
 
     viewport={{ once:true}}
-                className='bg-white p-2 shadow-md h-56  shadow-gray-400 rounded-xl w-64'>
-            <div className='w-8 h-8 m-4 rounded-md bg-purple-200 text-purple-800 p-2  flex justify-center items-center'>{item.icon}</div>
+                className='bg-white p-2 shadow-md h-56   shadow-gray-400 rounded-xl w-64 md:w-72 lg:w-64'>
+            <div className='w-8 h-8 m-4  rounded-md  bg-purple-200 text-purple-800 p-2  flex justify-center items-center'>{item.icon}</div>
               
                 <h1 className='text-lg font-semibold m-4'>{item.title}</h1>
                 <p className='text-sm text-gray-600 m-4'>{item.text}</p>
@@ -168,19 +168,19 @@ return (
              <h1 className=' text-lg md:text-2xl font-bold text-center m-4'>Trusted by Teams Worldwide</h1>
              <p className=' text-sm md:text-base text-gray-600 text-center'>See what our customers are saying about FormCraft</p>
          
-<div className="hidden lg:flex items-center justify-center mt-6 overflow-hidden h-[260px] ">
+<div className="hidden lg:flex justify-center items-center mt-6 overflow-hidden h-[260px] ">
 
       {/* Previous card */}
       <div className="rounded-xl p-4 w-60 scale-95 flex-shrink-0 flex min-h-[200px]
- flex-col mx-4 opacity-50">
+ flex-col mx-4 opacity-50 ">
         
-        <p className="mt-2 text-sm">{testimonials[prevIndex].text}</p>
-        <div className="flex gap-2 mt-4 items-center">
-          <img src={testimonials[prevIndex].img} className="rounded-full w-10 h-10 object-cover" />
+        <p className="mt-2 text-sm text-left">{testimonials[prevIndex].text}</p>
+        <div className="flex gap-2 mt-2 ">
+          <img src={testimonials[prevIndex].img} className="rounded-full  w-10 h-10 object-cover" />
           <div className="flex flex-col">
             <h4 className="font-bold">{testimonials[prevIndex].name}</h4>
             <p className="text-sm">{testimonials[prevIndex].role}</p>
-            <p className="text-yellow-500 mt-2 text-lg">{testimonials[prevIndex].stars}</p>
+            <p className="text-yellow-500 text-lg">{testimonials[prevIndex].stars}</p>
           </div>
         </div>
       </div>
@@ -199,13 +199,13 @@ return (
  flex flex-col z-10 shadow-md shadow-purple-400 mx-4"
         >
          
-          <p className="mt-2 text-base">{testimonials[index].text}</p>
-          <div className="flex gap-2 mt-2 items-center">
-            <img src={testimonials[index].img} className="rounded-full w-10 h-10 object-cover" />
+          <p className="mt-2 text-base text-left">{testimonials[index].text}</p>
+          <div className="flex gap-2 mt-2  ">
+            <img src={testimonials[index].img} className="rounded-full w-12  h-12 object-cover flex-shrink-0" />
             <div className="flex flex-col">
               <h4 className="font-bold">{testimonials[index].name}</h4>
               <p className="text-sm">{testimonials[index].role}</p>
-               <p className="text-yellow-500 mt-2 text-lg">{testimonials[index].stars}</p>
+               <p className="text-yellow-500  text-lg">{testimonials[index].stars}</p>
             </div>
           </div>
         </motion.div>
@@ -215,13 +215,13 @@ return (
       <div className="rounded-xl p-4 w-60 scale-95 min-h-[200px]
  flex-shrink-0 flex flex-col mx-4 opacity-50">
       
-        <p className="mt-2 text-sm">{testimonials[nextIndex].text}</p>
-        <div className="flex gap-2 mt-4 items-center">
-          <img src={testimonials[nextIndex].img} className="rounded-full w-10 h-10 object-cover" />
+        <p className="mt-2 text-sm text-left">{testimonials[nextIndex].text}</p>
+        <div className="flex gap-2 mt-2">
+          <img src={testimonials[nextIndex].img} className="rounded-full  w-10 h-10 object-cover" />
           <div className="flex flex-col">
             <h4 className="font-bold">{testimonials[nextIndex].name}</h4>
             <p className="text-sm">{testimonials[nextIndex].role}</p>
-              <p className="text-yellow-500 mt-2 text-lg">{testimonials[nextIndex].stars}</p>
+              <p className="text-yellow-500  text-lg">{testimonials[nextIndex].stars}</p>
           </div>
         </div>
       </div>
@@ -232,7 +232,7 @@ return (
     <div className=" hidden lg:flex   gap-6 justify-center items-center mt-4">
     <button
       onClick={prev}
-      className="bg-purple-600 text-white w-10 h-10 rounded-full flex justify-center items-center shadow"
+      className="bg-purple-600 text-white w-10 h-10  rounded-full flex justify-center items-center shadow"
     >
       ‹
     </button>
@@ -249,7 +249,7 @@ return (
 
 
 {/* Mobile and Tab Carousel */}
-<div className="flex lg:hidden  flex-col items-center mt-6 relative text-center">
+<div className="flex lg:hidden  flex-col items-center mt-6 relative ">
 
   <motion.div
      key={index}
@@ -257,23 +257,23 @@ return (
   animate={hasInteracted ? { x: 0, opacity: 1 } : { x: 0, opacity: 1 }}
   exit={hasInteracted ? { x: -100, opacity: 0 } : { x: 0, opacity: 1 }}
   transition={{ duration: 0.2, ease: "easeInOut" }}
-    className="bg-gray-100 h-48 rounded-xl p-4 w-72 mx-6 shadow-md shadow-purple-400"
+    className="bg-gray-100 h-44 rounded-xl p-4 w-64 mx-6 shadow-md shadow-purple-400 "
   >
     
-    <p className="mt-2 text-sm">{testimonials[index].text}</p>
+    <p className="mt-2 text-sm text-left">{testimonials[index].text}</p>
 
-    <div className="flex gap-3 mt-4 items-center justify-center">
-      <img src={testimonials[index].img} className="rounded-full w-10 h-10 object-cover" />
-      <div className="flex flex-col">
+    <div className="flex gap-2 mt-2  ">
+      <img src={testimonials[index].img} className="rounded-full  w-10 h-10 object-cover flex-shrink-0" />
+      <div className="flex flex-col ">
         <h4 className="font-bold">{testimonials[index].name}</h4>
         <p className="text-sm">{testimonials[index].role}</p>
-        <p className="text-yellow-500 mt-2 text-lg">{testimonials[index].stars}</p>
+        <p className="text-yellow-500  text-lg">{testimonials[index].stars}</p>
       </div>
     </div>
   </motion.div>
 
   {/* Arrows */}
-  <div className="flex gap-6 mt-4">
+  <div className="flex gap-6 mt-4 justify-center items-center">
     <button
       onClick={prev}
       className="bg-purple-600 text-white w-8 h-8 rounded-full flex justify-center items-center shadow"
