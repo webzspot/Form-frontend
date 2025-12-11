@@ -98,7 +98,8 @@ const prevIndex = (index - 1 + testimonials.length) % testimonials.length;
 const nextIndex = (index + 1) % testimonials.length;
 return (
     <div className="bg-purple-100 pb-6">
-         <div className='flex gap-4  justify-evenly  p-6'>
+         <div className='container mx-auto'>
+          <div className='flex gap-4  max-w-7xl mx-auto justify-between  p-6'>
               {
                 aboutform.map((item,index)=>
                 <div key={index} className='flex flex-col '>
@@ -110,6 +111,7 @@ return (
                   )
               }
             </div>
+         </div>
     {/*Features */}
         <div className='bg-purple-50  p-2'>
             <motion.div

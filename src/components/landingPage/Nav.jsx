@@ -11,7 +11,7 @@ const Nav = () => {
   return (
     <>
       <nav className="w-full bg-white border-b border-gray-100 relative z-50 ">
-        <div className="mx-auto flex items-center justify-between py-3 px-3 sm:py-5 sm:px-6">
+        <div className="mx-auto container flex items-center justify-between py-3 px-3 sm:py-5 sm:px-6">
 
           {/* Logo */}
           <div className="flex items-center gap-2">
