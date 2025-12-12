@@ -97,6 +97,8 @@ const next = () =>{
 const prevIndex = (index - 1 + testimonials.length) % testimonials.length;
 const nextIndex = (index + 1) % testimonials.length;
 return (
+   
+  <section id="about">
     <div className="bg-purple-100 pb-6">
          <div className='container mx-auto'>
           <div className='flex gap-4  max-w-7xl mx-auto justify-between  p-6'>
@@ -294,6 +296,7 @@ return (
 </div>
 </div>
    </div>
+   </section>
    
   )
 }
