@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Rocket, Users, Heart } from "lucide-react";
 
+
 const Hero = () => {
   const titleText = "Create Your First";
   const highlightText = "Form Account";
@@ -35,8 +36,10 @@ const Hero = () => {
   );
 
   return (
-    <div className="bg-violet-300/20 container mx-auto w-full">
-    <div className="py-0 px-0 lg:px-6 lg:py-6">
+    <>
+    <section id="home" className=" bg-violet-300/20 ">
+       <div className="container mx-auto w-full">
+    <div className="py-0 px-0 max-w-7xl mx-auto lg:px-6 lg:py-6">
       <div className="bg-[#f0ebf5] rounded-2xl grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-10 py-1 px-3 lg:p-6 lg:py-2 shadow-2xl  ">
 
         {/* LEFT CONTENT */}
@@ -278,7 +281,11 @@ const Hero = () => {
       </div>
       
     </div>
-   <section className="w-full bg-gradient-to-br from-[#5b46e5] to-[#8f3cf7] py-16 px-4 mt-4">
+   
+
+    </div>
+    </section>
+    <section className="w-full bg-gradient-to-br from-[#5b46e5] to-[#8f3cf7] py-16 px-4 mt-4">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
         {/* LEFT CONTENT */}
@@ -330,8 +337,8 @@ const Hero = () => {
 
       </div>
     </section>
-
-    </div>
+    </>
+   
   );
 };
 
