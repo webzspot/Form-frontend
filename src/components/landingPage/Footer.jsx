@@ -1,6 +1,6 @@
 import React from 'react'
 import { FaTwitter, FaLinkedin, FaGithub, FaYoutube } from 'react-icons/fa';
-
+import {Link} from 'react-router-dom'
 const Footer = () => {
   return (
     <footer className='bg-gray-800 px-6 py-10 w-full  '>
@@ -29,30 +29,32 @@ const Footer = () => {
 
     
          {/*Product */}
-         <div   >
+         <div  className='flex flex-col' >
              <h1 className='text-xl font-semibold mt-4 hover:underline cursor-pointer'>Product</h1>
-              <p className='text-sm text-gray-200 mt-4 hover:underline cursor-pointer'>Features</p>
-                <p className='text-sm text-gray-200 mt-4 hover:underline cursor-pointer'>Templates</p>
-                  <p className='text-sm text-gray-200 mt-4 hover:underline cursor-pointer'>Integrations</p>
-                    <p className='text-sm text-gray-200 mt-4 hover:underline cursor-pointer'>Changelog</p>
+              <Link  className='text-sm text-gray-200 mt-4 hover:underline cursor-pointer' onClick={() => {
+    document.getElementById('features').scrollIntoView({ behavior: 'smooth' });
+  }}>Features</Link>
+                <Link className='text-sm text-gray-200 mt-4 hover:underline cursor-pointer'>Templates</Link>
+                  <Link className='text-sm text-gray-200 mt-4 hover:underline cursor-pointer'>Integrations</Link>
+                    <Link className='text-sm text-gray-200 mt-4 hover:underline cursor-pointer'>Changelog</Link>
          </div>
 
               {/*Company */}
-               <div >
+               <div className='flex flex-col'>
              <h1 className='text-xl font-semibold mt-4 hover:underline cursor-pointer'>Company</h1>
-              <p className='text-sm text-gray-200 mt-4 hover:underline cursor-pointer'>About Us</p>
-                <p className='text-sm text-gray-200 mt-4 hover:underline cursor-pointer'>Careers</p>
-                  <p className='text-sm text-gray-200 mt-4 hover:underline cursor-pointer'>Blog</p>
-                    <p className='text-sm text-gray-200 mt-4 hover:underline cursor-pointer'>Press</p>
-                    <p className='text-sm text-gray-200 mt-4 hover:underline cursor-pointer'>Contact</p>
+              <Link className='text-sm text-gray-200 mt-4 hover:underline cursor-pointer'>About Us</Link>
+                <Link className='text-sm text-gray-200 mt-4 hover:underline cursor-pointer'>Careers</Link>
+                  <Link className='text-sm text-gray-200 mt-4 hover:underline cursor-pointer'>Blog</Link>
+                    <Link className='text-sm text-gray-200 mt-4 hover:underline cursor-pointer'>Press</Link>
+                    <Link className='text-sm text-gray-200 mt-4 hover:underline cursor-pointer'>Contact</Link>
          </div>
           {/*Resources */}
-           <div >
+           <div className='flex flex-col' >
              <h1 className='text-xl font-semibold mt-4'>Documentation</h1>
-              <p className='text-sm text-gray-200 mt-4 hover:underline cursor-pointer'>Help Center</p>
-                <p className='text-sm text-gray-200 mt-4 hover:underline cursor-pointer'>Community</p>
-                  <p className='text-sm text-gray-200 mt-4 hover:underline cursor-pointer'>API Reference</p>
-                    <p className='text-sm text-gray-200 mt-4 hover:underline cursor-pointer'>Status</p>
+              <Link className='text-sm text-gray-200 mt-4 hover:underline cursor-pointer'>Help Center</Link>
+                <Link className='text-sm text-gray-200 mt-4 hover:underline cursor-pointer'>Community</Link>
+                  <Link className='text-sm text-gray-200 mt-4 hover:underline cursor-pointer'>API Reference</Link>
+                    <Link className='text-sm text-gray-200 mt-4 hover:underline cursor-pointer'>Status</Link>
                     </div>
                     </div>
                    {/* Terms and Services */}
