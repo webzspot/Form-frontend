@@ -1,17 +1,22 @@
-
-
-
 import React, { useState } from "react";
-import { Menu, X } from "lucide-react";
+import {Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+
 
 const Nav = () => {
   const [open, setOpen] = useState(false);
 
+  const scrollToSection=(id)=>{
+    const section=document.getElementById(id);
+    if(section){
+      section.scrollIntoView({behavior:"smooth"});
+    }
+  }
+
   return (
     <>
-      <nav className="w-full bg-white border-b border-gray-100 relative z-50 ">
-        <div className="mx-auto container flex items-center justify-between py-3 px-3 sm:py-5 sm:px-6">
+      <nav className="w-full bg-white border-b border-gray-100 sticky top-0 z-50  ">
+        <div className="mx-auto container flex items-center justify-between py-3 px-3 sm:py-5 sm:px-6 ">
 
           {/* Logo */}
           <div className="flex items-center gap-2">
@@ -24,11 +29,38 @@ const Nav = () => {
           </div>
 
           {/* Center Menu */}
-          <ul className="hidden lg:flex items-center gap-10 text-[16px] font-medium text-gray-700">
-            <li className="cursor-pointer hover:text-[#6C3BFF]">Dashboard</li>
+          <ul className="hidden lg:flex items-center gap-8 text-[14px] font-medium text-gray-700">
+            
+             
+              <li
+              onClick={()=>scrollToSection("home")}
+               className="cursor-pointer hover:text-[#6C3BFF]">Home</li>
+             
+              <li
+              onClick={()=>scrollToSection("about")}
+               className="cursor-pointer hover:text-[#6C3BFF]">About</li>
+
+
+           <li className="cursor-pointer hover:text-[#6C3BFF]">Dashboard</li>
+      
+
+            
             <li className="cursor-pointer hover:text-[#6C3BFF]">Templates</li>
+         
+
+             
             <li className="cursor-pointer hover:text-[#6C3BFF]">Analytics</li>
+        
+
+          
             <li className="cursor-pointer hover:text-[#6C3BFF]">Integrations</li>
+            
+
+            
+            
+        
+
+            
           </ul>
 
           {/* Right Buttons */}
