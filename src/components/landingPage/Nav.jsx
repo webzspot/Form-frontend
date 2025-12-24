@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import {Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link } from 'react-router-dom';
 
 
 const Nav = () => {
@@ -68,10 +69,12 @@ const Nav = () => {
             <button className="text-gray-700 font-medium text-sm sm:text-lg hover:text-[#6C3BFF]">
               Sign In
             </button>
-
+           
+           <Link to="/register">
             <button className="bg-[#6C3BFF] hover:bg-[#5c2dea] hidden lg:block transition-all text-white font-semibold px-5 py-2.5 rounded-xl">
               Get Started
             </button>
+            </Link>
 
             {/* Mobile Menu Button */}
             <button
@@ -117,7 +120,8 @@ const Nav = () => {
                 <li className="hover:text-[#6C3BFF] cursor-pointer">Templates</li>
                 <li className="hover:text-[#6C3BFF] cursor-pointer">Analytics</li>
                 <li className="hover:text-[#6C3BFF] cursor-pointer">Integrations</li>
-                <li className="bg-[#6C3BFF] rounded text-white px-6 py-1 w-fit hover:bg-[#7553da] cursor-pointer">Logout</li>
+               <Link  to={"/register"}><li className="bg-[#6C3BFF] rounded text-white px-4 py-1 my-4 w-fit hover:bg-[#7553da] cursor-pointer">GetStarted</li></Link> 
+                <li className="bg-[#6C3BFF] rounded text-white px-4 py-1 w-fit hover:bg-[#7553da] cursor-pointer">Logout</li>
               </ul>
             </motion.div>
           </>
