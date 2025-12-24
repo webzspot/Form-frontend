@@ -1,10 +1,12 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, User, FileText, Sparkles } from "lucide-react";
+import { Link } from "react-router-dom";
+
 
 const navItems = [
   { label: "User", icon: <User size={18} /> },
-  { label: "Forms", icon: <FileText size={18} /> },
+  { label: "Forms", icon: <FileText size={18} />, path: "/form"  },
 ];
 
 const UserNavbar = () => {
@@ -31,7 +33,7 @@ const UserNavbar = () => {
                 className="flex items-center gap-2 cursor-pointer hover:text-indigo-600 transition"
               >
                 {item.icon}
-                {item.label}
+               <Link to={item.path}> {item.label}</Link>
               </motion.div>
             ))}
           </div>
@@ -94,7 +96,7 @@ const UserNavbar = () => {
                     className="flex items-center gap-3 text-black/70 font-medium cursor-pointer hover:text-indigo-600 transition"
                   >
                     {item.icon}
-                    {item.label}
+                  <Link to={item.path}> {item.label}</Link>
                   </motion.div>
                 ))}
               </div>
