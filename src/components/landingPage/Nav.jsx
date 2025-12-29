@@ -121,7 +121,7 @@ const Nav = () => {
                 <li className="hover:text-[#6C3BFF] cursor-pointer">Analytics</li>
                 <li className="hover:text-[#6C3BFF] cursor-pointer">Integrations</li>
                <Link  to={"/register"}><li className="bg-[#6C3BFF] rounded text-white px-4 py-1 my-4 w-fit hover:bg-[#7553da] cursor-pointer">GetStarted</li></Link> 
-                <li className="bg-[#6C3BFF] rounded text-white px-4 py-1 w-fit hover:bg-[#7553da] cursor-pointer">Logout</li>
+                
               </ul>
             </motion.div>
           </>

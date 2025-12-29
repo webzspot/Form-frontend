@@ -8,6 +8,8 @@ import Register from './components/user/Register.jsx'
 import Login from './components/user/Login.jsx';
 import Home from './components/user/Home.jsx';
 import UserReport from './components/user/UserReport.jsx';
+import Form from './components/dashboard/Form.jsx';
+
 
 
 const App = () => {
@@ -22,6 +24,7 @@ const App = () => {
       <Hero/>
      <About/>
      <Footer/>
+     
      </>
   }
      />
@@ -30,7 +33,7 @@ const App = () => {
     <Route path="/login" element={<Login/>}/>
     <Route path="/home" element={<Home/>}/>
     <Route path="/userreport" element={<UserReport/>}/>
-    
+    <Route path="/form" element={<Form/>}/>    
    
      </Routes>
     </BrowserRouter>

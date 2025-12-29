@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowLeftIcon } from 'lucide-react';
 import Preview from './Preview';
 import UserNavbar from './UserNavbar';
+import Footer from '../landingPage/Footer';
 
 
 const Home = () => {
@@ -298,6 +299,10 @@ const handlesubmit = () => {
        
 
       <Preview/>
+
+      <div className='mt-5'>
+        <Footer/>
+      </div>
     </div>
   )
 }

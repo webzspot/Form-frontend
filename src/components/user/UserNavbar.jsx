@@ -6,9 +6,9 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 const navItems = [
 
   { label: "User", icon: <User size={18} />, path: "/user" },
-  { label: "Forms", icon: <FileText size={18} />, path: "/forms" },
   { label: "Report", icon: <Bug size={18} />, path: "/userreport" },
   { label: "Build" ,icon: <HomeIcon size={18}/> , path:"/home" },
+  { label: "Forms", icon: <FileText size={18} />, path: "/form" },
 ];
 
 const UserNavbar = () => {

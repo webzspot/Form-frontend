@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 import UserNavbar from "./UserNavbar";
+import Footer from "../landingPage/Footer";
 
 const UserReport = () => {
   const [issuetype, setIssuetype] = useState("");
@@ -284,6 +285,9 @@ const UserReport = () => {
         )}
       </AnimatePresence>
     </motion.div>
+   <div className="mt-20">
+    <Footer/>
+    </div> 
     </>
   );
 };
