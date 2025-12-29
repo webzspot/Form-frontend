@@ -27,6 +27,12 @@ const Form = () => {
    const[activeForm,setActiveForm]=useState(null)
    
    const [showMasterList, setShowMasterList] = useState(false);
+   const [responses, setResponses] = useState([]);       
+const [selectedResponse, setSelectedResponse] = useState(null); 
+const [showResponsesModal, setShowResponsesModal] = useState(false);
+const [showDetailModal, setShowDetailModal] = useState(false);
+const [responseFields, setResponseFields] = useState([]);
+
 
   const INPUT_TYPE_MAP = {
   TEXT: "text",
@@ -299,6 +305,49 @@ const userId = user.userId
     )
   );
 };
+ 
+  //Fetching Responses for each form
+const openResponses = async (formId) => {
+  try {
+    
+    const res = await axios.get(
+      `https://formbuilder-saas-backend.onrender.com/api/dashboard/form/responses/${formId}`
+    );
+    setResponses(res.data.data);
+
+    const formRes = await axios.get(
+      `https://formbuilder-saas-backend.onrender.com/api/dashboard/form/details/${formId}`
+    );
+    setResponseFields(formRes.data.data.formField);
+
+   
+    setShowResponsesModal(true);
+  } catch (err) {
+    console.log("Error fetching responses", err);
+  }
+};
+
+
+ //Fetching responses details from each response
+ const openResponseDetail = async (responseId) => {
+  try{
+      const res = await axios.get(
+    `https://formbuilder-saas-backend.onrender.com/api/dashboard/form/response/${responseId}`
+  );
+
+  setSelectedResponse(res.data.data);
+  setShowDetailModal(true);
+  }
+  catch(err){
+    console.log("Error",err)
+  }
+ 
+};
+
+const getLabel = (fieldId) =>
+  responseFields.find(f => f.formFieldId === fieldId)?.label || "Unknown Field";
+
+  
 
 
   return (
@@ -552,7 +601,7 @@ const userId = user.userId
 
 
   {/* My Forms */}
-<div className="mt-8 bg-white border border-violet-500 p-6 rounded-md shadow-lg max-w-5xl mx-auto">
+<div className="mt-12 bg-white border border-violet-500 p-6 rounded-md shadow-lg max-w-5xl mx-auto">
   <h2 className="text-xl font-bold text-violet-700 mb-4 text-center">
     My Forms
   </h2>
@@ -575,6 +624,8 @@ const userId = user.userId
   className="bg-white border border-violet-600 rounded-lg p-5 shadow-sm hover:shadow-lg  flex flex-col gap-3 min-h-[180px]"
 >
 <div className="flex justify-end gap-2">
+
+
   <button
     onClick={() => handleUpdate(form.formId)} 
     className="text-blue-600 hover:bg-blue-100 p-1 rounded-md"
@@ -602,7 +653,12 @@ const userId = user.userId
   <p className="text-sm text-gray-600  truncate">
     {form.description || "No description provided"}
   </p>
-
+    
+    
+<button onClick={() => openResponses(form.formId)}
+  className="bg-green-600  text-xs text-white  hover:bg-green-800 cursor-pointer px-2 py-1 rounded-md">
+  View Responses
+</button>
   
   <div className="flex justify-between items-center gap-3 text-xs text-gray-500">
     <span>
@@ -926,6 +982,86 @@ const userId = user.userId
     </motion.div>
   </div>
 )}
+ 
+    {/*Form Responses */}
+ {showResponsesModal && (
+  <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+    <motion.div
+      initial={{ scale: 0.8, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ duration: 0.3 }}
+      className="bg-white rounded-lg w-full max-w-[450px] border border-violet-500 p-6 shadow-xl"
+    >
+      <h3 className="text-xl font-bold text-violet-700 mb-4 text-center">
+        Form Responses
+      </h3>
+
+      {/* No Responses*/}
+      {responses.length === 0 ? (
+        <p className="text-center text-gray-500">
+          No responses found
+        </p>
+      ) : (
+        <div className="flex flex-col gap-3">
+          {responses.map((r, index) => (
+            <div
+              key={r.formResponseId}
+              className="flex justify-between items-center border p-3 rounded"
+            >
+              <span className="font-medium">
+                Submission {index + 1}
+              </span>
+
+              <button
+                onClick={() => openResponseDetail(r.formResponseId)}
+                className="px-3 py-1 bg-violet-500 text-white rounded hover:bg-violet-700"
+              >
+                View
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div className="flex justify-end mt-4">
+        <button
+          onClick={() => setShowResponsesModal(false)}
+          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+        >
+          Close
+        </button>
+      </div>
+    </motion.div>
+  </div>
+)}
+
+   {/*Response Details */}
+ {showDetailModal && selectedResponse && (
+  <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+    <div className="bg-white p-6 rounded-md w-[400px]">
+      <h3 className="text-lg font-bold text-violet-700 mb-3 text-center">
+        Response Detail
+      </h3>
+
+      {selectedResponse.responseValue.map(item => (
+        <p key={item.responseValueId} className="mb-2">
+          <b>{getLabel(item.formFieldId)}:</b>{" "}
+          {Array.isArray(item.value)
+            ? item.value.join(", ")
+            : item.value}
+        </p>
+      ))}
+
+      <button
+        onClick={() => setShowDetailModal(false)}
+        className="mt-4 px-4 py-2 bg-red-500 text-white rounded"
+      >
+        Close
+      </button>
+    </div>
+  </div>
+)}
+
 
 
 

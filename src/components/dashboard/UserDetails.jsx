@@ -330,7 +330,7 @@ return (
                     <td className='border border-gray-400   px-4 py-2 sm:p-4 '>{user.email}</td>
                       <td className='border border-gray-400  px-4 py-2 sm:p-4 '>{user.password}</td>
                         <td className='border border-gray-400  px-4 py-2 sm:p-4'>{user.role}</td>
-                          <td className='border border-gray-400  px-4 py-2 sm:p-4'>{new Date(user.createdAt).toLocaleDateString()}</td>
+                          <td className='border border-gray-400 px-4 py-2 sm:p-4'>{new Date(user.createdAt).toLocaleDateString()}</td>
                     <td className=' border border-gray-400  relative mt-1'><button className='font-bold text-2xl px-2 cursor-pointer ' onClick={() => setOpenMenuIndex(openMenuIndex === user.userId ? null :user.userId)}>...</button>
                     
                      {openMenuIndex === user.userId && (
