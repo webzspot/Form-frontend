@@ -7,6 +7,7 @@ import Footer from './components/landingPage/Footer.jsx'
 import Register from './components/user/Register.jsx'
 import Login from './components/user/Login.jsx';
 import Home from './components/user/Home.jsx';
+import UserReport from './components/user/UserReport.jsx';
 
 
 const App = () => {
@@ -28,6 +29,7 @@ const App = () => {
     <Route path="/register" element={<Register/>}/>
     <Route path="/login" element={<Login/>}/>
     <Route path="/home" element={<Home/>}/>
+    <Route path="/userreport" element={<UserReport/>}/>
     
    
      </Routes>

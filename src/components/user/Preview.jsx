@@ -21,7 +21,7 @@ const Preview = () => {
         setFetchedFields(res.data.data);
         setLoading(false);
         console.log(res.data.data);
-        console.log(res.data.data[0].userId);
+       
       })
       .catch((err) => {
         console.error("Error fetching fields:", err);

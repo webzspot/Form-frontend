@@ -36,6 +36,7 @@ const Login = () => {
     if(userFound){
     console.log("Login successful", userFound);
     localStorage.setItem("userId",userFound.userId);
+    localStorage.setItem("userName",userFound.name);
     setloginsucessmsg(true);
 
     }
