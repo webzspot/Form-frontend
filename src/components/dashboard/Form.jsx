@@ -50,8 +50,12 @@ const [responseFields, setResponseFields] = useState([]);
    //Getting masterfields for showFormBuilder
    const getMasterFields=async ()=>{
     try{
-        const user = JSON.parse(localStorage.getItem("user"))
-const userId = user.userId
+// const user = JSON.parse(localStorage.getItem("user"))
+// const userId = user.userId
+
+const userId = localStorage.getItem("userId");
+const username = localStorage.getItem("username");
+
       
       const res=await axios.get(`https://formbuilder-saas-backend.onrender.com/api/dashboard/master-fields/user/${userId}`)
       console.log(res.data.data,"master fields")
@@ -121,8 +125,12 @@ const userId = user.userId
    //Getting all forms
    const getForms=async()=>{
     try{
-        const user=JSON.parse(localStorage.getItem('user'))
-     const userId=user.userId
+    //     const user=JSON.parse(localStorage.getItem('user'))
+    //  const userId=user.userId
+
+    const userId = localStorage.getItem("userId");
+const username = localStorage.getItem("username");
+
      const res=await axios.get(`https://formbuilder-saas-backend.onrender.com/api/dashboard/form/${userId}`)
      console.log("Forms fetched successfully",res.data.data)
      setForms(res.data.data)
@@ -137,8 +145,13 @@ const userId = user.userId
    //Creating a new form
   const createForm=async ()=>{
     try{
-         const user=JSON.parse(localStorage.getItem('user'))
-      const userId=user.userId
+      //    const user=JSON.parse(localStorage.getItem('user'))
+      // const userId=user.userId
+        
+      const userId = localStorage.getItem("userId");
+const username= localStorage.getItem("username");
+
+
        if (selectedFields.length === 0) {
       alert("Please select at least one field")
       return
@@ -213,45 +226,110 @@ const userId = user.userId
   }
 };
 
+
+
+
+
+
+
+
   //Updating the form
-  const handleUpdate = async (formId, save = false) => {
-  try {
-    if (!save) {
-       setShowMasterList(false); 
-      await getFieldsForEdit(formId)
-      return
-    }
+//   const handleUpdate = async (formId, save = false) => {
+//   try {
+//     if (!save) {
+//        setShowMasterList(false); 
+//       await getFieldsForEdit(formId)
+//       return
+//     }
 
   
+//     const payload = {
+//       title: editData.title,
+//       description: editData.description,
+//       isPublic: editData.isPublic,
+//       fields: selectedFields.map((field, index) => ({
+//           formFieldId: field.formFieldId, 
+//         label: field.label || field.name,
+//         type: field.type,
+//         required: field.required,
+//         order: index,
+//         options: field.options || null,
+//          masterFieldId: field.masterFieldId || null
+
+//       }))
+//     }
+
+
+
+
+//     await axios.put(
+//        `https://formbuilder-saas-backend.onrender.com/api/dashboard/form/${formId}`,
+//   payload
+
+//       // `https://formbuilder-saas-backend.onrender.com/api/dashboard/form/${editingFormId}`,
+//       // payload
+
+
+//     )
+
+//     alert("Form updated successfully")
+//     setEditingFormId(null)
+//     getForms() 
+//   } catch (err) {
+//     console.error("Update failed", err)
+//     alert("Failed to update form")
+//   }
+// }
+
+
+
+
+
+
+const handleUpdate = async (formId, save = false) => {
+  try {
+    if (!save) {
+      setShowMasterList(false);
+      await getFieldsForEdit(formId);
+      return;
+    }
+
     const payload = {
       title: editData.title,
       description: editData.description,
       isPublic: editData.isPublic,
-      fields: selectedFields.map((field, index) => ({
-          formFieldId: field.formFieldId, 
-        label: field.label || field.name,
-        type: field.type,
-        required: field.required,
-        order: index,
-        options: field.options || [],
-         masterFieldId: field.masterFieldId || null
+      fields: selectedFields.map((field, index) => {
+        const hasOptions = ["DROPDOWN","RADIO","CHECKBOX"].includes(field.type);
 
-      }))
-    }
+        return {
+          formFieldId: field.formFieldId || null,
+          label: field.label || field.name,
+          type: field.type.toLowerCase(),   // 🔥 FIX
+          required: field.required,
+          order: index,
+          options: hasOptions ? field.options : null, // 🔥 FIX
+          masterFieldId: field.masterFieldId || null
+        };
+      })
+    };
 
     await axios.put(
-      `https://formbuilder-saas-backend.onrender.com/api/dashboard/form/${editingFormId}`,
+      `https://formbuilder-saas-backend.onrender.com/api/dashboard/form/${formId}`,
       payload
-    )
+    );
 
-    alert("Form updated successfully")
-    setEditingFormId(null)
-    getForms() 
+    alert("Form updated successfully");
+    setEditingFormId(null);
+    getForms();
   } catch (err) {
-    console.error("Update failed", err)
-    alert("Failed to update form")
+    console.error("Update failed", err.response?.data || err);
+    alert("Failed to update form");
   }
-}
+};
+
+
+
+
 
 
    
@@ -1071,6 +1149,310 @@ const getLabel = (fieldId) =>
   )}
 export default Form
 
+
+
+
+
+
+
+
+
+
+
+// import React, { useEffect, useState } from "react";
+// import axios from "axios";
+// import { motion, AnimatePresence } from "framer-motion";
+// import {
+//   Plus,
+//   Trash2,
+//   Eye,
+//   Edit3,
+//   X,
+//   Save,
+// } from "lucide-react";
+// import UserNavbar from "../user/UserNavbar";
+
+// const API = "https://formbuilder-saas-backend.onrender.com";
+
+// const Form = () => {
+//   const userId = localStorage.getItem("userId");
+
+//   const [forms, setForms] = useState([]);
+//   const [activeForm, setActiveForm] = useState(null);
+//   const [editMode, setEditMode] = useState(false);
+
+//   const [title, setTitle] = useState("");
+//   const [description, setDescription] = useState("");
+
+//   // ================= FETCH =================
+
+//   useEffect(() => {
+//     fetchForms();
+//   }, []);
+
+//   const fetchForms = async () => {
+//     const res = await axios.get(`${API}/api/dashboard/form/${userId}`);
+//     setForms(res.data.data);
+//   };
+
+//   const openForm = async (formId, editable = false) => {
+//     const res = await axios.get(
+//       `${API}/api/dashboard/form/details/${formId}`
+//     );
+//     setActiveForm(res.data.data);
+//     setTitle(res.data.data.title);
+//     setDescription(res.data.data.description);
+//     setEditMode(editable);
+//   };
+
+//   // ================= UPDATE =================
+
+//   const updateForm = async () => {
+//     await axios.put(`${API}/api/dashboard/form/${activeForm.formId}`, {
+//       title,
+//       description,
+//       fields: activeForm.formField.map((f, i) => ({
+//         ...f,
+//         order: i,
+//       })),
+//     });
+
+//     alert("Form updated");
+//     setActiveForm(null);
+//     fetchForms();
+//   };
+
+//   const toggleRequired = (id) => {
+//     setActiveForm((prev) => ({
+//       ...prev,
+//       formField: prev.formField.map((f) =>
+//         f.formFieldId === id
+//           ? { ...f, required: !f.required }
+//           : f
+//       ),
+//     }));
+//   };
+
+//   const removeField = (id) => {
+//     setActiveForm((prev) => ({
+//       ...prev,
+//       formField: prev.formField.filter(
+//         (f) => f.formFieldId !== id
+//       ),
+//     }));
+//   };
+
+//   const deleteForm = async (id) => {
+//     if (!window.confirm("Delete this form?")) return;
+//     await axios.delete(`${API}/api/dashboard/form/${id}`);
+//     fetchForms();
+//   };
+
+//   // ================= UI =================
+
+//   return (
+//     <>
+//       <UserNavbar />
+
+//       <div className="min-h-screen bg-gradient-to-br from-slate-100 to-slate-200 p-8">
+//         <h1 className="text-3xl font-bold text-center text-violet-700 mb-10">
+//           Your Forms
+//         </h1>
+
+//         {/* FORM CARDS */}
+//         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+//           {forms.map((f) => (
+//             <motion.div
+//               key={f.formId}
+//               whileHover={{ scale: 1.03 }}
+//               className="bg-white rounded-2xl shadow-xl p-6 relative"
+//             >
+//               <h2 className="font-semibold text-lg">{f.title}</h2>
+//               <p className="text-sm text-gray-500 mt-1">
+//                 {f.description}
+//               </p>
+
+//               <div className="flex gap-2 mt-5">
+//                 <button
+//                   onClick={() => openForm(f.formId, false)}
+//                   className="flex-1 bg-violet-500 text-white py-2 rounded-xl flex justify-center gap-1"
+//                 >
+//                   <Eye size={18} /> View
+//                 </button>
+
+//                 <button
+//                   onClick={() => openForm(f.formId, true)}
+//                   className="flex-1 bg-emerald-500 text-white py-2 rounded-xl flex justify-center gap-1"
+//                 >
+//                   <Edit3 size={18} /> Edit
+//                 </button>
+
+//                 <button
+//                   onClick={() => deleteForm(f.formId)}
+//                   className="bg-red-500 text-white px-3 rounded-xl"
+//                 >
+//                   <Trash2 size={18} />
+//                 </button>
+//               </div>
+//             </motion.div>
+//           ))}
+//         </div>
+//       </div>
+
+//       {/* MODAL */}
+//       <AnimatePresence>
+//         {activeForm && (
+//           <motion.div
+//             initial={{ opacity: 0 }}
+//             animate={{ opacity: 1 }}
+//             exit={{ opacity: 0 }}
+//             className="fixed inset-0 bg-black/40 backdrop-blur flex justify-center items-center z-50"
+//           >
+//             <motion.div
+//               initial={{ scale: 0.9 }}
+//               animate={{ scale: 1 }}
+//               exit={{ scale: 0.9 }}
+//               className="bg-white rounded-3xl w-[95%] max-w-xl p-6 shadow-2xl"
+//             >
+//               {/* HEADER */}
+//               <div className="flex justify-between items-center mb-4">
+//                 <h2 className="text-xl font-bold text-violet-600">
+//                   {editMode ? "Edit Form" : "Preview Form"}
+//                 </h2>
+//                 <button onClick={() => setActiveForm(null)}>
+//                   <X />
+//                 </button>
+//               </div>
+
+//               {/* TITLE */}
+//               {editMode ? (
+//                 <>
+//                   <input
+//                     value={title}
+//                     onChange={(e) => setTitle(e.target.value)}
+//                     className="w-full border p-2 rounded-xl mb-2"
+//                   />
+//                   <textarea
+//                     value={description}
+//                     onChange={(e) =>
+//                       setDescription(e.target.value)
+//                     }
+//                     className="w-full border p-2 rounded-xl mb-4"
+//                   />
+//                 </>
+//               ) : (
+//                 <>
+//                   <h3 className="font-semibold">{title}</h3>
+//                   <p className="text-gray-500 mb-4">
+//                     {description}
+//                   </p>
+//                 </>
+//               )}
+
+//               {/* FIELDS */}
+//               <div className="space-y-3 max-h-[300px] overflow-y-auto">
+//                 {activeForm.formField.map((f) => (
+//                   <div
+//                     key={f.formFieldId}
+//                     className="border rounded-xl p-3 flex justify-between items-center"
+//                   >
+//                     <div>
+//                       <label className="font-medium">
+//                         {f.label}{" "}
+//                         {f.required && (
+//                           <span className="text-red-500">*</span>
+//                         )}
+//                       </label>
+//                       <input
+//                         disabled
+//                         className="block w-full border mt-1 px-2 py-1 rounded"
+//                       />
+//                     </div>
+
+//                     {editMode && (
+//                       <div className="flex gap-2">
+//                         <button
+//                           onClick={() =>
+//                             toggleRequired(f.formFieldId)
+//                           }
+//                           className="text-sm bg-indigo-100 px-2 py-1 rounded"
+//                         >
+//                           Req
+//                         </button>
+//                         <button
+//                           onClick={() =>
+//                             removeField(f.formFieldId)
+//                           }
+//                           className="text-red-500"
+//                         >
+//                           <Trash2 size={18} />
+//                         </button>
+//                       </div>
+//                     )}
+//                   </div>
+//                 ))}
+//               </div>
+
+//               {/* FOOTER */}
+//               {editMode && (
+//                 <button
+//                   onClick={updateForm}
+//                   className="mt-6 w-full bg-violet-600 text-white py-3 rounded-xl flex justify-center gap-2"
+//                 >
+//                   <Save /> Save Changes
+//                 </button>
+//               )}
+//             </motion.div>
+//           </motion.div>
+//         )}
+//       </AnimatePresence>
+//     </>
+//   );
+// };
+
+// export default Form;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// import React, { useState } from 'react'
+// import UserNavbar from '../user/UserNavbar'
+
+// const Form = () => {
+//   const[createform,setcreateform]=useState(false);
+//   return (
+//     <div>
+//       <UserNavbar/>
+//       <div>
+//         <button className="m-5 font-bold text-lg text-white/90 px-2 py-1 rounded shadow-2xl bg-violet-600">
+//           Create Form
+//         </button>
+
+//         <div className="w-full h-[250px] border ">
+
+//         </div>
+
+//       </div>
+//     </div>
+//   )
+// }
+
+// export default Form
 
 
 
