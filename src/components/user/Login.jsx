@@ -35,7 +35,11 @@ const Login = () => {
 
     if(userFound){
     console.log("Login successful", userFound);
+
     localStorage.setItem("user", JSON.stringify(userFound));
+
+   
+
     setloginsucessmsg(true);
 
     }

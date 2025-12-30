@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ArrowLeftIcon } from 'lucide-react';
 import Preview from './Preview';
 import UserNavbar from './UserNavbar';
+import Footer from '../landingPage/Footer';
 
 
 const Home = () => {
@@ -15,13 +16,14 @@ const Home = () => {
   const [labelname,setlabelname]=useState("");
   const[data,setdata]=useState([]);
   const[options,setoptions]=useState([""]);
- 
+
+
+
+
  
 const handlesubmit = () => {
   const userId = localStorage.getItem("userId");
   
-  // 1. Create the full list of fields to upload
-  // const allFields = [...data, { name: labelname, type: selectedType }];
  const allFields = labelname
   ? [...data, {
       name: labelname,
@@ -297,6 +299,10 @@ const handlesubmit = () => {
        
 
       <Preview/>
+
+      <div className='mt-5'>
+        <Footer/>
+      </div>
     </div>
   )
 }

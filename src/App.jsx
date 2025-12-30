@@ -1,59 +1,49 @@
-import React from "react";
-import { BrowserRouter, Routes, Route ,useLocation} from "react-router-dom";
+import React from 'react'
+import Nav from './components/landingPage/Nav'
+import Hero from './components/landingPage/Hero'
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import  About  from './components/landingPage/About.jsx'
+import Footer from './components/landingPage/Footer.jsx'
+import Register from './components/user/Register.jsx'
+import Login from './components/user/Login.jsx';
+import Home from './components/user/Home.jsx';
+import UserReport from './components/user/UserReport.jsx';
+import Form from './components/dashboard/Form.jsx';
 
-import Nav from "./components/landingPage/Nav";
-import Hero from "./components/landingPage/Hero";
-import About from "./components/landingPage/About";
-import Footer from "./components/landingPage/Footer";
 
-import Register from "./components/user/Register";
-import Login from "./components/user/Login";
-import Home from "./components/user/Home";
-import AdminPage from "./components/dashboard/AdminPage";
-import UserDetails from "./components/dashboard/UserDetails";
-import Form from "./components/dashboard/Form";
-import AllReports from "./components/dashboard/AllReports";
 
-const Layout = () => {
-  const location = useLocation();
 
-  return (
-    <>
-    
-      {location.pathname !== "/form" && <Nav />}
 
-      <Routes>
-        <Route
-          path="/"
-          element={
-            <>
-              <Hero />
-              <About />
-                 <Footer />
-            </>
-          }
-        />
 
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/dashboard" element={<AdminPage />} />
-        <Route path="/form" element={<Form />} />
-        <Route path="/allreports" element={<AllReports />} />
-      </Routes>
-
-   
-    </>
-  );
-};
 
 const App = () => {
   return (
+
     <BrowserRouter>
-      <Layout />
+ <Routes>
+   <Route
+  path="/" element={
+    <>
+      <Nav/>
+      <Hero/>
+     <About/>
+     <Footer/>
+     
+     </>
+  }
+     />
+    
+    <Route path="/register" element={<Register/>}/>
+    <Route path="/login" element={<Login/>}/>
+    <Route path="/home" element={<Home/>}/>
+    <Route path="/userreport" element={<UserReport/>}/>
+    <Route path="/form" element={<Form/>}/>    
+   
+     </Routes>
     </BrowserRouter>
-  );
-};
+   
 
-export default App;
+  )
+}
 
+export default App
