@@ -5,6 +5,7 @@ import { ArrowLeftIcon } from 'lucide-react';
 import Preview from './Preview';
 import UserNavbar from './UserNavbar';
 import Footer from '../landingPage/Footer';
+import { useParams } from "react-router-dom";
 
 
 const Home = () => {
@@ -17,12 +18,10 @@ const Home = () => {
   const[data,setdata]=useState([]);
   const[options,setoptions]=useState([""]);
 
-
-
-
+  const { userId } = useParams();
  
 const handlesubmit = () => {
-  const userId = localStorage.getItem("userId");
+  
   
  const allFields = labelname
   ? [...data, {
@@ -70,8 +69,8 @@ const handlesubmit = () => {
 
   useEffect(() => {
     
-    const userId = localStorage.getItem("userId");  
-    console.log(userId);
+    
+  
     axios.get(`https://formbuilder-saas-backend.onrender.com/api/dashboard/master-fields/user/${userId}`)
       .then((res) => {
     
@@ -298,7 +297,8 @@ const handlesubmit = () => {
 
        
 
-      <Preview/>
+ <Preview userId={userId} />
+
 
       <div className='mt-5'>
         <Footer/>

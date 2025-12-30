@@ -3,6 +3,8 @@ import React, { useState, useEffect} from "react";
 import axios from "axios"
 import { Rocket } from "lucide-react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+
 
 
 const Login = () => {
@@ -12,8 +14,9 @@ const Login = () => {
   const [existuser,setexistuser]=useState([]);
   const [loginsucessmsg,setloginsucessmsg]=useState(false);
   const [loginerrormsg,setloginerrormsg]=useState(false);
-  const [FetchedFields,setFetchedFields]=useState([]);
-  
+  const [loggedInUser, setLoggedInUser] = useState(null);
+
+   const navigate = useNavigate();
  
 
 
@@ -29,30 +32,33 @@ const Login = () => {
 
     const userFound=existuser.find(
         (user)=>
-            user.email===loginemail && 
+        user.email===loginemail && 
         user.password === loginpassword
     );
 
     if(userFound){
     console.log("Login successful", userFound);
-
-    localStorage.setItem("user", JSON.stringify(userFound));
-
-   
-
+   sessionStorage.setItem("userId", userFound.userId);
+   sessionStorage.setItem("role", userFound.role);
     setloginsucessmsg(true);
+    setLoggedInUser(userFound);
 
-    }
+  }
+
+    
     
      else {
     setloginerrormsg(true);
     seterror("User not registered. Please register first.");
   }
 
+ 
   };
 
+
+
   useEffect(()=>{
-axios.get("https://formbuilder-saas-backend.onrender.com/api/users")
+axios.get("https://formbuilder-saas-backend.onrender.com/api/admin/users")
       .then(function(data) {
         console.log("Backend response:", data.data);
         setexistuser(data.data);
@@ -65,6 +71,13 @@ axios.get("https://formbuilder-saas-backend.onrender.com/api/users")
 },[])
 
 
+const handlecontinue = () => {
+  if (loggedInUser) {
+    navigate(`/home/${loggedInUser.userId}`);
+  }
+};
+
+    
 
 
   // ANIMATION
@@ -202,16 +215,7 @@ const heading = "Welcome Back to Stellar.";
       animate={{ scale: 1, opacity: 1 }}
       className="bg-white space-y-5 px-4 py-5 rounded w-4/5 sm:w-3/5 lg:w-2/5 text-center shadow-xl"
     >
-      <div>
-
-       <button
-              onClick={() => setloginsucessmsg(false)}
-              className="text-right w-full font-bold"
-            >
-              ✕
-            </button>
-
-      </div>
+    
 
       <h1 className="font-semibold text-xl ">Sucess!</h1>
       <p className="text-sm text-black/70">Your action has been completed succesfully.
@@ -219,21 +223,22 @@ const heading = "Welcome Back to Stellar.";
 
         <div className="flex flex-wrap gap-6 justify-center">
  
-<Link
+{/* <Link
   to={
     JSON.parse(localStorage.getItem("user"))?.role === "ADMIN"
       ? "/dashboard"
       : "/home"
   }
->
+> */}
 
            <button
+           onClick={handlecontinue}
              className="bg-violet-600 text-white px-4 py-1 rounded"
           
             >
               Continue
             </button>
-            </Link>
+            {/* </Link> */}
 
          <button onClick={() => setloginsucessmsg(false)}
            className="bg-white/30 text-black/50 px-2 py-1 rounded">Dismiss</button>
@@ -250,16 +255,7 @@ const heading = "Welcome Back to Stellar.";
       animate={{ scale: 1, opacity: 1 }}
       className="bg-white space-y-5 px-4 py-5 rounded w-4/5 sm:w-3/5 lg:w-2/5 text-center shadow-xl"
     >
-      <div>
-
-       <button
-              onClick={() => setloginerrormsg(false)}
-              className="text-right w-full font-bold"
-            >
-              ✕
-            </button>
-
-      </div>
+      
 
       <h1 className="font-semibold text-xl ">Error</h1>
       <p className="text-sm text-black/70">New to Stellar?Register first and then login.</p>
