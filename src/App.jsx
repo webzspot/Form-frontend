@@ -11,7 +11,7 @@ import UserReport from './components/user/UserReport.jsx';
 import Form from './components/dashboard/Form.jsx';
 
 
-
+import AdminPage from './components/dashboard/AdminPage.jsx';
 
 
 
@@ -38,7 +38,7 @@ const App = () => {
     <Route path="/home" element={<Home/>}/>
     <Route path="/userreport" element={<UserReport/>}/>
     <Route path="/form" element={<Form/>}/>    
-   
+       <Route path="/dashboard" element={<AdminPage />} />
      </Routes>
     </BrowserRouter>
    
