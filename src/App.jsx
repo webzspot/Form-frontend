@@ -9,7 +9,7 @@ import Footer from "./components/landingPage/Footer";
 import Register from "./components/user/Register";
 import Login from "./components/user/Login";
 import Home from "./components/user/Home";
-
+import AdminPage from "./components/dashboard/AdminPage";
 import UserDetails from "./components/dashboard/UserDetails";
 import Form from "./components/dashboard/Form";
 import AllReports from "./components/dashboard/AllReports";
@@ -29,6 +29,7 @@ const Layout = () => {
             <>
               <Hero />
               <About />
+                 <Footer />
             </>
           }
         />
@@ -36,12 +37,12 @@ const Layout = () => {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/home" element={<Home />} />
-        <Route path="/dashboard" element={<UserDetails />} />
+        <Route path="/dashboard" element={<AdminPage />} />
         <Route path="/form" element={<Form />} />
         <Route path="/allreports" element={<AllReports />} />
       </Routes>
 
-      <Footer />
+   
     </>
   );
 };

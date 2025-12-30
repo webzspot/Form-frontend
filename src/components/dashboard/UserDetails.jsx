@@ -1,6 +1,8 @@
 import axios from 'axios'
 import {useState,useEffect} from 'react'
 import {FaUser} from 'react-icons/fa'
+import { useNavigate } from "react-router-dom";
+
 const UserDetails = () => {
     const[userData,setUserData]=useState([])
     const[openMenuIndex,setOpenMenuIndex]=useState(null)
@@ -12,7 +14,10 @@ const UserDetails = () => {
     const[filterRole,setFilterRole]=useState('all')
     const[isAddMode, setIsAddMode] = useState(false);
     const[pendingAction,setPendingAction]=useState(null)
-  
+    const [showConfirmModal, setShowConfirmModal] = useState(false);
+
+    const navigate = useNavigate();
+
 
      //Get all users on component mount
     useEffect(()=>{
@@ -42,7 +47,7 @@ const UserDetails = () => {
         const res=await axios.post('https://formbuilder-saas-backend.onrender.com/api/users/register',editingUser)
         console.log("User added:", res.data);
      setUserData([...userData,res.data])
-     localStorage.setItem('user',JSON.stringify(res.data))
+     
      setSuccessMessage(true)
      
      setEditingUser(null)
@@ -69,32 +74,20 @@ const UserDetails = () => {
       }
    }
 
-   // Function to handle "Continue" button
-const handleContinue = async () => {
+  const handleDeleteConfirm = async () => {
   if (!pendingAction) return;
-
   try {
-   
-  if (pendingAction.type === "delete") {
-      await axios.delete(
-        `https://formbuilder-saas-backend.onrender.com/api/users/${pendingAction.payload.userId}`
-      );
-      setUserData(userData.filter(user => user.userId !== pendingAction.payload.userId));
-    }
-
-    // Clear everything after success
-    
-    setSuccessMessage(true);
-    setErrorMessage(false);
+    await axios.delete(`https://formbuilder-saas-backend.onrender.com/api/users/${pendingAction.payload.userId}`);
+    setUserData(userData.filter(user => user.userId !== pendingAction.payload.userId));
     setPendingAction(null);
-   
+    setShowConfirmModal(false);
+    
   } catch (err) {
     console.log(err);
-    setErrorMessage(true);
-    setSuccessMessage(false);
-    setPendingAction(null);
+   
   }
 };
+
 
 // Function to handle "Dismiss" button
 const handleDismiss = () => {
@@ -136,8 +129,11 @@ const handleDismiss = () => {
 
 return (
     <div className='bg-gray-100 p-4 min-h-screen ' >
-    <div className="flex w-full justify-end mb-4">
+     
+ 
+          <div className="hidden md:flex w-full justify-end gap-2 mb-4">
   <button
+    id="add-user-btn" 
     onClick={() => {
       setIsAddMode(true);
       setEditingUser({
@@ -150,6 +146,7 @@ return (
   >
     ➕ Add New User
   </button>
+  
 </div>
 
      <div
@@ -238,16 +235,7 @@ return (
         : "We encountered an error while processing your request. Please try again or contact support if the problem persists."}
     </p>
     <div className="flex justify-center gap-4">
-      {/* Continue accepts the change */}
-      {pendingAction?.type==='delete' && (
-        <button
-          className="bg-violet-600 text-white cursor-pointer px-4 py-2 rounded-md"
-          onClick={handleContinue}
->
-          Continue
-        </button>
-      )}
-      {/* Dismiss reverts to previous state */}
+     
       
       {(successMessage||errorMessage)&&(
          <button
@@ -262,7 +250,37 @@ return (
   </div>
 )}
 
-<div className='bg-white rounded-lg p-6 w-full  max-w-7xl border border-gray-300 shadow-md shadow-gray-300 m-6  mx-auto'>
+ {showConfirmModal && pendingAction && (
+  <div className="fixed top-1/2 left-1/2 w-96 p-4 bg-white border rounded shadow-lg transform -translate-x-1/2 -translate-y-1/2 z-50">
+    <h2 className="text-xl font-bold mb-4">Confirm Delete</h2>
+
+    <p>
+      Are you sure you want to delete {pendingAction?.payload?.name}?
+    </p>
+
+    <div className="flex justify-center gap-4 mt-4">
+      <button
+        className="bg-red-600 text-white px-4 py-2 rounded"
+        onClick={handleDeleteConfirm}
+      >
+        Yes, Delete
+      </button>
+
+      <button
+        className="bg-gray-300 px-4 py-2 rounded"
+        onClick={() => {
+          setShowConfirmModal(false);
+          setPendingAction(null);
+        }}
+      >
+        Cancel
+      </button>
+    </div>
+  </div>
+)}
+
+
+<div className='bg-white rounded-lg p-6 w-full  max-w-7xl border border-gray-200 shadow-md shadow-black m-6  mx-auto'>
   <div className='flex gap-6 items-center'>
     <p className='text-base font-semibold'>User Details</p>
   <div className="flex  w-52 gap-3 border-l-2 border-gray-300 p-2 shadow-md shadow-gray-200">
@@ -346,7 +364,7 @@ return (
                     </button>
                     <button
                       className="block w-full px-2 py-1 text-left text-red-600 cursor-pointer text-sm lg:text-base"
-                      onClick={() =>{setPendingAction({type:"delete", payload:user});  setSuccessMessage(true);  setOpenMenuIndex(null)}}
+                      onClick={() =>{setPendingAction({type:"delete", payload:user});    setShowConfirmModal(true);  setOpenMenuIndex(null)}}
                     >
                     🗑️ Delete
                     </button>
