@@ -140,12 +140,6 @@ const openupdatepopup=(field)=>{
           <p className="text-center text-gray-400">No fields found for this user.</p>
         )}
         
-        {fetchedFields.length > 0 && (
-          <button className="w-full bg-[#6C3BFF] text-white py-3 rounded-xl font-bold mt-4 shadow-lg active:scale-95 transition-transform">
-            Submit Response
-          </button>
-        
-        )}
         
          {/* //UPDATE POP MESSAGE. */}
          {updatepop && (
