@@ -35,8 +35,11 @@ const Login = () => {
 
     if(userFound){
     console.log("Login successful", userFound);
-    localStorage.setItem("userId",userFound.userId);
-    localStorage.setItem("userName",userFound.name);
+
+    localStorage.setItem("user", JSON.stringify(userFound));
+
+   
+
     setloginsucessmsg(true);
 
     }
@@ -216,7 +219,14 @@ const heading = "Welcome Back to Stellar.";
 
         <div className="flex flex-wrap gap-6 justify-center">
  
- <Link to={"/home"}>
+<Link
+  to={
+    JSON.parse(localStorage.getItem("user"))?.role === "ADMIN"
+      ? "/dashboard"
+      : "/home"
+  }
+>
+
            <button
              className="bg-violet-600 text-white px-4 py-1 rounded"
           

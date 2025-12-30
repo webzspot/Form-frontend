@@ -2,10 +2,12 @@ import React from 'react'
 import { useState, useEffect } from 'react';
 import {motion} from 'framer-motion'
 import axios from 'axios' 
+import { useNavigate } from "react-router-dom";
 const AllReports = () => {
    const[fetchReports,setFetchReports]=useState([])
    const [statusFilter, setStatusFilter] = useState("ALL");
-
+    const user = JSON.parse(localStorage.getItem("user"));
+ const navigate = useNavigate();
    useEffect(()=>{
      fetchAllReports()
    },[])
@@ -16,7 +18,7 @@ const AllReports = () => {
             const res=await axios.get(`https://formbuilder-saas-backend.onrender.com/api/dashboard/admin/user-reports`,
                   {
           params: {
-            userId: "21b2364c-9933-4a0b-8ee8-9917f7c2bc39"
+             userId: user.userId
           }
         }
             )
@@ -74,11 +76,11 @@ const filteredReports =
 
 
   return (
-    <div className='bg-gray-200 min-h-screen p-2  md:p-10'>
+    <div className=' min-h-screen p-2  md:p-10'>
        
      
         
-        <div className=' border border-gray-500 mx-0 mt-6  w-full md:mx-auto    md:max-w-7xl p-3 md:p-6 bg-white rounded-lg shadow-md shadow-gray-500   '>
+        <div className=' border mx-0 mt-6  w-full md:mx-auto    md:max-w-7xl p-3 md:p-6 bg-white rounded-lg shadow-md shadow-black   '>
 
 
           <div className="flex items-center gap-6 justify-between mb-6">
