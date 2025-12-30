@@ -35,9 +35,9 @@ const App = () => {
     
     <Route path="/register" element={<Register/>}/>
     <Route path="/login" element={<Login/>}/>
-    <Route path="/home" element={<Home/>}/>
-    <Route path="/userreport" element={<UserReport/>}/>
-    <Route path="/form" element={<Form/>}/>    
+    <Route path="/home/:userId" element={<Home/>}/>
+    <Route path="/userreport/:userId" element={<UserReport/>}/>
+    <Route path="/form/:userId" element={<Form/>}/>    
        <Route path="/dashboard" element={<AdminPage />} />
      </Routes>
     </BrowserRouter>

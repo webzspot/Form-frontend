@@ -3,8 +3,13 @@ import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 import UserNavbar from "./UserNavbar";
 import Footer from "../landingPage/Footer";
+import { useParams } from "react-router-dom";
 
 const UserReport = () => {
+
+const { userId } = useParams();
+
+
   const [issuetype, setIssuetype] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("");
@@ -14,6 +19,8 @@ const UserReport = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setMessage("");
+
 
     if (!issuetype || !description) {
       setMessage("Please fill all required fields");
@@ -22,15 +29,21 @@ const UserReport = () => {
 
     try {
       setLoading(true);
-      const userId = localStorage.getItem("userId");
+        const userId = sessionStorage.getItem("userId");
+
+    if (!userId) {
+      console.error("User not logged in");
+      setLoading(false);
+      return;
+    }
 
       await axios.post(
         `https://formbuilder-saas-backend.onrender.com/api/dashboard/user-report/${userId}`,
         {
           reportData: {
             issueType: issuetype,
-            description,
-            priority,
+            description: description,
+           priority: priority,
           },
         }
       );

@@ -4,7 +4,14 @@ import { motion } from "framer-motion";
 
 import UserNavbar from "../user/UserNavbar";
 import axios from 'axios'
+import { useParams } from 'react-router-dom';
+
 const Form = () => {
+
+const { userId } = useParams();
+
+
+
    const[showFormBuilder,setShowFormBuilder]=useState(false) 
    const masterListRef = useRef(null);
    const[masterFields,setMasterFields]=useState([])
@@ -53,10 +60,7 @@ const [responseFields, setResponseFields] = useState([]);
 // const user = JSON.parse(localStorage.getItem("user"))
 // const userId = user.userId
 
-const userId = localStorage.getItem("userId");
-const username = localStorage.getItem("username");
-
-      
+  
       const res=await axios.get(`https://formbuilder-saas-backend.onrender.com/api/dashboard/master-fields/user/${userId}`)
       console.log(res.data.data,"master fields")
       setMasterFields(res.data.data)
@@ -95,8 +99,17 @@ const username = localStorage.getItem("username");
      //Addding a new masterfield in the left side panel
    const addMasterField=async ()=>{
     try{
-        const user=JSON.parse(localStorage.getItem('user'))
-        const userId=user.userId
+        // const user=JSON.parse(localStorage.getItem('user'))
+        // const userId=user.userId
+
+      
+
+if (!userId) {
+  alert("User not logged in");
+  return;
+}
+
+
         if (!newField.name.trim()) {
       console.log("Field name is empty");
       alert("Please fill the field name")
@@ -121,6 +134,16 @@ const username = localStorage.getItem("username");
         
 
    }   
+
+
+
+
+
+
+
+
+
+
      
    //Getting all forms
    const getForms=async()=>{
@@ -128,8 +151,14 @@ const username = localStorage.getItem("username");
     //     const user=JSON.parse(localStorage.getItem('user'))
     //  const userId=user.userId
 
-    const userId = localStorage.getItem("userId");
-const username = localStorage.getItem("username");
+ 
+
+    if (!userId) {
+      console.error("User not logged in");
+      setLoading(false);
+      return;
+    }
+
 
      const res=await axios.get(`https://formbuilder-saas-backend.onrender.com/api/dashboard/form/${userId}`)
      console.log("Forms fetched successfully",res.data.data)
@@ -148,10 +177,8 @@ const username = localStorage.getItem("username");
       //    const user=JSON.parse(localStorage.getItem('user'))
       // const userId=user.userId
         
-      const userId = localStorage.getItem("userId");
-const username= localStorage.getItem("username");
-
-
+     
+   
        if (selectedFields.length === 0) {
       alert("Please select at least one field")
       return
@@ -304,10 +331,10 @@ const handleUpdate = async (formId, save = false) => {
         return {
           formFieldId: field.formFieldId || null,
           label: field.label || field.name,
-          type: field.type.toLowerCase(),   // 🔥 FIX
+          type: field.type,
           required: field.required,
           order: index,
-          options: hasOptions ? field.options : null, // 🔥 FIX
+          options: hasOptions ? field.options : null, 
           masterFieldId: field.masterFieldId || null
         };
       })
