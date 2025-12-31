@@ -10,8 +10,8 @@ const Form = () => {
 
 const { userId } = useParams();
 
-
-
+const URL=import.meta.env.VITE_URL
+console.log(URL)
    const[showFormBuilder,setShowFormBuilder]=useState(false) 
    const masterListRef = useRef(null);
    const[masterFields,setMasterFields]=useState([])
@@ -33,7 +33,7 @@ const { userId } = useParams();
 })
    const[activeForm,setActiveForm]=useState(null)
    
-   const [showMasterList, setShowMasterList] = useState(false);
+ //  const [showMasterList, setShowMasterList] = useState(false);
    const [responses, setResponses] = useState([]);       
 const [selectedResponse, setSelectedResponse] = useState(null); 
 const [showResponsesModal, setShowResponsesModal] = useState(false);
@@ -49,6 +49,9 @@ const [responseFields, setResponseFields] = useState([]);
   
 } 
 
+   const [copiedFormId, setCopiedFormId] = useState(null);
+
+
    useEffect(()=>{
     getMasterFields()
     getForms()
@@ -62,7 +65,7 @@ const [responseFields, setResponseFields] = useState([]);
 
   
       const res=await axios.get(`https://formbuilder-saas-backend.onrender.com/api/dashboard/master-fields/user/${userId}`)
-      console.log(res.data.data,"master fields")
+      
       setMasterFields(res.data.data)
     
     }
@@ -111,7 +114,7 @@ if (!userId) {
 
 
         if (!newField.name.trim()) {
-      console.log("Field name is empty");
+     
       alert("Please fill the field name")
       return 
     }
@@ -161,7 +164,7 @@ if (!userId) {
 
 
      const res=await axios.get(`https://formbuilder-saas-backend.onrender.com/api/dashboard/form/${userId}`)
-     console.log("Forms fetched successfully",res.data.data)
+    
      setForms(res.data.data)
     }
     catch(err){
@@ -316,7 +319,7 @@ if (!userId) {
 const handleUpdate = async (formId, save = false) => {
   try {
     if (!save) {
-      setShowMasterList(false);
+     // setShowMasterList(false);
       await getFieldsForEdit(formId);
       return;
     }
@@ -329,13 +332,13 @@ const handleUpdate = async (formId, save = false) => {
         const hasOptions = ["DROPDOWN","RADIO","CHECKBOX"].includes(field.type);
 
         return {
-          formFieldId: field.formFieldId || null,
+          formFieldId: field.formFieldId||null ,
           label: field.label || field.name,
           type: field.type,
           required: field.required,
           order: index,
           options: hasOptions ? field.options : null, 
-          masterFieldId: field.masterFieldId || null
+       masterFieldId: field.masterFieldId || null 
         };
       })
     };
@@ -461,7 +464,7 @@ const getLabel = (fieldId) =>
     <div className="min-h-screen bg-gray-200 p-6">
       <button
   onClick={() =>{ setShowFormBuilder(true), setSelectedFields([])}}
-  className="mb-6 px-6 py-2 bg-violet-600 text-white rounded-md absolute right-2  hover:bg-violet-700"
+  className="absolute  right-6 bg-violet-600 text-white px-5 py-2 rounded-lg shadow hover:bg-violet-700"
 >
   + Create New Form
 </button>
@@ -706,8 +709,8 @@ const getLabel = (fieldId) =>
 
 
   {/* My Forms */}
-<div className="mt-16 bg-white border border-violet-500 p-6 rounded-md shadow-lg shadow-black max-w-5xl mx-auto">
-  <h2 className="text-xl font-bold text-violet-700 mb-4 text-center">
+<div className="mt-24 max-w-6xl mx-auto bg-white p-6 rounded-xl shadow-lg shadow-black/35">
+  <h2 className="text-2xl font-bold text-violet-700 mb-4 text-center">
     My Forms
   </h2>
   <div className='px-3 py-2 w-44 mt-4 mb-4 rounded-md bg-gray-200 shadow-md shadow-gray-700'>
@@ -717,7 +720,7 @@ const getLabel = (fieldId) =>
   {forms.length === 0 ? (
     <p className="text-gray-500 text-center">No forms created yet</p>
   ) : (
-    <div className="grid grid-cols-1 gap-4 max-w-8xl p-6 md:grid-cols-2 lg:grid-cols-4 ">
+    <div className="grid grid-cols-1 gap-4 max-w-8xl p-6 md:grid-cols-2 lg:grid-cols-3 ">
     
    {forms.map((form) => (
  <motion.div
@@ -726,7 +729,7 @@ const getLabel = (fieldId) =>
  
   transition={{ duration: 0.3 }}
   key={form.formId}
-  className="bg-white border border-violet-600 rounded-lg p-5 shadow-sm hover:shadow-lg  flex flex-col gap-3 min-h-[180px]"
+  className="bg-white border border-violet-600 rounded-lg p-5  shadow-sm hover:shadow-lg  flex flex-col gap-3 min-h-[180px]"
 >
 <div className="flex justify-end gap-2">
 
@@ -754,12 +757,45 @@ const getLabel = (fieldId) =>
 </h2>
 
 
+
+
  
   <p className="text-sm text-gray-600  truncate">
     {form.description || "No description provided"}
   </p>
     
-    
+    <div className="flex items-center gap-2 relative">
+  <button
+  onClick={() => {
+    navigator.clipboard.writeText(`${URL}/public/form/${form.slug}`);
+    setCopiedFormId(form.formId);
+
+    setTimeout(() => {
+      setCopiedFormId(null);
+    }, 2000);
+  }}
+  className="px-3 py-1 bg-violet-600 text-white rounded hover:bg-violet-700 text-sm"
+>
+  Copy Link
+</button>
+
+  {copiedFormId === form.formId && (
+  <span className="text-green-600 text-sm font-medium">
+    Link copied ✓
+  </span>
+)}
+
+
+  <a
+    href={`${URL}/public/form/${form.slug}`}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="text-sm text-blue-600 underline"
+  >
+    Open
+  </a>
+</div>
+
 <button onClick={() => openResponses(form.formId)}
   className="bg-green-600  text-xs text-white  hover:bg-green-800 cursor-pointer px-2 py-1 rounded-md">
   View Responses
@@ -843,7 +879,7 @@ const getLabel = (fieldId) =>
       initial={{ scale: 0.8, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
        transition={{ duration: 0.3 }}
-      className="bg-white rounded-lg w-full max-w-[520px] max-h-[85vh] overflow-y-auto border border-violet-500 p-6 shadow-xl"
+      className="bg-purple-100 rounded-lg w-full max-w-[520px] max-h-[85vh] overflow-y-auto border border-violet-500 p-6 shadow-xl"
     >
       <h3 className="text-xl font-bold text-violet-700 mb-4 text-center">
         Edit Form
@@ -855,7 +891,7 @@ const getLabel = (fieldId) =>
           setEditData({ ...editData, title: e.target.value })
         }
         placeholder="Form Title"
-        className="border p-2 w-full mb-3 rounded"
+        className="border border-gray-400 focus:outline-none  focus:ring-2 focus:ring-[#6C3BFF] p-2 w-full mb-3 rounded"
       />
 
       <textarea
@@ -1023,7 +1059,7 @@ const getLabel = (fieldId) =>
 </label>
 
 
-{showMasterList && (
+ {/*{showMasterList && (
   <div className="absolute top-6 left-6 w-60 border p-2 rounded max-h-[60vh] overflow-y-auto bg-white shadow-lg z-50">
     <h3 className="text-center font-semibold mb-2 text-violet-700">Master Fields</h3>
     {masterFields.map((mf) => (
@@ -1056,18 +1092,18 @@ const getLabel = (fieldId) =>
       </label>
     ))}
   </div>
-)}
+)}*/}
 
 
  
 
       <div className="flex justify-end gap-3">
-        <button className='px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 cursor-pointer'     onClick={() => setShowMasterList(prev => !prev)}
+    {  /* <button className='px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 cursor-pointer'     onClick={() => setShowMasterList(prev => !prev)}
 >
   
  
   + Add Field
-</button>
+</button>*/ }
 
         <button
           onClick={() => setEditingFormId(null)}
@@ -1095,7 +1131,7 @@ const getLabel = (fieldId) =>
       initial={{ scale: 0.8, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       transition={{ duration: 0.3 }}
-      className="bg-white rounded-lg w-full max-w-[450px] border border-violet-500 p-6 shadow-xl"
+      className="bg-white rounded-lg w-full max-w-[450px] max-h-[80vh] overflow-y-auto border border-violet-500 p-6 shadow-xl"
     >
       <h3 className="text-xl font-bold text-violet-700 mb-4 text-center">
         Form Responses

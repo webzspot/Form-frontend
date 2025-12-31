@@ -54,7 +54,7 @@ const handleLogout = () => {
     ))}
 
     {/* Admin + Logout */}
-    <span className="text-gray-700 font-medium ml-4">Admin: {adminName}</span>
+    <span className="font-bold text-lg text-purple-700">Admin</span>
     <button
       onClick={handleLogout}
       className="flex items-center gap-2 px-4 py-2 rounded-xl text-red-500 hover:bg-red-50 transition"
@@ -110,7 +110,7 @@ const handleLogout = () => {
   </div>
 
   <div className="flex flex-col gap-3">
-     <span className="font-bold text-lg text-purple-700">Admin: {adminName}</span>
+     <span className="font-bold text-lg text-purple-700">Admin</span>
     {navItems.map((item) => (
       <div key={item.key} className="">
         <button

@@ -2,6 +2,7 @@ import axios from 'axios'
 import {useState,useEffect} from 'react'
 import {FaUser} from 'react-icons/fa'
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
 
 const UserDetails = () => {
     const[userData,setUserData]=useState([])
@@ -25,10 +26,10 @@ const UserDetails = () => {
     },[])
     //Function to get all users
     const getAllUsers= async ()=>{
-      console.log("Fetching users...")
+     
         try{
-          const res= await axios.get('https://formbuilder-saas-backend.onrender.com/api/users') 
-           console.log("Users fetched:", res.data); 
+          const res= await axios.get('https://formbuilder-saas-backend.onrender.com/api/admin/users') 
+        
           setUserData(res.data) 
            }
       catch(err){
@@ -41,52 +42,82 @@ const UserDetails = () => {
   setEditingUser({...editingUser, [name]: value});
 } 
    
-   const handleAddUser=async()=>{
-    try{
-         
-        const res=await axios.post('https://formbuilder-saas-backend.onrender.com/api/users/register',editingUser)
-        console.log("User added:", res.data);
-     setUserData([...userData,res.data])
-     
-     setSuccessMessage(true)
-     
-     setEditingUser(null)
-    }
-    catch(err){
-      console.log(err)
-      setErrorMessage(true)
-    }
-    
-   }
+  const handleAddUser = async () => {
+  try {
+    const res = await axios.post(
+      'https://formbuilder-saas-backend.onrender.com/api/admin/users',
+      editingUser
+    );
 
-   const handleUpdate=async()=>{
-      try{
-        
-        const res=await axios.put(`https://formbuilder-saas-backend.onrender.com/api/users/${editingUser.userId}`,editingUser)
-        console.log(res.data)
-        setUserData(userData.map(user=>user.userId===editingUser.userId?res.data:user))
-        setSuccessMessage(true)
-        setEditingUser(null)
+   
+
+    
+    setUserData([...userData, res.data.user]);
+
+    setSuccessMessage(true);
+    setEditingUser(null);
+    setIsAddMode(false);
+
+  } catch (err) {
+    console.log(err);
+    setErrorMessage(true);
+  }
+};
+
+
+  const handleUpdate = async () => {
+  try {
+    const res = await axios.put(
+      `https://formbuilder-saas-backend.onrender.com/api/admin/users/${editingUser.userId}`,
+      {
+        name: editingUser.name,
+        email: editingUser.email,
+        password: editingUser.password,
+        role: editingUser.role
       }
-      catch(err){
-        console.log(err)
-        setErrorMessage(true)
-      }
-   }
+    );
+
+   
+    setUserData(
+      userData.map(user =>
+        user.userId === editingUser.userId
+          ? res.data.user
+          : user
+      )
+    );
+
+    setSuccessMessage(true);
+    setEditingUser(null);
+    setIsAddMode(false);
+
+  } catch (err) {
+    console.log(err);
+    setErrorMessage(true);
+  }
+};
 
   const handleDeleteConfirm = async () => {
   if (!pendingAction) return;
+
   try {
-    await axios.delete(`https://formbuilder-saas-backend.onrender.com/api/users/${pendingAction.payload.userId}`);
-    setUserData(userData.filter(user => user.userId !== pendingAction.payload.userId));
+    await axios.delete(
+      `https://formbuilder-saas-backend.onrender.com/api/admin/users/${pendingAction.payload.userId}`
+    );
+
+    setUserData(
+      userData.filter(user => user.userId !== pendingAction.payload.userId)
+    );
+
+    setSuccessMessage(true);
     setPendingAction(null);
     setShowConfirmModal(false);
-    
+
   } catch (err) {
     console.log(err);
-   
+    setErrorMessage(true);
   }
 };
+
 
 
 // Function to handle "Dismiss" button
@@ -97,6 +128,7 @@ const handleDismiss = () => {
   setSuccessMessage(false);
   setErrorMessage(false);
   setEditingUser(null);
+   setShowConfirmModal(false);
 };
 
        
@@ -140,6 +172,7 @@ return (
         name: "",
         email: "",
         password: "",
+         role: ""
       });
     }}
     className="bg-violet-600 hover:bg-violet-700 text-white px-4 py-2 cursor-pointer rounded-md"
@@ -193,7 +226,19 @@ return (
         className="border px-3 py-2 mb-3 w-full rounded-md focus:ring-2 focus:ring-purple-600 outline-none  border-purple-500"
         placeholder="Password"
       />
-    
+      
+      <select
+  name="role"
+  value={editingUser.role}
+  onChange={handleEdit}
+  required
+  className="border px-3 py-2 mb-3 w-full rounded-md focus:ring-2 focus:ring-purple-600 outline-none border-purple-500"
+>
+  <option value="">Select Role</option>
+  <option value="ADMIN">Admin</option>
+  <option value="USER">User</option>
+</select>
+
       
 
       <div className="flex gap-3">
@@ -213,7 +258,9 @@ return (
 </div>
   
     {(successMessage || errorMessage) && (
-  <div className={`fixed top-1/2 left-1/2 z-50 w-96 bg-white p-4 border rounded-md shadow-lg
+  <motion.div   initial={{ opacity: 0, scale: 0.95, y: 10 }}
+  animate={{ opacity: 1, scale: 1, y: 0 }}
+  transition={{ duration: 0.2 }} className={`fixed top-1/2 left-1/2 z-50 w-80 bg-white p-4 border rounded-md shadow-lg
   transform -translate-x-1/2 -translate-y-1/2 
   transition-all duration-300  
   ${successMessage || errorMessage
@@ -228,33 +275,37 @@ return (
         <span className="text-red-600 text-3xl font-bold">✖</span>
       )}
     </div>
-    <h2 className="text-xl text-center font-bold mb-2">{successMessage ? "Success!" : "Something went wrong!"}</h2>
-    <p className="mb-4 text-center">
-      {successMessage
-        ? "Your action has been completed successfully. All changes have been saved. And you're all set to continue."
-        : "We encountered an error while processing your request. Please try again or contact support if the problem persists."}
-    </p>
+    <h2 className="text-xl text-center font-bold ">{successMessage ? "Success!" : "Something went wrong!"}</h2>
+    <p className="mb-4 text-center text-violet-800">
+  {successMessage
+    ? "Your action was successful. You're all set to continue."
+    : "Something went wrong. Please try again."}
+</p>
+
     <div className="flex justify-center gap-4">
      
       
       {(successMessage||errorMessage)&&(
-         <button
-        className="bg-red-600 cursor-pointer text-white px-4 py-2 rounded-md"
-        onClick={handleDismiss}
-      >
-        Dismiss
-      </button>)
+       <button
+  className="bg-violet-600 cursor-pointer text-white px-6 py-2 rounded-md"
+  onClick={handleDismiss}
+>
+  Got it
+</button>
+)
       }
     
     </div>
-  </div>
+  </motion.div>
 )}
 
  {showConfirmModal && pendingAction && (
-  <div className="fixed top-1/2 left-1/2 w-96 p-4 bg-white border rounded shadow-lg transform -translate-x-1/2 -translate-y-1/2 z-50">
-    <h2 className="text-xl font-bold mb-4">Confirm Delete</h2>
+  <motion.div initial={{ opacity: 0, scale: 0.95, y: 10 }}
+  animate={{ opacity: 1, scale: 1, y: 0 }}
+  transition={{ duration: 0.2 }}className="fixed top-1/2 left-1/2 w-80 p-4 bg-white border rounded shadow-lg transform -translate-x-1/2 -translate-y-1/2 z-50">
+    <h2 className="text-xl text-gray-700 font-bold mb-4">Confirm Delete</h2>
 
-    <p>
+    <p className='text-gray-800'>
       Are you sure you want to delete {pendingAction?.payload?.name}?
     </p>
 
@@ -267,7 +318,7 @@ return (
       </button>
 
       <button
-        className="bg-gray-300 px-4 py-2 rounded"
+        className="bg-violet-600 text-white px-4 py-2 rounded"
         onClick={() => {
           setShowConfirmModal(false);
           setPendingAction(null);
@@ -276,7 +327,7 @@ return (
         Cancel
       </button>
     </div>
-  </div>
+  </motion.div>
 )}
 
 
@@ -305,7 +356,7 @@ return (
     onChange={(e) => setFilterRole(e.target.value)}
     className="border rounded-full px-4 py-2 w-full md:w-auto">
     <option value="all">All</option>
-    <option value="admin">Admin</option>
+    <option value="ADMIN">Admin</option>
     <option value="USER">User</option>
   </select>
 

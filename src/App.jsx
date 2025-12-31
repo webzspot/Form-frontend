@@ -10,7 +10,7 @@ import Home from './components/user/Home.jsx';
 import UserReport from './components/user/UserReport.jsx';
 import Form from './components/dashboard/Form.jsx';
 
-
+import PublicForm from './components/public/PublicForm.jsx';
 import AdminPage from './components/dashboard/AdminPage.jsx';
 
 
@@ -39,6 +39,7 @@ const App = () => {
     <Route path="/userreport/:userId" element={<UserReport/>}/>
     <Route path="/form/:userId" element={<Form/>}/>    
        <Route path="/dashboard" element={<AdminPage />} />
+       <Route path='/public/form/:slug' element={<PublicForm/>}/>
      </Routes>
     </BrowserRouter>
    

@@ -72,10 +72,15 @@ axios.get("https://formbuilder-saas-backend.onrender.com/api/admin/users")
 
 
 const handlecontinue = () => {
-  if (loggedInUser) {
+  if (!loggedInUser) return;
+
+  if (loggedInUser.role === "ADMIN") {
+    navigate("/dashboard");
+  } else {
     navigate(`/home/${loggedInUser.userId}`);
   }
 };
+
 
     
 
