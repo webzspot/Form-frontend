@@ -9,9 +9,10 @@ import Login from './components/user/Login.jsx';
 import Home from './components/user/Home.jsx';
 import UserReport from './components/user/UserReport.jsx';
 import Form from './components/dashboard/Form.jsx';
-
+import { Toaster } from "react-hot-toast";
 import PublicForm from './components/public/PublicForm.jsx';
 import AdminPage from './components/dashboard/AdminPage.jsx';
+import Response from './components/user/Response.jsx';
 
 
 
@@ -35,12 +36,25 @@ const App = () => {
     
     <Route path="/register" element={<Register/>}/>
     <Route path="/login" element={<Login/>}/>
-    <Route path="/home/:userId" element={<Home/>}/>
-    <Route path="/userreport/:userId" element={<UserReport/>}/>
-    <Route path="/form/:userId" element={<Form/>}/>    
+    <Route path="/home" element={<Home/>}/>
+    <Route path="/userreport" element={<UserReport/>}/>
+    <Route path="/form" element={<Form/>}/>    
        <Route path="/dashboard" element={<AdminPage />} />
        <Route path='/public/form/:slug' element={<PublicForm/>}/>
+       <Route path="/response" element={<Response/>}/>
      </Routes>
+
+ <Toaster
+        position="top-right"
+        reverseOrder={false}
+        toastOptions={{
+          duration: 4000,
+        }}
+         containerStyle={{
+    top: 60, 
+  }}
+        />
+
     </BrowserRouter>
    
 

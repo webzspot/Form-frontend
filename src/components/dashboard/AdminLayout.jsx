@@ -28,6 +28,9 @@ const handleLogout = () => {
   setOpen(false);
 };
 
+const handlelogout=()=>{
+  setLogoutSuccess(false);
+}
   return (
     <div className="min-h-screen bg-gray-100">
       {/* ================= Desktop Navbar ================= */}
@@ -167,6 +170,9 @@ const handleLogout = () => {
       animate={{ scale: 1, opacity: 1 }}
       className="bg-white space-y-5 px-6 py-6 rounded w-4/5 sm:w-3/5 lg:w-2/5 text-center shadow-xl"
     >
+      <p 
+      onClick={handlelogout}
+      className="flex justify-end px-3">X</p>
       <h1 className="font-semibold text-xl">Logged Out</h1>
 
       <p className="text-sm text-black/70">
@@ -175,7 +181,7 @@ const handleLogout = () => {
 
       <button
         onClick={() => navigate("/login")}
-        className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded"
+        className="bg-violet-600  text-white font-semibold px-5 py-2 rounded"
       >
         Go to Login
       </button>

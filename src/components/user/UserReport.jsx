@@ -3,13 +3,11 @@ import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
 import UserNavbar from "./UserNavbar";
 import Footer from "../landingPage/Footer";
-import { useParams } from "react-router-dom";
+import toast from "react-hot-toast";
+
 
 const UserReport = () => {
-
-const { userId } = useParams();
-
-
+  const token=localStorage.getItem("token");
   const [issuetype, setIssuetype] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("");
@@ -29,16 +27,10 @@ const { userId } = useParams();
 
     try {
       setLoading(true);
-        const userId = sessionStorage.getItem("userId");
-
-    if (!userId) {
-      console.error("User not logged in");
-      setLoading(false);
-      return;
-    }
+     
 
       await axios.post(
-        `https://formbuilder-saas-backend.onrender.com/api/dashboard/user-report/${userId}`,
+        "https://formbuilder-saas-backend.onrender.com/api/dashboard/user-report",
         {
           reportData: {
             issueType: issuetype,
@@ -46,15 +38,21 @@ const { userId } = useParams();
            priority: priority,
           },
         }
+        ,
+        {
+      headers:{
+      Authorization:`Bearer ${token}`,
+    }
+        }
       );
-
+      
       setSuccess(true);
       setIssuetype("");
       setDescription("");
       setPriority("");
       setMessage("");
     } catch (error) {
-      setMessage("Something went wrong. Please try again.");
+      toast.error("Something went wrong. Please try again.");
     } finally {
       setLoading(false);
     }

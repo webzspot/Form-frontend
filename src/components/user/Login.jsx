@@ -6,21 +6,17 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 
 
-
 const Login = () => {
   const [loginemail, setloginemail] = useState("");
   const [loginpassword, setloginpassword] = useState("");
   const [error, seterror] = useState("");
-  const [existuser,setexistuser]=useState([]);
   const [loginsucessmsg,setloginsucessmsg]=useState(false);
   const [loginerrormsg,setloginerrormsg]=useState(false);
-  const [loggedInUser, setLoggedInUser] = useState(null);
+  const [message,setmessage]=useState([]);
+  const navigate=useNavigate();
 
-   const navigate = useNavigate();
+  const handleSubmit =async(e) => {
  
-
-
-  const handleSubmit = (e) => {
     e.preventDefault();
 
     seterror("");
@@ -30,59 +26,34 @@ const Login = () => {
       return;
     }
 
-    const userFound=existuser.find(
-        (user)=>
-        user.email===loginemail && 
-        user.password === loginpassword
-    );
+    try{
+  const response=await axios.post("https://formbuilder-saas-backend.onrender.com/api/users/login" , 
+   {
+    email:loginemail,
+    password:loginpassword
+  })
 
-    if(userFound){
-    console.log("Login successful", userFound);
-   sessionStorage.setItem("userId", userFound.userId);
-   sessionStorage.setItem("role", userFound.role);
-    setloginsucessmsg(true);
-    setLoggedInUser(userFound);
+  const role=response.data.user.role
 
-  }
-
-    
-    
-     else {
-    setloginerrormsg(true);
-    seterror("User not registered. Please register first.");
-  }
-
+if(role=="ADMIN"){
+  navigate("/dashboard")
+}
  
+  const {token}=response.data;
+  localStorage.setItem("token",token);
+  setloginsucessmsg(true);
+  setloginerrormsg(false);
+  
+
+    } catch(err){
+    setmessage(err.response.data.message);
+   
+    }
   };
 
-
-
-  useEffect(()=>{
-axios.get("https://formbuilder-saas-backend.onrender.com/api/admin/users")
-      .then(function(data) {
-        console.log("Backend response:", data.data);
-        setexistuser(data.data);
-             
-      })
-
-      .catch(error => {
-        console.error("Error connecting to backend or invalid route:", error);
-      });
-},[])
-
-
-const handlecontinue = () => {
-  if (!loggedInUser) return;
-
-  if (loggedInUser.role === "ADMIN") {
-    navigate("/dashboard");
-  } else {
-    navigate(`/home/${loggedInUser.userId}`);
-  }
-};
-
-
-    
+const handlecontinue=()=>{
+  navigate("/home")
+}
 
 
   // ANIMATION
@@ -191,9 +162,14 @@ const heading = "Welcome Back to Stellar.";
             {error && (
               <p className="text-red-500 py-2 font-semibold">{error}</p>
             )}
+
+            {message &&(
+              <p className="text-red-500 py-2 font-semibold">{message}</p>
+            )}
           </div>
 
           <button
+          onClick={handleSubmit}
             type="submit"
             className="my-3 w-full py-2 rounded bg-violet-700 text-white"
           >
@@ -227,17 +203,10 @@ const heading = "Welcome Back to Stellar.";
         All changes have been saved and you're all set to continue.</p>
 
         <div className="flex flex-wrap gap-6 justify-center">
- 
-{/* <Link
-  to={
-    JSON.parse(localStorage.getItem("user"))?.role === "ADMIN"
-      ? "/dashboard"
-      : "/home"
-  }
-> */}
+   
 
            <button
-           onClick={handlecontinue}
+            onClick={handlecontinue}
              className="bg-violet-600 text-white px-4 py-1 rounded"
           
             >

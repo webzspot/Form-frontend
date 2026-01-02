@@ -5,9 +5,10 @@ import { Rocket } from 'lucide-react';
 import { motion } from "framer-motion";
 
 
+
 const Register = () => {
 
- 
+
  const [name,setname]=useState("");
  const [email,setemail]=useState("");
  const [password,setpassword]=useState("");
@@ -16,7 +17,7 @@ const Register = () => {
  const [errormessage,seterrormessage]=useState(false);
 
 
- const handlesubmit=(e)=>{
+ const handlesubmit=async(e)=>{
  e.preventDefault();
 
 if(!name || !email || !password){
@@ -25,22 +26,28 @@ if(!name || !email || !password){
 }
 setnodataerror("");
 
-axios.post("https://formbuilder-saas-backend.onrender.com/api/users/register" ,{
+const response=await axios.post("https://formbuilder-saas-backend.onrender.com/api/users/register" ,{
   name:name,
   email:email,
   password:password,
 })
 
-.then((res)=>{
-  setsucessmessage(true);
-  localStorage.setItem("userId",res.data.userId);
-  console.log("Registered userId:",res.data.userId);
-})
-.catch((err)=>{
-  seterrormessage(true);
-})
+console.log(response);
+setsucessmessage(true);
+
+
+// .then((res)=>{
+//   setsucessmessage(true);
+//   localStorage.setItem("userId",res.data.userId);
+//   console.log("Registered userId:",res.data.userId);
+// })
+// .catch((err)=>{
+//   seterrormessage(true);
+// })
 
  }
+
+
 
 
 // ANIMATION
@@ -215,16 +222,7 @@ const heading = "Start Your Journey With Us.";
       animate={{ scale: 1, opacity: 1 }}
       className="bg-white space-y-5 px-4 py-5 rounded w-4/5 sm:w-3/5 lg:w-2/5 text-center shadow-xl"
     >
-      <div>
-
-       <button
-              onClick={() => setsucessmessage(false)}
-              className="text-right w-full font-bold"
-            >
-              ✕
-            </button>
-
-      </div>
+   
 
       <h1 className="font-semibold text-xl ">Sucess!</h1>
       <p className="text-sm text-black/70">Your action has been completed succesfully.
@@ -232,9 +230,9 @@ const heading = "Start Your Journey With Us.";
 
         <div className="flex flex-wrap gap-6 justify-center">
  
- <Link to={"/home"}>
+ <Link to={"/login"}>
            <button
-             
+           
               className="bg-violet-600 text-white px-4 py-1 rounded"
             >
               Continue
@@ -256,16 +254,7 @@ const heading = "Start Your Journey With Us.";
       animate={{ scale: 1, opacity: 1 }}
       className="bg-white space-y-5 px-4 py-5 rounded-xl w-4/5 sm:w-3/5 lg:w-2/5 text-center shadow-2xl"
     >
-      <div>
-
-       <button
-              onClick={() => seterrormessage(false)}
-              className="text-right w-full font-bold"
-            >
-              ✕
-            </button>
-
-      </div>
+     
       
       <h1 className="font-semibold text-xl ">Something Went Wrong!</h1>
       <p className="text-sm text-black/70">We encountered an error while processing your request.Already have an account try login.Please try again or contact support if the problem presists.</p>

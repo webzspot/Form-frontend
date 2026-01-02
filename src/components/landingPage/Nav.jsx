@@ -66,9 +66,11 @@ const Nav = () => {
 
           {/* Right Buttons */}
           <div className="flex items-center gap-4">
+            <Link to={"/login"}>
             <button className="text-gray-700 font-medium text-sm sm:text-lg hover:text-[#6C3BFF]">
               Sign In
             </button>
+            </Link>
            
            <Link to="/register">
             <button className="bg-[#6C3BFF] hover:bg-[#5c2dea] hidden lg:block transition-all text-white font-semibold px-5 py-2.5 rounded-xl">

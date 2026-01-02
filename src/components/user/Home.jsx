@@ -5,7 +5,8 @@ import { ArrowLeftIcon } from 'lucide-react';
 import Preview from './Preview';
 import UserNavbar from './UserNavbar';
 import Footer from '../landingPage/Footer';
-import { useParams } from "react-router-dom";
+import toast from "react-hot-toast";
+
 
 
 const Home = () => {
@@ -17,11 +18,11 @@ const Home = () => {
   const [labelname,setlabelname]=useState("");
   const[data,setdata]=useState([]);
   const[options,setoptions]=useState([""]);
-
-  const { userId } = useParams();
+  const [previewFields, setPreviewFields] = useState([]);
+  const token=localStorage.getItem("token");
+   
  
 const handlesubmit = () => {
-  
   
  const allFields = labelname
   ? [...data, {
@@ -32,11 +33,11 @@ const handlesubmit = () => {
         : []
     }]
   : data;
-  // 2. Define a recursive function to upload one by one
-  const uploadField = (index) => {
-    // Base case: if we've uploaded everything, stop
+ 
+  const uploadField =async (index) => {
+  
     if (index >= allFields.length) {
-      console.log("All fields uploaded in order!");
+      fetchField();
       setdata([]);
       setlabelname("");
       setSelectedType("TEXT");
@@ -47,40 +48,50 @@ const handlesubmit = () => {
     const currentField = allFields[index];
 
     // 3. Send the current field
-    axios.post("https://formbuilder-saas-backend.onrender.com/api/dashboard/master-fields", {
-      name: currentField.name,
+   const res= await axios.post("https://formbuilder-saas-backend.onrender.com/api/dashboard/master-fields", 
+    {
+      label: currentField.name,
       type: currentField.type,
       options:currentField.options || [],
-      userId: userId
+     
+    },{
+    headers:{
+      Authorization:`Bearer ${token}`,
+    }
     })
     .then((res) => {
-      console.log(`Saved field ${index + 1}:`, res.data);
-      
       uploadField(index + 1);
+      toast.success("Field Added")
     })
     .catch((err) => {
       console.error("Error at index " + index, err);
+      toast.error("Failed to added")
     });
   };
-  console.log(userId);
+
   uploadField(0);
 };
 
+const fetchField = async () => {
+  try {
+    const res = await axios.get(
+      "https://formbuilder-saas-backend.onrender.com/api/dashboard/master-fields",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
-  useEffect(() => {
+    setPreviewFields(res.data.data); 
+  } catch (error) {
+    toast.error("error")
+  }
+};
     
-    
-  
-    axios.get(`https://formbuilder-saas-backend.onrender.com/api/dashboard/master-fields/user/${userId}`)
-      .then((res) => {
-    
-        console.log(res.data.data);
-      })
-      .catch((err) => {
-        console.error("Error fetching fields:", err);
-        
-      });
-  }, []);
+useEffect(() => {
+  fetchField();
+}, []);
 
 
   //OPTIONS
@@ -297,7 +308,7 @@ const handlesubmit = () => {
 
        
 
- <Preview userId={userId} />
+ <Preview previewFields={previewFields} />
 
 
       <div className='mt-5'>

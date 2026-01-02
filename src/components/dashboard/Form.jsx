@@ -1,14 +1,14 @@
 import React from 'react'
 import { useState,useEffect,useRef} from 'react'
 import { motion } from "framer-motion";
-
+import toast from "react-hot-toast";
 import UserNavbar from "../user/UserNavbar";
 import axios from 'axios'
-import { useParams } from 'react-router-dom';
+
 
 const Form = () => {
 
-const { userId } = useParams();
+const token=localStorage.getItem("token");
 
 const URL=import.meta.env.VITE_URL
 console.log(URL)
@@ -60,11 +60,11 @@ const [responseFields, setResponseFields] = useState([]);
    //Getting masterfields for showFormBuilder
    const getMasterFields=async ()=>{
     try{
-// const user = JSON.parse(localStorage.getItem("user"))
-// const userId = user.userId
-
-  
-      const res=await axios.get(`https://formbuilder-saas-backend.onrender.com/api/dashboard/master-fields/user/${userId}`)
+      const res=await axios.get("https://formbuilder-saas-backend.onrender.com/api/dashboard/master-fields",{
+      headers:{
+      Authorization:`Bearer ${token}`,
+    }
+      })
       
       setMasterFields(res.data.data)
     
@@ -74,7 +74,7 @@ const [responseFields, setResponseFields] = useState([]);
     }
      
    }
-       //For removing the particular masterfield in the right side panel 
+    //For removing the particular masterfield in the right side panel 
    const toggleField = (toggledField) => {
   setSelectedFields(prev => {
     const exists = prev.find(
@@ -102,23 +102,18 @@ const [responseFields, setResponseFields] = useState([]);
      //Addding a new masterfield in the left side panel
    const addMasterField=async ()=>{
     try{
-        // const user=JSON.parse(localStorage.getItem('user'))
-        // const userId=user.userId
 
-      
-
-if (!userId) {
-  alert("User not logged in");
-  return;
-}
-
-
-        if (!newField.name.trim()) {
-     
-      alert("Please fill the field name")
+      if (!newField.name.trim()) {
+      toast.error("Please fill the field name")
       return 
     }
-       const res=await axios.post("https://formbuilder-saas-backend.onrender.com/api/dashboard/master-fields",{name:newField.name,type:newField.type, options: newOptions.length > 0 ? newOptions : null,userId})
+       const res=await axios.post("https://formbuilder-saas-backend.onrender.com/api/dashboard/master-fields",
+        {label:newField.label,type:newField.type, options: newOptions.length > 0 ? newOptions : null},
+        {
+      headers:{
+      Authorization:`Bearer ${token}`,
+    }
+       })
        setMasterFields(prev=>[...prev,res.data.data])
        setTimeout(() => {
   masterListRef.current?.scrollTo({
@@ -129,41 +124,24 @@ if (!userId) {
        console.log("Updated masterFields:", [...masterFields, res.data.data])
         setNewField({ name: "", type: "TEXT" });
         setShowField(false);
-
+        
     }
     catch(err){
       console.log("Error",err)
     }
         
 
-   }   
-
-
-
-
-
-
-
-
-
-
+   }  
      
    //Getting all forms
    const getForms=async()=>{
     try{
-    //     const user=JSON.parse(localStorage.getItem('user'))
-    //  const userId=user.userId
 
- 
-
-    if (!userId) {
-      console.error("User not logged in");
-      setLoading(false);
-      return;
+     const res=await axios.get("https://formbuilder-saas-backend.onrender.com/api/dashboard/forms",{
+      headers:{
+      Authorization:`Bearer ${token}`,
     }
-
-
-     const res=await axios.get(`https://formbuilder-saas-backend.onrender.com/api/dashboard/form/${userId}`)
+     })
     
      setForms(res.data.data)
     }
@@ -177,10 +155,6 @@ if (!userId) {
    //Creating a new form
   const createForm=async ()=>{
     try{
-      //    const user=JSON.parse(localStorage.getItem('user'))
-      // const userId=user.userId
-        
-     
    
        if (selectedFields.length === 0) {
       alert("Please select at least one field")
@@ -192,9 +166,8 @@ if (!userId) {
       title: uniqueTitle,
       description: "Auto created form",
       isPublic: true,
-      userId,
       fields: selectedFields.map((field, index) => ({
-        label: field.name,
+        label: field.label,
         type: field.type,
         required: field.required,
         order: index,
@@ -203,19 +176,23 @@ if (!userId) {
       }))
     }
 
-      const res=await axios.post("https://formbuilder-saas-backend.onrender.com/api/dashboard/form",payload)
+      const res=await axios.post("https://formbuilder-saas-backend.onrender.com/api/dashboard/form",payload,{
+      headers:{
+      Authorization:`Bearer ${token}`,
+    }
+      })
        
 
    
-       console.log("Form created successfully:", res.data)
-    alert("Form created successfully")
+    console.log("Form created successfully:", res.data)
+    toast.success("Form created successfully")
     getForms()
     setShowFormBuilder(false)
     setSelectedFields([]) 
     }
     catch(err){
       console.error("Create form error:", err)
-    alert("Failed to create form")
+    toast.error("Failed to create form")
     }
 
    
@@ -225,7 +202,11 @@ if (!userId) {
   const getFieldsForEdit = async (formId) => {
   try {
     const res = await axios.get(
-      `https://formbuilder-saas-backend.onrender.com/api/dashboard/form/details/${formId}`
+      `https://formbuilder-saas-backend.onrender.com/api/dashboard/form/details/${formId}`,{
+           headers:{
+      Authorization:`Bearer ${token}`,
+    }
+      }
     );
 
     const form = res.data.data;
@@ -252,68 +233,9 @@ if (!userId) {
 
   } catch (err) {
     console.error("Failed to fetch form fields for edit", err);
-    alert("Failed to load form fields");
+    toast.error("Failed to load form fields");
   }
 };
-
-
-
-
-
-
-
-
-  //Updating the form
-//   const handleUpdate = async (formId, save = false) => {
-//   try {
-//     if (!save) {
-//        setShowMasterList(false); 
-//       await getFieldsForEdit(formId)
-//       return
-//     }
-
-  
-//     const payload = {
-//       title: editData.title,
-//       description: editData.description,
-//       isPublic: editData.isPublic,
-//       fields: selectedFields.map((field, index) => ({
-//           formFieldId: field.formFieldId, 
-//         label: field.label || field.name,
-//         type: field.type,
-//         required: field.required,
-//         order: index,
-//         options: field.options || null,
-//          masterFieldId: field.masterFieldId || null
-
-//       }))
-//     }
-
-
-
-
-//     await axios.put(
-//        `https://formbuilder-saas-backend.onrender.com/api/dashboard/form/${formId}`,
-//   payload
-
-//       // `https://formbuilder-saas-backend.onrender.com/api/dashboard/form/${editingFormId}`,
-//       // payload
-
-
-//     )
-
-//     alert("Form updated successfully")
-//     setEditingFormId(null)
-//     getForms() 
-//   } catch (err) {
-//     console.error("Update failed", err)
-//     alert("Failed to update form")
-//   }
-// }
-
-
-
-
 
 
 const handleUpdate = async (formId, save = false) => {
@@ -345,15 +267,19 @@ const handleUpdate = async (formId, save = false) => {
 
     await axios.put(
       `https://formbuilder-saas-backend.onrender.com/api/dashboard/form/${formId}`,
-      payload
+      payload,{
+      headers:{
+      Authorization:`Bearer ${token}`,
+    }
+      }
     );
 
-    alert("Form updated successfully");
+    toast.success("Form updated successfully");
     setEditingFormId(null);
     getForms();
   } catch (err) {
     console.error("Update failed", err.response?.data || err);
-    alert("Failed to update form");
+    toast.error("Failed to update form");
   }
 };
 
@@ -367,20 +293,24 @@ const handleUpdate = async (formId, save = false) => {
    const deleteForm = async (formId) => {
   try {
     const res = await axios.delete(
-      `https://formbuilder-saas-backend.onrender.com/api/dashboard/form/${formId}`
+      `https://formbuilder-saas-backend.onrender.com/api/dashboard/form/${formId}`,{
+      headers:{
+      Authorization:`Bearer ${token}`,
+    }
+      }
     );
 
     if (res.data.success) {
       setForms(prev => prev.filter(form => form.formId !== formId));
-      alert("Form deleted successfully");
+      toast.success("Form deleted successfully");
     } else {
-      alert(res.data.message || "Failed to delete form");
+      toast.error(res.data.message || "Failed to delete form");
       
       getForms();
     }
   } catch (err) {
     console.error("Error deleting form", err);
-    alert("Failed to delete form");
+    toast.error("Failed to delete form");
  
     getForms();
   }
@@ -389,13 +319,17 @@ const handleUpdate = async (formId, save = false) => {
   //Getting Form fields for seeing the form fiels in the UI
    const getFormFields=async (formId)=>{
     try{
-        const res=await axios.get(`https://formbuilder-saas-backend.onrender.com/api/dashboard/form/details/${formId}`)
+        const res=await axios.get(`https://formbuilder-saas-backend.onrender.com/api/dashboard/form/details/${formId}`,{
+      headers:{
+      Authorization:`Bearer ${token}`,
+    }
+        })
      
       setActiveForm(res.data.data)
     }
     catch(err){
         console.log("Form details error", err)
-    alert("Failed to load form fields")
+    toast.error("Failed to load form fields")
     }
       
   
@@ -419,12 +353,20 @@ const openResponses = async (formId) => {
   try {
     
     const res = await axios.get(
-      `https://formbuilder-saas-backend.onrender.com/api/dashboard/form/responses/${formId}`
+      `https://formbuilder-saas-backend.onrender.com/api/dashboard/form/responses/${formId}`,{
+      headers:{
+      Authorization:`Bearer ${token}`,
+    }
+      }
     );
     setResponses(res.data.data);
 
     const formRes = await axios.get(
-      `https://formbuilder-saas-backend.onrender.com/api/dashboard/form/details/${formId}`
+      `https://formbuilder-saas-backend.onrender.com/api/dashboard/form/details/${formId}`,{
+      headers:{
+      Authorization:`Bearer ${token}`,
+    }
+      }
     );
     setResponseFields(formRes.data.data.formField);
 
@@ -440,7 +382,11 @@ const openResponses = async (formId) => {
  const openResponseDetail = async (responseId) => {
   try{
       const res = await axios.get(
-    `https://formbuilder-saas-backend.onrender.com/api/dashboard/form/response/${responseId}`
+    `https://formbuilder-saas-backend.onrender.com/api/dashboard/form/response/${responseId}`,{
+      headers:{
+      Authorization:`Bearer ${token}`,
+    }
+    }
   );
 
   setSelectedResponse(res.data.data);
@@ -461,25 +407,26 @@ const getLabel = (fieldId) =>
   return (
     <>
    <UserNavbar/>
-    <div className="min-h-screen bg-gray-200 p-6">
+    <div className="min-h-screen bg-gray-200  ">
       <button
   onClick={() =>{ setShowFormBuilder(true), setSelectedFields([])}}
-  className="absolute  right-6 bg-violet-600 text-white px-5 py-2 rounded-lg shadow hover:bg-violet-700"
+  className=" bg-violet-600 text-white px-5 py-2 rounded-lg m-4  shadow hover:bg-violet-700"
 >
   + Create New Form
 </button>
 
       {
         showFormBuilder&&(
-        <div className='w-full max-w-4xl h-full mx-auto border border-purple-700   rounded-md bg-white flex flex-col shadow-gray-500  md:flex-row gap-6 p-4 shadow-md'>
-            {/*Left side panel */}
-         <div className='border   border-r p-4 md:w-1/3 rounded-md'>
+        <div className='w-full mt-2 max-w-4xl h-full mx-auto border border-black/20 rounded-md bg-white flex flex-col shadow-gray-500  md:flex-row gap-6 p-4 shadow-2xl'>
+       {/*Left side panel */}
+
+         <div className='border border-black/10 p-4 md:w-1/3 shadow-2xl rounded-md'>
   <h2 className="text-lg text-center text-violet-700 font-semibold mb-4">Master Fields</h2>
   <div className='overflow-y-auto flex flex-col space-y-2 max-h-[100vh]'   ref={masterListRef}>
     {masterFields.map((field) => (
       <label
         key={field.masterFieldId}
-        className={`flex items-center gap-2 p-2 cursor-pointer rounded hover:bg-gray-50 ${
+        className={`flex items-center gap-2 p-2 text-black/60 font-semibold cursor-pointer rounded hover:bg-gray-50 ${
           selectedFields.some(f => f.masterFieldId === field.masterFieldId) ? 'bg-blue-50 border border-blue-300' : ''
         }`}
       >
@@ -489,21 +436,22 @@ const getLabel = (fieldId) =>
           onChange={() => toggleField(field)}
           className='accent-blue-500 w-4 h-4'
         />
-        {field.name}
+        {field.label}
       </label>
     ))}
   </div>
   <button
   onClick={() => setShowField(true)}
-  className="px-4 m-6 bg-violet-500 text-white py-2 rounded-md hover:bg-violet-700 cursor-pointer"
+  className="px-4 mt-4 bg-violet-500 w-full text-white py-2 rounded-md hover:bg-violet-700 cursor-pointer"
 >
   + Add Master Field
 </button>
 </div>
 
            {/*Right side panel */}
-         <div className='border  md:w-2/3 p-4 rounded-md'>
-  <h2 className="text-2xl font-bold text-violet-700 mb-4 text-center border-b pb-2">Form Preview</h2>
+
+         <div className='border border-black/10 shadow-2xl  md:w-2/3 p-4 rounded-md'>
+  <h2 className="text-2xl font-bold  text-violet-700 mb-4 text-center pb-2">Form Preview</h2>
   <div className='flex flex-col gap-3'>
   
 
@@ -511,11 +459,11 @@ const getLabel = (fieldId) =>
   <motion.div key={field.masterFieldId} className='flex flex-col gap-1' initial={{ opacity: 0, y: 10 }}
   animate={{ opacity: 1, y: 0 }}
   transition={{ duration: 0.3 }}>
-    <label className="text-gray-700 font-medium">{field.name}</label>
+    <label className="text-gray-700 font-medium">{field.label}</label>
 
     
-<div className="flex items-center gap-2 mt-1">
-  <label>{field.required && <span className="text-red-500">*</span>}</label>
+<div className="flex items-center gap-1 mt-1">
+  <label className="text-black/40 ">Required <span>{field.required && <span className="text-red-500">*</span>}</span></label>
 
   <input
     type="checkbox"
@@ -588,8 +536,8 @@ const getLabel = (fieldId) =>
 
   </motion.div>
 ))}
-   
-    <button className="px-4 m-6 bg-violet-500 text-white py-2 rounded-md hover:bg-violet-700 cursor-pointer"
+   <div className="flex justify-center">
+    <button className="px-4 m-6 bg-violet-500 w-[200px] text-white py-2 rounded-md hover:bg-violet-700 cursor-pointer"
    onClick={createForm}
    >Create Form</button>
    <button
@@ -597,10 +545,11 @@ const getLabel = (fieldId) =>
     setShowFormBuilder(false)
     setSelectedFields([])
   }}
-  className="px-4 m-6 bg-red-500 text-white py-2 rounded-md hover:bg-red-700 cursor-pointer"
+  className="px-4 m-6 bg-red-500 text-white w-[200px] py-2 rounded-md hover:bg-red-700 cursor-pointer"
 >
   Cancel 
 </button>
+</div>
   </div> 
    
   
@@ -709,18 +658,18 @@ const getLabel = (fieldId) =>
 
 
   {/* My Forms */}
-<div className="mt-24 max-w-6xl mx-auto bg-white p-6 rounded-xl shadow-lg shadow-black/35">
+<div className=" mt-4 mx-auto bg-white p-6 rounded-xl shadow-lg shadow-black/35">
   <h2 className="text-2xl font-bold text-violet-700 mb-4 text-center">
     My Forms
   </h2>
-  <div className='px-3 py-2 w-44 mt-4 mb-4 rounded-md bg-gray-200 shadow-md shadow-gray-700'>
-    <p className='text-black text-center font-bold'>Total Forms <span className='text-purple-900 font-semibold'>{forms.length}</span></p>
+  <div className='px-3 py-2 mt-8 mb-4 w-[200px] rounded-md bg-violet-600 shadow-md shadow-gray-700'>
+    <p className='text-white/80 text-center text-[10px] sm:text-sm font-bold'>Total Forms <span className='text-white font-bold px-2'>{forms.length}</span></p>
   </div>
 
   {forms.length === 0 ? (
     <p className="text-gray-500 text-center">No forms created yet</p>
   ) : (
-    <div className="grid grid-cols-1 gap-4 max-w-8xl p-6 md:grid-cols-2 lg:grid-cols-3 ">
+    <div className="grid grid-cols-1 gap-4 max-w-8xl md:grid-cols-2 lg:grid-cols-3 ">
     
    {forms.map((form) => (
  <motion.div
@@ -729,9 +678,9 @@ const getLabel = (fieldId) =>
  
   transition={{ duration: 0.3 }}
   key={form.formId}
-  className="bg-white border border-violet-600 rounded-lg p-5  shadow-sm hover:shadow-lg  flex flex-col gap-3 min-h-[180px]"
+  className="bg-white border border-black/10 mt-4 rounded-lg p-5 shadow-xl hover:shadow-lg  flex flex-col justify-around gap-2 min-h-[180px]"
 >
-<div className="flex justify-end gap-2">
+<div className="flex justify-around ">
 
 
   <button
@@ -749,22 +698,18 @@ const getLabel = (fieldId) =>
   >
     🗑️
   </button>
-  <button   onClick={() => getFormFields(form.formId)} className='  bg-purple-500 text-white text-sm px-2 py-1 rounded-md hover:bg-purple-700 cursor-pointer'>View Form</button>
+  <button   onClick={() => getFormFields(form.formId)} className='  bg-violet-600  text-white/80 text-sm px-2 py-1 rounded-md hover:bg-violet-700 cursor-pointer'>View Form</button>
 </div>
 
-<h2 className="text-base font-semibold text-violet-800 truncate">
+<h2 className="font-bold text-violet-800">
   {form.title}
 </h2>
 
-
-
-
- 
-  <p className="text-sm text-gray-600  truncate">
+  <p className="text-sm text-gray-600/70 ">
     {form.description || "No description provided"}
   </p>
     
-    <div className="flex items-center gap-2 relative">
+    <div className="flex items-center mt-4 gap-4 relative">
   <button
   onClick={() => {
     navigator.clipboard.writeText(`${URL}/public/form/${form.slug}`);
@@ -774,7 +719,7 @@ const getLabel = (fieldId) =>
       setCopiedFormId(null);
     }, 2000);
   }}
-  className="px-3 py-1 bg-violet-600 text-white rounded hover:bg-violet-700 text-sm"
+  className="px-3 py-1 bg-violet-600 text-white/70 font-semibold rounded hover:bg-violet-700 text-sm"
 >
   Copy Link
 </button>
@@ -790,18 +735,18 @@ const getLabel = (fieldId) =>
     href={`${URL}/public/form/${form.slug}`}
     target="_blank"
     rel="noopener noreferrer"
-    className="text-sm text-blue-600 underline"
+    className="text-sm text-white/70 font-semibold px-2 py-1 rounded bg-violet-600"
   >
     Open
   </a>
 </div>
 
 <button onClick={() => openResponses(form.formId)}
-  className="bg-green-600  text-xs text-white  hover:bg-green-800 cursor-pointer px-2 py-1 rounded-md">
+  className="bg-green-600 mt-2 text-white/70 font-semibold hover:bg-green-800 cursor-pointer px-2 py-1 rounded-md">
   View Responses
 </button>
   
-  <div className="flex justify-between items-center gap-3 text-xs text-gray-500">
+  <div className="flex justify-between items-center gap-3 text-xs text-gray-500 font-semibold">
     <span>
       Created on {new Date(form.createdAt).toLocaleDateString()}
     </span>
@@ -825,15 +770,15 @@ const getLabel = (fieldId) =>
 </div>
 {activeForm && (
   <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-    <div className="bg-white border border-purple-600 p-6 rounded-md shadow-lg w-[500px] max-h-[80vh] overflow-y-auto">
+    <div className="bg-white border border-black/20 p-6 rounded-md shadow-lg w-[500px] h-full overflow-y-auto">
       <h2 className="text-xl text-center font-bold text-violet-700 mb-2">{activeForm.title}</h2>
-      <p className="mb-4 text-sm text-center text-gray-600">{activeForm.description}</p>
+      <p className="mb-4 text-sm text-center text-black/60">{activeForm.description}</p>
 
       {activeForm.formField.map((field) => (
         <div key={field.masterFieldId || field.id} className="mb-3">
-          <label className="block text-gray-700">{field.label}</label>
+          <label className="block text-gray-700 font-semibold">{field.label}</label>
           {["TEXT", "EMAIL", "NUMBER", "DATE"].includes(field.type) && (
-            <input type={field.type.toLowerCase()} className="border px-2 py-1 rounded w-full" />
+            <input type={field.type.toLowerCase()} className="border border-black/30 px-2 py-1 mt-1 rounded w-full" />
           )}
           {field.type === "TEXTAREA" && (
             <textarea className="border px-2 py-1 rounded w-full" rows={3} />
@@ -841,7 +786,7 @@ const getLabel = (fieldId) =>
           {["DROPDOWN", "RADIO", "CHECKBOX"].includes(field.type) && field.options && (
             <div className="mt-1">
               {field.type === "DROPDOWN" && (
-                <select className="border px-2 py-1 rounded w-full">
+                <select className="border  px-2 py-1 rounded w-full">
                   {field.options.map((opt, idx) => (
                     <option key={idx} value={opt}>{opt}</option>
                   ))}
@@ -850,8 +795,8 @@ const getLabel = (fieldId) =>
               {(field.type === "RADIO" || field.type === "CHECKBOX") && (
                 <div className="flex flex-col gap-1">
                   {field.options.map((opt, idx) => (
-                    <label key={idx} className="flex items-center gap-2">
-                      <input type={field.type.toLowerCase()} value={opt} className="accent-blue-500 w-4 h-4"/>
+                    <label key={idx} className="flex items-center gap-2 ">
+                      <input type={field.type.toLowerCase()} value={opt} className="accent-blue-500 w-4 h-4 "/>
                       {opt}
                     </label>
                   ))}
@@ -864,7 +809,7 @@ const getLabel = (fieldId) =>
 
       <button
         onClick={() => setActiveForm(null)}
-        className="mt-4 px-4 py-2 bg-red-500  text-white rounded-md cursor-pointer hover:bg-red-600"
+        className="mt-4 px-4 py-2 bg-violet-600  text-white/70 font-semibold rounded-md cursor-pointer hover:bg-red-600"
       >
         Close
       </button>
@@ -873,13 +818,15 @@ const getLabel = (fieldId) =>
 )}
 
 
+{/* EDITFORM */}
+
 {editingFormId && (
   <div className="fixed inset-0 bg-opacity-40 flex  items-center justify-center z-50">
     <motion.div
       initial={{ scale: 0.8, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
        transition={{ duration: 0.3 }}
-      className="bg-purple-100 rounded-lg w-full max-w-[520px] max-h-[85vh] overflow-y-auto border border-violet-500 p-6 shadow-xl"
+      className="bg-white rounded-lg w-full max-w-[520px] h-full overflow-y-auto border  border-black/20 p-6 shadow-xl"
     >
       <h3 className="text-xl font-bold text-violet-700 mb-4 text-center">
         Edit Form
@@ -891,7 +838,7 @@ const getLabel = (fieldId) =>
           setEditData({ ...editData, title: e.target.value })
         }
         placeholder="Form Title"
-        className="border border-gray-400 focus:outline-none  focus:ring-2 focus:ring-[#6C3BFF] p-2 w-full mb-3 rounded"
+        className="border border-black/30 font-semibold text-black/60  focus:outline-none  focus:ring-2 focus:ring-[#6C3BFF] p-2 w-full mb-3 rounded"
       />
 
       <textarea
@@ -900,11 +847,11 @@ const getLabel = (fieldId) =>
           setEditData({ ...editData, description: e.target.value })
         }
         placeholder="Form Description"
-        className="border p-2 w-full mb-4 rounded"
+        className="border font-semibold border-black/30 text-black/60 p-2 w-full mb-4 rounded"
       />
 
     {selectedFields.map((field) => (
-  <div  key={field.formFieldId} className="mb-4 border p-3 rounded">
+  <div  key={field.formFieldId} className="mb-4 border border-black/40 text-black/60 p-3 rounded">
 
     {/* LABEL EDIT */}
     <input
@@ -919,7 +866,7 @@ const getLabel = (fieldId) =>
         )
       }
       placeholder="Field Label"
-      className="border px-2 py-1 rounded w-full mb-2"
+      className="border border-black/30 font-semibold text-black/60 px-2 py-1 rounded w-full mb-2"
     />
 
     {/* TYPE EDIT */}
@@ -934,7 +881,7 @@ const getLabel = (fieldId) =>
           )
         )
       }
-      className="border px-2 py-1 rounded w-full mb-2"
+      className="border border-black/30 text-black/60 font-semibold px-2 py-1 rounded w-full mb-2"
     >
       <option value="TEXT">Text</option>
       <option value="EMAIL">Email</option>
@@ -947,7 +894,7 @@ const getLabel = (fieldId) =>
     </select>
 
     {/* REQUIRED */}
-    <label className="flex items-center gap-2 mb-2">
+    <label className="flex items-center font-bold gap-2 mb-2">
       <input
         type="checkbox"
         checked={field.required}
@@ -1039,14 +986,14 @@ const getLabel = (fieldId) =>
      onClick={() =>
     removeField(field.formFieldId || field.masterFieldId)
   }
-      className="text-red-600 mt-2"
+      className="text-red-600 font-semibold mt-2"
     >
       Remove Field
     </button>
   </div>
 ))}
 {/* PUBLIC / PRIVATE TOGGLE */}
-<label className="flex items-center gap-2 mb-4">
+<label className="flex items-center gap-2 mb-4 text-black/70 font-bold text-lg ">
   <input
     type="checkbox"
     checked={editData.isPublic}
@@ -1105,21 +1052,23 @@ const getLabel = (fieldId) =>
   + Add Field
 </button>*/ }
 
+
         <button
           onClick={() => setEditingFormId(null)}
-          className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 cursor-pointer"
+          className="px-4 py-2 bg-red-500 font-semibold w-[150px] text-white rounded hover:bg-red-600 cursor-pointer"
         >
-          Cancel
+          Close
         </button>
 
         <button
           onClick={() => handleUpdate(editingFormId, true)}
-          className="px-4 py-2 bg-violet-600 text-white rounded hover:bg-violet-700 cursor-pointer"
+          className="px-4 py-2 font-semibold w-[150px] bg-violet-600 text-white rounded hover:bg-violet-700 cursor-pointer"
         >
           
         Edit
         </button>
-      </div>
+        </div>
+  
     </motion.div>
   </div>
 )}
@@ -1220,302 +1169,6 @@ export default Form
 
 
 
-
-
-// import React, { useEffect, useState } from "react";
-// import axios from "axios";
-// import { motion, AnimatePresence } from "framer-motion";
-// import {
-//   Plus,
-//   Trash2,
-//   Eye,
-//   Edit3,
-//   X,
-//   Save,
-// } from "lucide-react";
-// import UserNavbar from "../user/UserNavbar";
-
-// const API = "https://formbuilder-saas-backend.onrender.com";
-
-// const Form = () => {
-//   const userId = localStorage.getItem("userId");
-
-//   const [forms, setForms] = useState([]);
-//   const [activeForm, setActiveForm] = useState(null);
-//   const [editMode, setEditMode] = useState(false);
-
-//   const [title, setTitle] = useState("");
-//   const [description, setDescription] = useState("");
-
-//   // ================= FETCH =================
-
-//   useEffect(() => {
-//     fetchForms();
-//   }, []);
-
-//   const fetchForms = async () => {
-//     const res = await axios.get(`${API}/api/dashboard/form/${userId}`);
-//     setForms(res.data.data);
-//   };
-
-//   const openForm = async (formId, editable = false) => {
-//     const res = await axios.get(
-//       `${API}/api/dashboard/form/details/${formId}`
-//     );
-//     setActiveForm(res.data.data);
-//     setTitle(res.data.data.title);
-//     setDescription(res.data.data.description);
-//     setEditMode(editable);
-//   };
-
-//   // ================= UPDATE =================
-
-//   const updateForm = async () => {
-//     await axios.put(`${API}/api/dashboard/form/${activeForm.formId}`, {
-//       title,
-//       description,
-//       fields: activeForm.formField.map((f, i) => ({
-//         ...f,
-//         order: i,
-//       })),
-//     });
-
-//     alert("Form updated");
-//     setActiveForm(null);
-//     fetchForms();
-//   };
-
-//   const toggleRequired = (id) => {
-//     setActiveForm((prev) => ({
-//       ...prev,
-//       formField: prev.formField.map((f) =>
-//         f.formFieldId === id
-//           ? { ...f, required: !f.required }
-//           : f
-//       ),
-//     }));
-//   };
-
-//   const removeField = (id) => {
-//     setActiveForm((prev) => ({
-//       ...prev,
-//       formField: prev.formField.filter(
-//         (f) => f.formFieldId !== id
-//       ),
-//     }));
-//   };
-
-//   const deleteForm = async (id) => {
-//     if (!window.confirm("Delete this form?")) return;
-//     await axios.delete(`${API}/api/dashboard/form/${id}`);
-//     fetchForms();
-//   };
-
-//   // ================= UI =================
-
-//   return (
-//     <>
-//       <UserNavbar />
-
-//       <div className="min-h-screen bg-gradient-to-br from-slate-100 to-slate-200 p-8">
-//         <h1 className="text-3xl font-bold text-center text-violet-700 mb-10">
-//           Your Forms
-//         </h1>
-
-//         {/* FORM CARDS */}
-//         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-//           {forms.map((f) => (
-//             <motion.div
-//               key={f.formId}
-//               whileHover={{ scale: 1.03 }}
-//               className="bg-white rounded-2xl shadow-xl p-6 relative"
-//             >
-//               <h2 className="font-semibold text-lg">{f.title}</h2>
-//               <p className="text-sm text-gray-500 mt-1">
-//                 {f.description}
-//               </p>
-
-//               <div className="flex gap-2 mt-5">
-//                 <button
-//                   onClick={() => openForm(f.formId, false)}
-//                   className="flex-1 bg-violet-500 text-white py-2 rounded-xl flex justify-center gap-1"
-//                 >
-//                   <Eye size={18} /> View
-//                 </button>
-
-//                 <button
-//                   onClick={() => openForm(f.formId, true)}
-//                   className="flex-1 bg-emerald-500 text-white py-2 rounded-xl flex justify-center gap-1"
-//                 >
-//                   <Edit3 size={18} /> Edit
-//                 </button>
-
-//                 <button
-//                   onClick={() => deleteForm(f.formId)}
-//                   className="bg-red-500 text-white px-3 rounded-xl"
-//                 >
-//                   <Trash2 size={18} />
-//                 </button>
-//               </div>
-//             </motion.div>
-//           ))}
-//         </div>
-//       </div>
-
-//       {/* MODAL */}
-//       <AnimatePresence>
-//         {activeForm && (
-//           <motion.div
-//             initial={{ opacity: 0 }}
-//             animate={{ opacity: 1 }}
-//             exit={{ opacity: 0 }}
-//             className="fixed inset-0 bg-black/40 backdrop-blur flex justify-center items-center z-50"
-//           >
-//             <motion.div
-//               initial={{ scale: 0.9 }}
-//               animate={{ scale: 1 }}
-//               exit={{ scale: 0.9 }}
-//               className="bg-white rounded-3xl w-[95%] max-w-xl p-6 shadow-2xl"
-//             >
-//               {/* HEADER */}
-//               <div className="flex justify-between items-center mb-4">
-//                 <h2 className="text-xl font-bold text-violet-600">
-//                   {editMode ? "Edit Form" : "Preview Form"}
-//                 </h2>
-//                 <button onClick={() => setActiveForm(null)}>
-//                   <X />
-//                 </button>
-//               </div>
-
-//               {/* TITLE */}
-//               {editMode ? (
-//                 <>
-//                   <input
-//                     value={title}
-//                     onChange={(e) => setTitle(e.target.value)}
-//                     className="w-full border p-2 rounded-xl mb-2"
-//                   />
-//                   <textarea
-//                     value={description}
-//                     onChange={(e) =>
-//                       setDescription(e.target.value)
-//                     }
-//                     className="w-full border p-2 rounded-xl mb-4"
-//                   />
-//                 </>
-//               ) : (
-//                 <>
-//                   <h3 className="font-semibold">{title}</h3>
-//                   <p className="text-gray-500 mb-4">
-//                     {description}
-//                   </p>
-//                 </>
-//               )}
-
-//               {/* FIELDS */}
-//               <div className="space-y-3 max-h-[300px] overflow-y-auto">
-//                 {activeForm.formField.map((f) => (
-//                   <div
-//                     key={f.formFieldId}
-//                     className="border rounded-xl p-3 flex justify-between items-center"
-//                   >
-//                     <div>
-//                       <label className="font-medium">
-//                         {f.label}{" "}
-//                         {f.required && (
-//                           <span className="text-red-500">*</span>
-//                         )}
-//                       </label>
-//                       <input
-//                         disabled
-//                         className="block w-full border mt-1 px-2 py-1 rounded"
-//                       />
-//                     </div>
-
-//                     {editMode && (
-//                       <div className="flex gap-2">
-//                         <button
-//                           onClick={() =>
-//                             toggleRequired(f.formFieldId)
-//                           }
-//                           className="text-sm bg-indigo-100 px-2 py-1 rounded"
-//                         >
-//                           Req
-//                         </button>
-//                         <button
-//                           onClick={() =>
-//                             removeField(f.formFieldId)
-//                           }
-//                           className="text-red-500"
-//                         >
-//                           <Trash2 size={18} />
-//                         </button>
-//                       </div>
-//                     )}
-//                   </div>
-//                 ))}
-//               </div>
-
-//               {/* FOOTER */}
-//               {editMode && (
-//                 <button
-//                   onClick={updateForm}
-//                   className="mt-6 w-full bg-violet-600 text-white py-3 rounded-xl flex justify-center gap-2"
-//                 >
-//                   <Save /> Save Changes
-//                 </button>
-//               )}
-//             </motion.div>
-//           </motion.div>
-//         )}
-//       </AnimatePresence>
-//     </>
-//   );
-// };
-
-// export default Form;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import React, { useState } from 'react'
-// import UserNavbar from '../user/UserNavbar'
-
-// const Form = () => {
-//   const[createform,setcreateform]=useState(false);
-//   return (
-//     <div>
-//       <UserNavbar/>
-//       <div>
-//         <button className="m-5 font-bold text-lg text-white/90 px-2 py-1 rounded shadow-2xl bg-violet-600">
-//           Create Form
-//         </button>
-
-//         <div className="w-full h-[250px] border ">
-
-//         </div>
-
-//       </div>
-//     </div>
-//   )
-// }
-
-// export default Form
 
 
 
