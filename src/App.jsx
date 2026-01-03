@@ -13,7 +13,7 @@ import { Toaster } from "react-hot-toast";
 import PublicForm from './components/public/PublicForm.jsx';
 import AdminPage from './components/dashboard/AdminPage.jsx';
 import Response from './components/user/Response.jsx';
-
+import ProfileSettings from './components/user/ProfileSettings.jsx';
 
 
 
@@ -40,6 +40,7 @@ const App = () => {
     <Route path="/userreport" element={<UserReport/>}/>
     <Route path="/form" element={<Form/>}/>    
     <Route path="/dashboard" element={<AdminPage />} />
+     <Route path="/profile" element={<ProfileSettings />} />
     <Route path='/public/form/:slug' element={<PublicForm/>}/>
     <Route path="/responses/:formId" element={<Response/>}/>
      </Routes>

@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, User, FileText, Sparkles ,LogOut} from "lucide-react";
 import UserDetails from "./UserDetails";
 import AllReports from "./AllReports";
+
 
 import { useNavigate } from "react-router-dom";
 
@@ -15,18 +16,24 @@ const navItems = [
 
 
 const AdminLayout = () => {
+
+
+// useEffect(() => {
+//   if (!user) getUser(); // fetch admin user if needed
+// }, [user, getUser]);
+
   const [activeTab, setActiveTab] = useState("users");
   const [open, setOpen] = useState(false); // mobile side panel
   const [logoutSuccess, setLogoutSuccess] = useState(false);
 const navigate = useNavigate();
-const adminName = JSON.parse(localStorage.getItem("user"))?.name || "Admin";
+//const adminName = JSON.parse(localStorage.getItem("user"))?.name || "Admin";
 
-const handleLogout = () => {
-  localStorage.removeItem("user");
+// const handleLogout = () => {
+//   localStorage.removeItem("user");
     
-  setLogoutSuccess(true);
-  setOpen(false);
-};
+//   setLogoutSuccess(true);
+//   setOpen(false);
+// };
 
 const handlelogout=()=>{
   setLogoutSuccess(false);
@@ -57,9 +64,20 @@ const handlelogout=()=>{
     ))}
 
     {/* Admin + Logout */}
-    <span className="font-bold text-lg text-purple-700">Admin</span>
+   <button
+  onClick={() => navigate("/profile")}
+  className="flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold"
+>
+  <User size={20} />
+  { "Admin"}
+</button>
+
     <button
-      onClick={handleLogout}
+      onClick={() => {
+    logout();
+    toast.success("Logged out successfully");
+    window.location.href = "/login";
+  }}
       className="flex items-center gap-2 px-4 py-2 rounded-xl text-red-500 hover:bg-red-50 transition"
     >
       <LogOut size={18} /> Logout
@@ -146,7 +164,7 @@ const handlelogout=()=>{
  
  
   <button
-    onClick={handleLogout}
+    onClick={handlelogout}
     className="flex items-center gap-2 px-3 py-2 rounded-xl text-red-500 hover:bg-red-50 transition"
   >
     <LogOut size={18} /> Logout

@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, Bug, FileText, HomeIcon, LogOut, Sparkles } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+
+import { User } from "lucide-react"; 
+
 
 const navItems = [
   { label: "Report", icon: <Bug size={18} /> },
@@ -9,7 +12,14 @@ const navItems = [
   { label: "Forms", icon: <FileText size={18} /> },
 ];
 
-const UserNavbar = () => {
+const UserNavbar = ({ user, logout }) => {
+
+ 
+
+// useEffect(() => {
+//   if (!user) getUser(); // fetch if not already fetched
+// }, [user, getUser]);
+
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
  
@@ -43,12 +53,24 @@ const UserNavbar = () => {
                 <span>{item.label}</span>
               </button>
             ))}
+
             <button
-              onClick={() => navigate("/login")}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-red-500 hover:bg-red-50"
-            >
-              <LogOut size={18} /> Logout
-            </button>
+  onClick={() => navigate("/profile")}
+  className="flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-semibold"
+>
+  <User size={20} />
+  {user?.name || "User"}
+</button>
+            <button
+  onClick={() => {
+    logout();
+    toast.success("Logged out successfully");
+    window.location.href = "/login";
+  }}
+  className="flex items-center gap-2 px-4 py-2 rounded-xl text-red-500 hover:bg-red-50"
+>
+  <LogOut size={18} /> Logout
+</button>
           </div>
         </div>
       </div>
