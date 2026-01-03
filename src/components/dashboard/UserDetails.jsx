@@ -18,7 +18,7 @@ const UserDetails = () => {
     const [loading, setLoading] = useState(false);
 
     const token = localStorage.getItem("token");
-    const navigate = useNavigate();
+   
     const API_BASE_URL = 'https://formbuilder-saas-backend.onrender.com/api/admin/users';
 
     // Get all users on component mount
@@ -333,7 +333,7 @@ const UserDetails = () => {
             {/* Delete Confirmation Modal */}
             <AnimatePresence>
                 {showConfirmModal && (
-                    <div className="fixed inset-0 flex items-center justify-center z-[60] p-4">
+                    <div className="fixed inset-0 flex items-center justify-center z-160 p-4">
                         <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={handleDismiss} className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" />
                         <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
                             className="bg-white rounded-2xl p-6 w-full max-w-sm relative z-10 shadow-2xl text-center"

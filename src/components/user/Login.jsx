@@ -32,7 +32,7 @@ const Login = () => {
     email:loginemail,
     password:loginpassword
   })
-
+    console.log(response)
   const role=response.data.user.role
 
 if(role=="ADMIN"){
