@@ -4,8 +4,9 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import UserNavbar from "../user/UserNavbar";
 import { useFormContext } from './FormContext';
-import { EditIcon, Trash2, Eye } from 'lucide-react'; 
+import { EditIcon, Trash2, Eye, ChevronDown } from 'lucide-react'; 
 import { useNavigate } from 'react-router-dom';
+import { X, Send, CheckCircle } from 'lucide-react';
 
 const Form = () => {
  
@@ -132,28 +133,31 @@ const createForm = async () => {
     }
   };
 
-  // 3. TOGGLE PUBLIC STATUS
-  const toggleVisibility = async (form) => {
-    const newStatus = !form.isPublic;
+
+  //FORMVIEW
+const [viewform, setviewform] = useState(false);
+const [viewData, setViewData] = useState(null);
+
+const formview = async (formId) => {
+    setLoading(true);
     try {
-      await axios.put(`https://formbuilder-saas-backend.onrender.com/api/dashboard/form/${form.formId}`, 
-        { isPublic: newStatus },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      updateFormLocally(form.formId, { isPublic: newStatus });
-      toast.success(`Form is now ${newStatus ? 'Public' : 'Private'}`);
+      const response = await axios.get(`https://formbuilder-saas-backend.onrender.com/api/dashboard/form/details/${formId}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setViewData(response.data.data); 
+      console.log(response.data.data);
+      setviewform(true); 
     } catch (err) {
-      toast.error("Update failed");
+      toast.error("Failed to load form details");
+    } finally {
+      setLoading(false);
     }
   };
-
-
-
- 
    
+
   return (
     <div className="min-h-screen bg-gray-50">
-      <UserNavbar />
+      <UserNavbar/>
       <div className="max-w-6xl mx-auto p-6">
         <header className="flex flex-col  justify-between items-center mb-8">
           <h1 className="text-3xl font-bold mb-10 text-gray-800">My Dashboard</h1>
@@ -310,7 +314,7 @@ const createForm = async () => {
                       Responses
                     </button>
                     <button 
-                   
+                   onClick={()=>formview(form.formId)}
                     className="flex-1 bg-gray-900 text-white font-semibold py-2 rounded-xl hover:bg-black transition flex items-center justify-center gap-2">
                       <Eye size={16}/> View
                     </button>
@@ -345,8 +349,146 @@ const createForm = async () => {
           </div>
         )}
       </AnimatePresence>
+
+
+{/* VIEW FORM */}
+      <AnimatePresence>
+        {viewform && viewData && (
+          <div className="fixed inset-0 z-250 flex items-center justify-center p-4 md:p-10">
+            {/* Backdrop */}
+            <motion.div 
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              onClick={() => setviewform(false)}
+              className="absolute inset-0 bg-gray-900/60 backdrop-blur-md"
+            />
+
+            {/* Modal Content */}
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              className="relative bg-white w-full max-w-2xl max-h-[90vh] overflow-hidden rounded shadow-2xl flex flex-col"
+            >
+              {/* Modal Header */}
+              <div className=" p-8 text-white flex justify-between items-start">
+                <div>
+                  <h2 className="text-2xl text-black font-semibold mb-2">{viewData.title}</h2>
+                  <p className=" text-black/60">{viewData.description || "No description provided."}</p>
+                </div>
+                <button 
+                  onClick={() => setviewform(false)}
+                  className="bg-black/30  hover:bg-violet-600 p-2 rounded-full transition-colors"
+                >
+                  <X size={24} />
+                </button>
+              </div>
+
+              {/* Scrollable Form Body */}
+              <div className="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar bg-gray-50/50">
+                {viewData.formField?.map((field, idx) => (
+                  <motion.div 
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: idx * 0.1 }}
+                    key={field.formFieldId} 
+                    className="bg-white p-6  border border-gray-100 shadow-sm"
+                  >
+                    <label className="block text-xs font-bold uppercase  text-black mb-3">
+                      {field.label} {field.isRequired && <span className="text-red-500">*</span>}
+                    </label>
+
+                {(() => {
+        switch (field.type) {
+          case "TEXTAREA":
+            return <textarea disabled placeholder="Longer response here..." className="w-full py-1 px-2 bg-gray-50 border-2 border-gray-100 rounded-2xl h-24 resize-none outline-none" />;
+          
+          case "EMAIL":
+            return <input type="email" disabled placeholder="email@example.com" className="w-full py-1 px-2 bg-gray-50 border-2 border-gray-100 rounded-2xl outline-none" />;
+          
+          case "DATE":
+            return <input type="date" disabled className="w-full py-1 px-2 bg-gray-50 border-2 border-gray-100 rounded-2xl outline-none text-gray-400" />;
+
+          case "NUMBER":
+          return <input type="number" disabled className="w-full py-1 px-2 bg-gray-50 border-2 border-gray-100 rounded-2xl outline-none text-gray-400" />;
+
+          case "CHECKBOX":
+            return (
+              <div className="space-y-2">
+                {(field.options || ["Option 1", "Option 2"]).map(opt => (
+                  <div key={opt} className="flex items-center gap-3  bg-gray-50 rounded-xl border border-gray-100">
+                    <input type="checkbox" disabled className="w-5 py-2 px-1 accent-violet-600 rounded" />
+                    <span className="text-gray-600 font-medium">{opt}</span>
+                  </div>
+                ))}
+              </div>
+            );
+
+          case "DROPDOWN":
+  return (
+    <div className="relative group">
+      <select 
+        disabled 
+        className="w-full px-2 py-1 bg-gray-50 border-2 border-gray-100 rounded-2xl outline-none appearance-none cursor-not-allowed text-gray-500 font-medium transition-all group-hover:border-violet-100"
+      >
+        <option value="">Select an option...</option>
+        {field.options?.map((opt, i) => (
+          <option key={i} value={opt}>{opt}</option>
+        ))}
+      </select>
+      
+      {/* Custom Chevron Arrow for that premium look */}
+      <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+        <ChevronDown/>
+      </div>
+    </div>
+  );  
+
+          case "RADIO":
+            return (
+              <div className="flex flex-wrap gap-4">
+                {(field.options || ["Yes", "No"]).map(opt => (
+                  <div key={opt} className="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-full border border-gray-100">
+                    <input type="radio" disabled className="w-4 h-4 accent-violet-600" />
+                    <span className="text-gray-600 font-medium text-sm">{opt}</span>
+                  </div>
+                ))}
+              </div>
+            );
+
+          default: 
+            return <input type="text" disabled className="w-full px-2 py-1 bg-gray-50 border-2 border-gray-100 rounded-2xl outline-none" />;
+        }
+      })()}
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Modal Footer */}
+              <div className="p-4 bg-white border-t border-gray-100 flex gap-4">
+                <button 
+                  onClick={() => setviewform(false)}
+                  className="flex-1 py-4 bg-gray-100 text-gray-600 rounded-2xl font-bold hover:bg-gray-200 transition"
+                >
+                  Close Preview
+                </button>
+                <button 
+                  onClick={() => {
+                    navigator.clipboard.writeText(viewData.sharedUrl);
+                    toast.success("Link copied!");
+                  }}
+                  className="flex-1 py-4 bg-black text-white rounded-2xl font-bold hover:bg-violet-700 shadow-lg shadow-violet-200 transition flex items-center justify-center gap-2"
+                >
+                  <Send size={18} /> Copy Share Link
+                </button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
+
+ 
 }
 
 export default Form;

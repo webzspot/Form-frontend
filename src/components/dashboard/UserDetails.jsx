@@ -4,6 +4,8 @@ import { FaUser, FaPlus, FaSearch, FaFilter, FaSortAmountDown, FaTrash, FaEdit, 
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import toast, { Toaster } from "react-hot-toast";
+import UserNavbar from '../user/UserNavbar';
+
 
 const UserDetails = () => {
     const [userData, setUserData] = useState([]);
@@ -119,9 +121,12 @@ const UserDetails = () => {
         });
 
     return (
+<>
+       <UserNavbar/>
         <div className='bg-slate-50 min-h-screen w-full p-4 md:p-8 font-sans text-slate-900'>
-            <Toaster position="top-right" />
-
+           
+          
+             
             {/* Header Section */}
             <div className="max-w-7xl mx-auto mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
@@ -352,6 +357,7 @@ const UserDetails = () => {
                 )}
             </AnimatePresence>
         </div>
+        </>
     );
 };
 

@@ -13,6 +13,7 @@ import {
 } from 'react-icons/fa';
 import toast, { Toaster } from "react-hot-toast";
 
+
 const AllReports = () => {
     const [fetchReports, setFetchReports] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -20,7 +21,7 @@ const AllReports = () => {
     const [searchQuery, setSearchQuery] = useState("");
     
     const token = localStorage.getItem("token");
-    const navigate = useNavigate();
+    
 
     const STATUS_OPTIONS = ["RISED", "INPROGRESS", "RESOLVED", "CLOSED", "REJECTED"];
 
@@ -84,8 +85,11 @@ const AllReports = () => {
         });
 
     return (
+        <>
+         
+        <UserNavbar/>
         <div className="min-h-screen bg-slate-50 p-4 md:p-8 lg:p-10 font-sans">
-            <Toaster position="top-right" />
+        
             
             {/* Header Section */}
             <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
@@ -235,6 +239,7 @@ const AllReports = () => {
                 </div>
             </div>
         </div>
+        </>
     );
 };
 

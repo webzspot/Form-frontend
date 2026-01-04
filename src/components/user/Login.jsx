@@ -32,15 +32,25 @@ const Login = () => {
     email:loginemail,
     password:loginpassword
   })
-    console.log(response)
-  const role=response.data.user.role
+  
+  console.log(response)
+  
 
-if(role=="ADMIN"){
-  navigate("/dashboard")
-}
  
   const {token}=response.data;
   localStorage.setItem("token",token);
+
+  const role=response.data.user.role
+  console.log(role);
+  localStorage.setItem("role",role);
+
+  const Name=response.data.user.name;
+  console.log(Name); 
+  localStorage.setItem("Name",Name);
+
+if(role=="ADMIN"){
+  navigate("/admindashboard")
+}
   setloginsucessmsg(true);
   setloginerrormsg(false);
   

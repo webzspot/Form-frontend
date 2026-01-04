@@ -107,7 +107,7 @@ useEffect(() => {
 
   return (
     <div>
-     <UserNavbar/>
+    <UserNavbar/>
       <div className='flex relative flex-col items-center gap-10 mt-4'>
         
         {/* Toggle Buttons */}
