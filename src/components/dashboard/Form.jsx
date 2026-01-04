@@ -23,7 +23,8 @@ const [formTitle, setFormTitle] = useState("Untitled Form");
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
-
+//Import URL from .env 
+ const URL=import.meta.env.VITE_URL
 
 
 // 1. Fetch Master Fields on load
@@ -472,10 +473,15 @@ const formview = async (formId) => {
                   Close Preview
                 </button>
                 <button 
-                  onClick={() => {
-                    navigator.clipboard.writeText(viewData.sharedUrl);
-                    toast.success("Link copied!");
-                  }}
+                  // onClick={() => {
+                  //   navigator.clipboard.writeText(viewData.sharedUrl);
+                  //   toast.success("Link copied!");
+                  // }}
+                     onClick={() => {
+    const link = `${URL}/public/form/${viewData.slug}`;
+    navigator.clipboard.writeText(link);
+    toast.success("Link copied!");
+  }}
                   className="flex-1 py-4 bg-black text-white rounded-2xl font-bold hover:bg-violet-700 shadow-lg shadow-violet-200 transition flex items-center justify-center gap-2"
                 >
                   <Send size={18} /> Copy Share Link

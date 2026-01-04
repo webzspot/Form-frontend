@@ -6,6 +6,9 @@ import { Link } from 'react-router-dom';
 
 const Nav = () => {
   const [open, setOpen] = useState(false);
+   
+  const token = localStorage.getItem("token");
+const role = localStorage.getItem("role");
 
   const scrollToSection=(id)=>{
     const section=document.getElementById(id);
@@ -66,13 +69,13 @@ const Nav = () => {
 
           {/* Right Buttons */}
           <div className="flex items-center gap-4">
-            <Link to={"/login"}>
+            <Link to={ !token ? "/login" : role === "ADMIN" ? "/admindashboard" : "/home" }>
             <button className="text-gray-700 font-medium text-sm sm:text-lg hover:text-[#6C3BFF]">
               Sign In
             </button>
             </Link>
            
-           <Link to="/register">
+           <Link to={ !token ? "/register" : role === "ADMIN" ? "/admindashboard" : "/home" }>
             <button className="bg-[#6C3BFF] hover:bg-[#5c2dea] hidden lg:block transition-all text-white font-semibold px-5 py-2.5 rounded-xl">
               Get Started
             </button>
@@ -122,7 +125,7 @@ const Nav = () => {
                 <li className="hover:text-[#6C3BFF] cursor-pointer">Templates</li>
                 <li className="hover:text-[#6C3BFF] cursor-pointer">Analytics</li>
                 <li className="hover:text-[#6C3BFF] cursor-pointer">Integrations</li>
-               <Link  to={"/register"}><li className="bg-[#6C3BFF] rounded text-white px-4 py-1 my-4 w-fit hover:bg-[#7553da] cursor-pointer">GetStarted</li></Link> 
+               <Link  to={ !token ? "/register" : role === "ADMIN" ? "/admindashboard" : "/home" }><li className="bg-[#6C3BFF] rounded text-white px-4 py-1 my-4 w-fit hover:bg-[#7553da] cursor-pointer">GetStarted</li></Link> 
                 
               </ul>
             </motion.div>
