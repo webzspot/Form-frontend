@@ -13,9 +13,7 @@ const ProfileSettings = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
-  
- const navigate = useNavigate();
-
+  const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const API_BASE = "https://formbuilder-saas-backend.onrender.com/api/users/profile";
 
@@ -75,7 +73,6 @@ const ProfileSettings = () => {
     localStorage.clear();
     toast.success("Logged out successfully");
     navigate("/login");
-    
   };
 
   if (loading) return (
@@ -201,7 +198,7 @@ const ProfileSettings = () => {
       {/* Delete Confirmation Modal */}
       <AnimatePresence>
         {showDeleteModal && (
-          <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
+          <div className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm flex items-center justify-center z-100 p-4">
             <motion.div 
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}

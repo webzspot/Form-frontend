@@ -79,8 +79,9 @@ const Preview = ({ previewFields,  refreshFields }) => {
         `https://formbuilder-saas-backend.onrender.com/api/dashboard/master-fields/${selectedField.masterFieldId}`,
         {
           label: updatedName,
-          type: selectedField.type,
+          type: selectedField.type, 
           options: selectedField.options || [],
+
         },{
         headers:{
       Authorization:`Bearer ${token}`,
