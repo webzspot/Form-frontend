@@ -17,6 +17,11 @@ const Response = () => {
   const [selectedResponse, setSelectedResponse] = useState(null);
   const [isDetailLoading, setIsDetailLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
+   
+  //To store formfields
+const [formFields, setFormFields] = useState([]);
+
+  
 
   // 1. Fetch all responses for this form
   useEffect(() => {
@@ -34,7 +39,33 @@ const Response = () => {
     };
 
     if (formId) fetchResponses();
-  }, [formId, token]);
+  }, [formId, token]); 
+
+   //For viewing form details/label in responses
+  const formview = async (formId) => {
+  try {
+    const response = await axios.get(
+      `https://formbuilder-saas-backend.onrender.com/api/dashboard/form/details/${formId}`,
+      {
+        headers: { Authorization: `Bearer ${token}` }
+      }
+    );
+
+    setFormFields(response.data.data.formField); 
+  } catch (err) {
+    toast.error("Failed to load form details");
+  }
+};
+
+  //Storing formview function in useEffect
+useEffect(() => {
+  if (formId) {
+    formview(formId);
+  }
+}, [formId]);
+
+
+
 
   // 2. Fetch Single Response Detail (API Path #6)
   const handleViewDetail = async (responseId) => {
@@ -52,6 +83,13 @@ const Response = () => {
       setIsDetailLoading(false);
     }
   };
+      
+    //Adding Label function for formfields/responses
+    const getLabel = (fieldId) => {
+  if (!formFields || formFields.length === 0) return "Loading...";
+  return formFields.find(f => f.formFieldId === fieldId)?.label || "Unknown Field";
+};
+
 
   return (
     <>
@@ -88,7 +126,7 @@ const Response = () => {
               <p className="text-gray-500 text-lg">No responses found for this form yet.</p>
             </div>
           ) : (
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 ">
               <table className="w-full text-left">
                 <thead className="bg-gray-50 border-b border-gray-100">
                   <tr>
@@ -167,10 +205,15 @@ const Response = () => {
                         selectedResponse.responseValue.map((item) => (
                           <div key={item.responseValueId} className="bg-white border border-gray-100 p-4 rounded-xl shadow-sm">
                             <label className="block text-xs font-bold text-violet-500 uppercase mb-1">
-                              Field ID: {item.formFieldId}
+                            {getLabel(item.formFieldId)}
+
                             </label>
                             <p className="text-gray-800 font-medium">
-                              {item.value || <span className="text-gray-300 italic">No answer provided</span>}
+                              
+                               {/* {item.value || <span className="text-gray-300 italic">No answer provided</span>}  */}
+                                 {Array.isArray(item.value)
+                                  ? item.value.join(", ")
+                                    : item.value || <span className="text-gray-300 italic">No answer provided</span>} 
                             </p>
                           </div>
                         ))
@@ -187,7 +230,7 @@ const Response = () => {
                   onClick={() => setShowModal(false)}
                   className="w-full py-3 bg-gray-900 text-white font-bold rounded-xl hover:bg-black transition"
                 >
-                  Close Window
+                  Close 
                 </button>
               </div>
             </motion.div>

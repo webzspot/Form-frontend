@@ -16,7 +16,7 @@ import Response from './components/user/Response.jsx';
 import ProfileSettings from './components/user/ProfileSettings.jsx';
 import AllReports from './components/dashboard/AllReports.jsx';
 import UserNavbar from './components/user/UserNavbar.jsx';
-
+import ProtectedRoute from './routes/ProtectedRoute.jsx';
 
 
 const App = () => {
@@ -42,14 +42,43 @@ const App = () => {
   
     <Route path="/register" element={<Register/>}/>
     <Route path="/login" element={<Login/>}/>
-    <Route path="/home" element={<Home/>}/>
-    <Route path="/userreport" element={<UserReport/>}/>
-    <Route path="/form" element={<Form/>}/>    
-     <Route path="/profile" element={<ProfileSettings />} />
+    <Route path="/home" element={
+      <ProtectedRoute allowedRoles={["USER"]}>
+      <Home/>
+      </ProtectedRoute>
+      }/>
+    <Route path="/userreport" element={
+      <ProtectedRoute allowedRoles={["USER"]}>
+      <UserReport/>
+      </ProtectedRoute>
+      }/>
+    <Route path="/form" element={
+      <ProtectedRoute allowedRoles={["USER"]}>
+      <Form/>
+      </ProtectedRoute>
+     }/>    
+     <Route path="/profile" element={
+      <ProtectedRoute allowedRoles={["USER","ADMIN"]}>
+      <ProfileSettings />
+      </ProtectedRoute>
+      } />
     <Route path='/public/form/:slug' element={<PublicForm/>}/>
-    <Route path="/responses/:formId" element={<Response/>}/>
-    <Route path="/admindashboard" element={<UserDetails/>}/>
-    <Route path="/adminreport" element={<AllReports/>}/>
+    <Route path="/responses/:formId" element={
+      <ProtectedRoute allowedRoles={["USER"]}>
+      <Response/>
+      </ProtectedRoute>
+      }/>
+    <Route path="/admindashboard" element={
+     <ProtectedRoute allowedRoles={["ADMIN"]}>
+      <UserDetails/>
+     </ProtectedRoute>
+      
+      }/>
+    <Route path="/adminreport" element={
+      <ProtectedRoute allowedRoles={["ADMIN"]}>
+      <AllReports/>
+      </ProtectedRoute>
+      } />
      </Routes>
 
  <Toaster

@@ -308,7 +308,7 @@ useEffect(() => {
 
        
 
- <Preview previewFields={previewFields} />
+<Preview previewFields={previewFields} refreshFields={fetchField} />
 
 
       <div className='mt-5'>
