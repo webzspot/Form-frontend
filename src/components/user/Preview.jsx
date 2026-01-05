@@ -53,7 +53,9 @@ const Preview = ({ previewFields,  refreshFields }) => {
       .then(() => {
         setFetchedFields((prev) =>
           prev.filter((f) => f.masterFieldId !== masterFieldId));
+         refreshFields();
            toast.success("Deleted successful");
+          
             
       })
     .catch((err) => {
@@ -64,7 +66,7 @@ const Preview = ({ previewFields,  refreshFields }) => {
   // 🔹 Open update popup
   const openUpdatePopup = (field) => {
     setSelectedField(field);
-    setUpdatedName(field.name);
+    setUpdatedName(field.label || "");
     setUpdatePop(true);
   };
 
@@ -95,7 +97,9 @@ const Preview = ({ previewFields,  refreshFields }) => {
 
         setUpdatePop(false);
         setSelectedField(null);
+         refreshFields();
         toast.success("Updated successful");
+       
      
       })
       .catch((err) => console.error("Update failed", err));

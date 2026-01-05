@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
-import UserNavbar from '../user/UserNavbar';
+import UserNavbar from "../user/UserNavbar";
 import { 
     FaFileAlt, 
     FaFilter, 
@@ -89,6 +89,7 @@ const AllReports = () => {
         <>
          
         <UserNavbar/>
+
         <div className="min-h-screen bg-slate-50 p-4 md:p-8 lg:p-10 font-sans">
         
             

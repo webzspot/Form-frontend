@@ -126,7 +126,7 @@ useEffect(() => {
               <p className="text-gray-500 text-lg">No responses found for this form yet.</p>
             </div>
           ) : (
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 ">
               <table className="w-full text-left">
                 <thead className="bg-gray-50 border-b border-gray-100">
                   <tr>
@@ -230,7 +230,7 @@ useEffect(() => {
                   onClick={() => setShowModal(false)}
                   className="w-full py-3 bg-gray-900 text-white font-bold rounded-xl hover:bg-black transition"
                 >
-                  Close Window
+                  Close 
                 </button>
               </div>
             </motion.div>
