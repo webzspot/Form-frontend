@@ -36,14 +36,6 @@ console.log(response);
 setsucessmessage(true);
 
 
-// .then((res)=>{
-//   setsucessmessage(true);
-//   localStorage.setItem("userId",res.data.userId);
-//   console.log("Registered userId:",res.data.userId);
-// })
-// .catch((err)=>{
-//   seterrormessage(true);
-// })
 
  }
 
@@ -140,7 +132,7 @@ const heading = "Start Your Journey With Us.";
         {/* inputfields */}
         <form>
         <div className='space-y-4'>
-
+ <p className='font-bold'>!!!!!!!!!!!</p>
             <div>
             <label className='text-sm'>Full Name</label>
             <input 
