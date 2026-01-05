@@ -85,7 +85,7 @@ const fetchField = async () => {
 
     setPreviewFields(res.data.data); 
   } catch (error) {
-    toast.error("error")
+   
   }
 };
     
