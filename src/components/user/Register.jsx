@@ -140,7 +140,7 @@ const heading = "Start Your Journey With Us.";
         {/* inputfields */}
         <form>
         <div className='space-y-4'>
-
+<p>!!!!!!!!</p>
             <div>
             <label className='text-sm'>Full Name</label>
             <input 
