@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import {Menu, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Link } from 'react-router-dom';
 
 
 const Nav = () => {
   const [open, setOpen] = useState(false);
+   
+  const token = localStorage.getItem("token");
+const role = localStorage.getItem("role");
 
   const scrollToSection=(id)=>{
     const section=document.getElementById(id);
@@ -65,13 +69,17 @@ const Nav = () => {
 
           {/* Right Buttons */}
           <div className="flex items-center gap-4">
+            <Link to={ !token ? "/login" : role === "ADMIN" ? "/admindashboard" : "/home" }>
             <button className="text-gray-700 font-medium text-sm sm:text-lg hover:text-[#6C3BFF]">
               Sign In
             </button>
-
+            </Link>
+           
+           <Link to={ !token ? "/register" : role === "ADMIN" ? "/admindashboard" : "/home" }>
             <button className="bg-[#6C3BFF] hover:bg-[#5c2dea] hidden lg:block transition-all text-white font-semibold px-5 py-2.5 rounded-xl">
               Get Started
             </button>
+            </Link>
 
             {/* Mobile Menu Button */}
             <button
@@ -124,11 +132,8 @@ const Nav = () => {
                 <li className="hover:text-[#6C3BFF] cursor-pointer">Templates</li>
                 <li className="hover:text-[#6C3BFF] cursor-pointer">Analytics</li>
                 <li className="hover:text-[#6C3BFF] cursor-pointer">Integrations</li>
-                <li
-              onClick={()=>scrollToSection("contact")}
-               className="cursor-pointer hover:text-[#6C3BFF]">Contact</li>
-
-                <li className="bg-[#6C3BFF] rounded text-white px-6 py-1 w-fit hover:bg-[#7553da] cursor-pointer">Logout</li>
+               <Link  to={ !token ? "/register" : role === "ADMIN" ? "/admindashboard" : "/home" }><li className="bg-[#6C3BFF] rounded text-white px-4 py-1 my-4 w-fit hover:bg-[#7553da] cursor-pointer">GetStarted</li></Link> 
+                
               </ul>
             </motion.div>
           </>

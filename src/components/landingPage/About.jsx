@@ -121,7 +121,7 @@ return (
   whileInView={{ opacity: 1, y: 0 }}
   transition={{ duration: 1 }}
   viewport={{ once: true }}>
-  <div   className='bg-purple-500 rounded-full p-1 w-fit mt-6 flex flex-col justify-center items-center mx-auto'>
+  <div  id='features' className='bg-purple-500 rounded-full p-1 w-fit mt-6 flex flex-col justify-center items-center mx-auto'>
     <p className='text-white text-sm text-center p-2'>Powerful Features</p>
   </div>
 <h2 className='text-2xl mt-4 font-bold text-center'>
@@ -297,6 +297,7 @@ return (
 </div>
    </div>
    </section>
+
    
   )
 }

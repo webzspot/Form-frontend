@@ -285,7 +285,7 @@ const Hero = () => {
 
     </div>
     </section>
-    <section className="w-full bg-gradient-to-br from-[#5b46e5] to-[#8f3cf7] py-16 px-4 mt-4">
+    <section id="about" className="w-full bg-[#8f3cf7] py-16 px-4 mt-4">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
 
         {/* LEFT CONTENT */}
