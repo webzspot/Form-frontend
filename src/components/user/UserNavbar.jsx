@@ -8,8 +8,7 @@ const UserNavbar = () => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
-  // 1. Get values from localStorage
-  // Using .toLowerCase() to ensure comparison works even if strings vary in case
+ 
   const role = localStorage.getItem("role")?.toLowerCase() || "user";
   const Name = localStorage.getItem("Name") || "Profile";
 
