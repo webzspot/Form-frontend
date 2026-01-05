@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Edit, Trash } from "lucide-react";
@@ -58,9 +59,8 @@ const Preview = ({ previewFields,  refreshFields }) => {
           
             
       })
-    .catch((err) => {
-    });
-      
+   
+   
   };
 
   // 🔹 Open update popup
@@ -79,7 +79,8 @@ const Preview = ({ previewFields,  refreshFields }) => {
         `https://formbuilder-saas-backend.onrender.com/api/dashboard/master-fields/${selectedField.masterFieldId}`,
         {
           label: updatedName,
-          type: selectedField.type, // IMPORTANT for Prisma enum
+          type: selectedField.type,
+          options: selectedField.options || [],
         },{
         headers:{
       Authorization:`Bearer ${token}`,
