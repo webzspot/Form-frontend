@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X, Bug, FileText, HomeIcon, LogOut, Sparkles, User2Icon, User2, BarChart } from "lucide-react";
+import { Menu, X, Bug, FileText, HomeIcon, Sparkles, FileChartColumn , User2Icon, User2, BarChart, Satellite, ScatterChart } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
+
+
 
 const UserNavbar = () => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
-  // 1. Get values from localStorage
-  // Using .toLowerCase() to ensure comparison works even if strings vary in case
+ 
   const role = localStorage.getItem("role")?.toLowerCase() || "user";
   const Name = localStorage.getItem("Name") || "Profile";
 
@@ -18,6 +18,7 @@ const UserNavbar = () => {
     { label: "Home", icon: <HomeIcon size={18} />, allowedRoles: ["user"] },
     { label: "Forms", icon: <FileText size={18} />, allowedRoles: ["user"] },
     { label: "Report", icon: <Bug size={18} />, allowedRoles: ["user"] },
+    { label: "Status", icon:  <FileChartColumn size={18}/> , allowedRoles: ["user"] },
     { label: "UserDetail", icon: <User2Icon size={18} />, allowedRoles: ["admin"] },
     { label: "UserReport", icon: <BarChart size={18} />, allowedRoles: ["admin"] },
     { label: Name, icon: <User2 size={18} />, allowedRoles: ["user", "admin"] },
@@ -32,16 +33,17 @@ const UserNavbar = () => {
     if (label === "Report") navigate("/userreport");
     else if (label === "Home") navigate("/home");
     else if (label === "Forms") navigate("/form");
+    else if (label === "Status") navigate("/reportstatus");
     else if (label === "UserDetail") navigate("/admindashboard");
     else if (label === "UserReport") navigate("/adminreport");
     else if (label === Name) navigate("/profile");
   };
 
-  const handleLogout = () => {
-    localStorage.clear();
-    toast.success("Logged out successfully");
-    navigate("/login");
-  };
+  // const handleLogout = () => {
+  //   localStorage.clear();
+  //   toast.success("Logged out successfully");
+  //   navigate("/login");
+  // };
 
   return (
     <>
@@ -69,12 +71,12 @@ const UserNavbar = () => {
               </button>
             ))}
 
-            <button
+            {/* <button
               onClick={handleLogout}
               className="flex items-center gap-2 px-4 py-2 rounded-xl text-red-500 hover:bg-red-50 transition-all"
             >
               <LogOut size={18} /> Logout
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
@@ -130,12 +132,12 @@ const UserNavbar = () => {
                     {item.label}
                   </button>
                 ))}
-                <button
+                {/* <button
                   onClick={handleLogout}
                   className="flex bg-red-50 text-red-600 font-semibold items-center gap-2 px-4 py-2 rounded-xl mt-4"
                 >
                   <LogOut size={18} /> Logout
-                </button>
+                </button> */}
               </div>
             </motion.div>
           </>

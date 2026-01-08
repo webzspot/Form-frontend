@@ -121,6 +121,13 @@ const role = localStorage.getItem("role");
               </div>
 
               <ul className="space-y-6 text-lg font-medium text-gray-700">
+                 <li
+              onClick={()=>scrollToSection("home")}
+               className="cursor-pointer hover:text-[#6C3BFF]">Home</li>
+               <li
+              onClick={()=>scrollToSection("about")}
+               className="cursor-pointer hover:text-[#6C3BFF]">About</li>
+
                 <li className="hover:text-[#6C3BFF] cursor-pointer">Dashboard</li>
                 <li className="hover:text-[#6C3BFF] cursor-pointer">Templates</li>
                 <li className="hover:text-[#6C3BFF] cursor-pointer">Analytics</li>

@@ -4,6 +4,8 @@ import Hero from './components/landingPage/Hero'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import  About  from './components/landingPage/About.jsx'
 import Footer from './components/landingPage/Footer.jsx'
+
+
 import Register from './components/user/Register.jsx'
 import Login from './components/user/Login.jsx';
 import Home from './components/user/Home.jsx';
@@ -20,6 +22,7 @@ import ProtectedRoute from './routes/ProtectedRoute.jsx';
 import UserActivity from './components/dashboard/UserActivity.jsx';
 import AllForms from './components/dashboard/AllForms.jsx';
 import AdminFormResponses from './components/dashboard/AdminFormResponses.jsx';
+import Reportstatus from './components/user/Reportstatus.jsx';
 const App = () => {
 
 
@@ -58,6 +61,17 @@ const App = () => {
       <Form/>
       </ProtectedRoute>
      }/>    
+    
+    <Route path="/reportstatus" element={
+      <ProtectedRoute allowedRoles={["USER"]}>
+     <Reportstatus/>
+      </ProtectedRoute>
+      } />
+
+
+
+
+
      <Route path="/profile" element={
       <ProtectedRoute allowedRoles={["USER","ADMIN"]}>
       <ProfileSettings />
@@ -108,6 +122,15 @@ const App = () => {
       <AllReports/>
       </ProtectedRoute>
       } />
+  
+  <Route path="/reportstatus" element={
+      <ProtectedRoute allowedRoles={["USER"]}>
+     <Reportstatus/>
+      </ProtectedRoute>
+      } />
+
+
+
      </Routes>
 
  <Toaster

@@ -175,7 +175,7 @@ const UserDetails = () => {
               
                 {/*View all forms */}
                 <button
-                className="flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl shadow-lg shadow-indigo-200 transition-all active:scale-95"
+                className="flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-700 text-white px-6 py-3 rounded-xl shadow-lg shadow-indigo-200 transition-all active:scale-95"
                 onClick={() => navigate("/admin/forms")}>
   View All Forms
 </button>
@@ -340,7 +340,7 @@ const UserDetails = () => {
     <button
       onClick={nextPage}
       disabled={currentPage === totalPages}
-      className="px-4 py-2 bg-black text-white rounded disabled:opacity-50"
+      className="px-4 py-2 bg-violet-600 text-white rounded disabled:opacity-50"
     >
       Next
     </button>

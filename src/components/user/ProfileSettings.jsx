@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { FiEdit, FiTrash2, FiUser, FiMail, FiShield, FiLoader } from "react-icons/fi";
@@ -14,9 +13,7 @@ const ProfileSettings = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
-  
- const navigate = useNavigate();
-
+  const navigate = useNavigate();
   const token = localStorage.getItem("token");
   const API_BASE = "https://formbuilder-saas-backend.onrender.com/api/users/profile";
 
@@ -59,15 +56,21 @@ const ProfileSettings = () => {
     }
   };
 
+  const [passcode,setpasscode]=useState("");
   const handleDelete = async () => {
     setActionLoading(true);
     try {
-      await axios.delete(`${API_BASE}/delete`, {
+      await axios.delete(`${API_BASE}/delete`,{
         headers: { Authorization: `Bearer ${token}` },
+        data: { password: passcode }
       });
-      handleLogout();
+      localStorage.clear();
+      toast.success("Account deleted successfully");
+      navigate("/register");
+      setpasscode("");
     } catch (err) {
-      toast.error("Delete failed");
+      const errorMsg = err.response?.data?.message || "Delete failed";
+      toast.error(errorMsg);
       setActionLoading(false);
     }
   };
@@ -76,7 +79,6 @@ const ProfileSettings = () => {
     localStorage.clear();
     toast.success("Logged out successfully");
     navigate("/login");
-    
   };
 
   if (loading) return (
@@ -215,6 +217,13 @@ const ProfileSettings = () => {
               <h2 className="text-2xl font-bold text-gray-900">Are you sure?</h2>
               <p className="text-gray-500 mt-2 mb-8">This action is irreversible. All your forms and data will be lost.</p>
               <div className="flex flex-col gap-3">
+                <input
+                value={passcode}
+                onChange={(e)=>setpasscode(e.target.value)}
+                type="password"
+                 placeholder="Enter your Passcode"
+                 className="w-full bg-gray-100 text-gray-600 text-center py-3 rounded-xl font-semibold  transition-all outline-none"
+                />
                 <button 
                   disabled={actionLoading}
                   onClick={handleDelete}

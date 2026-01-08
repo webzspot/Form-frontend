@@ -1,230 +1,234 @@
-
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
-import { Edit, Trash } from "lucide-react";
+import { Edit3, Trash2, X, AlertCircle } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 
-
-
-const Preview = ({ previewFields,  refreshFields }) => {
-  const token=localStorage.getItem("token");
-  const [fetchedFields, setFetchedFields] = useState([]);
-  const [loading, setLoading] = useState(true);
+const Preview = ({ previewFields, refreshFields }) => {
+  const token = localStorage.getItem("token");
 
   const [updatePop, setUpdatePop] = useState(false);
   const [selectedField, setSelectedField] = useState(null);
   const [updatedName, setUpdatedName] = useState("");
+  const [isUpdating, setIsUpdating] = useState(false);
 
-
-
-  // 🔹 Fetch master fields for logged-in user
-  useEffect(() => {
-
-
-    axios
-      .get(
-        "https://formbuilder-saas-backend.onrender.com/api/dashboard/master-fields",{
-             headers:{
-      Authorization:`Bearer ${token}`,
-    }
-        }
-      )
-      .then((res) => {
-        setFetchedFields(res.data.data || []);
-      })
-      .catch((err) => {
-        console.error("Error fetching fields:", err);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  },[]);
+  
+  const sortedFields = [...previewFields].sort((a, b) => {
+    return String(a.masterFieldId).localeCompare(String(b.masterFieldId));
+  });
 
   // 🔹 Delete field
-  const handleDelete = (masterFieldId) => {
-    axios
-      .delete(
+  const handleDelete = async (masterFieldId) => {
+    try {
+      await axios.delete(
         `https://formbuilder-saas-backend.onrender.com/api/dashboard/master-fields/${masterFieldId}`,
-        {
-       headers:{
-      Authorization:`Bearer ${token}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast.success("Field removed");
+      refreshFields();
+    } catch (err) {
+      toast.error("Could not delete field");
     }
-        }
-      )
-      .then(() => {
-        setFetchedFields((prev) =>
-          prev.filter((f) => f.masterFieldId !== masterFieldId));
-         refreshFields();
-           toast.success("Deleted successful");
-          
-            
-      })
-    .catch((err) => {
-    });
-      
   };
 
-  // 🔹 Open update popup
   const openUpdatePopup = (field) => {
     setSelectedField(field);
     setUpdatedName(field.label || "");
     setUpdatePop(true);
   };
 
-  // 🔹 Update field name
-  const handleUpdate = () => {
+  // 🔹 Updated handleUpdate to fix "Cannot set options" error
+  const handleUpdate = async () => {
     if (!selectedField || !updatedName.trim()) return;
+    setIsUpdating(true);
 
+    // 1. Start with basic payload
     const payload = {
-    label: updatedName,
-    type: selectedField.type,
-  };
+      label: updatedName,
+      type: selectedField.type,
+    };
 
-  
-  if (["CHECKBOX", "RADIO", "DROPDOWN"].includes(selectedField.type)) {
-    payload.options = selectedField.options || [];
-  }
+    // 2. ONLY add options if the type is one that uses them.
+    // This fixes the "Cannot set options for field type DATE" error.
+    if (["CHECKBOX", "RADIO", "DROPDOWN"].includes(selectedField.type)) {
+      payload.options = selectedField.options || [];
+    }
 
-    axios
-      .put(
+    try {
+      await axios.put(
         `https://formbuilder-saas-backend.onrender.com/api/dashboard/master-fields/${selectedField.masterFieldId}`,
         payload,
-       {
-        headers:{
-      Authorization:`Bearer ${token}`,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setUpdatePop(false);
+      refreshFields();
+      toast.success("Label updated");
+    } catch (err) {
+      // 3. Better error logging
+      const errorMsg = err.response?.data?.message || "Update failed";
+      console.error("Update Error:", err.response?.data);
+      toast.error(errorMsg);
+    } finally {
+      setIsUpdating(false);
     }
-        }
-      )
-      .then(() => {
-        setFetchedFields((prev) =>
-          prev.map((f) =>
-            f.masterFieldId === selectedField.masterFieldId
-              ? { ...f, label: updatedName }
-              : f
-          )
-        );
-
-        setUpdatePop(false);
-        setSelectedField(null);
-         refreshFields();
-        toast.success("Updated successful");
-       
-     
-      })
-      .catch((err) => console.error("Update failed", err));
   };
 
   return (
-    <div className="flex flex-col items-center mt-10 gap-6">
-      <h2 className="text-2xl font-bold text-[#6C3BFF]">
-        Form Preview
-      </h2>
+    <div className="w-full max-w-4xl mx-auto pb-20 px-4">
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h2 className="text-2xl font-bold text-slate-800">Form Preview</h2>
+          <p className="text-sm text-slate-500">This is how your form looks to users.</p>
+        </div>
+        <div className="bg-violet-100 text-violet-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider">
+          {previewFields.length} Fields
+        </div>
+      </div>
 
-      <div className="relative w-4/5 bg-white p-8 rounded-2xl shadow-xl space-y-6">
-        {loading ? (
-          <p className="text-center text-gray-500">Loading...</p>
-        ) : previewFields.length === 0 ? (
-          <p className="text-center text-gray-400">
-            No fields found for this user
-          </p>
-        ) : (
-          previewFields.map((field) => (
-            <div key={field.masterFieldId} className="space-y-2">
-              <label className="font-semibold">{field.label}</label>
+      <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden">
+        <div className="px-4 py-2 space-y-4">
+          {sortedFields.length === 0 ? (
+            <div className="py-12 flex flex-col items-center justify-center text-center space-y-3">
+              <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center text-slate-300">
+                <AlertCircle size={32} />
+              </div>
+              <p className="text-slate-400 font-medium">No fields added yet.</p>
+            </div>
+          ) : (
+            sortedFields.map((field) => (
+              <motion.div 
+                layout
+                key={field.masterFieldId} 
+                className="group relative bg-slate-50/50 px-4 py-3 rounded-2xl border border-transparent hover:border-violet-100 hover:bg-white transition-all"
+              >
+                <div className="flex justify-between items-start">
+                  <div className="space-y-1">
+                    <span className="text-[10px]  font-bold text-violet-500 uppercase tracking-widest">{field.type}</span>
+                    <label className="block font-bold  text-slate-700">{field.label}</label>
+                  </div>
+                  
+                  <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button 
+                      onClick={() => openUpdatePopup(field)}
+                      className="p-2  bg-white text-slate-400 hover:text-violet-600 rounded-lg shadow-sm border border-slate-100 transition-all"
+                    >
+                      <Edit3 size={16} />
+                    </button>
+                    <button 
+                      onClick={() => handleDelete(field.masterFieldId)}
+                      className="p-2 bg-white text-slate-400 hover:text-red-500 rounded-lg shadow-sm border border-slate-100 transition-all"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                  </div>
+                </div>
 
-              {/* INPUT TYPES */}
-              {field.type === "TEXTAREA" && (
-                <textarea className="w-full border border-black/30 rounded-xl py-1 mt-1" />
-              )}
+                <div className="w-full mt-2 max-w-md pointer-events-none opacity-70">
+                  {field.type === "TEXTAREA" && (
+                    <textarea disabled className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 h-24 resize-none" placeholder="Long text entry..." />
+                  )}
 
-              {["TEXT", "EMAIL", "NUMBER", "DATE"].includes(field.type) && (
-                <input
-                  type={field.type.toLowerCase()}
-                  className="w-full border border-black/30 rounded-xl py-1 mt-1"
-                />
-              )}
-
-              {field.type === "CHECKBOX" &&
-                field.options?.map((opt, i) => (
-                  <label key={i} className="flex gap-2">
-                    <input type="checkbox" />
-                    {opt}
-                  </label>
-                ))}
-
-              {field.type === "RADIO" &&
-                field.options?.map((opt, i) => (
-                  <label key={i} className="flex gap-2">
+                  {["TEXT", "EMAIL", "NUMBER", "DATE"].includes(field.type) && (
                     <input
-                      type="radio"
-                      name={field.masterFieldId}
+                      disabled
+                      type={field.type === "DATE" ? "date" : field.type.toLowerCase()}
+                      className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 text-slate-600"
+                      placeholder={`Enter ${field.label.toLowerCase()}...`}
                     />
-                    {opt}
-                  </label>
-                ))}
+                  )}
 
-              {field.type === "DROPDOWN" && (
-                <select className="border rounded-xl p-2">
-                  <option>Select {field.name}</option>
-                  {field.options?.map((opt, i) => (
-                    <option key={i}>{opt}</option>
-                  ))}
-                </select>
-              )}
+                  {field.type === "CHECKBOX" && (
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {field.options?.map((opt, i) => (
+                        <div key={i} className="flex items-center gap-3 bg-white p-3 rounded-xl border border-slate-100">
+                          <input type="checkbox" disabled className="w-4 h-4 rounded border-slate-300 text-violet-600" />
+                          <span className="text-sm text-slate-600">{opt}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
 
-              {/* ACTIONS */}
-              <div className="flex gap-4 mt-2">
-                <Trash
-                  className="cursor-pointer"
-                  onClick={() =>
-                    handleDelete(field.masterFieldId)
-                  }
-                />
-                <Edit
-                  className="cursor-pointer"
-                  onClick={() => openUpdatePopup(field)}
-                />
-              </div>
-            </div>
-          ))
-        )}
+                  {field.type === "RADIO" && (
+                    <div className="space-y-2">
+                      {field.options?.map((opt, i) => (
+                        <div key={i} className="flex items-center gap-3">
+                          <input type="radio" disabled className="w-4 h-4 border-slate-300 text-violet-600" />
+                          <span className="text-sm text-slate-600">{opt}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
 
-        {/* UPDATE POPUP */}
+                  {field.type === "DROPDOWN" && (
+                    <select disabled className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2 text-slate-600 outline-none appearance-none">
+                      <option>Select an option</option>
+                      {field.options?.map((opt, i) => (
+                        <option key={i}>{opt}</option>
+                      ))}
+                    </select>
+                  )}
+                </div>
+              </motion.div>
+            ))
+          )}
+        </div>
+      </div>
+
+      {/* UPDATE MODAL */}
+      <AnimatePresence>
         {updatePop && (
-          <div className="absolute inset-0 flex items-center justify-center bg-black/20 backdrop-blur-sm">
-            <div className="bg-white p-6 rounded-xl w-96 space-y-4">
-              <h3 className="font-bold text-lg text-center">
-                Update Field Name
-              </h3>
-
-              <input
-                value={updatedName}
-                onChange={(e) =>
-                  setUpdatedName(e.target.value)
-                }
-                className="w-full border rounded-xl p-2"
-              />
-
-              <div className="flex justify-between">
-                <button
-                  onClick={handleUpdate}
-                  className="bg-[#6C3BFF] text-white px-4 py-1 rounded"
-                >
-                  Update
-                </button>
-                <button
-                  onClick={() => setUpdatePop(false)}
-                  className="bg-gray-300 px-4 py-1 rounded"
-                >
-                  Cancel
-                </button>
+          <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              onClick={() => setUpdatePop(false)}
+              className="absolute inset-0 bg-slate-900/60 backdrop-blur-md"
+            />
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              className="relative bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl"
+            >
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="text-xl font-bold text-slate-800">Rename Label</h3>
+               
               </div>
-            </div>
+
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-slate-400 uppercase tracking-widest">New Label Name</label>
+                  <input
+                    autoFocus
+                    value={updatedName}
+                    onChange={(e) => setUpdatedName(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleUpdate()}
+                    className="w-full bg-slate-50 border mt-2 border-slate-200 rounded-2xl px-4 py-2  focus:bg-white outline-none transition-all font-medium"
+                  />
+                </div>
+
+                <div className="flex gap-3 pt-4">
+                  <button
+                    disabled={isUpdating}
+                    onClick={handleUpdate}
+                    className="w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-3 rounded-2xl shadow-lg shadow-violet-200 transition-all"
+                  >
+                    {isUpdating ? "Saving..." : "Update Label"}
+                  </button>
+                  <button
+                    onClick={() => setUpdatePop(false)}
+                    className="px-6 py-3 bg-slate-100 text-slate-600 font-bold rounded-2xl hover:bg-slate-200 transition-all"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </div>
+            </motion.div>
           </div>
         )}
-      </div>
+      </AnimatePresence>
     </div>
   );
 };
+
 
 export default Preview;
