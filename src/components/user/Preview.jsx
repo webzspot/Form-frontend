@@ -75,14 +75,21 @@ const Preview = ({ previewFields,  refreshFields }) => {
   const handleUpdate = () => {
     if (!selectedField || !updatedName.trim()) return;
 
+    const payload = {
+    label: updatedName,
+    type: selectedField.type,
+  };
+
+  
+  if (["CHECKBOX", "RADIO", "DROPDOWN"].includes(selectedField.type)) {
+    payload.options = selectedField.options || [];
+  }
+
     axios
       .put(
         `https://formbuilder-saas-backend.onrender.com/api/dashboard/master-fields/${selectedField.masterFieldId}`,
-        {
-          label: updatedName,
-          type: selectedField.type,
-          options: selectedField.options || [],
-        },{
+        payload,
+       {
         headers:{
       Authorization:`Bearer ${token}`,
     }

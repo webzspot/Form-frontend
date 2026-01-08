@@ -1,709 +1,3 @@
-// import React, { useEffect, useState } from 'react';
-// import { motion, AnimatePresence } from 'framer-motion';
-// import axios from 'axios';
-// import toast from 'react-hot-toast';
-// import UserNavbar from "../user/UserNavbar";
-// import { useFormContext } from './FormContext';
-// import { EditIcon, Trash2,  ChevronDown, Edit } from 'lucide-react'; 
-// import { useNavigate } from 'react-router-dom';
-// import { X, Send, } from 'lucide-react';
-// import { MdAddCard,} from 'react-icons/md';
-
-
-// const Form = () => {
- 
-// //masterfield
-// const [masterFields, setMasterFields] = useState([]);
-// const [selectedFields, setSelectedFields] = useState([]);
-// const [showFormBuilder, setShowFormBuilder] = useState(false);
-// const [formTitle, setFormTitle] = useState("Untitled Form");
-
-// //formfield
-//   const { forms, setForms, updateFormLocally, deleteFormLocally } = useFormContext();
-//   const [loading, setLoading] = useState(false);
-//   const [isDeleting, setIsDeleting] = useState(null);  // Stores the form object to delete
-//   const token = localStorage.getItem("token");
-//   const navigate = useNavigate();
-
-// //Import URL from .env 
-//  const URL=import.meta.env.VITE_URL
- 
-//  const navi=useNavigate();
-
-// // 1. Fetch Master Fields on load
-// useEffect(() => {
-//   const getMasterFields = async () => {
-//     try {
-//       const res = await axios.get("https://formbuilder-saas-backend.onrender.com/api/dashboard/master-fields", {
-//         headers: { Authorization: `Bearer ${token}` }
-//       });
-//       setMasterFields(res.data.data);
-//     } catch (err) {
-//       toast.error("Error loading master fields");
-//     }
-//   };
-//   getMasterFields();
-// }, [token]);
-
-// // 2. Toggle field selection (Used by your checkboxes)
-// const toggleField = (toggledField) => {
-//   setSelectedFields(prev => {
-//     const exists = prev.find(f => f.masterFieldId === toggledField.masterFieldId);
-//     if (exists) {
-//       return prev.filter(f => f.masterFieldId !== toggledField.masterFieldId);
-//     }
-//     return [...prev, { ...toggledField, required: false }];
-//   });
-// };
-
-// // // 3. The Final API Call to Create the Form
-// const createForm = async () => {
-//   if (selectedFields.length === 0) return toast.error("Please select at least one field");
-
-//   setLoading(true);
-//   try {
-
-//      const uniqueTitle = `Untitled Form ${Date.now()}`
-
-//        const payload = {
-//       title: uniqueTitle,
-//       description: "Auto created form",
-//       isPublic: true,
-//       fields: selectedFields.map((field, index) => ({
-//         label: field.label,
-//         type: field.type,
-//         required: field.required,
-//         order: index,
-//         masterFieldId: field.masterFieldId || null,
-//         options: field.options || null
-//       }))
-//     }
-//     const res = await axios.post(
-//       "https://formbuilder-saas-backend.onrender.com/api/dashboard/form",
-//       payload,
-//       { headers: { Authorization: `Bearer ${token}` } }
-//     );
-
-//     toast.success("Form Published Successfully!");
-//     setShowFormBuilder(false);
-//     setSelectedFields([]);
-//     // Refresh your forms list in context if needed
-//     setForms(prev => [res.data.data, ...prev]); 
-//   } catch (err) {
-//     toast.error("Failed to create form");
-//   } finally {
-//     setLoading(false);
-//   }
-// };
-
-//   // 2. FETCH ALL FORMS
-//   useEffect(() => {
-//     const fetchForms = async () => {
-//       setLoading(true);
-//       try {
-//         const res = await axios.get("https://formbuilder-saas-backend.onrender.com/api/dashboard/forms", {
-//           headers: { Authorization: `Bearer ${token}` }
-//         });
-//         setForms(res.data.data);
-//         console.log(res.data.data);
-//       } catch (err) {
-//         toast.error("Failed to load forms");
-//       } finally {
-//         setLoading(false); // Ensures loading stops
-//       }
-//     };
-    
-//     // Always fetch if we don't have forms, or you can remove the IF to refresh every time
-//     fetchForms(); 
-//   }, [token]); // Added token as dependency
-
-//   // 2. DELETE FORM - Now uses the ID from the state
-//   const confirmDelete = async () => {
-//     if (!isDeleting) return;
-    
-//     const idToDelete = isDeleting.formId; // This uses the ID from your console log
-    
-//     try {
-//       await axios.delete(`https://formbuilder-saas-backend.onrender.com/api/dashboard/form/${idToDelete}`, {
-//         headers: { Authorization: `Bearer ${token}` }
-//       });
-      
-//       deleteFormLocally(idToDelete); 
-//       toast.success("Form deleted successfully");
-//     } catch (err) {
-//       toast.error("Delete failed");
-//     } finally {
-//       setIsDeleting(null); // Close the popup
-//     }
-//   };
-
-
-//   //FORMVIEW
-// const [viewform, setviewform] = useState(false);
-// const [viewData, setViewData] = useState(null);
-
-// const formview = async (formId) => {
-//     setLoading(true);
-//     try {
-//       const response = await axios.get(`https://formbuilder-saas-backend.onrender.com/api/dashboard/form/details/${formId}`, {
-//         headers: { Authorization: `Bearer ${token}` }
-//       });
-//       setViewData(response.data.data); 
-//       console.log(response.data.data);
-//       setviewform(true); 
-//     } catch (err) {
-//       toast.error("Failed to load form details");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-   
-// // --- NEW: UPDATE LOGIC FOR FIELD PROPERTIES ---
-//     const updateFieldProperty = (index, key, value) => {
-//         const updatedFields = [...selectedFields];
-//         updatedFields[index] = { ...updatedFields[index], [key]: value };
-//         setSelectedFields(updatedFields);
-//     };
-
-// //UPDATE API
-// const [editingFormId, setEditingFormId] = useState(null);
-// const [formdescription,setformdescription]=useState("");
-// const [isEditingTitle, setIsEditingTitle] = useState(false);
-// const [isEditingDesc, setIsEditingDesc] = useState(false);
-// const [editingFieldId, setEditingFieldId] = useState(null);
-// const[formlabel,setformlabel]=useState("");
-
-// const handleEditClick = async (formId) => {
-//   setLoading(true);
-//   try {
-//     const res = await axios.get(`https://formbuilder-saas-backend.onrender.com/api/dashboard/form/details/${formId}`, {
-//       headers: { Authorization: `Bearer ${token}` }
-//     });
-//     const data = res.data.data;
-//     console.log(res.data.data);
-   
-//     // 1. Set the Title
-//     setFormTitle(data.title);
-    
-//     // 2. Set the ID so we know we are in "Update Mode"
-//     setEditingFormId(formId);
-
-//     // 3. Map the existing form fields to your selectedFields state
-//     const mappedFields = data.formField.map(f => ({
-//       masterFieldId: f.masterFieldId,
-//       formFieldId: f.formFieldId, // Keep this to update existing fields
-//       label: f.label,
-//       type: f.type,
-//       required: f.isRequired,
-//       options: f.options
-//     }));
-
-//     setSelectedFields(mappedFields);
-//     setShowFormBuilder(true); // Open the UI
-//   } catch (err) {
-//     toast.error("Failed to load form for editing");
-//   } finally {
-//     setLoading(false);
-//   }
-// };
-
-
-// const updateForm = async () => {
-//   if (selectedFields.length === 0) return toast.error("Please select at least one field");
-
-//   setLoading(true);
-//   try {
-//     const payload = {
-//       title: formTitle,
-//       description: formdescription,
-//       isPublic: true,
-//       fields: selectedFields.map((field, index) => ({
-//         formFieldId: field.formFieldId || null, // Important for the backend
-//         label: field.label,
-//         type: field.type,
-//         required: field.required,
-//         order: index,
-//         masterFieldId: field.masterFieldId || null,
-//         options: field.options || null
-//       }))
-//     };
-
-//     const res = await axios.put(
-//       `https://formbuilder-saas-backend.onrender.com/api/dashboard/form/${editingFormId}`,
-//       payload,
-//       { headers: { Authorization: `Bearer ${token}` } }
-//     );
-
-//     toast.success("Form Updated Successfully!");
-    
-//     // Update the list locally without refreshing the page
-//     setForms(prev => prev.map(f => f.formId === editingFormId ? res.data.data : f));
-    
-//     // Reset state
-//     setShowFormBuilder(false);
-//     setSelectedFields([]);
-//     setEditingFormId(null);
-//     setFormTitle("Untitled Form");
-//     setformdescription("");
-//   } catch (err) {
-//     toast.error("Failed to update form");
-//   } finally {
-//     setLoading(false);
-//   }
-// };
-
-//   return (
-//     <div className="min-h-screen bg-gray-50">
-//       <UserNavbar/>
-//       <div className="max-w-6xl mx-auto p-6">
-//         <header className="flex   justify-between items-center mb-8">
-     
-//         {!showFormBuilder ? (
-//         <button
-//           onClick={() => { 
-//             setShowFormBuilder(true);
-//              setSelectedFields([]);
-//             setEditingFormId(null); 
-//            setFormTitle("Untitled Form");
-//             }}
-//           className="bg-violet-600 text-white text-sm sm:text-lg px-1 sm:px-6 py-3 rounded-xl shadow-lg hover:bg-violet-700 transition font-semibold"
-//         >
-//           Create New Form
-//         </button>
-//       ):(
-//         <motion.div 
-//           initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
-//           className="w-full max-w-6xl mx-auto bg-white border border-gray-200 rounded-3xl shadow-2xl flex flex-col md:flex-row gap-0 overflow-hidden min-h-[80vh]"
-//         >
-//           {/* Left Side: Master Fields */}
-//           <div className="w-full md:w-1/3 bg-gray-50 p-6 border-r border-gray-100">
-//             <h2 className="text-xl font-bold text-violet-700 mb-6 flex items-center gap-2">
-//                Available Fields
-//             </h2>
-//             <div className="space-y-3 overflow-y-auto max-h-[60vh] pr-2 custom-scrollbar">
-//               {masterFields.map((field) => (
-//                 <label
-//                   key={field.masterFieldId}
-//                   className={`flex  items-center gap-3 py-2 px-4 rounded-2xl cursor-pointer transition-all border-2 ${
-//                     selectedFields.some(f => f.masterFieldId === field.masterFieldId) 
-//                     ? 'bg-violet-100 border-violet-500 shadow-sm' 
-//                     : 'bg-white border-transparent hover:border-gray-200 shadow-sm'
-//                   }`}
-//                 >
-//                   <input
-//                     type="checkbox"
-//                     checked={selectedFields.some(f => f.masterFieldId === field.masterFieldId)}
-//                     onChange={() => toggleField(field)}
-//                     className="accent-violet-600 w-5 h-5 rounded-lg"
-//                   />
-//                   <span className="font-semibold text-gray-700">{field.label}</span>
-//                 </label>
-//               ))}
-//               <div>
-//                 <button 
-//                 onClick={()=>navi("/home")}
-//                 className="bg-violet-600 text-white  px-2 py-1 rounded font-semibold mt-10 flex items-center gap-4 w-full">
-//                   <MdAddCard/>Add Master Field</button>
-//               </div>
-//             </div>
-//           </div>
-
-//           {/* Right Side: Preview & Save */}
-          
-//           <div className="w-full md:w-2/3 p-8 flex flex-col">
-//             <div className="mb-8">
-//              <div className='flex justify-around'>
-//               <input 
-//                 value={formTitle} 
-//                 onChange={(e) => setFormTitle(e.target.value)}
-//                 placeholder="Enter Form Title..."
-//                 className="text-xl font-bold text-gray-800 w-full focus:outline-none border-b-2 border-transparent focus:border-violet-200 pb-2"
-//               />
-//                <EditIcon size={15} />
-//               </div>
-              
-//               {/* <p className="text-gray-400 text-sm mt-2">Preview how your form looks to users</p> */}
-//                <div className='flex justify-around'>
-//                 <input 
-//                 value={formdescription}
-//                 onChange={(e) => setformdescription(e.target.value)}
-//                 placeholder="Enter Form description"
-//                 className="text-sm text-gray-800 w-full focus:outline-none border-b-2 border-transparent focus:border-violet-200 pb-2"
-//               />
-//                <EditIcon size={15} />
-//              </div>
-//             </div>
-
-//             <div className="flex flex-col space-y-6">
-//               {selectedFields.length === 0 ? (
-//                 <div className="h-64 border-2 border-dashed border-gray-200 rounded-3xl flex flex-col items-center justify-center text-gray-400">
-//                   <p>Select fields from the left to start building</p>
-//                 </div>
-//               ) : (
-//                 selectedFields.map((field,index) => (
-//                   <motion.div 
-//                     key={field.masterFieldId} layout
-//                     initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
-//                     className="bg-gray-50 p-5 rounded-2xl border border-gray-100"
-//                   >
-//                     <div className="flex justify-between items-center mb-3">
-//                       {/* <label 
-//                       value={formlabel}
-//                       onChange={(e) => setformlabel(e.target.value)}
-//                       className="font-bold text-gray-700">{field.label}</label> */}
-
-//                       <input 
-//                       type="text"
-//                       value={field.label}
-//                       onChange={(e) => updateFieldProperty(index, 'label', e.target.value)}
-//                       className="w-full bg-white border border-black/20 p-2 rounded-lg m-2 text-sm font-semibold focus:border-violet-500 outline-none"
-//                       />
-
-//                       <div className="flex items-center gap-2 bg-white px-3 py-1 rounded-full shadow-sm border border-black/20">
-//                         <span className="text-xs font-bold text-gray-500 uppercase">Required</span>
-//                         <input
-//                           type="checkbox"
-//                           checked={field.required}
-//                           onChange={() => {
-//                             setSelectedFields(prev => prev.map(f => 
-//                               f.masterFieldId === field.masterFieldId ? { ...f, required: !f.required } : f
-//                             ))
-//                           }}
-//                           className="accent-violet-600"
-//                         />
-//                         <EditIcon size={15} />
-//                       </div>
-//                     </div>
-                    
-//                     {/* Simplified Preview Input */}
-//                     <div className="bg-white border border-gray-200 rounded-xl px-4 py-1 text-gray-400 text-sm italic">
-//                       User input area ({field.type.toLowerCase()})
-//                     </div>
-
-
-//                     {/* OPTIONS RENDERING & EDITING */}
-//           {["DROPDOWN", "RADIO", "CHECKBOX"].includes(field.type) && field.options && (
-//             <div className="space-y-2 mt-2">
-//               <p className="text-xs font-bold text-violet-600 uppercase">Options:</p>
-//               {field.options.map((opt, optIndex) => (
-//                 <div key={optIndex} className="flex items-center gap-2">
-//                   {/* If editingFormId exists, allow editing the option text */}
-//                   {editingFormId ? (
-//                     <div className="flex items-center w-full gap-2">
-//                       <input 
-//                         type="text"
-//                         value={opt}
-//                         onChange={(e) => {
-//                           const updatedFields = [...selectedFields];
-//                           updatedFields[fieldIndex].options[optIndex] = e.target.value;
-//                           setSelectedFields(updatedFields);
-//                         }}
-//                         className="flex-1 text-sm bg-violet-50 border border-violet-100 rounded px-2 py-1 outline-none focus:border-violet-400"
-//                       />
-//                       <button 
-//                         onClick={() => {
-//                           const updatedFields = [...selectedFields];
-//                           updatedFields[fieldIndex].options = updatedFields[fieldIndex].options.filter((_, i) => i !== optIndex);
-//                           setSelectedFields(updatedFields);
-//                         }}
-//                         className="text-red-400 hover:text-red-600"
-//                       >
-//                         <X size={14}/>
-//                       </button>
-
-//                       <EditIcon size={14}/>
-//                     </div>
-//                   ) : (
-//                     // Static view for "Create Mode"
-//                     <div className="flex items-center gap-2 bg-gray-50 px-3 py-1 rounded-lg border border-gray-100 w-full">
-//                       <div className="w-2 h-2 rounded-full bg-violet-400"></div>
-//                       <span className="text-sm text-gray-600">{opt}</span>
-//                     </div>
-//                   )}
-//                 </div>
-//               ))}
-              
-//               {/* Add New Option Button (Only in Update Mode) */}
-//               {editingFormId && (
-//                 <button 
-//                   onClick={() => {
-//                     const updatedFields = [...selectedFields];
-//                     updatedFields[fieldIndex].options = [...(updatedFields[fieldIndex].options || []), "New Option"];
-//                     setSelectedFields(updatedFields);
-//                   }}
-//                   className="text-xs font-bold text-violet-600 hover:underline mt-1"
-//                 >
-//                   + Add Option
-//                 </button>
-//               )}
-//             </div>
-//           )}
-      
-//                   </motion.div>
-//                 ))
-//               )}
-//             </div>
-
-         
-
-//   {/* Actions */}
-// <div className="mt-5 flex gap-4  border-t border-gray-100">
-//   <button
-//     onClick={editingFormId ? updateForm : createForm} // Logic Switch
-//     disabled={loading}
-//     className="flex-1 bg-violet-600 text-white py-2 rounded-2xl font-semibold hover:bg-violet-700 shadow-lg shadow-violet-200 transition-all disabled:opacity-50"
-//   >
-//     {loading ? "Processing..." : editingFormId ? "Update Form" : "Publish Form"}
-//   </button>
-//   <button
-//     onClick={() => { 
-//       setShowFormBuilder(false); 
-//       setSelectedFields([]); 
-//       setEditingFormId(null); // Reset edit state on cancel
-//     }}
-//     className="px-8 bg-gray-100 text-gray-600 py-2 rounded-2xl font-bold hover:bg-gray-200 transition"
-//   >
-//     Cancel
-//   </button>
-// </div>
-//           </div>
-//         </motion.div>
-//       )}
-//         </header>
-
-//         {loading ? (
-//           <div className="flex justify-center py-20">
-//             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-600"></div>
-//           </div>
-//         ) : (
-//           <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-//             <AnimatePresence>
-//               {forms.map((form) => (
-//                 <motion.div
-//                   key={form.formId}
-//                   layout
-//                   initial={{ opacity: 0, scale: 0.9 }}
-//                   animate={{ opacity: 1, scale: 1 }}
-//                   exit={{ opacity: 0, scale: 0.8 }}
-//                   className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between hover:shadow-md transition-shadow"
-//                 >
-//                   <div>
-//                     <div className="flex justify-between items-start mb-4">
-//                       <span className={`px-3 py-1 rounded-full text-xs font-semibold ${form.isPublic ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
-//                         {form.isPublic ? "● Public" : "○ Private"}
-//                       </span>
-//                       <div className="flex gap-2">
-//                         <button onClick={() => handleEditClick(form.formId)}
-//                         className="p-2 hover:bg-gray-100 rounded-lg text-gray-500">
-//                           <EditIcon size={16}/></button>
-//                         <button 
-//                           onClick={() => setIsDeleting(form)} // Open the Popup
-//                           className="p-2 hover:bg-red-50 rounded-lg text-red-500"
-//                         >
-//                           <Trash2 size={16}/>
-//                         </button>
-//                       </div>
-//                     </div>
-//                     <h3 className="text-xl font-semibold text-gray-800 mb-2">{form.title}</h3>
-//                     <p className="text-gray-500 text-sm line-clamp-2 mb-4">{form.description}</p>
-//                   </div>
-
-//                   <div className="mt-4 pt-4 border-t border-gray-50 flex gap-2">
-//                     <button 
-//                       onClick={() => navigate(`/responses/${form.formId}`)}
-//                       className="flex-1 bg-violet-50 text-violet-700 font-semibold py-2 rounded-xl hover:bg-violet-100 transition"
-//                     >
-//                       Responses
-//                     </button>
-//                     <button 
-//                    onClick={()=>formview(form.formId)}
-//                     className="flex-1 bg-black text-white font-semibold py-2 rounded-xl hover:bg-black transition flex items-center justify-center gap-2">
-//                        View
-//                     </button>
-//                   </div>
-//                 </motion.div>
-//               ))}
-//             </AnimatePresence>
-//           </motion.div>
-//         )}
-//       </div>
-
-//       {/* DELETE CONFIRMATION MODAL */}
-//       <AnimatePresence>
-//         {isDeleting && (
-//           <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
-//             <motion.div 
-//               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-//               onClick={() => setIsDeleting(null)}
-//               className="absolute inset-0 bg-black/40 backdrop-blur-sm"
-//             />
-//             <motion.div 
-//               initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
-//               className="relative bg-white rounded-2xl p-6 shadow-2xl max-w-sm w-full"
-//             >
-//               <h3 className="text-xl font-bold mb-2">Delete Form?</h3>
-//               <p className="text-gray-500 mb-6">Are you sure you want to delete <span className="font-bold text-gray-900">"{isDeleting.title}"</span>?</p>
-//               <div className="flex gap-3">
-//                 <button onClick={() => setIsDeleting(null)} className="flex-1 px-4 py-2 bg-gray-100 rounded-xl font-semibold">Cancel</button>
-//                 <button onClick={confirmDelete} className="flex-1 px-4 py-2 bg-red-500 text-white rounded-xl font-semibold hover:bg-red-600">Delete</button>
-//               </div>
-//             </motion.div>
-//           </div>
-//         )}
-//       </AnimatePresence>
-
-
-// {/* VIEW FORM */}
-//       <AnimatePresence>
-//         {viewform && viewData && (
-//           <div className="fixed inset-0 z-250 flex items-center justify-center p-4 md:p-10">
-//             {/* Backdrop */}
-//             <motion.div 
-//               initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-//               onClick={() => setviewform(false)}
-//               className="absolute inset-0 bg-gray-900/60 backdrop-blur-md"
-//             />
-
-//             {/* Modal Content */}
-//             <motion.div 
-//               initial={{ scale: 0.9, opacity: 0, y: 20 }}
-//               animate={{ scale: 1, opacity: 1, y: 0 }}
-//               exit={{ scale: 0.9, opacity: 0, y: 20 }}
-//               className="relative bg-white w-full max-w-2xl max-h-[90vh] overflow-hidden rounded shadow-2xl flex flex-col"
-//             >
-//               {/* Modal Header */}
-//               <div className=" p-8 text-white flex justify-between items-start">
-//                 <div>
-//                   <h2 className="text-2xl text-black font-semibold mb-2">{viewData.title}</h2>
-//                   <p className=" text-black/60">{viewData.description || "No description provided."}</p>
-//                 </div>
-//                 <button 
-//                   onClick={() => setviewform(false)}
-//                   className="bg-black/30  hover:bg-violet-600 p-2 rounded-full transition-colors"
-//                 >
-//                   <X size={24} />
-//                 </button>
-//               </div>
-
-//               {/* Scrollable Form Body */}
-//               <div className="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar bg-gray-50/50">
-//                 {viewData.formField?.map((field, idx) => (
-//                   <motion.div 
-//                     initial={{ opacity: 0, x: -10 }}
-//                     animate={{ opacity: 1, x: 0 }}
-//                     transition={{ delay: idx * 0.1 }}
-//                     key={field.formFieldId} 
-//                     className="bg-white p-6  border border-gray-100 shadow-sm"
-//                   >
-//                     <label className="block text-xs font-bold uppercase  text-black mb-3">
-//                       {field.label} {field.isRequired && <span className="text-red-500">*</span>}
-//                     </label>
-
-//                 {(() => {
-//         switch (field.type) {
-//           case "TEXTAREA":
-//             return <textarea disabled placeholder="Longer response here..." className="w-full py-1 px-2 bg-gray-50 border-2 border-gray-100 rounded-2xl h-24 resize-none outline-none" />;
-          
-//           case "EMAIL":
-//             return <input type="email" disabled placeholder="email@example.com" className="w-full py-1 px-2 bg-gray-50 border-2 border-gray-100 rounded-2xl outline-none" />;
-          
-//           case "DATE":
-//             return <input type="date" disabled className="w-full py-1 px-2 bg-gray-50 border-2 border-gray-100 rounded-2xl outline-none text-gray-400" />;
-
-//           case "NUMBER":
-//           return <input type="number" disabled className="w-full py-1 px-2 bg-gray-50 border-2 border-gray-100 rounded-2xl outline-none text-gray-400" />;
-
-//           case "CHECKBOX":
-//             return (
-//               <div className="space-y-2">
-//                 {(field.options || ["Option 1", "Option 2"]).map(opt => (
-//                   <div key={opt} className="flex items-center gap-3  bg-gray-50 rounded-xl border border-gray-100">
-//                     <input type="checkbox" disabled className="w-5 py-2 px-1 accent-violet-600 rounded" />
-//                     <span className="text-gray-600 font-medium">{opt}</span>
-//                   </div>
-//                 ))}
-//               </div>
-//             );
-
-//           case "DROPDOWN":
-//   return (
-//     <div className="relative group">
-//       <select 
-//         disabled 
-//         className="w-full px-2 py-1 bg-gray-50 border-2 border-gray-100 rounded-2xl outline-none appearance-none cursor-not-allowed text-gray-500 font-medium transition-all group-hover:border-violet-100"
-//       >
-//         <option value="">Select an option...</option>
-//         {field.options?.map((opt, i) => (
-//           <option key={i} value={opt}>{opt}</option>
-//         ))}
-//       </select>
-      
-//       {/* Custom Chevron Arrow for that premium look */}
-//       <div className="absolute right-5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
-//         <ChevronDown/>
-//       </div>
-//     </div>
-//   );  
-
-//           case "RADIO":
-//             return (
-//               <div className="flex flex-wrap gap-4">
-//                 {(field.options || ["Yes", "No"]).map(opt => (
-//                   <div key={opt} className="flex items-center gap-2 px-4 py-2 bg-gray-50 rounded-full border border-gray-100">
-//                     <input type="radio" disabled className="w-4 h-4 accent-violet-600" />
-//                     <span className="text-gray-600 font-medium text-sm">{opt}</span>
-//                   </div>
-//                 ))}
-//               </div>
-//             );
-
-//           default: 
-//             return <input type="text" disabled className="w-full px-2 py-1 bg-gray-50 border-2 border-gray-100 rounded-2xl outline-none" />;
-//         }
-//       })()}
-//                   </motion.div>
-//                 ))}
-//               </div>
-
-//               {/* Modal Footer */}
-//               <div className="py-2 px-1  bg-white border-t border-gray-100 flex gap-4">
-//                 <button 
-//                   onClick={() => setviewform(false)}
-//                   className="flex-1 py-4 bg-gray-100 text-gray-600 rounded-2xl font-bold hover:bg-gray-200 transition"
-//                 >
-//                   Close Preview
-//                 </button>
-//                 <button 
-//                   // onClick={() => {
-//                   //   navigator.clipboard.writeText(viewData.sharedUrl);
-//                   //   toast.success("Link copied!");
-//                   // }}
-//                      onClick={() => {
-//     const link = `${URL}/public/form/${viewData.slug}`;
-//     navigator.clipboard.writeText(link);
-//     toast.success("Link copied!");
-//   }}
-//                   className="flex-1 py-2 px-1 bg-black text-white rounded-2xl font-bold text-sm sm:text-lg hover:bg-violet-700 shadow-lg shadow-violet-200 transition flex items-center justify-center gap-2"
-//                 >
-//                   <Send size={18} /> Copy Share Link
-//                 </button>
-//               </div>
-//             </motion.div>
-//           </div>
-//         )}
-//       </AnimatePresence>
-//     </div>
-//   );
-
- 
-// }
-
-// export default Form;
-
-
-
-
-
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
@@ -725,6 +19,8 @@ const Form = () => {
   const { forms, setForms, updateFormLocally, deleteFormLocally } = useFormContext();
   const [loading, setLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(null);
+  const [isPublic, setIsPublic] = useState(true); // public or private toggle
+
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
@@ -773,7 +69,9 @@ const Form = () => {
       const payload = {
         title: uniqueTitle,
         description: formdescription,
-        isPublic: true,
+       // isPublic: true or false,
+       isPublic: isPublic,
+
         fields: selectedFields.map((field, index) => ({
           label: field.label,
           type: field.type,
@@ -792,6 +90,7 @@ const Form = () => {
       setShowFormBuilder(false);
       setSelectedFields([]);
       setForms(prev => [res.data.data, ...prev]);
+      setIsPublic(true);//isPublic
     } catch (err) {
       toast.error("Failed to create form");
     } finally {
@@ -847,6 +146,8 @@ const Form = () => {
       const data = res.data.data;
       setFormTitle(data.title);
       setformdescription(data.description || "");
+      setIsPublic(data.isPublic); //isPublic true or false
+
       setEditingFormId(formId);
 
       const mappedFields = data.formField.map(f => ({
@@ -875,7 +176,9 @@ const Form = () => {
       const payload = {
         title: formTitle,
         description: formdescription,
-        isPublic: true,
+      //  isPublic: true,
+      isPublic: isPublic,
+
         fields: selectedFields.map((field, index) => ({
           formFieldId: field.formFieldId || null,
           label: field.label,
@@ -1001,7 +304,28 @@ const Form = () => {
                     <EditIcon size={15} className="text-gray-400" />
                   </div>
                 </div>
+                    {/*Radio for public or private */}
+                 <div className="flex gap-6 items-center mb-6">
+  <label className="flex items-center gap-2 cursor-pointer">
+    <input
+      type="radio"
+      name="visibility"
+      checked={isPublic === true}
+      onChange={() => setIsPublic(true)}
+    />
+    <span className="font-semibold text-gray-700">Public</span>
+  </label>
 
+  <label className="flex items-center gap-2 cursor-pointer">
+    <input
+      type="radio"
+      name="visibility"
+      checked={isPublic === false}
+      onChange={() => setIsPublic(false)}
+    />
+    <span className="font-semibold text-gray-700">Private</span>
+  </label>
+</div>
                 <div className="flex flex-col space-y-6 flex-1 overflow-y-auto max-h-[50vh] pr-2">
                   {selectedFields.length === 0 ? (
                     <div className="h-64 border-2 border-dashed border-gray-200 rounded-3xl flex flex-col items-center justify-center text-gray-400">
@@ -1223,16 +547,40 @@ const Form = () => {
               </div>
               <div className="p-6 bg-white border-t border-gray-100 flex gap-4">
                 <button onClick={() => setviewform(false)} className="flex-1 py-3 bg-gray-100 text-gray-600 rounded-xl font-bold">Close</button>
-                <button
+                {/* <button
                   onClick={() => {
-                    const link = `${URL}/public/form/${viewData.slug}`;
+                    // const link = `${URL}/public/form/${viewData.slug}`;
+                    const baseUrl = import.meta.env.VITE_URL.replace(/\/$/, "");
+const link = `${baseUrl}/public/form/${viewData.slug}`;
+
                     navigator.clipboard.writeText(link);
                     toast.success("Link copied!");
                   }}
                   className="flex-1 py-3 bg-black text-white rounded-xl font-bold flex items-center justify-center gap-2"
                 >
                   <Send size={18} /> Copy Link
-                </button>
+                </button> */}
+
+            <button
+  onClick={() => {
+    if (!viewData.isPublic) {
+      toast.error("This form is private. Make it public to copy the link.");
+      return;
+    }
+
+    const baseUrl = import.meta.env.VITE_URL.replace(/\/$/, "");
+    const link = `${baseUrl}/public/form/${viewData.slug}`;
+    navigator.clipboard.writeText(link);
+    toast.success("Link copied!");
+  }}
+  className={`flex-1 py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-all
+    ${viewData.isPublic
+      ? "bg-black text-white hover:bg-gray-800"
+      : "bg-gray-300 text-gray-600 hover:bg-gray-400"
+    }`}
+>
+  <Send size={18} /> Copy Link
+</button>
               </div>
             </motion.div>
           </div>

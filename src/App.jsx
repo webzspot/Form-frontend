@@ -17,8 +17,9 @@ import ProfileSettings from './components/user/ProfileSettings.jsx';
 import AllReports from './components/dashboard/AllReports.jsx';
 import UserNavbar from './components/user/UserNavbar.jsx';
 import ProtectedRoute from './routes/ProtectedRoute.jsx';
-
-
+import UserActivity from './components/dashboard/UserActivity.jsx';
+import AllForms from './components/dashboard/AllForms.jsx';
+import AdminFormResponses from './components/dashboard/AdminFormResponses.jsx';
 const App = () => {
 
 
@@ -74,6 +75,34 @@ const App = () => {
      </ProtectedRoute>
       
       }/>
+      <Route path="/admin/forms" element={
+         <ProtectedRoute allowedRoles={["ADMIN"]}>
+        <AllForms />
+        </ProtectedRoute>
+        } />
+
+      <Route
+  path="/admin/users/:id/activity"
+  element={
+    <ProtectedRoute allowedRoles={["ADMIN"]}>
+      <UserActivity />
+    </ProtectedRoute>
+  }
+/>
+      <Route
+  path="/admin/form/:formId/responses"
+  element={
+  <ProtectedRoute allowedRoles={["ADMIN"]}>
+  <AdminFormResponses />
+  </ProtectedRoute>
+  
+  }
+/>
+
+
+    
+
+
     <Route path="/adminreport" element={
       <ProtectedRoute allowedRoles={["ADMIN"]}>
       <AllReports/>

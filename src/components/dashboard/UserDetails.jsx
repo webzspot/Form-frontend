@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import { FaUser, FaPlus, FaSearch, FaFilter, FaSortAmountDown, FaTrash, FaEdit, FaTimes } from 'react-icons/fa';
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import toast, { Toaster } from "react-hot-toast";
 import UserNavbar from '../user/UserNavbar';
-
+import usePagination from '../../hooks/usePagination';
 
 const UserDetails = () => {
     const [userData, setUserData] = useState([]);
@@ -27,6 +27,9 @@ const UserDetails = () => {
     useEffect(() => {
         getAllUsers();
     }, []);
+      
+    const navigate = useNavigate();
+
 
     const getAllUsers = async () => {
         setLoading(true);
@@ -106,19 +109,48 @@ const UserDetails = () => {
     };
 
     // Filter and Sort Logic
-    const processedUsers = [...userData]
-        .filter(user => 
-            user.name.toLowerCase().includes(searchedUser.toLowerCase()) ||
-            user.email.toLowerCase().includes(searchedUser.toLowerCase())
-        )
-        .filter(user => filterRole === "all" ? true : user.role === filterRole)
-        .sort((a, b) => {
-            if (sortBy === 'name-asc') return a.name.localeCompare(b.name);
-            if (sortBy === 'name-desc') return b.name.localeCompare(a.name);
-            if (sortBy === 'date-new') return new Date(b.createdAt) - new Date(a.createdAt);
-            if (sortBy === 'date-old') return new Date(a.createdAt) - new Date(b.createdAt);
-            return 0;
-        });
+    // const processedUsers = [...userData]
+    //     .filter(user => 
+    //         user.name.toLowerCase().includes(searchedUser.toLowerCase()) ||
+    //         user.email.toLowerCase().includes(searchedUser.toLowerCase())
+    //     )
+    //     .filter(user => filterRole === "all" ? true : user.role === filterRole)
+    //     .sort((a, b) => {
+    //         if (sortBy === 'name-asc') return a.name.localeCompare(b.name);
+    //         if (sortBy === 'name-desc') return b.name.localeCompare(a.name);
+    //         if (sortBy === 'date-new') return new Date(b.createdAt) - new Date(a.createdAt);
+    //         if (sortBy === 'date-old') return new Date(a.createdAt) - new Date(b.createdAt);
+    //         return 0;
+    //     });
+
+   const processedUsers = useMemo(() => {
+  return [...userData]
+    .filter(user =>
+      user.name.toLowerCase().includes(searchedUser.toLowerCase()) ||
+      user.email.toLowerCase().includes(searchedUser.toLowerCase())
+    )
+    .filter(user =>
+      filterRole === "all" ? true : user.role === filterRole
+    )
+    .sort((a, b) => {
+      if (sortBy === 'name-asc') return a.name.localeCompare(b.name);
+      if (sortBy === 'name-desc') return b.name.localeCompare(a.name);
+      if (sortBy === 'date-new') return new Date(b.createdAt) - new Date(a.createdAt);
+      if (sortBy === 'date-old') return new Date(a.createdAt) - new Date(b.createdAt);
+      return 0;
+    });
+}, [userData, searchedUser, filterRole, sortBy]);
+
+
+ const {
+  currentData,
+  currentPage,
+  totalPages,
+  nextPage,
+  prevPage
+} = usePagination(processedUsers, 10); 
+
+
 
     return (
 <>
@@ -133,12 +165,23 @@ const UserDetails = () => {
                     <h1 className="text-3xl font-bold text-slate-800">User Management</h1>
                     <p className="text-slate-500">Manage your organization's members and their roles.</p>
                 </div>
+                <div className='flex  max-w-4xl gap-4'>
                 <button
                     onClick={() => { setIsAddMode(true); setEditingUser({ name: "", email: "", password: "", role: "" }); }}
                     className="flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-700 text-white px-6 py-3 rounded-xl shadow-lg shadow-indigo-200 transition-all active:scale-95"
                 >
                     <FaPlus size={14} /> Add New User
                 </button>
+              
+                {/*View all forms */}
+                <button
+                className="flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-xl shadow-lg shadow-indigo-200 transition-all active:scale-95"
+                onClick={() => navigate("/admin/forms")}>
+  View All Forms
+</button>
+  </div>
+
+
             </div>
 
             {/* Stats Card */}
@@ -149,7 +192,7 @@ const UserDetails = () => {
                     </div>
                     <div>
                         <p className="text-sm text-slate-500 font-medium">Total Employees</p>
-                        <p className="text-2xl font-bold text-slate-800">{userData.length}</p>
+                        <p className="text-2xl font-bold text-slate-800">{processedUsers.length}/{userData.length}</p>
                     </div>
                 </div>
             </div>
@@ -206,11 +249,13 @@ const UserDetails = () => {
                                 <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Password</th>
                                 <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Role</th>
                                 <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Joined Date</th>
+                                                                <th className="px-6 py-4 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider">Activity</th>
                                 <th className="px-6 py-4 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
+
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
-                            {processedUsers.length === 0 ? (
+                            {currentData.length === 0 ? (
                                 <tr>
                                     <td colSpan="5" className="text-center py-12 text-slate-400">
                                         <div className="flex flex-col items-center gap-2">
@@ -220,7 +265,7 @@ const UserDetails = () => {
                                     </td>
                                 </tr>
                             ) : (
-                                processedUsers.map((user) => (
+                                currentData.map((user) => (
                                     <tr key={user.userId} className="hover:bg-slate-50/80 transition-colors">
                                         <td className="px-6 py-4">
                                             <div className="font-semibold text-slate-800">{user.name}</div>
@@ -236,7 +281,16 @@ const UserDetails = () => {
                                         </td>
                                         <td className="px-6 py-4 text-sm text-slate-600">
                                             {new Date(user.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
-                                        </td>
+                                        </td> 
+
+                                        <td className="px-6 py-4">
+                                          <button
+                           onClick={() => navigate(`/admin/users/${user.userId}/activity`)}
+                           className="px-3 py-1.5 text-sm rounded-lg bg-black text-white hover:bg-slate-800 transition" >
+                                    View
+                              </button>
+                           </td>
+
                                         <td className="px-6 py-4 text-center relative">
                                             <button 
                                                 onClick={() => setOpenMenuIndex(openMenuIndex === user.userId ? null : user.userId)}
@@ -267,7 +321,35 @@ const UserDetails = () => {
                             )}
                         </tbody>
                     </table>
-                </div>
+                </div> 
+
+                 <div className="flex justify-between items-center px-6 py-4 border-t border-gray-200">
+  <span className="text-sm text-slate-500">
+    Page {currentPage} of {totalPages}
+  </span>
+
+  <div className="flex gap-2">
+    <button
+      onClick={prevPage}
+      disabled={currentPage === 1}
+      className="px-4 py-2 border rounded disabled:opacity-50"
+    >
+      Prev
+    </button>
+
+    <button
+      onClick={nextPage}
+      disabled={currentPage === totalPages}
+      className="px-4 py-2 bg-black text-white rounded disabled:opacity-50"
+    >
+      Next
+    </button>
+  </div>
+</div>
+
+
+
+
             </div>
 
             {/* Sidebar Slide-over (Add/Edit) */}
