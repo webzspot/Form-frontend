@@ -7,6 +7,7 @@ import { useFormContext } from './FormContext';
 import { EditIcon, Trash2, X, Send } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { MdAddCard } from 'react-icons/md';
+import Footer from '../landingPage/Footer';
 
 const Form = () => {
   // masterfield
@@ -14,6 +15,8 @@ const Form = () => {
   const [selectedFields, setSelectedFields] = useState([]);
   const [showFormBuilder, setShowFormBuilder] = useState(false);
   const [formTitle, setFormTitle] = useState("Untitled Form");
+  const [isAddingMaster, setIsAddingMaster] = useState(false);
+const [newField, setNewField] = useState({ label: "", type: "TEXT", options: [""] });
 
   // formfield
   const { forms, setForms, updateFormLocally, deleteFormLocally } = useFormContext();
@@ -39,6 +42,27 @@ const Form = () => {
     };
     getMasterFields();
   }, [token]);
+
+  const handleInlineCreate = async () => {
+  if (!newField.label) return toast.error("Label name required");
+
+  try {
+    const res = await axios.post("https://formbuilder-saas-backend.onrender.com/api/dashboard/master-fields", newField, {
+      headers: { Authorization: `Bearer ${token}` }
+    });
+
+    toast.success("Field Created!");
+    
+    // Add new field to the list on the left
+    setMasterFields(prev => [...prev, res.data.data]);
+    
+    // Reset and hide the form
+    setNewField({ label: "", type: "TEXT", options: [""] });
+    setIsAddingMaster(false);
+  } catch (err) {
+    toast.error("Failed to add master field");
+  }
+};
 
   // 2. Toggle field selection
   const toggleField = (toggledField) => {
@@ -263,13 +287,102 @@ const Form = () => {
                     </label>
                   ))}
                   <div>
+          
                     <button
-                      onClick={() => navi("/home")}
-                      className="bg-violet-600 text-white px-4 py-2 rounded-xl font-semibold mt-10 flex items-center gap-4 w-full"
-                    >
-                      <MdAddCard />Add Master Field
-                    </button>
+                 onClick={() => setIsAddingMaster(!isAddingMaster)}
+                 className="bg-violet-600 text-white px-4 py-2 rounded-xl font-semibold mt-10 flex items-center gap-4 w-full justify-center"
+                  >
+                   <MdAddCard /> {isAddingMaster ? "Close" : "Add Input Fields"}
+                  </button>
                   </div>
+
+ {isAddingMaster && (
+      <motion.div
+        initial={{ height: 0, opacity: 0 }}
+        animate={{ height: "auto", opacity: 1 }}
+        className="mt-4 p-4 bg-white border border-violet-200 rounded-2xl shadow-inner space-y-4"
+      >
+        {/* Label Input */}
+        <div className="space-y-1">
+          <label className="text-[10px] font-bold text-violet-500 uppercase">New Label</label>
+          <input
+            className="w-full border-b p-1 outline-none text-sm focus:border-violet-600"
+            value={newField.label}
+            onChange={(e) => setNewField({ ...newField, label: e.target.value })}
+            placeholder="Enter label name..."
+          />
+        </div>
+
+        {/* Type Selection */}
+        <div className="space-y-1">
+          <label className="text-[10px] font-bold text-violet-500 uppercase">Type</label>
+          <select
+            className="w-full text-sm bg-transparent outline-none cursor-pointer"
+            value={newField.type}
+            onChange={(e) => {
+              // Reset options to one empty string if switching to a selection type
+              const isSelectionType = ["DROPDOWN", "RADIO", "CHECKBOX"].includes(e.target.value);
+              setNewField({ 
+                ...newField, 
+                type: e.target.value,
+                options: isSelectionType ? [""] : [] 
+              });
+            }}
+          >
+            {["TEXT", "NUMBER", "EMAIL", "DATE", "TEXTAREA", "CHECKBOX", "RADIO", "DROPDOWN"].map(t => (
+              <option key={t} value={t}>{t}</option>
+            ))}
+          </select>
+        </div>
+
+        {/* Dynamic Options Section - Shows only for selection types */}
+        {["DROPDOWN", "RADIO", "CHECKBOX"].includes(newField.type) && (
+          <div className="space-y-2 border-t pt-2">
+            <label className="text-[10px] font-bold text-violet-500 uppercase">Field Options</label>
+            {newField.options.map((opt, i) => (
+              <div key={i} className="flex gap-2">
+                <input
+                  className="flex-1 border-b text-sm outline-none focus:border-violet-600"
+                  placeholder={`Option ${i + 1}`}
+                  value={opt}
+                  onChange={(e) => {
+                    const newOpts = [...newField.options];
+                    newOpts[i] = e.target.value;
+                    setNewField({ ...newField, options: newOpts });
+                  }}
+                />
+                {newField.options.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const newOpts = newField.options.filter((_, idx) => idx !== i);
+                      setNewField({ ...newField, options: newOpts });
+                    }}
+                    className="text-red-400 hover:text-red-600"
+                  >✕</button>
+                )}
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={() => setNewField({ ...newField, options: [...newField.options, ""] })}
+              className="text-[10px] text-violet-600 font-bold hover:underline mt-1"
+            >
+              + ADD OPTION
+            </button>
+          </div>
+        )}
+
+        {/* Save Button */}
+        <button
+          onClick={handleInlineCreate}
+          className="w-full bg-violet-600 text-white py-2 rounded-lg text-xs font-bold hover:bg-violet-800 transition-all"
+        >
+          Save Input Field
+        </button>
+      </motion.div>
+    )}
+
                 </div>
               </div>
 
@@ -532,6 +645,9 @@ const Form = () => {
           </div>
         )}
       </AnimatePresence>
+      <div className='mt-20'>
+      <Footer/>
+      </div>
     </div>
   );
 };

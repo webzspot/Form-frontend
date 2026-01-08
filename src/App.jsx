@@ -19,6 +19,7 @@ import ProfileSettings from './components/user/ProfileSettings.jsx';
 import AllReports from './components/dashboard/AllReports.jsx';
 import UserNavbar from './components/user/UserNavbar.jsx';
 import ProtectedRoute from './routes/ProtectedRoute.jsx';
+import Reportstatus from './components/user/Reportstatus.jsx';
 
 
 const App = () => {
@@ -81,6 +82,15 @@ const App = () => {
       <AllReports/>
       </ProtectedRoute>
       } />
+  
+  <Route path="/reportstatus" element={
+      <ProtectedRoute allowedRoles={["USER"]}>
+     <Reportstatus/>
+      </ProtectedRoute>
+      } />
+
+
+
      </Routes>
 
  <Toaster

@@ -3,12 +3,13 @@ import React, { useEffect, useState } from 'react'
 import axios from "axios"
 import { Rocket } from 'lucide-react';
 import { motion } from "framer-motion";
+import { useNavigate } from 'react-router-dom';
 
 
 
 const Register = () => {
 
-
+ const navigate = useNavigate();
  const [name,setname]=useState("");
  const [email,setemail]=useState("");
  const [password,setpassword]=useState("");
@@ -32,21 +33,10 @@ const response=await axios.post("https://formbuilder-saas-backend.onrender.com/a
   password:password,
 })
 
-console.log(response);
-setsucessmessage(true);
+navigate("/login")
 
-
-// .then((res)=>{
-//   setsucessmessage(true);
-//   localStorage.setItem("userId",res.data.userId);
-//   console.log("Registered userId:",res.data.userId);
-// })
-// .catch((err)=>{
-//   seterrormessage(true);
-// })
 
  }
-
 
 
 
@@ -140,7 +130,7 @@ const heading = "Start Your Journey With Us.";
         {/* inputfields */}
         <form>
         <div className='space-y-4'>
-<p>!!!!!!!!</p>
+
             <div>
             <label className='text-sm'>Full Name</label>
             <input 
@@ -213,71 +203,8 @@ const heading = "Start Your Journey With Us.";
         </div>
 
 
-
-    {/* sucessmessage */}
-    { sucessmessage &&
-  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-    <motion.div
-      initial={{ scale: 0.8, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      className="bg-white space-y-5 px-4 py-5 rounded w-4/5 sm:w-3/5 lg:w-2/5 text-center shadow-xl"
-    >
-   
-
-      <h1 className="font-semibold text-xl ">Sucess!</h1>
-      <p className="text-sm text-black/70">Your action has been completed succesfully.
-        All changes have been saved and you're all set to continue.</p>
-
-        <div className="flex flex-wrap gap-6 justify-center">
  
- <Link to={"/login"}>
-           <button
-           
-              className="bg-violet-600 text-white px-4 py-1 rounded"
-            >
-              Continue
-            </button>
-            </Link>
-
-          <button onClick={() => setsucessmessage(false)}
-           className="bg-white/30 text-black/50 px-2 py-1 rounded">Dismiss</button>
         </div>
-       </motion.div>
-       </div>
-}
-
-  {/* errorsmessage */}
-    { errormessage &&
-  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-    <motion.div
-      initial={{ scale: 0.8, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      className="bg-white space-y-5 px-4 py-5 rounded-xl w-4/5 sm:w-3/5 lg:w-2/5 text-center shadow-2xl"
-    >
-     
-      
-      <h1 className="font-semibold text-xl ">Something Went Wrong!</h1>
-      <p className="text-sm text-black/70">We encountered an error while processing your request.Already have an account try login.Please try again or contact support if the problem presists.</p>
-
-        <div className="flex flex-wrap gap-6 justify-center">
- 
- <Link to={"/login"}>
-           <button
-             className="bg-rose-500 text-white px-4 py-1 rounded"
-            >
-              Try Again
-            </button>
-            </Link>
- 
-
-         <button onClick={() => seterrormessage(false)} 
-         className="bg-white/30 text-black/50 px-2 py-1 rounded">Dismiss</button>
-       
-        </div>
-       </motion.div>
-       </div>
-}
-      </div>
    
   )
 }

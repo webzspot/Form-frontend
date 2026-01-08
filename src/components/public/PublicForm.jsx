@@ -66,10 +66,10 @@ const PublicForm = () => {
 
     try {
       await axios.post(`https://formbuilder-saas-backend.onrender.com/api/public/form/submit/${slug}`, payload);
-      toast.success("Submitted successfully!"); // 3. Added success toast
+     
       setSuccessMessage("Your response has been submitted successfully!");
     } catch (err) {
-      toast.error("Failed to submit. Try again."); // 4. Added error toast
+    
       setErrorMessage("Submission failed. Please try again.");
     } finally {
       setSubmitting(false);
@@ -119,16 +119,6 @@ const PublicForm = () => {
               </div>
               <h1 className="text-2xl font-bold text-gray-900 mb-2">Thank You!</h1>
               <p className="text-gray-600 mb-8">{successMessage}</p>
-              <button
-                onClick={() => {
-                  setResponses({});
-                  setSuccessMessage("");
-                  setErrorMessage("");
-                }}
-                className="inline-flex items-center gap-2 bg-[#6C3BFF] hover:bg-[#582edb] text-white py-3 px-8 rounded-2xl font-bold transition-all transform hover:scale-[1.02] active:scale-95 shadow-lg shadow-indigo-200"
-              >
-                Submit another response
-              </button>
             </motion.div>
           ) : (
             <motion.div

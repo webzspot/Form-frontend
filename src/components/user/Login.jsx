@@ -4,20 +4,21 @@ import axios from "axios"
 import { Rocket } from "lucide-react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 
 const Login = () => {
   const [loginemail, setloginemail] = useState("");
   const [loginpassword, setloginpassword] = useState("");
   const [error, seterror] = useState("");
-  const [loginsucessmsg,setloginsucessmsg]=useState(false);
-  const [loginerrormsg,setloginerrormsg]=useState(false);
   const [message,setmessage]=useState([]);
   const navigate=useNavigate();
 
+
+
   const handleSubmit =async(e) => {
  
-    e.preventDefault();
+     e.preventDefault();
 
     seterror("");
 
@@ -26,45 +27,34 @@ const Login = () => {
       return;
     }
 
-    try{
+  try{
   const response=await axios.post("https://formbuilder-saas-backend.onrender.com/api/users/login" , 
    {
     email:loginemail,
     password:loginpassword
   })
   
-  console.log(response)
-  
-
  
   const {token}=response.data;
   localStorage.setItem("token",token);
 
   const role=response.data.user.role
-  console.log(role);
   localStorage.setItem("role",role);
 
   const Name=response.data.user.name;
-  console.log(Name); 
   localStorage.setItem("Name",Name);
+
+
+  navigate("/home");
+  
+  toast.success("sucessfully login")
+
 
 if(role=="ADMIN"){
   navigate("/admindashboard")
-}
-  setloginsucessmsg(true);
-  setloginerrormsg(false);
-  
-
-    } catch(err){
+}} catch(err){
     setmessage(err.response.data.message);
-   
-    }
-  };
-
-const handlecontinue=()=>{
-  navigate("/home")
-}
-
+   } };
 
   // ANIMATION
 const container = {
@@ -199,68 +189,7 @@ const heading = "Welcome Back to Stellar.";
         </h1>
 
       </div>
-    { loginsucessmsg &&
-  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-    <motion.div
-      initial={{ scale: 0.8, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      className="bg-white space-y-5 px-4 py-5 rounded w-4/5 sm:w-3/5 lg:w-2/5 text-center shadow-xl"
-    >
-    
-
-      <h1 className="font-semibold text-xl ">Sucess!</h1>
-      <p className="text-sm text-black/70">Your action has been completed succesfully.
-        All changes have been saved and you're all set to continue.</p>
-
-        <div className="flex flex-wrap gap-6 justify-center">
-   
-
-           <button
-            onClick={handlecontinue}
-             className="bg-violet-600 text-white px-4 py-1 rounded"
-          
-            >
-              Continue
-            </button>
-            {/* </Link> */}
-
-         <button onClick={() => setloginsucessmsg(false)}
-           className="bg-white/30 text-black/50 px-2 py-1 rounded">Dismiss</button>
-       
-        </div>
-       </motion.div>
-       </div>
-}
-
-  { loginerrormsg &&
-  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-    <motion.div
-      initial={{ scale: 0.8, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      className="bg-white space-y-5 px-4 py-5 rounded w-4/5 sm:w-3/5 lg:w-2/5 text-center shadow-xl"
-    >
-      
-
-      <h1 className="font-semibold text-xl ">Error</h1>
-      <p className="text-sm text-black/70">New to Stellar?Register first and then login.</p>
-
-        <div className="flex flex-wrap gap-6 justify-center">
- 
- <Link to={"/register"}>
-           <button
-             className="bg-red-500 text-white px-4 py-1 rounded"
-            >
-              Try Again
-            </button>
-            </Link>
-
-       <button onClick={() => setloginerrormsg(false)}
-           className="bg-white/30 text-black/50 px-2 py-1 rounded">Dismiss</button>
-       
-        </div>
-       </motion.div>
-       </div>
-}
+  
 
     </div>
   );
