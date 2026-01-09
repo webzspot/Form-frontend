@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
-import { FaUser, FaPlus, FaSearch, FaFilter, FaSortAmountDown, FaTrash, FaEdit, FaTimes } from 'react-icons/fa';
+import { FaUser, FaPlus, FaSearch, FaFilter, FaSortAmountDown, FaTrash, FaEdit, FaTimes,   FaCheckCircle,
+  FaTimesCircle, FaUserCheck,
+  FaUserTimes } from 'react-icons/fa';
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import toast, { Toaster } from "react-hot-toast";
@@ -37,7 +39,8 @@ const UserDetails = () => {
             const res = await axios.get(API_BASE_URL, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            setUserData(res.data);
+            console.log(res.data)
+            setUserData(res.data.data);
         } catch (err) {
             toast.error("Failed to fetch users");
             console.error(err);
@@ -150,6 +153,13 @@ const UserDetails = () => {
   prevPage
 } = usePagination(processedUsers, 10); 
 
+    const activeUsersCount = userData.filter(
+  (user) => user.status === "Active"
+).length;
+
+const inactiveUsersCount = userData.filter(
+  (user) => user.status === "Inactive"
+).length;
 
 
     return (
@@ -185,7 +195,7 @@ const UserDetails = () => {
             </div>
 
             {/* Stats Card */}
-            <div className="max-w-7xl mx-auto mb-8">
+            <div className="max-w-7xl flex mx-auto mb-8  gap-2">
                 <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-4 w-fit">
                     <div className="bg-indigo-100 p-4 rounded-xl text-indigo-600">
                         <FaUser size={24} />
@@ -195,6 +205,38 @@ const UserDetails = () => {
                         <p className="text-2xl font-bold text-slate-800">{processedUsers.length}/{userData.length}</p>
                     </div>
                 </div>
+
+     {/* Active Users */}
+    <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-4 w-fit">
+         <div className="bg-indigo-100 p-4 rounded-xl text-green-600">
+                        <FaUserCheck size={24} />
+                    </div>
+                    <div>
+      <p className="text-sm text-slate-500 font-medium">Active Users</p>
+      <p className="text-2xl font-bold text-green-600">
+        {activeUsersCount}
+      </p>
+      </div>
+    </div>
+
+    {/* Inactive Users */}
+   
+<div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-4 w-fit">
+         <div className="bg-indigo-100 p-4 rounded-xl text-gray-600">
+                        <FaUserCheck size={24} />
+                    </div>
+                    <div>
+      <p className="text-sm text-slate-500 font-medium">Inctive Users</p>
+      <p className="text-2xl font-bold text-gray-600">
+        {inactiveUsersCount}
+      </p>
+      </div>
+    </div>
+
+
+
+
+
             </div>
 
             {/* Controls Section */}
@@ -250,6 +292,10 @@ const UserDetails = () => {
                                 <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Role</th>
                                 <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">Joined Date</th>
                                                                 <th className="px-6 py-4 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider">Activity</th>
+                                                                <th className="px-6 py-4 text-xs font-semibold text-slate-500 uppercase tracking-wider">
+  Status
+</th>
+
                                 <th className="px-6 py-4 text-center text-xs font-semibold text-slate-500 uppercase tracking-wider">Actions</th>
 
                             </tr>
@@ -279,9 +325,17 @@ const UserDetails = () => {
                                                 {user.role}
                                             </span>
                                         </td>
-                                        <td className="px-6 py-4 text-sm text-slate-600">
+                                        {/* <td className="px-6 py-4 text-sm text-slate-600">
                                             {new Date(user.createdAt).toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })}
-                                        </td> 
+                                        </td>  */}
+
+                                        <td className="px-6 py-4 text-sm text-slate-600">
+  <div>Joined: {new Date(user.createdAt).toLocaleDateString()}</div>
+  <div className="text-xs text-slate-400">
+    Last seen: {user.lastSeen ? new Date(user.lastSeen).toLocaleString() : "Never"}
+  </div>
+</td>
+
 
                                         <td className="px-6 py-4">
                                           <button
@@ -290,6 +344,23 @@ const UserDetails = () => {
                                     View
                               </button>
                            </td>
+
+                  <td className="px-6  py-4">
+  <span
+    className={`px-3 py-1 rounded-full text-xs font-semibold ${
+      user.status === "Active"
+        ? "bg-green-100 text-green-700"
+        : "bg-gray-100 text-gray-600"
+    }`}
+  >
+     {user.status === "Active" ? <FaCheckCircle size={12} /> : <FaTimesCircle size={12} />}
+  {user.status}
+  </span>
+</td>
+
+
+
+
 
                                         <td className="px-6 py-4 text-center relative">
                                             <button 
