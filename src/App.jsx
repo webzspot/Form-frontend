@@ -18,9 +18,10 @@ import Response from './components/user/Response.jsx';
 import ProfileSettings from './components/user/ProfileSettings.jsx';
 import AllReports from './components/dashboard/AllReports.jsx';
 import ProtectedRoute from './routes/ProtectedRoute.jsx';
+import UserActivity from './components/dashboard/UserActivity.jsx';
+import AllForms from './components/dashboard/AllForms.jsx';
+import AdminFormResponses from './components/dashboard/AdminFormResponses.jsx';
 import Reportstatus from './components/user/Reportstatus.jsx';
-
-
 const App = () => {
 
 
@@ -59,6 +60,17 @@ const App = () => {
       <Form/>
       </ProtectedRoute>
      }/>    
+    
+    <Route path="/reportstatus" element={
+      <ProtectedRoute allowedRoles={["USER"]}>
+     <Reportstatus/>
+      </ProtectedRoute>
+      } />
+
+
+
+
+
      <Route path="/profile" element={
       <ProtectedRoute allowedRoles={["USER","ADMIN"]}>
       <ProfileSettings />
@@ -76,6 +88,34 @@ const App = () => {
      </ProtectedRoute>
       
       }/>
+      <Route path="/admin/forms" element={
+         <ProtectedRoute allowedRoles={["ADMIN"]}>
+        <AllForms />
+        </ProtectedRoute>
+        } />
+
+      <Route
+  path="/admin/users/:id/activity"
+  element={
+    <ProtectedRoute allowedRoles={["ADMIN"]}>
+      <UserActivity />
+    </ProtectedRoute>
+  }
+/>
+      <Route
+  path="/admin/form/:formId/responses"
+  element={
+  <ProtectedRoute allowedRoles={["ADMIN"]}>
+  <AdminFormResponses />
+  </ProtectedRoute>
+  
+  }
+/>
+
+
+    
+
+
     <Route path="/adminreport" element={
       <ProtectedRoute allowedRoles={["ADMIN"]}>
       <AllReports/>

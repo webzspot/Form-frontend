@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import UserNavbar from './UserNavbar';
+import usePagination from "../../hooks/usePagination";
+
 import { 
   ArrowLeft, 
   FileSpreadsheet, 
@@ -72,6 +74,19 @@ const Response = () => {
     JSON.stringify(resp.responseValue).toLowerCase().includes(searchTerm.toLowerCase()) ||
     resp.formResponseId.toLowerCase().includes(searchTerm.toLowerCase())
   );
+   
+  //For Pagination
+  const {
+  currentData,
+  currentPage,
+  totalPages,
+  nextPage,
+  prevPage
+} = usePagination(filteredData, 10); // 10 responses per page
+
+
+
+
 
 
   //export data in csv
@@ -210,14 +225,14 @@ const Response = () => {
                       </div>
                     </td>
                   </tr>
-                ) : filteredData.length === 0 ? (
+                ) : currentData.length === 0 ? (
                   <tr>
                     <td colSpan={formFields.length + 3} className="py-32 text-center text-slate-400 italic">
                       No results found matching your criteria.
                     </td>
                   </tr>
                 ) : (
-                  filteredData.map((resp, index) => (
+                  currentData.map((resp, index) => (
                     <tr 
                       key={resp.formResponseId} 
                       className="group hover:bg-violet-50/40 transition-all duration-200"
@@ -253,6 +268,9 @@ const Response = () => {
                 )}
               </tbody>
             </table>
+        
+
+          
           </div>
           
           {/* Footer Info */}
@@ -264,7 +282,35 @@ const Response = () => {
                 <span className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">Live Data Sync Active</span>
               </div>
             </div>
-          )}
+          )} 
+
+  
+          {!loading && filteredData.length > 0 && (
+  <div className="flex justify-between items-center px-6 py-4 border-t border-gray-200 bg-slate-50">
+    <span className="text-sm text-slate-500">
+      Page {currentPage} of {totalPages}
+    </span>
+
+    <div className="flex gap-2">
+      <button
+        onClick={prevPage}
+        disabled={currentPage === 1}
+        className="px-4 py-2 border rounded-lg disabled:opacity-50"
+      >
+        Prev
+      </button>
+
+      <button
+        onClick={nextPage}
+        disabled={currentPage === totalPages}
+        className="px-4 py-2 bg-violet-600 text-white rounded-lg disabled:opacity-50"
+      >
+        Next
+      </button>
+    </div>
+  </div>
+)}
+
         </div>
       </main>
     </div>

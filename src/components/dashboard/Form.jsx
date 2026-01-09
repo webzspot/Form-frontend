@@ -22,6 +22,8 @@ const [newField, setNewField] = useState({ label: "", type: "TEXT", options: [""
   const { forms, setForms, updateFormLocally, deleteFormLocally } = useFormContext();
   const [loading, setLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(null);
+  const [isPublic, setIsPublic] = useState(true); // public or private toggle
+
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
@@ -91,7 +93,9 @@ const [newField, setNewField] = useState({ label: "", type: "TEXT", options: [""
       const payload = {
         title: uniqueTitle,
         description: formdescription,
-        isPublic: true,
+       // isPublic: true or false,
+       isPublic: isPublic,
+
         fields: selectedFields.map((field, index) => ({
           label: field.label,
           type: field.type,
@@ -110,6 +114,7 @@ const [newField, setNewField] = useState({ label: "", type: "TEXT", options: [""
       setShowFormBuilder(false);
       setSelectedFields([]);
       setForms(prev => [res.data.data, ...prev]);
+      setIsPublic(true);//isPublic
     } catch (err) {
       toast.error("Failed to create form");
     } finally {
@@ -165,6 +170,8 @@ const [newField, setNewField] = useState({ label: "", type: "TEXT", options: [""
       const data = res.data.data;
       setFormTitle(data.title);
       setformdescription(data.description || "");
+      setIsPublic(data.isPublic); //isPublic true or false
+
       setEditingFormId(formId);
 
       const mappedFields = data.formField.map(f => ({
@@ -193,7 +200,9 @@ const [newField, setNewField] = useState({ label: "", type: "TEXT", options: [""
       const payload = {
         title: formTitle,
         description: formdescription,
-        isPublic: true,
+      //  isPublic: true,
+      isPublic: isPublic,
+
         fields: selectedFields.map((field, index) => ({
           formFieldId: field.formFieldId || null,
           label: field.label,
@@ -408,7 +417,28 @@ const [newField, setNewField] = useState({ label: "", type: "TEXT", options: [""
                     <EditIcon size={15} className="text-gray-400" />
                   </div>
                 </div>
+                    {/*Radio for public or private */}
+                 <div className="flex gap-6 items-center mb-6">
+  <label className="flex items-center gap-2 cursor-pointer">
+    <input
+      type="radio"
+      name="visibility"
+      checked={isPublic === true}
+      onChange={() => setIsPublic(true)}
+    />
+    <span className="font-semibold text-gray-700">Public</span>
+  </label>
 
+  <label className="flex items-center gap-2 cursor-pointer">
+    <input
+      type="radio"
+      name="visibility"
+      checked={isPublic === false}
+      onChange={() => setIsPublic(false)}
+    />
+    <span className="font-semibold text-gray-700">Private</span>
+  </label>
+</div>
                 <div className="flex flex-col space-y-6 flex-1 overflow-y-auto max-h-[50vh] pr-2">
                   {selectedFields.length === 0 ? (
                     <div className="h-64 border-2 border-dashed border-gray-200 rounded-3xl flex flex-col items-center justify-center text-gray-400">
@@ -630,16 +660,40 @@ const [newField, setNewField] = useState({ label: "", type: "TEXT", options: [""
               </div>
               <div className="p-6 bg-white border-t border-gray-100 flex gap-4">
                 <button onClick={() => setviewform(false)} className="flex-1 py-3 bg-gray-100 text-gray-600 rounded-xl font-bold">Close</button>
-                <button
+                {/* <button
                   onClick={() => {
-                    const link = `${URL}/public/form/${viewData.slug}`;
+                    // const link = `${URL}/public/form/${viewData.slug}`;
+                    const baseUrl = import.meta.env.VITE_URL.replace(/\/$/, "");
+const link = `${baseUrl}/public/form/${viewData.slug}`;
+
                     navigator.clipboard.writeText(link);
                     toast.success("Link copied!");
                   }}
                   className="flex-1 py-3 bg-black text-white rounded-xl font-bold flex items-center justify-center gap-2"
                 >
                   <Send size={18} /> Copy Link
-                </button>
+                </button> */}
+
+            <button
+  onClick={() => {
+    if (!viewData.isPublic) {
+      toast.error("This form is private. Make it public to copy the link.");
+      return;
+    }
+
+    const baseUrl = import.meta.env.VITE_URL.replace(/\/$/, "");
+    const link = `${baseUrl}/public/form/${viewData.slug}`;
+    navigator.clipboard.writeText(link);
+    toast.success("Link copied!");
+  }}
+  className={`flex-1 py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-all
+    ${viewData.isPublic
+      ? "bg-black text-white hover:bg-gray-800"
+      : "bg-gray-300 text-gray-600 hover:bg-gray-400"
+    }`}
+>
+  <Send size={18} /> Copy Link
+</button>
               </div>
             </motion.div>
           </div>
