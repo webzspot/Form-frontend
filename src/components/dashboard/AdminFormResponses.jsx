@@ -31,7 +31,7 @@ const AdminFormResponses = () => {
       );
 
       const data = res.data.data || [];
-      console.log(data)
+     
       setResponses(data);
       
       if (data.length > 0) {
@@ -53,7 +53,7 @@ const AdminFormResponses = () => {
       setQuestions(Object.values(questionMap));
     } catch (err) {
       toast.error("Failed to load responses");
-      console.error(err);
+     
     } finally {
       setLoading(false);
     }

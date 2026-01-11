@@ -171,7 +171,7 @@ const ProfileSettings = () => {
                     <button 
                       disabled={actionLoading}
                       onClick={handleUpdate}
-                      className="flex-1 bg-indigo-600 text-white py-3 rounded-xl font-bold hover:bg-indigo-700 disabled:opacity-50"
+                      className="flex-1 bg-indigo-600 text-white py-2 rounded-xl font-bold px-2 hover:bg-indigo-700 disabled:opacity-50"
                     >
                       {actionLoading ? "Saving..." : "Save Changes"}
                     </button>

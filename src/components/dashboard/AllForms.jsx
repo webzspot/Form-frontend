@@ -40,18 +40,7 @@ const AllForms = () => {
     fetchForms();
   }, [token]);
    
-   //Filter
-  // const filteredForms = forms
-  //   .filter((f) =>
-  //     filterPublic === "ALL"
-  //       ? true
-  //       : filterPublic === "PUBLIC"
-  //       ? f.isPublic
-  //       : !f.isPublic
-  //   )
-  //   .filter((f) =>
-  //     f.title.toLowerCase().includes(searchQuery.toLowerCase())
-  //   );
+ 
      
  const filteredForms = useMemo(() => {
   return forms
@@ -108,7 +97,7 @@ const {
     <>
       <UserNavbar />
 
-      <div className="min-h-screen bg-[#F8FAFC] p-6">
+      <div className="min-h-screen  bg-[#F8FAFC] px-2 py-3">
         <div className="max-w-7xl mx-auto">
           {/* Header */}
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
@@ -116,7 +105,7 @@ const {
 
                <span
     onClick={() => navigate("/admindashboard")}
-    className="inline-flex items-center gap-1 cursor-pointer text-lg font-semibold text-slate-500 hover:text-indigo-600 transition"
+    className="inline-flex items-center gap-1 mb-3 cursor-pointer text-lg font-semibold text-slate-500 hover:text-indigo-600 transition"
   >
     ← Back 
   </span>
@@ -130,7 +119,7 @@ const {
               </p>
             </div>
 
-            <div className="flex gap-4 ">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 w-full lg:w-auto">
               <div className="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-3">
                 <FaFileAlt className="text-indigo-500" size={24} />
                 <div>
@@ -251,7 +240,7 @@ const {
     <button
       onClick={prevPage}
       disabled={currentPage === 1}
-      className="px-4  py-2 border rounded disabled:opacity-50"
+      className="px-4  py-2 border rounded disabled:opacity-50 font-semibold "
     >
       Prev
     </button>
@@ -259,7 +248,7 @@ const {
     <button
       onClick={nextPage}
       disabled={currentPage === totalPages}
-      className="px-4 py-2 bg-violet-600 text-white rounded disabled:opacity-50"
+      className="px-4 py-2 bg-violet-600 text-white rounded font-semibold disabled:opacity-50"
     >
       Next
     </button>

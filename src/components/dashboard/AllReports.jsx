@@ -41,7 +41,7 @@ const AllReports = () => {
             setFetchReports(res.data.data);
         } catch (err) {
             toast.error("Failed to load reports");
-            console.error("Error", err);
+            
         } finally {
             setLoading(false);
         }
@@ -61,7 +61,7 @@ const AllReports = () => {
             toast.success(`Status updated to ${newStatus}`);
         } catch (err) {
             toast.error("Update failed");
-            console.error("Error", err);
+            
         }
     };
 
@@ -135,14 +135,14 @@ const AllReports = () => {
             </div>
 
             {/* Quick Stats Grid */}
-            <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-2 mb-8">
                 {[
                     { label: 'New Tickets', count: fetchReports.filter(r => r.status === 'RISED').length, icon: FaExclamationCircle, color: 'text-amber-500' },
                     { label: 'In Progress', count: fetchReports.filter(r => r.status === 'INPROGRESS').length, icon: FaClock, color: 'text-blue-500' },
                     { label: 'Resolved', count: fetchReports.filter(r => r.status === 'RESOLVED').length, icon: FaCheckCircle, color: 'text-emerald-500' },
                     { label: 'Rejected', count: fetchReports.filter(r => r.status === 'REJECTED').length, icon: FaTimesCircle, color: 'text-rose-500' },
                 ].map((stat, i) => (
-                    <div key={i} className="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-4">
+                    <div key={i} className="bg-white px-2 py-2 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-1">
                         <div className={`p-3 rounded-xl bg-slate-50 ${stat.color}`}>
                             <stat.icon size={20} />
                         </div>

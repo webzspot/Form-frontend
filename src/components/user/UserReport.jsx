@@ -189,7 +189,7 @@ const UserReport = () => {
             <h2 className="text-xl font-bold text-[#3F3D56] mb-1">
               Report a Problem
             </h2>
-            <p className="text-sm text-gray-500 mb-6">
+            <p className="text-sm text-black/50 mb-6">
               Describe the issue you are facing
             </p>
 
@@ -201,7 +201,7 @@ const UserReport = () => {
                 <select
                   value={issuetype}
                   onChange={(e) => setIssuetype(e.target.value)}
-                  className="mt-1 w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-[#6C63FF] outline-none"
+                  className="mt-1 w-full rounded-xl border font-semibold text-black/50 border-gray-300 px-4 py-3 focus:ring-2 focus:ring-[#6C63FF] outline-none"
                 >
                   <option value="">Select issue type</option>
                   <option>Bug</option>
@@ -219,7 +219,7 @@ const UserReport = () => {
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
                   placeholder="Describe your issue..."
-                  className="mt-1 w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-[#6C63FF] outline-none"
+                  className="mt-1 w-full rounded-xl border font-semibold border-gray-300 px-4 py-3 focus:ring-2 focus:ring-[#6C63FF] outline-none"
                 />
               </div>
 
@@ -230,7 +230,7 @@ const UserReport = () => {
                 <select
                   value={priority}
                   onChange={(e) => setPriority(e.target.value)}
-                  className="mt-1 w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-[#6C63FF] outline-none"
+                  className="mt-1 w-full rounded-xl border font-semibold text-black/50 border-gray-300 px-4 py-3 focus:ring-2 focus:ring-[#6C63FF] outline-none"
                 >
                   <option value="">Optional</option>
                   <option>Low</option>
