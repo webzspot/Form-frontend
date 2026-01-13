@@ -3,6 +3,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import UserNavbar from "../user/UserNavbar";
+import { ChevronDown } from "lucide-react";
+
 import { 
     FaFileAlt, 
     FaFilter, 
@@ -68,10 +70,10 @@ const AllReports = () => {
     const getStatusStyles = (status) => {
         switch (status) {
             case "RESOLVED": return "bg-emerald-100 text-emerald-700 border-emerald-200";
-            case "INPROGRESS": return "bg-blue-100 text-blue-700 border-blue-200";
+            case "INPROGRESS": return "bg-blue-200 text-blue-700 border-blue-200";
             case "RISED": return "bg-amber-100 text-amber-700 border-amber-200";
             case "CLOSED": return "bg-slate-100 text-slate-700 border-slate-200";
-            case "REJECTED": return "bg-rose-100 text-rose-700 border-rose-200";
+            case "REJECTED": return "bg-rose-300 text-rose-700 border-rose-200";
             default: return "bg-gray-100 text-gray-700 border-gray-200";
         }
     };
@@ -228,9 +230,9 @@ const AllReports = () => {
                                                 {report.reportData.description || report.reportData.Issue}
                                             </p>
                                         </td>
-                                        <td className="px-6 py-4">
+                                         <td className="px-6 py-4">
                                             <div className="flex justify-center">
-                                                <motion.div
+                                                 {/* <motion.div
                                                     whileHover={{ scale: 1.02 }}
                                                     className={`inline-flex items-center px-3 py-1.5 rounded-full border text-xs font-bold ${getStatusStyles(report.status)}`}
                                                 >
@@ -238,14 +240,49 @@ const AllReports = () => {
                                                         className="bg-transparent outline-none cursor-pointer appearance-none"
                                                         value={report.status}
                                                         onChange={(e) => handleStatusChange(report.reportId, e.target.value)}
-                                                    >
-                                                        {STATUS_OPTIONS.map((status) => (
-                                                            <option key={status} value={status} className="bg-white text-slate-800">{status}</option>
-                                                        ))}
-                                                    </select>
-                                                </motion.div>
+                                                    > 
+                                                        </select>
+                                                </motion.div>                                        */}
+                                            
+                                                <motion.div whileHover={{ scale: 1.02 }} className="relative">
+  <select
+    value={report.status}
+    onChange={(e) => handleStatusChange(report.reportId, e.target.value)}
+    className={`
+      w-[150px]
+      px-4 py-2
+      pr-10
+      rounded-xl
+    
+      text-sm
+     
+      text-center
+      font-semibold
+      cursor-pointer
+      outline-none
+      appearance-none
+    
+   
+
+      ${getStatusStyles(report.status)}
+    `}
+  >
+    {STATUS_OPTIONS.map((status) => (
+      <option key={status} value={status} className="bg-white text-slate-800">
+        {status}
+      </option>
+    ))}
+  </select>
+
+  <ChevronDown
+    size={16}
+    className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-500"
+  />
+</motion.div> 
+
                                             </div>
-                                        </td>
+                                        </td> 
+
                                         <td className="px-6 py-4 text-right">
                                             <span className="text-xs font-semibold text-slate-400">
                                                 {new Date(report.createdAt).toLocaleDateString('en-US', {

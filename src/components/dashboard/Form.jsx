@@ -693,7 +693,36 @@ const link = `${baseUrl}/public/form/${viewData.slug}`;
     }`}
 >
   <Send size={18} /> Copy Link
+</button>   
+
+<button
+  onClick={() => {
+    if (!viewData.isPublic) {
+      toast.error("This form is private. Make it public.");
+      return;
+    }
+
+    const baseUrl = import.meta.env.VITE_URL.replace(/\/$/, "");
+    const formLink = `${baseUrl}/public/form/${viewData.slug}`;
+
+    const embedCode = `<iframe 
+  src="${formLink}" 
+  width="100%" 
+  height="700" 
+  frameborder="0"
+  style="border-radius:12px;"
+></iframe>`;
+
+    navigator.clipboard.writeText(embedCode);
+    toast.success("Embed code copied!");
+  }}
+  className="flex-1 py-3 bg-violet-600 text-white rounded-xl font-bold"
+>
+  Embed Code
 </button>
+
+
+
               </div>
             </motion.div>
           </div>

@@ -41,31 +41,31 @@ const AllForms = () => {
   }, [token]);
    
    //Filter
-  // const filteredForms = forms
-  //   .filter((f) =>
-  //     filterPublic === "ALL"
-  //       ? true
-  //       : filterPublic === "PUBLIC"
-  //       ? f.isPublic
-  //       : !f.isPublic
-  //   )
-  //   .filter((f) =>
-  //     f.title.toLowerCase().includes(searchQuery.toLowerCase())
-  //   );
+   const filteredForms = forms
+   .filter((f) =>
+    filterPublic === "ALL"
+     ? true
+    : filterPublic === "PUBLIC"
+   ? f.isPublic
+  : !f.isPublic
+  )
+  .filter((f) =>
+    f.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
      
- const filteredForms = useMemo(() => {
-  return forms
-    .filter((f) =>
-      filterPublic === "ALL"
-        ? true
-        : filterPublic === "PUBLIC"
-        ? f.isPublic
-        : !f.isPublic
-    )
-    .filter((f) =>
-      f.title.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-}, [forms, filterPublic, searchQuery]);
+//  const filteredForms = useMemo(() => {
+//   return forms
+//     .filter((f) =>
+//       filterPublic === "ALL"
+//         ? true
+//         : filterPublic === "PUBLIC"
+//         ? f.isPublic
+//         : !f.isPublic
+//     )
+//     .filter((f) =>
+//       f.title.toLowerCase().includes(searchQuery.toLowerCase())
+//     );
+// }, [forms, filterPublic, searchQuery]);
 
 
 

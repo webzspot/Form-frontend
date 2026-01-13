@@ -10,18 +10,24 @@ import usePagination from "../../hooks/usePagination";
 const AdminFormResponses = () => {
   const { formId } = useParams();
   const token = localStorage.getItem("token");
-
+   //Responses state
   const [responses, setResponses] = useState([]);
+  console.log(responses)
+  //Extract questions from response 
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
+  //Filter 
   const [filterQuestion, setFilterQuestion] = useState("ALL");
+  //Search
   const [searchQuery, setSearchQuery] = useState("");
+  //Form Title
   const [formTitle, setFormTitle] = useState("");
-  const navigate=useNavigate()
+ const navigate=useNavigate()
+ //Fetch responses when page loads
   useEffect(() => {
     fetchResponses();
   }, [formId]);
-
+ //Function to fetch responses
   const fetchResponses = async () => {
     setLoading(true);
     try {
@@ -31,15 +37,16 @@ const AdminFormResponses = () => {
       );
 
       const data = res.data.data || [];
+     
       console.log(data)
       setResponses(data);
       
       if (data.length > 0) {
   setFormTitle(data[0].form?.title || "Form Responses");
 }
-      const questionMap = {};
+      const questionMap = {}; //Helps to fetch a unique questions from responses value
       data.forEach((res) => {
-        res.responseValue.forEach((rv) => {
+        res.responseValue.forEach((rv) => { 
           if (!questionMap[rv.formFieldId]) {
             questionMap[rv.formFieldId] = {
               id: rv.formFieldId,
@@ -58,12 +65,12 @@ const AdminFormResponses = () => {
       setLoading(false);
     }
   };
-
+  //Filter
   const displayedQuestions =
     filterQuestion === "ALL"
       ? questions
       : questions.filter((q) => q.id === filterQuestion);
-
+  //Search
   const filteredResponses = responses.filter((res) =>
     res.responseValue.some((rv) =>
       (rv.value || "")
@@ -87,18 +94,19 @@ const AdminFormResponses = () => {
   if (filteredResponses.length === 0) {
     return toast.error("No data to export");
   }
-
+ //Headers
   const headers = [
     "Submission ID",
     "Submitted At",
     ...displayedQuestions.map(q => q.label),
   ];
-
+ //Rows
 const rows = filteredResponses.map(res => [
-  res.formResponseId, //  ADD THIS
+  res.formResponseId, 
+  
   new Date(res.createdAt).toLocaleDateString() +
-    " " +
-    new Date(res.createdAt).toLocaleTimeString(),
+     " " +
+     new Date(res.createdAt).toLocaleTimeString(),
 
   ...displayedQuestions.map(q => {
     const answer = res.responseValue.find(
@@ -205,7 +213,7 @@ const rows = filteredResponses.map(res => [
               className="px-3 py-2 rounded-xl border border-slate-200 bg-white text-sm outline-none cursor-pointer hover:border-indigo-300 transition"
               value={filterQuestion}
               onChange={(e) => setFilterQuestion(e.target.value)}
-            >
+              >
               <option value="ALL">All Questions</option>
               {questions.map((q) => (
                 <option key={q.id} value={q.id}>

@@ -345,7 +345,7 @@ const inactiveUsersCount = userData.filter(
                               </button>
                            </td>
 
-                  <td className="px-6  py-4">
+                  <td className="px-6 flex   py-4">
   <span
     className={`px-3 py-1 rounded-full text-xs font-semibold ${
       user.status === "Active"
