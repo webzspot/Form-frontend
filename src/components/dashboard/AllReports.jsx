@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import UserNavbar from "../user/UserNavbar";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, X } from "lucide-react";
 
 import { 
     FaFileAlt, 
@@ -23,11 +23,12 @@ const AllReports = () => {
     const [loading, setLoading] = useState(true);
     const [statusFilter, setStatusFilter] = useState("ALL");
     const [searchQuery, setSearchQuery] = useState("");
-    
+    const [openStatusId, setOpenStatusId] = useState(null);
+
     const token = localStorage.getItem("token");
     const navigate=useNavigate()
 
-    const STATUS_OPTIONS = ["RISED", "INPROGRESS", "RESOLVED", "CLOSED", "REJECTED"];
+ 
 
     useEffect(() => {
         fetchAllReports();
@@ -43,7 +44,7 @@ const AllReports = () => {
             setFetchReports(res.data.data);
         } catch (err) {
             toast.error("Failed to load reports");
-            console.error("Error", err);
+            
         } finally {
             setLoading(false);
         }
@@ -63,7 +64,7 @@ const AllReports = () => {
             toast.success(`Status updated to ${newStatus}`);
         } catch (err) {
             toast.error("Update failed");
-            console.error("Error", err);
+            
         }
     };
 
@@ -98,7 +99,9 @@ const AllReports = () => {
 
 
 
+const STATUS_OPTIONS = ["RISED", "INPROGRESS", "RESOLVED", "CLOSED", "REJECTED"];
 
+  
 
     return (
         <>
@@ -137,14 +140,14 @@ const AllReports = () => {
             </div>
 
             {/* Quick Stats Grid */}
-            <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+            <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-2 mb-8">
                 {[
                     { label: 'New Tickets', count: fetchReports.filter(r => r.status === 'RISED').length, icon: FaExclamationCircle, color: 'text-amber-500' },
                     { label: 'In Progress', count: fetchReports.filter(r => r.status === 'INPROGRESS').length, icon: FaClock, color: 'text-blue-500' },
                     { label: 'Resolved', count: fetchReports.filter(r => r.status === 'RESOLVED').length, icon: FaCheckCircle, color: 'text-emerald-500' },
                     { label: 'Rejected', count: fetchReports.filter(r => r.status === 'REJECTED').length, icon: FaTimesCircle, color: 'text-rose-500' },
                 ].map((stat, i) => (
-                    <div key={i} className="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-4">
+                    <div key={i} className="bg-white px-2 py-2 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-1">
                         <div className={`p-3 rounded-xl bg-slate-50 ${stat.color}`}>
                             <stat.icon size={20} />
                         </div>
@@ -230,58 +233,92 @@ const AllReports = () => {
                                                 {report.reportData.description || report.reportData.Issue}
                                             </p>
                                         </td>
-                                         <td className="px-6 py-4">
-                                            <div className="flex justify-center">
-                                                 {/* <motion.div
-                                                    whileHover={{ scale: 1.02 }}
-                                                    className={`inline-flex items-center px-3 py-1.5 rounded-full border text-xs font-bold ${getStatusStyles(report.status)}`}
-                                                >
-                                                    <select
-                                                        className="bg-transparent outline-none cursor-pointer appearance-none"
-                                                        value={report.status}
-                                                        onChange={(e) => handleStatusChange(report.reportId, e.target.value)}
-                                                    > 
-                                                        </select>
-                                                </motion.div>                                        */}
-                                            
-                                                <motion.div whileHover={{ scale: 1.02 }} className="relative">
-  <select
-    value={report.status}
-    onChange={(e) => handleStatusChange(report.reportId, e.target.value)}
-    className={`
-      w-[150px]
-      px-4 py-2
-      pr-10
-      rounded-xl
-    
-      text-sm
-     
-      text-center
-      font-semibold
-      cursor-pointer
-      outline-none
-      appearance-none
-    
-   
+                                        
+                                          
 
+  <td className="px-6 py-4 relative">
+ <div className="flex justify-center">
+  <motion.div
+    whileHover={{ scale: 1.03 }}
+    onClick={() =>
+      setOpenStatusId(
+        openStatusId === report.reportId ? null : report.reportId
+      )
+    }
+    className={`
+      w-36
+      px-3
+      py-1.5
+      rounded-full
+      border
+      text-xs
+      font-bold
+      cursor-pointer
+      flex
+      items-center
+      justify-between
+      gap-2
       ${getStatusStyles(report.status)}
     `}
-  >
-    {STATUS_OPTIONS.map((status) => (
-      <option key={status} value={status} className="bg-white text-slate-800">
-        {status}
-      </option>
-    ))}
-  </select>
+  > 
 
-  <ChevronDown
-    size={16}
-    className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-slate-500"
-  />
-</motion.div> 
+    <span className="flex-1 text-center">
+      {report.status}
+    </span>
 
-                                            </div>
-                                        </td> 
+    <ChevronDown size={14} className="opacity-70" />
+  </motion.div>
+</div>
+
+  {/* Popup */}
+  <AnimatePresence>
+    {openStatusId === report.reportId && (
+      <motion.div
+        initial={{ opacity: 0, y: -5 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -5 }}
+        className="absolute z-50 left-1/2 -translate-x-1/2 mt-2 bg-white border border-slate-200 rounded-xl shadow-lg p-2 w-44"
+      > 
+
+        {/* Close Button */}
+      <div className="flex justify-end">
+        <button
+          onClick={() => setOpenStatusId(null)}
+          className="p-1 rounded hover:bg-slate-100"
+        >
+          <X size={14} className="text-slate-500" />
+        </button>
+      </div>
+
+
+        {STATUS_OPTIONS.map((status) => (
+          <div
+            key={status}
+            onClick={() => {
+              handleStatusChange(report.reportId, status);
+              setOpenStatusId(null);
+            }}
+            className={`px-3 py-2 text-xs font-semibold rounded-lg cursor-pointer transition
+              ${
+                report.status === status
+                  ? "bg-indigo-100 text-indigo-700"
+                  : "hover:bg-slate-100 text-slate-700"
+              }
+            `}
+          >
+            {status}
+          </div>
+        ))}
+      </motion.div>
+    )}
+  </AnimatePresence>
+</td>
+
+ 
+
+ 
+
+
 
                                         <td className="px-6 py-4 text-right">
                                             <span className="text-xs font-semibold text-slate-400">

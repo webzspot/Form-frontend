@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { FiEdit, FiTrash2, FiUser, FiMail, FiShield, FiLoader } from "react-icons/fi";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { LogOut } from "lucide-react";
 import UserNavbar from "./UserNavbar";
@@ -89,7 +89,7 @@ const ProfileSettings = () => {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
-      <Toaster position="top-right" />
+      {/* <Toaster position="top-right" /> */}
       <UserNavbar />
 
       <main className="max-w-5xl mx-auto mt-10 pb-12 px-4 sm:px-6">
@@ -171,7 +171,7 @@ const ProfileSettings = () => {
                     <button 
                       disabled={actionLoading}
                       onClick={handleUpdate}
-                      className="flex-1 bg-indigo-600 text-white py-3 rounded-xl font-bold hover:bg-indigo-700 disabled:opacity-50"
+                      className="flex-1 bg-indigo-600 text-white py-2 rounded-xl font-bold px-2 hover:bg-indigo-700 disabled:opacity-50"
                     >
                       {actionLoading ? "Saving..." : "Save Changes"}
                     </button>

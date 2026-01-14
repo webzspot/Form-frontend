@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, AlertCircle, Loader2, Send } from 'lucide-react';
 import axios from 'axios';
-import toast, { Toaster } from 'react-hot-toast'; // 1. Added Toaster import
+import toast from 'react-hot-toast'; // 1. Added Toaster import
 
 const PublicForm = () => {
   const { slug } = useParams();
@@ -12,6 +12,7 @@ const PublicForm = () => {
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
+  
 
   const getForm = async () => {
     try {
@@ -41,21 +42,41 @@ const PublicForm = () => {
     setSubmitting(true);
 
     // 2. Updated Validation Loop with Toast
-    for (const field of form.formField) {
-      const value = responses[field.formFieldId];
-      // Check if required field is empty (handles strings, arrays for checkboxes, and null/undefined)
-      if (field.required && (!value || (Array.isArray(value) && value.length === 0))) {
-        toast.error(`Required: ${field.label}`, {
-          style: {
-            borderRadius: '12px',
-            background: '#333',
-            color: '#fff',
-          },
-        });
-        setSubmitting(false);
-        return;
-      }
+//      for (const field of form.formField) {
+//   const value = responses[field.formFieldId];
+// //      // Check if required field is empty (handles strings, arrays for checkboxes, and null/undefined)
+//  if (field.required && (!value || (Array.isArray(value) && value.length === 0))) {
+//     toast.error(`Required: ${field.label}`, {
+//    style: {
+//     borderRadius: '12px',
+//    background: '#333',
+//   color: '#fff',
+//  },
+//   });
+
+//    setSubmitting(false);
+//    return;
+//   }
+//   } 
+
+for (const field of form.formField) {
+  const value = responses[field.formFieldId];
+  if (field.required && (!value || (Array.isArray(value) && value.length === 0))) {
+    const toastId = `required-${field.formFieldId}`; // unique id per field
+    if (!toast.isActive(toastId)) {
+      toast.error(`Required: ${field.label}`, {
+        id: toastId,
+        style: {
+          borderRadius: '12px',
+          background: '#333',
+          color: '#fff',
+        },
+      });
     }
+    setSubmitting(false);
+    return;
+  }
+}
 
     const payload = {
       responses: Object.entries(responses).map(([formFieldId, value]) => ({
@@ -73,6 +94,7 @@ const PublicForm = () => {
       setErrorMessage("Submission failed. Please try again.");
     } finally {
       setSubmitting(false);
+     
     }
   };
 
@@ -93,8 +115,7 @@ const PublicForm = () => {
 
   return (
     <div className="min-h-screen bg-[#F3F4F6] selection:bg-[#6C3BFF] selection:text-white flex justify-center items-start py-12 px-4 sm:px-6">
-      {/* 5. Place the Toaster here */}
-      <Toaster position="top-center" reverseOrder={false} />
+     
       
       <div className="w-full max-w-2xl">
         

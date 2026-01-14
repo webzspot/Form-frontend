@@ -441,7 +441,7 @@ const [newField, setNewField] = useState({ label: "", type: "TEXT", options: [""
 </div>
                 <div className="flex flex-col space-y-6 flex-1 overflow-y-auto max-h-[50vh] pr-2">
                   {selectedFields.length === 0 ? (
-                    <div className="h-64 border-2 border-dashed border-gray-200 rounded-3xl flex flex-col items-center justify-center text-gray-400">
+                    <div className="h-64 border-2 border-dashed border-gray-200 text-center rounded-3xl flex flex-col items-center justify-center text-gray-400">
                       <p>Select fields from the left to start building</p>
                     </div>
                   ) : (
@@ -545,7 +545,7 @@ const [newField, setNewField] = useState({ label: "", type: "TEXT", options: [""
                   <button
                     onClick={editingFormId ? updateForm : createForm}
                     disabled={loading}
-                    className="flex-1 bg-violet-600 text-white py-3 rounded-2xl font-semibold hover:bg-violet-700 shadow-lg transition-all disabled:opacity-50"
+                    className="flex-1 bg-violet-600 text-white py-2 rounded-2xl font-semibold hover:bg-violet-700 px-1 shadow-lg transition-all  disabled:opacity-50"
                   >
                     {loading ? "Processing..." : editingFormId ? "Update Form" : "Publish Form"}
                   </button>
@@ -660,19 +660,7 @@ const [newField, setNewField] = useState({ label: "", type: "TEXT", options: [""
               </div>
               <div className="p-6 bg-white border-t border-gray-100 flex gap-4">
                 <button onClick={() => setviewform(false)} className="flex-1 py-3 bg-gray-100 text-gray-600 rounded-xl font-bold">Close</button>
-                {/* <button
-                  onClick={() => {
-                    // const link = `${URL}/public/form/${viewData.slug}`;
-                    const baseUrl = import.meta.env.VITE_URL.replace(/\/$/, "");
-const link = `${baseUrl}/public/form/${viewData.slug}`;
-
-                    navigator.clipboard.writeText(link);
-                    toast.success("Link copied!");
-                  }}
-                  className="flex-1 py-3 bg-black text-white rounded-xl font-bold flex items-center justify-center gap-2"
-                >
-                  <Send size={18} /> Copy Link
-                </button> */}
+ 
 
             <button
   onClick={() => {
@@ -693,9 +681,9 @@ const link = `${baseUrl}/public/form/${viewData.slug}`;
     }`}
 >
   <Send size={18} /> Copy Link
-</button>   
+</button>
 
-<button
+{/* <button
   onClick={() => {
     if (!viewData.isPublic) {
       toast.error("This form is private. Make it public.");
@@ -719,11 +707,41 @@ const link = `${baseUrl}/public/form/${viewData.slug}`;
   className="flex-1 py-3 bg-violet-600 text-white rounded-xl font-bold"
 >
   Embed Code
+</button> */}
+
+<button
+  onClick={async () => { 
+    if (!viewData.isPublic) {
+      toast.error("This form is private. Make it public first.");
+      return;
+    }
+
+    // Ensures the URL doesn't have a double slash
+    const baseUrl = import.meta.env.VITE_URL?.replace(/\/$/, "") || window.location.origin;
+    const formLink = `${baseUrl}/public/form/${viewData.slug}`;
+
+    const embedCode = `<iframe 
+  src="${formLink}" 
+  title="${viewData.name || 'Form'}"
+  width="100%" 
+  height="700" 
+  style="border:none; border-radius:12px;"
+  allow="clipboard-write"
+></iframe>`;
+
+    try {
+      await navigator.clipboard.writeText(embedCode);
+      toast.success("Embed code copied to clipboard!");
+    } catch (err) {
+      toast.error("Failed to copy. Please copy manually.");
+    }
+  }}
+  className="flex-1 py-3 bg-violet-600 text-white rounded-xl font-bold hover:bg-violet-700 transition-colors"
+>
+  Copy Embed Code
 </button>
+            </div>
 
-
-
-              </div>
             </motion.div>
           </div>
         )}

@@ -1,4 +1,4 @@
-import {React , useState} from 'react'
+import {React } from 'react'
 import Nav from './components/landingPage/Nav'
 import Hero from './components/landingPage/Hero'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
@@ -17,7 +17,6 @@ import UserDetails from "./components/dashboard/UserDetails.jsx"
 import Response from './components/user/Response.jsx';
 import ProfileSettings from './components/user/ProfileSettings.jsx';
 import AllReports from './components/dashboard/AllReports.jsx';
-import UserNavbar from './components/user/UserNavbar.jsx';
 import ProtectedRoute from './routes/ProtectedRoute.jsx';
 import UserActivity from './components/dashboard/UserActivity.jsx';
 import AllForms from './components/dashboard/AllForms.jsx';
@@ -28,6 +27,20 @@ const App = () => {
 
 
   return (
+    <>
+
+    <Toaster
+        position="top-right"
+        reverseOrder={false}
+        toastOptions={{
+          duration: 4000,
+        }}
+         containerStyle={{
+    top: 60, 
+  }}
+        />
+
+
 
     <BrowserRouter>
    
@@ -123,29 +136,16 @@ const App = () => {
       </ProtectedRoute>
       } />
   
-  <Route path="/reportstatus" element={
-      <ProtectedRoute allowedRoles={["USER"]}>
-     <Reportstatus/>
-      </ProtectedRoute>
-      } />
+ 
 
 
 
      </Routes>
 
- <Toaster
-        position="top-right"
-        reverseOrder={false}
-        toastOptions={{
-          duration: 4000,
-        }}
-         containerStyle={{
-    top: 60, 
-  }}
-        />
+
 
     </BrowserRouter>
-   
+   </>
 
   )
 }
