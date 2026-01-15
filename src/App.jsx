@@ -33,7 +33,7 @@ const App = () => {
         position="top-right"
         reverseOrder={false}
         toastOptions={{
-          duration: 4000,
+          duration: 3000,
         }}
          containerStyle={{
     top: 60, 

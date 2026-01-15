@@ -18,18 +18,37 @@ const Preview = ({ previewFields, refreshFields }) => {
   });
 
   // 🔹 Delete field
+  // const handleDelete = async (masterFieldId) => {
+  //   try {
+  //     await axios.delete(
+  //       `https://formbuilder-saas-backend.onrender.com/api/dashboard/master-fields/${masterFieldId}`,
+  //       { headers: { Authorization: `Bearer ${token}` } }
+  //     );
+  //     toast.success("Field removed");
+  //     refreshFields();
+  //   } catch (err) {
+  //     toast.error("Could not delete field");
+  //   }
+  // };
+
+
   const handleDelete = async (masterFieldId) => {
-    try {
-      await axios.delete(
-        `https://formbuilder-saas-backend.onrender.com/api/dashboard/master-fields/${masterFieldId}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+  try {
+    const res = await axios.delete(
+      `https://formbuilder-saas-backend.onrender.com/api/dashboard/master-fields/${masterFieldId}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    
+    if (res.status === 200 || res.status === 204) {
       toast.success("Field removed");
-      refreshFields();
-    } catch (err) {
-      toast.error("Could not delete field");
+      // This function must trigger the GET request in the parent component
+      refreshFields(); 
     }
-  };
+  } catch (err) {
+    console.error("Delete Error:", err);
+    toast.error("Could not delete field");
+  }
+};
 
   const openUpdatePopup = (field) => {
     setSelectedField(field);
@@ -107,7 +126,7 @@ const Preview = ({ previewFields, refreshFields }) => {
                     <label className="block font-bold  text-slate-700">{field.label}</label>
                   </div>
                   
-                  <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="flex gap-2  transition-opacity">
                     <button 
                       onClick={() => openUpdatePopup(field)}
                       className="p-2  bg-white text-slate-400 hover:text-violet-600 rounded-lg shadow-sm border border-slate-100 transition-all"

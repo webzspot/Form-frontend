@@ -6,8 +6,12 @@ import UserNavbar from "../user/UserNavbar";
 import { useFormContext } from './FormContext';
 import { EditIcon, Trash2, X, Send } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { MdAddCard } from 'react-icons/md';
+import { MdAddCard, MdOutlineDesignServices } from 'react-icons/md';
 import Footer from '../landingPage/Footer';
+import Design from './Design';
+
+
+
 
 const Form = () => {
   // masterfield
@@ -22,7 +26,16 @@ const [newField, setNewField] = useState({ label: "", type: "TEXT", options: [""
   const { forms, setForms, updateFormLocally, deleteFormLocally } = useFormContext();
   const [loading, setLoading] = useState(false);
   const [isDeleting, setIsDeleting] = useState(null);
-  const [isPublic, setIsPublic] = useState(true); // public or private toggle
+  const [isPublic, setIsPublic] = useState(true);
+
+  // --- THEME STATE ---
+  const [formTheme, setFormTheme] = useState({
+    bgColor: "#ffffff",
+    buttonColor: "#7c3aed",
+    inputBgColor: "#f3f4f6",
+    labelFont: "Inter",
+    borderRadius: "8px"
+  });
 
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
@@ -93,9 +106,8 @@ const [newField, setNewField] = useState({ label: "", type: "TEXT", options: [""
       const payload = {
         title: uniqueTitle,
         description: formdescription,
-       // isPublic: true or false,
        isPublic: isPublic,
-
+          theme: formTheme,
         fields: selectedFields.map((field, index) => ({
           label: field.label,
           type: field.type,
@@ -200,9 +212,8 @@ const [newField, setNewField] = useState({ label: "", type: "TEXT", options: [""
       const payload = {
         title: formTitle,
         description: formdescription,
-      //  isPublic: true,
-      isPublic: isPublic,
-
+        isPublic: isPublic,
+        theme: formTheme,
         fields: selectedFields.map((field, index) => ({
           formFieldId: field.formFieldId || null,
           label: field.label,
@@ -232,6 +243,7 @@ const [newField, setNewField] = useState({ label: "", type: "TEXT", options: [""
     }
   };
 
+
   // VIEW FORM STATE
   const [viewform, setviewform] = useState(false);
   const [viewData, setViewData] = useState(null);
@@ -250,6 +262,10 @@ const [newField, setNewField] = useState({ label: "", type: "TEXT", options: [""
       setLoading(false);
     }
   };
+
+
+  //design
+
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -272,12 +288,13 @@ const [newField, setNewField] = useState({ label: "", type: "TEXT", options: [""
           ) : (
             <motion.div
               initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
-              className="w-full max-w-6xl mx-auto bg-white border border-gray-200 rounded-3xl shadow-2xl flex flex-col md:flex-row gap-0 overflow-hidden min-h-[80vh]"
+              className="w-full max-w-6xl mx-auto bg-white border border-gray-200 rounded-3xl shadow-2xl flex flex-col md:flex-row gap-0 overflow-hidden"
             >
               {/* Left Side: Master Fields */}
-              <div className="w-full md:w-1/3 bg-gray-50 p-6 border-r border-gray-100">
-                <h2 className="text-xl font-bold text-violet-700 mb-6 flex items-center gap-2">Available Fields</h2>
-                <div className="space-y-3 overflow-y-auto max-h-[60vh] pr-2 custom-scrollbar">
+              <div className="w-full  md:w-2/5 bg-gray-50 py-6 px-4 border-r border-gray-100">
+                <h2 className="text-lg font-bold text-violet-700 mb-6 flex items-center gap-2">Available Fields</h2>
+             
+                <div className="space-y-3 overflow-y-auto max-h-[80vh] pr-2 custom-scrollbar">
                   {masterFields.map((field) => (
                     <label
                       key={field.masterFieldId}
@@ -303,6 +320,8 @@ const [newField, setNewField] = useState({ label: "", type: "TEXT", options: [""
                   >
                    <MdAddCard /> {isAddingMaster ? "Close" : "Add Input Fields"}
                   </button>
+
+
                   </div>
 
  {isAddingMaster && (
@@ -389,20 +408,42 @@ const [newField, setNewField] = useState({ label: "", type: "TEXT", options: [""
         >
           Save Input Field
         </button>
+
+     
       </motion.div>
     )}
+  
+           {/* DESIGN COMPONENT INTEGRATION */}
+           <div className='mt-4'>
+                <Design 
+                editingFormId={editingFormId} 
+                token={token} 
+                formTheme={formTheme} 
+                setFormTheme={setFormTheme} 
+              />
+              </div>
 
                 </div>
               </div>
 
               {/* Right Side: Preview & Edit */}
-              <div className="w-full md:w-2/3 p-8 flex flex-col">
+            <div 
+              className="w-full md:w-3/5 p-5 flex flex-col transition-all duration-500" 
+              style={{ 
+               backgroundColor: formTheme.bgColor || "#ffffff", 
+               fontFamily: `${formTheme.labelFont || 'Inter'}, sans-serif`,
+             
+              }}
+            >
+              <div className="w-full  flex flex-col">
                 <div className="mb-8 space-y-4">
                   <div className='flex items-center gap-2 border-b-2 border-transparent focus-within:border-violet-200'>
+                    
                     <input
                       value={formTitle || ""}
                       onChange={(e) => setFormTitle(e.target.value)}
                       placeholder="Enter Form Title..."
+                      style={{ color: formTheme.labelColor || "#111827" }}
                       className="text-xl font-bold text-gray-800 w-full focus:outline-none pb-2"
                     />
                     <EditIcon size={15} className="text-gray-400" />
@@ -412,6 +453,7 @@ const [newField, setNewField] = useState({ label: "", type: "TEXT", options: [""
                       value={formdescription}
                       onChange={(e) => setformdescription(e.target.value)}
                       placeholder="Enter Form description"
+                      style={{ color: `${formTheme.labelColor}99` || "#4b5563" }}
                       className="text-sm text-gray-800 w-full focus:outline-none pb-2"
                     />
                     <EditIcon size={15} className="text-gray-400" />
@@ -426,7 +468,7 @@ const [newField, setNewField] = useState({ label: "", type: "TEXT", options: [""
       checked={isPublic === true}
       onChange={() => setIsPublic(true)}
     />
-    <span className="font-semibold text-gray-700">Public</span>
+    <span className="font-semibold text-gray-700" style={{ color: formTheme.labelColor }}>Public</span>
   </label>
 
   <label className="flex items-center gap-2 cursor-pointer">
@@ -436,7 +478,7 @@ const [newField, setNewField] = useState({ label: "", type: "TEXT", options: [""
       checked={isPublic === false}
       onChange={() => setIsPublic(false)}
     />
-    <span className="font-semibold text-gray-700">Private</span>
+    <span className="font-semibold text-gray-700" style={{ color: formTheme.labelColor }}>Private</span>
   </label>
 </div>
                 <div className="flex flex-col space-y-6 flex-1 overflow-y-auto max-h-[50vh] pr-2">
@@ -448,17 +490,31 @@ const [newField, setNewField] = useState({ label: "", type: "TEXT", options: [""
                     selectedFields.map((field, index) => (
                       <motion.div
                         key={field.masterFieldId || index} layout
-                        initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
-                        className="bg-gray-50 p-5 rounded-2xl border border-gray-100"
+                        initial={{ opacity: 0, x: 20 }} 
+                        animate={{ opacity: 1, x: 0 }}
+                        className="bg-gray-50 p-5 rounded-2xl border
+                         border-gray-100"
+                         style={{ 
+                         backgroundColor: "#ffffff", 
+                         borderRadius: formTheme.borderRadius || "16px" 
+                      }}
                       >
                         <div className="flex flex-col sm:flex-row gap-4 mb-4">
                           {/* Label Update */}
                           <div className="flex-1">
-                            <label className="text-xs font-bold text-gray-400 uppercase ml-2">Field Label</label>
+                            <label 
+                            className="text-xs font-bold text-gray-400 uppercase ml-2"
+                            style={{ color: formTheme.labelColor || "#9ca3af" }}
+                            >Field Label</label>
                             <input
                               type="text"
                               value={field.label}
                               onChange={(e) => updateFieldProperty(index, 'label', e.target.value)}
+                              style={{ 
+                    backgroundColor: formTheme.inputBgColor || "#f9fafb",
+                    borderRadius: `calc(${formTheme.borderRadius} / 2)` || "8px",
+                    color: formTheme.labelColor 
+                  }}
                               className="w-full bg-white border border-gray-200 p-2 rounded-lg text-sm font-semibold focus:border-violet-500 outline-none"
                             />
                           </div>
@@ -541,11 +597,15 @@ const [newField, setNewField] = useState({ label: "", type: "TEXT", options: [""
                   )}
                 </div>
 
-                <div className="mt-auto pt-6 flex gap-4 border-t border-gray-100">
+                <div className="mt-auto pt-4 flex justify-center gap-2 border-gray-100">
                   <button
                     onClick={editingFormId ? updateForm : createForm}
                     disabled={loading}
-                    className="flex-1 bg-violet-600 text-white py-2 rounded-2xl font-semibold hover:bg-violet-700 px-1 shadow-lg transition-all  disabled:opacity-50"
+                    style={{ 
+            backgroundColor: formTheme.buttonColor || "#7c3aed",
+            borderRadius: formTheme.borderRadius || "16px"
+        }}
+                    className=" w-full bg-violet-600 text-sm text-white py-2 rounded-xl font-semibold hover:bg-violet-700 px-2 shadow-lg transition-all  disabled:opacity-50"
                   >
                     {loading ? "Processing..." : editingFormId ? "Update Form" : "Publish Form"}
                   </button>
@@ -555,13 +615,15 @@ const [newField, setNewField] = useState({ label: "", type: "TEXT", options: [""
                       setSelectedFields([]);
                       setEditingFormId(null);
                     }}
-                    className="px-8 bg-gray-100 text-gray-600 py-3 rounded-2xl font-bold hover:bg-gray-200 transition"
+                    className="px-2 w-full text-sm bg-gray-100 text-gray-600 py-2 rounded-xl font-bold hover:bg-gray-200 transition"
                   >
                     Cancel
                   </button>
                 </div>
               </div>
+                </div>
             </motion.div>
+          
           )}
         </header>
 
@@ -633,119 +695,140 @@ const [newField, setNewField] = useState({ label: "", type: "TEXT", options: [""
         )}
       </AnimatePresence>
 
-      {/* View Modal logic remains largely the same but ensures viewData is handled */}
-      <AnimatePresence>
-        {viewform && viewData && (
-          <div className="fixed inset-0 z-250 flex items-center justify-center p-4 md:p-10">
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setviewform(false)} className="absolute inset-0 bg-gray-900/60 backdrop-blur-md" />
-            <motion.div initial={{ scale: 0.9, opacity: 0, y: 20 }} animate={{ scale: 1, opacity: 1, y: 0 }} exit={{ scale: 0.9, opacity: 0, y: 20 }} className="relative bg-white w-full max-w-2xl max-h-[90vh] overflow-hidden rounded shadow-2xl flex flex-col">
-              <div className="p-8 flex justify-between items-start">
-                <div>
-                  <h2 className="text-2xl text-black font-semibold mb-2">{viewData.title}</h2>
-                  <p className="text-black/60">{viewData.description || "No description provided."}</p>
-                </div>
-                <button onClick={() => setviewform(false)} className="bg-gray-100 hover:bg-violet-600 hover:text-white p-2 rounded-full transition-colors">
-                  <X size={24} />
-                </button>
-              </div>
-              <div className="flex-1 overflow-y-auto p-8 space-y-8 bg-gray-50/50">
-                {viewData.formField?.map((field, idx) => (
-                  <div key={field.formFieldId} className="bg-white p-6 border border-gray-100 shadow-sm">
-                    <label className="block text-xs font-bold uppercase text-black mb-3">
-                      {field.label} {field.isRequired && <span className="text-red-500">*</span>}
-                    </label>
-                    <input disabled placeholder={`Preview for ${field.type}`} className="w-full px-2 py-2 bg-gray-50 border border-gray-100 rounded-lg outline-none" />
-                  </div>
-                ))}
-              </div>
-              <div className="p-6 bg-white border-t border-gray-100 flex gap-4">
-                <button onClick={() => setviewform(false)} className="flex-1 py-3 bg-gray-100 text-gray-600 rounded-xl font-bold">Close</button>
- 
+<AnimatePresence>
+  {viewform && viewData && (
+    <div className="fixed inset-0 z-250 flex items-center justify-center p-4 md:p-10">
+      {/* Backdrop */}
+      <motion.div 
+        initial={{ opacity: 0 }} 
+        animate={{ opacity: 1 }} 
+        exit={{ opacity: 0 }} 
+        onClick={() => setviewform(false)} 
+        className="absolute inset-0 bg-gray-900/60 backdrop-blur-md" 
+      />
 
-            <button
-  onClick={() => {
-    if (!viewData.isPublic) {
-      toast.error("This form is private. Make it public to copy the link.");
-      return;
-    }
+      <motion.div 
+        initial={{ scale: 0.9, opacity: 0, y: 20 }} 
+        animate={{ scale: 1, opacity: 1, y: 0 }} 
+        exit={{ scale: 0.9, opacity: 0, y: 20 }} 
+        className="relative bg-white w-full max-w-2xl max-h-[90vh] overflow-hidden rounded-3xl shadow-2xl flex flex-col"
+        style={{ fontFamily: `${viewData.theme?.labelFont || 'Inter'}, sans-serif` }}
+      >
+        {/* --- THEME STRIP --- */}
+        <div 
+          className="h-2 w-full" 
+          style={{ backgroundColor: viewData.theme?.buttonColor || "#6C3BFF" }} 
+        />
 
-    const baseUrl = import.meta.env.VITE_URL.replace(/\/$/, "");
-    const link = `${baseUrl}/public/form/${viewData.slug}`;
-    navigator.clipboard.writeText(link);
-    toast.success("Link copied!");
-  }}
-  className={`flex-1 py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-all
-    ${viewData.isPublic
-      ? "bg-black text-white hover:bg-gray-800"
-      : "bg-gray-300 text-gray-600 hover:bg-gray-400"
-    }`}
->
-  <Send size={18} /> Copy Link
-</button>
-
-{/* <button
-  onClick={() => {
-    if (!viewData.isPublic) {
-      toast.error("This form is private. Make it public.");
-      return;
-    }
-
-    const baseUrl = import.meta.env.VITE_URL.replace(/\/$/, "");
-    const formLink = `${baseUrl}/public/form/${viewData.slug}`;
-
-    const embedCode = `<iframe 
-  src="${formLink}" 
-  width="100%" 
-  height="700" 
-  frameborder="0"
-  style="border-radius:12px;"
-></iframe>`;
-
-    navigator.clipboard.writeText(embedCode);
-    toast.success("Embed code copied!");
-  }}
-  className="flex-1 py-3 bg-violet-600 text-white rounded-xl font-bold"
->
-  Embed Code
-</button> */}
-
-<button
-  onClick={async () => { 
-    if (!viewData.isPublic) {
-      toast.error("This form is private. Make it public first.");
-      return;
-    }
-
-    // Ensures the URL doesn't have a double slash
-    const baseUrl = import.meta.env.VITE_URL?.replace(/\/$/, "") || window.location.origin;
-    const formLink = `${baseUrl}/public/form/${viewData.slug}`;
-
-    const embedCode = `<iframe 
-  src="${formLink}" 
-  title="${viewData.name || 'Form'}"
-  width="100%" 
-  height="700" 
-  style="border:none; border-radius:12px;"
-  allow="clipboard-write"
-></iframe>`;
-
-    try {
-      await navigator.clipboard.writeText(embedCode);
-      toast.success("Embed code copied to clipboard!");
-    } catch (err) {
-      toast.error("Failed to copy. Please copy manually.");
-    }
-  }}
-  className="flex-1 py-3 bg-violet-600 text-white rounded-xl font-bold hover:bg-violet-700 transition-colors"
->
-  Copy Embed Code
-</button>
+        {/* Header */}
+        <div className="p-8 flex justify-between items-start border-b border-gray-50">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+               <h2 className="text-2xl text-black font-bold" style={{ color: viewData.theme?.labelColor }}>
+                {viewData.title}
+              </h2>
+              <span className="px-2 py-1 bg-gray-100 text-[10px] font-black uppercase rounded-md text-gray-400">Preview Mode</span>
             </div>
-
-            </motion.div>
+            <p className="text-gray-500">{viewData.description || "No description provided."}</p>
           </div>
-        )}
-      </AnimatePresence>
+          <button 
+            onClick={() => setviewform(false)} 
+            className="bg-gray-100 hover:bg-red-50 hover:text-red-500 p-2 rounded-full transition-all"
+          >
+            <X size={20} />
+          </button>
+        </div>
+
+        {/* Form Preview Area */}
+        <div 
+          className="flex-1 overflow-y-auto p-8 space-y-6" 
+          style={{ backgroundColor: viewData.theme?.bgColor || "#f9fafb" }}
+        >
+          {viewData.formField?.map((field) => (
+            <div 
+              key={field.formFieldId} 
+              className="bg-white p-6 shadow-sm border border-gray-100 transition-all"
+              style={{ borderRadius: viewData.theme?.borderRadius || "12px" }}
+            >
+              <label 
+                className="block text-sm font-bold mb-3"
+                style={{ color: viewData.theme?.labelColor || "#374151" }}
+              >
+                {field.label} {field.required && <span className="text-red-500">*</span>}
+              </label>
+              
+              <div 
+                className="w-full px-4 py-3 border border-gray-200 text-gray-400 text-sm flex items-center justify-between"
+                style={{ 
+                    backgroundColor: viewData.theme?.inputBgColor || "#ffffff",
+                    borderRadius: `calc(${viewData.theme?.borderRadius || '12px'} / 2)` 
+                }}
+              >
+                Preview for {field.type}
+                <div className="h-2 w-2 rounded-full bg-gray-200" />
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Action Footer */}
+        <div className="p-6 bg-white border-t border-gray-100 flex flex-wrap gap-3">
+          {/* Close Button */}
+          <button 
+            onClick={() => setviewform(false)} 
+            className="px-6 py-3 bg-gray-100 text-gray-600 rounded-xl font-bold hover:bg-gray-200 transition-all"
+          >
+            Close
+          </button>
+
+          {/* Copy Link Button */}
+          <button
+            onClick={() => {
+              if (!viewData.isPublic) {
+                toast.error("Form is private. Make it public to copy link.");
+                return;
+              }
+              const baseUrl = import.meta.env.VITE_URL.replace(/\/$/, "");
+              const link = `${baseUrl}/public/form/${viewData.slug}`;
+              navigator.clipboard.writeText(link);
+              toast.success("Link copied!");
+            }}
+            className={`flex-1 py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-all ${
+              viewData.isPublic ? "bg-black text-white hover:bg-gray-800" : "bg-gray-200 text-gray-400 cursor-not-allowed"
+            }`}
+          >
+            <Send size={18} /> Copy Link
+          </button>
+
+          {/* Embed Button */}
+          <button
+            onClick={async () => { 
+              if (!viewData.isPublic) {
+                toast.error("Form is private. Make it public first.");
+                return;
+              }
+              const baseUrl = import.meta.env.VITE_URL?.replace(/\/$/, "") || window.location.origin;
+              const formLink = `${baseUrl}/public/form/${viewData.slug}`;
+              const embedCode = `<iframe src="${formLink}" title="${viewData.title}" width="100%" height="700" style="border:none; border-radius:12px;" allow="clipboard-write"></iframe>`;
+              
+              await navigator.clipboard.writeText(embedCode);
+              toast.success("Embed code copied!");
+            }}
+            style={{ 
+              backgroundColor: viewData.isPublic ? (viewData.theme?.buttonColor || "#7C3AED") : "#E5E7EB",
+              color: viewData.isPublic ? "white" : "#9CA3AF"
+            }}
+            className="flex-1 py-3 rounded-xl font-bold hover:brightness-110 transition-all shadow-md active:scale-95"
+          >
+            Copy Embed Code
+          </button>
+        </div>
+      </motion.div>
+    </div>
+  )}
+</AnimatePresence>
+
+
       <div className='mt-20'>
       <Footer/>
       </div>

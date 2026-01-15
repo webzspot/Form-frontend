@@ -6,6 +6,7 @@ export const FormProvider = ({ children }) => {
   const [forms, setForms] = useState([]);
   const [activeFormId, setActiveFormId] = useState(null);
   const [view, setView] = useState("dashboard");
+  const [activePublicForm, setActivePublicForm] = useState(null);
 
  
    
@@ -27,6 +28,7 @@ export const FormProvider = ({ children }) => {
       activeFormId, setActiveFormId, 
       view, setView,
       updateFormLocally, deleteFormLocally,
+      activePublicForm, setActivePublicForm
      
     }}>
       {children}
