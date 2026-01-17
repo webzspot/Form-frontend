@@ -365,7 +365,17 @@ const PublicForm = () => {
                           style={{ backgroundColor: styles.input, borderRadius: `calc(${styles.radius} / 2)` }}
                           className="w-full border border-gray-200 p-4 outline-none focus:ring-2 focus:ring-opacity-50 transition-all shadow-sm"
                         />
-                      )}
+                      )}   
+
+
+                      {field.type === "DATE" && (
+  <input
+    type="date"
+    onChange={(e) => handleInputChange(field.formFieldId, e.target.value)}
+    style={{ backgroundColor: styles.input, borderRadius: `calc(${styles.radius} / 2)` }}
+    className="w-full border border-gray-200 p-4 outline-none focus:ring-2 focus:ring-opacity-50 transition-all shadow-sm"
+  />
+)}
 
                       {/* TEXTAREA */}
                       {field.type === "TEXTAREA" && (

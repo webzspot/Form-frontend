@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
 import { FiEdit, FiTrash2, FiUser, FiMail, FiShield, FiLoader } from "react-icons/fi";
+import { FaSpinner } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { LogOut } from "lucide-react";
 import UserNavbar from "./UserNavbar";
 import { useNavigate } from "react-router-dom";
-
+import WaveBackground from "../dashboard/WaveBackground";
 const ProfileSettings = () => {
   const [user, setUser] = useState(null);
   const [editingUser, setEditingUser] = useState(null);
@@ -81,18 +82,37 @@ const ProfileSettings = () => {
     navigate("/login");
   };
 
-  if (loading) return (
-    <div className="h-screen flex items-center justify-center bg-gray-50">
-      <FiLoader className="animate-spin text-indigo-600 text-4xl" />
+  if (loading) {
+  return (
+    <div className="relative min-h-screen flex flex-col items-center justify-center bg-white">
+      {/* Waves in background */}
+      <WaveBackground position="top" height="h-96" color="#6c2bd9" opacity={0.25} />
+      <WaveBackground position="bottom" height="h-96" color="#6c2bd9" opacity={0.25} />
+
+      {/* FormCraft Logo */}
+      <div className="flex items-center gap-3 z-10 mb-8">
+        <div className="w-12 h-12 bg-[#6C3BFF] rounded-xl flex items-center justify-center shadow-lg">
+          <span className="text-white text-2xl font-bold">⧉</span>
+        </div>
+        <h1 className="text-2xl font-bold text-gray-900">FormCraft</h1>
+      </div>
+
+      {/* Spinner */}
+      <FaSpinner className="z-10 text-indigo-600 text-4xl animate-spin" />
     </div>
   );
+}
+
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
+    <div className="min-h-screen  relative font-sans bg-[#F8FAFC]">
       {/* <Toaster position="top-right" /> */}
       <UserNavbar />
+        <WaveBackground position="top" />
+                 <WaveBackground position="bottom"  />
 
-      <main className="max-w-5xl mx-auto mt-10 pb-12 px-4 sm:px-6">
+
+      <main className="max-w-5xl relative z-10 mx-auto mt-10 pb-12 px-4 sm:px-6">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}

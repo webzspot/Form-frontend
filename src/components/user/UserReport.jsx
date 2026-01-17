@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import UserNavbar from "./UserNavbar";
 import Footer from "../landingPage/Footer";
 import toast from "react-hot-toast";
-
+import WaveBackground from "../dashboard/WaveBackground";
 
 const UserReport = () => {
   const token=localStorage.getItem("token");
@@ -64,14 +64,20 @@ const UserReport = () => {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className=" w-full max-h-screen flex justify-center items-center"
-    >
+      className=" w-full min-h-screen relative  font-sans flex justify-center items-center"
+    > 
+
+    <WaveBackground position="top"  /> 
+
+    
+
+            
       {/* Dashboard Container */}
       <motion.div
         initial={{ scale: 0.96, y: 40 }}
         animate={{ scale: 1, y: 0 }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="w-full max-h-screen  rounded-xl  p-6"
+        className="w-full max-h-screen  relative z-10  rounded-xl p-6"
       >
       
 
@@ -184,7 +190,7 @@ const UserReport = () => {
             animate={{ opacity: 1, x: 0 }}
             whileHover={{ y: -4 }}
             transition={{ delay: 0.2 }}
-            className="md:col-span-2 bg-white rounded-3xl py-2 px-2"
+            className="md:col-span-2 bg-white  rounded-3xl py-2 px-2"
           >
             <h2 className="text-xl font-bold text-[#3F3D56] mb-1">
               Report a Problem
@@ -295,10 +301,15 @@ const UserReport = () => {
           </motion.div>
         )}
       </AnimatePresence>
-    </motion.div>
-   <div className="mt-20">
+    </motion.div> 
+
+    {/* ===== Bottom Wave Section ===== */}
+<div className="relative w-full h-56 overflow-hidden">
+  <WaveBackground position="bottom" height="h-80" />
+</div>
+  
     <Footer/>
-    </div> 
+      
     </>
   );
 };

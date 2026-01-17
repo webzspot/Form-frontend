@@ -6,7 +6,7 @@ import UserNavbar from './UserNavbar';
 import Footer from '../landingPage/Footer';
 import Preview from './Preview';
 import toast from "react-hot-toast";
-
+import WaveBackground from '../dashboard/WaveBackground';
 const Home = () => {
   const [formfields, setformfields] = useState(false);
   const [selectedType, setSelectedType] = useState("TEXT");
@@ -70,10 +70,14 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#f8f9ff]">
+    <div className="min-h-screen relative font-sans bg-[#f8f9ff]">
       <UserNavbar />
+        
+        <WaveBackground position="top" />
+                    
 
-      <main className="max-w-6xl mx-auto px-4 mt-5">
+
+      <main className="max-w-6xl  relative z-index mx-auto px-4 mt-5">
         <div className="flex flex-col items-center gap-8">
         
           <motion.div 
@@ -260,6 +264,14 @@ const Home = () => {
           <Preview previewFields={previewFields} refreshFields={fetchField} />
         </div>
       </main>
+        
+          {/* ===== Bottom Wave Section ===== */}
+         <div className="relative w-full h-56 overflow-hidden">
+           <WaveBackground position="bottom" height="h-80" />
+         </div>
+        
+
+
 
       <Footer />
     </div>

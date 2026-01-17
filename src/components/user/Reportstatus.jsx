@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
-import { FiBarChart2, FiAlertCircle, FiLoader, FiCheckCircle, FiClock, FiXCircle, FiTrendingUp, FiActivity, FiFilter } from 'react-icons/fi';
+import { FiBarChart2, FiAlertCircle, FiLoader, FiCheckCircle, FiClock, FiXCircle, FiTrendingUp, FiActivity, FiFilter } from 'react-icons/fi'; 
+import { FaSpinner } from 'react-icons/fa';
 import UserNavbar from './UserNavbar';
-
+import WaveBackground from '../dashboard/WaveBackground';
 const Reportstatus = () => {
   const token = localStorage.getItem("token");
   const [userReportStatus, setUserReportStatus] = useState([]);
@@ -51,19 +52,37 @@ const Reportstatus = () => {
   };
 
   if (loading) return (
-    <div className="h-screen flex flex-col items-center justify-center bg-[#F8FAFC]">
-      <div className="relative flex items-center justify-center">
-        <div className="w-20 h-20 border-4 border-violet-100 border-t-violet-600 rounded-full animate-spin"></div>
-        <FiActivity className="absolute text-violet-600 text-2xl" />
-      </div>
-      <p className="mt-4 text-slate-500 font-semibold animate-pulse">Analyzing Report Data...</p>
-    </div>
+    // <div className="h-screen flex flex-col items-center justify-center bg-[#F8FAFC]">
+    //   <div className="relative flex items-center justify-center">
+    //     <div className="w-20 h-20 border-4 border-violet-100 border-t-violet-600 rounded-full animate-spin"></div>
+    //     <FiActivity className="absolute text-violet-600 text-2xl" />
+    //   </div>
+    //   <p className="mt-4 text-slate-500 font-semibold animate-pulse">Analyzing Report Data...</p>
+    // </div>
+     <div className="relative min-h-screen flex flex-col items-center justify-center bg-white">
+          {/* Waves in background */}
+          <WaveBackground position="top" height="h-96" color="#6c2bd9" opacity={0.25} />
+          <WaveBackground position="bottom" height="h-96" color="#6c2bd9" opacity={0.25} />
+    
+          {/* FormCraft Logo */}
+          <div className="flex items-center gap-3 z-10 mb-8">
+            <div className="w-12 h-12 bg-[#6C3BFF] rounded-xl flex items-center justify-center shadow-lg">
+              <span className="text-white text-2xl font-bold">⧉</span>
+            </div>
+            <h1 className="text-2xl font-bold text-gray-900">FormCraft</h1>
+          </div>
+    
+          {/* Spinner */}
+          <FaSpinner className="z-10 text-indigo-600 text-4xl animate-spin" />
+        </div>
   );
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC]">
+    <div className="min-h-screen relative font-sans bg-[#F8FAFC]">
       <UserNavbar />
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <WaveBackground position="top" />
+         <WaveBackground position="bottom"  />
+      <main className="max-w-6xl  relative z-10 mx-auto px-4 sm:px-6 lg:px-8 py-10">
         
         {/* Header Section */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">

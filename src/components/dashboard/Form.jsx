@@ -9,8 +9,8 @@ import { useNavigate } from 'react-router-dom';
 import { MdAddCard, MdOutlineDesignServices } from 'react-icons/md';
 import Footer from '../landingPage/Footer';
 import Design from './Design';
-
-
+import WaveBackground from '../dashboard/WaveBackground';
+import { FaSpinner } from 'react-icons/fa';
 
 
 const Form = () => {
@@ -268,9 +268,12 @@ const [newField, setNewField] = useState({ label: "", type: "TEXT", options: [""
 
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen font-sans relative bg-gray-50">
       <UserNavbar />
-      <div className="max-w-6xl mx-auto p-6">
+
+       <WaveBackground position="top" />
+         
+      <div className="max-w-6xl relative z-10 mx-auto p-6">
         <header className="flex justify-between items-center mb-8">
           {!showFormBuilder ? (
             <button
@@ -629,9 +632,10 @@ const [newField, setNewField] = useState({ label: "", type: "TEXT", options: [""
 
         {/* List of Forms Grid */}
         {loading && !showFormBuilder ? (
-          <div className="flex justify-center py-20">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-violet-600"></div>
-          </div>
+           <div className="flex flex-col items-center justify-center h-64 gap-3">
+    <FaSpinner className="animate-spin text-violet-600" size={32} />
+   
+  </div>
         ) : (
           <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             <AnimatePresence>
@@ -828,10 +832,15 @@ const [newField, setNewField] = useState({ label: "", type: "TEXT", options: [""
   )}
 </AnimatePresence>
 
-
-      <div className='mt-20'>
+      {/* ===== Bottom Wave Section ===== */}
+              <div className="relative w-full h-56 overflow-hidden">
+                <WaveBackground position="bottom" height="h-56"
+         />
+              </div>
+             
+       
       <Footer/>
-      </div>
+     
     </div>
   );
 };
