@@ -1,24 +1,92 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
+import { 
+  AreaChart, 
+  Area, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer 
+} from "recharts";
 import UserNavbar from "./UserNavbar";
 import Footer from "../landingPage/Footer";
 import toast from "react-hot-toast";
 import WaveBackground from "../dashboard/WaveBackground";
+import { useFormContext } from "../dashboard/FormContext";
+import { 
+  FiAlertCircle, 
+  FiCheckCircle, 
+  FiSend, 
+  FiTrendingUp,
+  FiTrendingDown,
+  FiMinus,
+  FiActivity,
+  FiMoon,
+  FiSun
+} from "react-icons/fi";
+
+// --- Custom Star Icon ---
+const Sparkle = ({ className }) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+    <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z" />
+  </svg>
+);
 
 const UserReport = () => {
-  const token=localStorage.getItem("token");
+  const token = localStorage.getItem("token");
   const [issuetype, setIssuetype] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("");
   const [message, setMessage] = useState("");
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const { isDarkMode } = useFormContext();
+
+  // --- DYNAMIC STOCK DATA LOGIC ---
+  const [chartData, setChartData] = useState([]);
+  const [chartColor, setChartColor] = useState("#8b5cf6"); // Default Purple
+  const [trendIcon, setTrendIcon] = useState(<FiActivity />);
+
+  // Update chart based on Priority Selection
+  useEffect(() => {
+    if (priority === "High") {
+      // Stock goes UP (Green)
+      setChartData([
+        { time: "10am", val: 20 }, { time: "11am", val: 40 }, 
+        { time: "12pm", val: 35 }, { time: "1pm", val: 70 }, 
+        { time: "2pm", val: 55 }, { time: "3pm", val: 90 }, 
+        { time: "4pm", val: 100 }
+      ]);
+      setChartColor("#10b981"); // Emerald Green
+      setTrendIcon(<FiTrendingUp className="text-emerald-400" />);
+    } else if (priority === "Low") {
+      // Stock goes DOWN (Red)
+      setChartData([
+        { time: "10am", val: 90 }, { time: "11am", val: 70 }, 
+        { time: "12pm", val: 85 }, { time: "1pm", val: 40 }, 
+        { time: "2pm", val: 50 }, { time: "3pm", val: 20 }, 
+        { time: "4pm", val: 10 }
+      ]);
+      setChartColor("#ef4444"); // Red
+      setTrendIcon(<FiTrendingDown className="text-red-400" />);
+    } else {
+      // Neutral / Volatile (Purple)
+      setChartData([
+        { time: "10am", val: 40 }, { time: "11am", val: 60 }, 
+        { time: "12pm", val: 45 }, { time: "1pm", val: 55 }, 
+        { time: "2pm", val: 40 }, { time: "3pm", val: 60 }, 
+        { time: "4pm", val: 50 }
+      ]);
+      setChartColor(isDarkMode ? "#8b5cf6" : "#a78bfa");
+      setTrendIcon(<FiMinus className={isDarkMode ? "text-purple-400" : "text-white"} />);
+    }
+  }, [priority, isDarkMode]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
-
 
     if (!issuetype || !description) {
       setMessage("Please fill all required fields");
@@ -27,289 +95,261 @@ const UserReport = () => {
 
     try {
       setLoading(true);
-     
-
       await axios.post(
         "https://formbuilder-saas-backend.onrender.com/api/dashboard/user-report",
         {
-          reportData: {
-            issueType: issuetype,
-            description: description,
-           priority: priority,
-          },
-        }
-        ,
-        {
-      headers:{
-      Authorization:`Bearer ${token}`,
-    }
-        }
+          reportData: { issueType: issuetype, description, priority },
+        },
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-      
+       toast.success("Your report is submitted");
       setSuccess(true);
       setIssuetype("");
       setDescription("");
       setPriority("");
-      setMessage("");
     } catch (error) {
-      toast.error("Something went wrong. Please try again.");
+      toast.error("Something went wrong.");
     } finally {
       setLoading(false);
     }
   };
 
+  // --- Custom Star Icon for Aesthetic ---
+const SparkleIcon = ({ className }) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+    <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z" />
+  </svg>
+);
+
+  // --- THEME ---
+  const theme = {
+    pageBg: isDarkMode 
+      ? "bg-[#0B0F19] text-white selection:bg-purple-500/30" 
+      : "bg-gradient-to-br from-[#d8b4fe] via-[#ffffff] to-[#c084fc] text-[#4c1d95] selection:bg-purple-200",
+    formCard: isDarkMode
+      ? "bg-[#12121a]/80 backdrop-blur-xl border border-purple-500/20 shadow-[0_0_20px_rgba(139,92,246,0.05)]"
+      : "bg-white/60 backdrop-blur-xl border border-white/60 shadow-[0_8px_32px_0_rgba(31,38,135,0.15)]",
+    input: isDarkMode
+      ? "bg-[#05070f] border-purple-500/20 text-white placeholder-gray-600 focus:border-[#8b5cf6] focus:ring-[#8b5cf6]"
+      : "bg-white/50 border-white/60 text-[#4c1d95] placeholder-[#4c1d95]/50 focus:border-[#8b5cf6] focus:ring-[#8b5cf6] focus:bg-white/80",
+    leftPanel: isDarkMode
+      ? "bg-gradient-to-b from-[#1e1b4b] to-[#0f0c29] border-r border-purple-500/10" 
+      : "bg-[#8b5cf6] text-white", 
+    button: isDarkMode
+      ? "bg-[#8b5cf6] hover:bg-[#7c3aed] text-white shadow-[0_0_20px_rgba(139,92,246,0.4)]"
+      : "bg-gradient-to-r from-[#8b5cf6] to-[#6d28d9] text-white hover:shadow-lg hover:shadow-purple-500/30",
+  };
+
   return (
     <>
- <UserNavbar/>
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      className=" w-full min-h-screen relative  font-sans flex justify-center items-center"
-    > 
+      <UserNavbar />
+      
+      <div className={`w-full min-h-screen relative font-sans flex justify-center items-center py-10 overflow-hidden ${theme.pageBg}`}>
+        
+        <div className="absolute inset-0 z-0 pointer-events-none">
+             <WaveBackground position="top" height="h-100" color={isDarkMode ? "#1e1b4b" : "#a78bfa"} />
+             <WaveBackground position="bottom" height="h-100" color={isDarkMode ? "#1e1b4b" : "#a78bfa"} />
+             
+             {/* Floating Particles */}
+             <motion.div 
+               animate={{ y: [-10, 10, -10], opacity: [0.5, 1, 0.5] }} 
+               transition={{ duration: 4, repeat: Infinity }}
+               className="absolute top-1/4 left-10 text-white/40 text-4xl"
+             ><SparkleIcon className="w-8 h-8" /></motion.div>
+        </div>
 
-    <WaveBackground position="top"  /> 
-
-    
-
+        {/* MAIN CONTAINER */}
+        <motion.div
+          initial={{ scale: 0.95, y: 30, opacity: 0 }}
+          animate={{ scale: 1, y: 0, opacity: 1 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+          className="w-full max-w-6xl px-4 relative z-10"
+        >
+          <div className={`grid grid-cols-1 lg:grid-cols-12 gap-0 overflow-hidden rounded ${theme.formCard}`}>
             
-      {/* Dashboard Container */}
-      <motion.div
-        initial={{ scale: 0.96, y: 40 }}
-        animate={{ scale: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-        className="w-full max-h-screen  relative z-10  rounded-xl p-6"
-      >
-      
+            {/* ================= LEFT PANEL (ANALYTICS) ================= */}
+            <div className={`hidden lg:flex lg:col-span-4 flex-col justify-between p-8 relative overflow-hidden text-white ${theme.leftPanel}`}>
+              
+              {/* Background Glows */}
+              <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-[60px] pointer-events-none" />
+              
+              <div className="relative z-10 h-full flex flex-col">
+                <div className="flex items-center gap-3 mb-8">
+                    <div className="w-10 h-10 rounded-lg bg-white/20 backdrop-blur-md flex items-center justify-center border border-white/30">
+                        {isDarkMode ? <FiMoon className="w-5 h-5"/> : <FiSun className="w-5 h-5"/>}
+                    </div>
+                    <div>
+                        <h2 className="text-2xl font-bold tracking-tight">Report</h2>
+                        <p className="text-xs opacity-70 uppercase tracking-widest">Live Impact Data</p>
+                    </div>
+                </div>
 
-        {/* Layout Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-2">
-        {/* leftlayout   */}
-<motion.div
-  initial={{ opacity: 0, x: -40 }}
-  animate={{ opacity: 1, x: 0 }}
-  transition={{ duration: 0.6 }}
-  className="hidden md:flex flex-col justify-between
-             bg-[#6C63FF] 
-             rounded-3xl p-6 text-white shadow-lg
-             relative overflow-hidden"
->
-  {/* Floating blob */}
-  <motion.div
-    animate={{ y: [0, -14, 0] }}
-    transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-    className="absolute -top-16 -right-16 w-48 h-48 bg-white/20 rounded-full blur-3xl"
-  />
+                {/* --- LIVE STOCK CHART SECTION --- */}
+                <div className="bg-white/10 backdrop-blur-md rounded-3xl p-6 border border-white/20 shadow-inner flex-1 flex flex-col relative overflow-hidden">
+                    <div className="flex justify-between items-center mb-4">
+                        
+                       
+                    </div>
 
-  <div className="relative z-10">
-    <h2 className="text-lg font-semibold mb-2">Report Overview</h2>
+                    <div className="w-full flex-1 relative min-h-[200px]">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <AreaChart data={chartData}>
+                                <defs>
+                                    <linearGradient id="colorVal" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor={chartColor} stopOpacity={0.8}/>
+                                        <stop offset="95%" stopColor={chartColor} stopOpacity={0}/>
+                                    </linearGradient>
+                                </defs>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.1)" />
+                                <XAxis dataKey="time" hide />
+                                <Tooltip 
+                                    contentStyle={{ 
+                                        backgroundColor: isDarkMode ? '#05070f' : '#ffffff', 
+                                        borderRadius: '8px',
+                                        border: 'none',
+                                        color: isDarkMode ? '#fff' : '#000'
+                                    }}
+                                />
+                                <Area 
+                                    type="monotone" 
+                                    dataKey="val" 
+                                    stroke={chartColor} 
+                                    strokeWidth={3}
+                                    fillOpacity={1} 
+                                    fill="url(#colorVal)" 
+                                    animationDuration={1000}
+                                />
+                            </AreaChart>
+                        </ResponsiveContainer>
+                    </div>
 
-    <p className="text-sm opacity-90 mb-10">
-      Submit bugs or feature requests directly from your dashboard.
-    </p>
+                    <div className="mt-4 pt-4 border-t border-white/10 text-sm flex justify-between items-center">
+                        <span className="opacity-70">Projected Urgency</span>
+                        <span className="font-bold text-lg" style={{ color: chartColor }}>
+                            {priority === "High" ? "CRITICAL" : priority === "Low" ? "STABLE" : "NEUTRAL"}
+                        </span>
+                    </div>
+                </div>
 
-    <div className="space-y-6">
+                <div className="relative z-10 text-center opacity-60 text-xs tracking-[0.2em] mt-8">
+                 Submit Your Bug Here 
+                </div>
+              </div>
+            </div>
 
-      {/* ================= ISSUE TYPE ================= */}
-      <div className="bg-white/20 rounded-2xl p-4">
-        <p className="text-xs opacity-80 mb-1">Type</p>
+            {/* ================= RIGHT PANEL (FORM) ================= */}
+            <div className="lg:col-span-8 p-8 md:p-12 relative">
+              <div className="absolute top-0 left-0 w-full h-1 " />
 
-        <div className="relative h-8 overflow-hidden">
-          <AnimatePresence mode="wait">
-            <motion.p
-              key={issuetype || "type-empty"}
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -20, opacity: 0 }}
-              transition={{ duration: 0.3, ease: "easeOut" }}
-              className="absolute left-0 text-xl font-bold"
-            >
-              {issuetype || "—"}
-            </motion.p>
-          </AnimatePresence>
-        </div>
+              <div className="mb-8">
+                <h2 className={`text-3xl font-extrabold mb-2 flex items-center gap-2 ${isDarkMode ? 'text-white' : 'text-[#4c1d95]'}`}>
+                  Submit Report 
+                </h2>
+                <p className={`font-medium ${isDarkMode ? 'text-gray-400' : 'text-[#4c1d95]/70'}`}>
+                  Select priority to visualize impact.
+                </p>
+              </div>
+
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  
+                  {/* Issue Type */}
+                  <div className="space-y-2">
+                    <label className={`text-xs font-bold uppercase tracking-wide ${isDarkMode ? 'text-gray-400' : 'text-[#4c1d95]/80'}`}>
+                      Issue Type <span className="text-[#8b5cf6]">*</span>
+                    </label>
+                    <div className="relative group">
+                       <select
+                         value={issuetype}
+                         onChange={(e) => setIssuetype(e.target.value)}
+                         className={`w-full rounded-xl px-4 py-3.5 outline-none transition-all duration-300 appearance-none cursor-pointer ${theme.input} hover:shadow-[0_0_15px_rgba(139,92,246,0.15)]`}
+                       >
+                         <option value="" className="text-gray-500">Select Category...</option>
+                         <option value="Bug">Bug Report</option>
+                         <option value="Feature Request">Feature Request</option>
+                         <option value="Billing">Billing Issue</option>
+                       </select>
+                      
+                    </div>
+                  </div>
+
+                  {/* Priority Selector (TRIGGERS GRAPH) */}
+                  <div className="space-y-2">
+                    <label className={`text-xs font-bold uppercase tracking-wide ${isDarkMode ? 'text-gray-400' : 'text-[#4c1d95]/80'}`}>
+                      Priority Level
+                    </label>
+                    <div className="relative group">
+                      <select
+                        value={priority}
+                        onChange={(e) => setPriority(e.target.value)}
+                        className={`w-full rounded-xl px-4 py-3.5 outline-none transition-all duration-300 appearance-none cursor-pointer ${theme.input} hover:shadow-[0_0_15px_rgba(139,92,246,0.15)]`}
+                      >
+                        <option value="">Select Priority...</option>
+                        <option value="Low">Low (Stable)</option>
+                        <option value="Medium">Medium (Neutral)</option>
+                        <option value="High">High (Critical)</option>
+                      </select>
+                      <div className="absolute right-4 top-1/2 transform -translate-y-1/2 pointer-events-none opacity-50 group-hover:scale-110 transition-transform">
+                         <FiActivity className={`w-4 h-4 ${isDarkMode ? 'text-white' : 'text-[#6d28d9]'}`} />
+                       </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Description */}
+                <div className="space-y-2">
+                  <label className={`text-xs font-bold uppercase tracking-wide ${isDarkMode ? 'text-gray-400' : 'text-[#4c1d95]/80'}`}>
+                    Description <span className="text-[#8b5cf6]">*</span>
+                  </label>
+                  <textarea
+                    rows={5}
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Describe the phenomenon..."
+                    className={`w-full rounded-xl px-4 py-3 outline-none transition-all duration-300 resize-none ${theme.input} hover:shadow-[0_0_15px_rgba(139,92,246,0.15)]`}
+                  />
+                </div>
+
+                {/* Error Message */}
+                <AnimatePresence>
+                  {message && (
+                    <motion.div
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="flex items-center gap-2 text-red-500 bg-red-500/10 border border-red-500/20 p-3 rounded-xl backdrop-blur-sm"
+                    >
+                      <FiAlertCircle />
+                      <span className="text-sm font-bold">{message}</span>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
+                {/* Submit Button */}
+                <motion.button
+                  whileTap={{ scale: 0.97 }}
+                  whileHover={{ scale: 1.02 }}
+                  disabled={loading}
+                  className={`w-full py-4 rounded-xl font-bold tracking-widest uppercase text-sm transition-all flex justify-center items-center gap-2 ${theme.button}`}
+                >
+                  {loading ? (
+                    <>
+                      <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      <span>Processing...</span>
+                    </>
+                  ) : (
+                    <>
+                      <FiSend /> <span>Submit Report</span>
+                    </>
+                  )}
+                </motion.button>
+              </form>
+            </div>
+          </div>
+        </motion.div>
+
       </div>
-
-      {/* ================= PRIORITY ================= */}
-      <div className="bg-white/20 rounded-2xl p-4">
-        <p className="text-xs opacity-80 mb-1">Priority</p>
-
-        <div className="relative h-8 overflow-hidden">
-          <AnimatePresence mode="wait">
-            <motion.p
-              key={priority || "priority-empty"}
-              initial={{
-                y:
-                  priority === "High"
-                    ? 20
-                    : priority === "Low"
-                    ? -20
-                    : 10,
-                opacity: 0,
-              }}
-              animate={{
-                y: 0,
-                opacity: 1,
-                scale:
-                  priority === "High"
-                    ? [1, 1.1, 1]
-                    : 1,
-              }}
-              exit={{
-                y:
-                  priority === "High"
-                    ? -20
-                    : priority === "Low"
-                    ? 20
-                    : -10,
-                opacity: 0,
-              }}
-              transition={{ duration: 0.35, ease: "easeOut" }}
-              className={`absolute left-0 text-xl font-bold
-                ${
-                  priority === "High"
-                    ? "text-green-300"
-                    : priority === "Low"
-                    ? "text-red-300"
-                    : "text-white"
-                }`}
-            >
-              {priority || "—"}
-            </motion.p>
-          </AnimatePresence>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</motion.div>
-
-
-          {/* ================= RIGHT FORM ================= */}
-          <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            whileHover={{ y: -4 }}
-            transition={{ delay: 0.2 }}
-            className="md:col-span-2 bg-white  rounded-3xl py-2 px-2"
-          >
-            <h2 className="text-xl font-bold text-[#3F3D56] mb-1">
-              Report a Problem
-            </h2>
-            <p className="text-sm text-black/50 mb-6">
-              Describe the issue you are facing
-            </p>
-
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div>
-                <label className="text-sm font-medium text-gray-600">
-                  Issue Type *
-                </label>
-                <select
-                  value={issuetype}
-                  onChange={(e) => setIssuetype(e.target.value)}
-                  className="mt-1 w-full rounded-xl border font-semibold text-black/50 border-gray-300 px-4 py-3 focus:ring-2 focus:ring-[#6C63FF] outline-none"
-                >
-                  <option value="">Select issue type</option>
-                  <option>Bug</option>
-                  <option>Feature Request</option>
-                  <option>Other</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="text-sm font-medium text-gray-600">
-                  Description *
-                </label>
-                <textarea
-                  rows={4}
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  placeholder="Describe your issue..."
-                  className="mt-1 w-full rounded-xl border font-semibold border-gray-300 px-4 py-3 focus:ring-2 focus:ring-[#6C63FF] outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="text-sm font-medium text-gray-600">
-                  Priority
-                </label>
-                <select
-                  value={priority}
-                  onChange={(e) => setPriority(e.target.value)}
-                  className="mt-1 w-full rounded-xl border font-semibold text-black/50 border-gray-300 px-4 py-3 focus:ring-2 focus:ring-[#6C63FF] outline-none"
-                >
-                  <option value="">Optional</option>
-                  <option>Low</option>
-                  <option>Medium</option>
-                  <option>High</option>
-                </select>
-              </div>
-
-              {message && (
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="text-red-500 font-medium"
-                >
-                  {message}
-                </motion.p>
-              )}
-
-              <motion.button
-                whileTap={{ scale: 0.96 }}
-                whileHover={{ scale: 1.02 }}
-                disabled={loading}
-                className="w-full mt-4 py-3 rounded-xl
-                           bg-[#6C63FF] 
-                           text-white font-semibold shadow-md"
-              >
-                {loading ? "Submitting..." : "Submit Report"}
-              </motion.button>
-            </form>
-          </motion.div>
-        </div>
-      </motion.div>
-
-      {/* ================= SUCCESS MODAL ================= */}
-      <AnimatePresence>
-        {success && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 flex items-center justify-center
-                       backdrop-blur-md bg-black/30 z-50"
-          >
-            <motion.div
-              initial={{ scale: 0.8 }}
-              animate={{ scale: 1 }}
-              className="bg-white rounded-2xl p-8 text-center shadow-xl max-w-sm"
-            >
-              <h3 className="text-xl font-bold text-[#6C63FF] mb-2">
-                Report Submitted 🎉
-              </h3>
-              <p className="text-gray-600 text-sm mb-5">
-                Your issue has been submitted successfully. Our team will review it shortly.
-              </p>
-              <button
-                onClick={() => setSuccess(false)}
-                className="px-6 py-2 bg-[#6C63FF] text-white rounded-lg"
-              >
-                Close
-              </button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.div> 
-
-    {/* ===== Bottom Wave Section ===== */}
-<div className="relative w-full h-56 overflow-hidden">
-  <WaveBackground position="bottom" height="h-80" />
-</div>
-  
-    <Footer/>
-      
+      <Footer />
     </>
   );
 };
