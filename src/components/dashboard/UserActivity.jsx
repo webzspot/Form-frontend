@@ -459,12 +459,40 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, FileText, Calendar, Eye, MessageSquare, ArrowLeft } from "lucide-react";
 import { FaCheckCircle, FaSpinner } from "react-icons/fa";
 import WaveBackground from "./WaveBackground";
-
+import { useFormContext } from "../dashboard/FormContext";
+import LoadingScreen from "../shared/LoadingScreen";
 const UserActivity = () => {
+
+  const { isDarkMode } = useFormContext();
+
   const { id } = useParams();
   const token = localStorage.getItem("token");
   const API_URL = `https://formbuilder-saas-backend.onrender.com/api/admin/users/${id}`;
   const navigate = useNavigate();
+ 
+ 
+
+  const theme = {
+  pageBg: isDarkMode ? "bg-slate-950 text-white" : "bg-slate-50 text-slate-900",
+  card: isDarkMode ? "bg-slate-900 border-slate-800 shadow-xl" : "bg-white border-slate-200 shadow-md",
+  input: isDarkMode 
+    ? "bg-slate-800 border-slate-700 text-white placeholder-slate-400"
+    : "bg-white border-slate-200 text-slate-900 placeholder-slate-500",
+  textMain: isDarkMode ? "text-white" : "text-slate-900",
+  textMuted: isDarkMode ? "text-slate-400" : "text-slate-500",
+  btnPrimary: isDarkMode 
+    ? "bg-indigo-600 text-white hover:bg-indigo-700" 
+    : "bg-indigo-600 text-white hover:bg-indigo-700",
+  btnSecondary: isDarkMode 
+    ? "bg-fuchsia-600 text-white hover:bg-fuchsia-700"
+    : "bg-fuchsia-500 text-white hover:bg-fuchsia-600",
+  modalBg: isDarkMode ? "bg-slate-900" : "bg-white",
+  modalOverlay: isDarkMode ? "bg-black/80" : "bg-slate-900/60",
+};
+
+
+
+
 
   const [user, setUser] = useState(null);
   const [forms, setForms] = useState([]);
@@ -516,8 +544,7 @@ const UserActivity = () => {
 
   const renderFieldPreview = (field) => {
     const placeholder = `Preview for ${field.type}`;
-    const inputClasses = "w-full px-4 py-3 border-2 border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-800 text-sm font-medium text-slate-600 dark:text-slate-300 transition-colors";
-    
+    const inputClasses = `w-full px-4 py-3 rounded-xl text-sm font-medium transition-colors ${theme.input}`
     switch (field.type) {
       case "TEXT":
       case "EMAIL":
@@ -547,7 +574,7 @@ const UserActivity = () => {
             {field.options?.map((opt, i) => (
               <div
                 key={i}
-                className="px-4 py-3 border-2 border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-800 text-sm font-medium text-slate-700 dark:text-slate-300 hover:border-indigo-300 transition-colors"
+                 className={`px-4 py-3 border-2 rounded-xl text-sm font-medium transition-colors ${theme.input}`}
               >
                 {opt}
               </div>
@@ -559,7 +586,7 @@ const UserActivity = () => {
         return (
           <div className="flex flex-col gap-3 mt-3">
             {field.options?.map((opt, i) => (
-              <label key={i} className="flex items-center gap-3 text-sm font-medium text-slate-700 dark:text-slate-300 cursor-pointer group">
+              <label key={i}  className={`flex items-center gap-3 text-sm font-medium cursor-pointer group ${theme.textMain}`}>
                 <input
                   type={field.type === "RADIO" ? "radio" : "checkbox"}
                   disabled
@@ -580,36 +607,34 @@ const UserActivity = () => {
   };
 
   if (pageLoading) {
-    return (
-      <div className="relative min-h-screen flex flex-col items-center justify-center bg-white dark:bg-slate-950 transition-colors">
-        <WaveBackground position="top" height="h-96" color="#6c2bd9" opacity={0.15} />
-        <WaveBackground position="bottom" height="h-96" color="#6c2bd9" opacity={0.15} />
-        <div className="flex items-center gap-3 z-10 mb-8">
-          <div className="w-12 h-12 bg-[#6C3BFF] rounded-xl flex items-center justify-center shadow-lg">
-            <span className="text-white text-2xl font-bold">⧉</span>
-          </div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">FormCraft</h1>
-        </div>
-        <FaSpinner className="z-10 text-indigo-600 dark:text-indigo-400 text-4xl animate-spin" />
-      </div>
-    );
-  }
+  return <LoadingScreen isDarkMode={isDarkMode} />;
+}
+
 
   return (
     <>
-      <UserNavbar />
+      
+      <div className={`min-h-screen relative font-sans transition-colors duration-500 ${theme.pageBg} `}>
+        <UserNavbar />
+ 
 
-      <div className="min-h-screen relative font-sans bg-slate-50 dark:bg-slate-950 px-4 py-8 transition-colors">
-        <WaveBackground position="top" />
-        <WaveBackground position="bottom" />
 
-        <div className="max-w-6xl mx-auto relative z-10 space-y-8">
+        <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+                       <WaveBackground position="top" color={isDarkMode ? "#1e1b4b" : "#6c2bd9"} />
+                       <WaveBackground position="bottom" color={isDarkMode ? "#1e1b4b" : "#6c2bd9"} />
+                   </div>
+
+        <div className="max-w-6xl mx-auto relative z-10 px-4 py-8 space-y-8">
           {/* Back Button */}
           <motion.button
             onClick={() => navigate("/admindashboard")}
             whileHover={{ x: -5 }}
             whileTap={{ scale: 0.95 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white dark:bg-slate-900 border-2 border-violet-200 dark:border-slate-800 text-violet-600 dark:text-violet-400 hover:bg-violet-50 dark:hover:bg-slate-800 transition-all shadow-sm hover:shadow-md font-semibold"
+           className={`inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-xl border-2 transition-all font-semibold shadow-sm ${
+  isDarkMode
+    ? "bg-slate-900 border-slate-700 text-white hover:bg-slate-800"
+    : "bg-white border-indigo-200 text-indigo-600 hover:bg-indigo-50"
+}`}
           >
             <ArrowLeft size={16} />
             Back to Dashboard
@@ -619,7 +644,7 @@ const UserActivity = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden"
+            className={`rounded-3xl shadow-2xl border overflow-hidden ${theme.card}`}
           >
             <div className="h-32 bg-gradient-to-br from-violet-600 via-purple-600 to-indigo-700 relative">
               <div className="absolute -bottom-12 left-8">
@@ -632,8 +657,8 @@ const UserActivity = () => {
             <div className="pt-16 px-8 pb-8">
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                 <div>
-                  <h1 className="text-3xl font-extrabold text-slate-900 dark:text-white mb-1">{user?.name}</h1>
-                  <p className="text-slate-500 dark:text-slate-400 text-lg mb-3">{user?.email}</p>
+                  <h1 className={`text-3xl font-extrabold mb-1 ${theme.textMain}`}>{user?.name}</h1>
+                  <p className={`text-lg mb-3 ${theme.textMuted}`}>{user?.email}</p>
                   <span className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs font-bold uppercase border-2 ${
                     user?.role === "ADMIN"
                       ? "bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 border-purple-300 dark:border-purple-800"
@@ -645,11 +670,11 @@ const UserActivity = () => {
                 </div>
 
                 <div className="flex gap-4">
-                  <div className="bg-slate-50 dark:bg-slate-800/50 px-6 py-4 rounded-2xl border-2 border-slate-100 dark:border-slate-800 shadow-sm">
+                  <div  className={`px-6 py-4 rounded-2xl border-2 shadow-sm ${theme.card}`}>
                     <p className="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider mb-1">Total Forms</p>
                     <p className="text-3xl font-extrabold text-indigo-700 dark:text-indigo-300">{forms.length}</p>
                   </div>
-                  <div className="bg-slate-50 dark:bg-slate-800/50 px-6 py-4 rounded-2xl border-2 border-slate-100 dark:border-slate-800 shadow-sm">
+                  <div  className={`px-6 py-4 rounded-2xl border-2 shadow-sm ${theme.card}`}>
                     <p className="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider mb-1">Member Since</p>
                     <p className="text-lg font-bold text-purple-700 dark:text-purple-300">
                       {user?.createdAt && new Date(user.createdAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })}
@@ -663,7 +688,7 @@ const UserActivity = () => {
           {/* Forms Section */}
           <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
             <div className="text-center mb-8">
-              <h2 className="text-3xl font-extrabold text-slate-800 dark:text-white mb-2">
+              <h2 className={`text-3xl font-extrabold mb-2 ${theme.textMain}`}>
                 Forms Created by <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-600 to-purple-600 dark:from-violet-400 dark:to-purple-400">{user?.name}</span>
               </h2>
               <p className="text-slate-500 dark:text-slate-400">View and manage all forms created by this user</p>
@@ -672,17 +697,17 @@ const UserActivity = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {formsLoading
                 ? Array.from({ length: 3 }).map((_, i) => (
-                    <div key={i} className="animate-pulse bg-white dark:bg-slate-900 rounded-2xl h-56 p-6 border-2 border-slate-100 dark:border-slate-800" />
+                    <div key={i} className={`animate-pulse rounded-2xl h-56 p-6 border-2 ${theme.card}`}  />
                   ))
                 : forms.length === 0
-                ? <div className="bg-white dark:bg-slate-900 rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 p-16 text-center col-span-full">
+                ? <div className={`rounded-2xl border-2 border-dashed p-16 text-center col-span-full ${theme.card}`}>
                     <FileText className="text-slate-400 mx-auto mb-4" size={36} />
                     <p className="text-slate-600 dark:text-slate-300 font-semibold text-lg">No Forms Yet</p>
                   </div>
                 : forms.map((form, index) => (
                     <motion.div
                       key={form.formId}
-                      className="bg-white dark:bg-slate-900 rounded-2xl border-2 border-slate-200 dark:border-slate-800 p-6 shadow-md hover:border-violet-300 dark:hover:border-violet-500 transition-all flex flex-col justify-between group"
+                     className={`rounded-2xl border p-6 shadow-md hover:border-violet-300 transition-all flex flex-col justify-between ${theme.card}`}
                     >
                       <div className="w-10 h-10 bg-[#6C3BFF] rounded-xl flex items-center mb-4 justify-center shadow-md">
                         <div className="flex flex-col items-center gap-1">
@@ -691,10 +716,10 @@ const UserActivity = () => {
                         </div>
                       </div>
                       <div className="flex-1">
-                        <h3 className="text-xl font-bold text-slate-800 dark:text-white mb-2 group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors">
+                        <h3 className={`text-xl font-extrabold ${theme.textMain}`}>
                           {form.title}
                         </h3>
-                        <p className="text-slate-500 dark:text-slate-400 text-sm mb-4 line-clamp-2">{form.description || "No description provided"}</p>
+                        <p className={`text-sm ${theme.textMuted}`} >{form.description || "No description provided"}</p>
                         <div className="flex items-center gap-2 text-xs text-slate-400 dark:text-slate-500 font-medium">
                           <Calendar size={14} />
                           {new Date(form.createdAt).toLocaleDateString()}
@@ -716,29 +741,29 @@ const UserActivity = () => {
           {/* Modal */}
           <AnimatePresence>
             {selectedForm && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={closeFormModal} className="absolute inset-0 bg-slate-900/60 dark:bg-black/80 backdrop-blur-sm" />
-                <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative bg-white dark:bg-slate-900 w-full max-w-3xl max-h-[90vh] rounded-3xl shadow-2xl flex flex-col border-2 border-slate-200 dark:border-slate-800 overflow-hidden">
+              <div className="fixed mt-20  inset-0 z-50 flex items-center justify-center p-4">
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={closeFormModal}  className={`absolute inset-0 ${theme.modalOverlay} backdrop-blur-sm`} />
+                <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className={`relative w-full max-w-3xl max-h-[90vh] rounded-3xl shadow-2xl flex flex-col overflow-hidden border-2 ${theme.card}`}>
                   <div className="bg-gradient-to-br from-violet-600 to-indigo-700 px-8 py-6 pt-10 flex justify-between items-start">
                     <div>
-                      <h2 className="text-2xl font-extrabold text-white">{selectedForm?.title}</h2>
-                      <p className="text-violet-100 text-sm">{selectedForm?.description}</p>
+                      <h2  className={`text-2xl font-extrabold ${theme.textMain}`}>{selectedForm?.title}</h2>
+                      <p className={`text-sm ${theme.textMuted}`}>{selectedForm?.description}</p>
                     </div>
                     <button onClick={closeFormModal} className="bg-white/20 hover:bg-white/30 p-2 rounded-xl text-white"><X size={24} /></button>
                   </div>
-                  <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-slate-50 dark:bg-slate-950">
+                  <div className={`flex-1 overflow-y-auto p-6 space-y-4 ${theme.modalBg}`}>
                     {loadingForm ? <FaSpinner className="animate-spin text-violet-600 mx-auto" /> : selectedForm?.formField?.map((field, index) => (
-                      <div key={field.formFieldId} className="bg-white dark:bg-slate-900 p-6 border-2 border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm">
-                        <label className="block text-sm font-bold uppercase text-slate-700 dark:text-slate-300 mb-3">
+                      <div key={field.formFieldId}  className={`p-6 border-2 rounded-2xl shadow-sm ${theme.card}`}>
+                        <label className={`block text-sm font-bold uppercase mb-3 ${theme.textMain}`}>
                           {field.label} {field.isRequired && <span className="text-red-500">*</span>}
                         </label>
                         {renderFieldPreview(field)}
                       </div>
                     ))}
                   </div>
-                  <div className="bg-white dark:bg-slate-900 border-t-2 border-slate-100 dark:border-slate-800 p-6 flex gap-4">
-                    <button onClick={closeFormModal} className="flex-1 py-3 bg-slate-800 dark:bg-slate-700 text-white rounded-xl font-bold">Close</button>
-                    <button onClick={() => { navigate(`/admin/form/${selectedForm.formId}/responses`); closeFormModal(); }} className="flex-1 py-3 bg-indigo-600 text-white rounded-xl font-bold">Responses</button>
+                  <div className="flex gap-4 p-6">
+                    <button onClick={closeFormModal} className={`flex-1 py-3 rounded-xl font-bold ${theme.btnSecondary}`}>Close</button>
+                    <button onClick={() => { navigate(`/admin/form/${selectedForm.formId}/responses`); closeFormModal(); }} className={`flex-1 py-3 rounded-xl font-bold ${theme.btnPrimary}`}>Responses</button>
                   </div>
                 </motion.div>
               </div>

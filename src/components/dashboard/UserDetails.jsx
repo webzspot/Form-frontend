@@ -13,7 +13,7 @@ import UserNavbar from '../user/UserNavbar';
 import usePagination from '../../hooks/usePagination';
 import TableSkeleton from './TableSkeleton';
 import WaveBackground from "./WaveBackground";
-
+import { useFormContext } from "../dashboard/FormContext";
 import {
   PieChart,
   Pie,
@@ -23,7 +23,9 @@ import {
   Legend
 } from "recharts";
 
-const UserDetails= () => {
+const UserDetails= () => { 
+    const { isDarkMode } = useFormContext();
+
     const [userData, setUserData] = useState([]);
     const [openMenuIndex, setOpenMenuIndex] = useState(null);
     const [editingUser, setEditingUser] = useState(null);
@@ -37,7 +39,44 @@ const UserDetails= () => {
    
     const token = localStorage.getItem("token");
     
-    const navigate = useNavigate();
+    const navigate = useNavigate(); 
+
+     const theme = {
+  pageBg: isDarkMode
+    ? "bg-[#05070f] text-white selection:bg-purple-500/30"
+    : "bg-slate-50 text-slate-900 selection:bg-purple-200",
+
+  card: isDarkMode
+    ? "bg-[#12121a]/90 border border-purple-500/20"
+    : "bg-white border-slate-200 shadow-xl shadow-slate-200/40",
+
+  headerCard: isDarkMode
+    ? "bg-linear-to-r from-indigo-900 via-purple-900 to-slate-900"
+    : "bg-linear-to-r from-violet-600 via-purple-600 to-indigo-700",
+
+  tableHeader: isDarkMode
+    ? "bg-[#1e1b4b]/50 text-purple-200"
+    : "bg-slate-50 text-slate-600",
+
+  modalBg: isDarkMode
+    ? "bg-[#0f1220] text-white"
+    : "bg-white text-slate-800",
+
+  input: isDarkMode
+    ? "bg-slate-900 border-purple-500/30 text-white placeholder:text-gray-400"
+    : "bg-slate-50 border-slate-200 text-slate-800",
+
+  textMuted: isDarkMode ? "text-gray-400" : "text-slate-500",
+  border: isDarkMode ? "border-purple-500/20" : "border-slate-200"
+};
+
+
+
+
+
+
+
+
     const menuRef = useRef(null);
 
     const API_BASE_URL = 'https://formbuilder-saas-backend.onrender.com/api/admin/users';
@@ -174,9 +213,9 @@ const COLORS = ["#7c3aed", "#c4b5fd"];
 
     return (
         <>
-            <UserNavbar />
-            <div className='relative font-sans bg-linear-to-br from-slate-50 via-violet-50/20 to-purple-50/10 min-h-screen w-full overflow-hidden'>
-               
+            
+            <div className={`min-h-screen relative font-sans transition-colors duration-500 ${theme.pageBg}`}>
+                <UserNavbar />
 {/* 
                 <div className="absolute top-0 left-0 w-full h-320px overflow-hidden z-0">
     <svg
@@ -193,8 +232,16 @@ const COLORS = ["#7c3aed", "#c4b5fd"];
 </div>  */} 
 
  
-  <WaveBackground position="top" />
-   <WaveBackground position="bottom" />
+  <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+  <WaveBackground
+    position="top"
+    color={isDarkMode ? "#1e1b4b" : "#6c2bd9"}
+  />
+  <WaveBackground
+    position="bottom"
+    color={isDarkMode ? "#1e1b4b" : "#6c2bd9"}
+  />
+</div>
                 <div className="relative z-10 p-4 md:p-8 font-sans text-slate-900">
                     {/* Header Section with Image */}
                     <motion.div 
@@ -203,7 +250,7 @@ const COLORS = ["#7c3aed", "#c4b5fd"];
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 0.6, delay: 0.2 }}
                     >
-                        <div className="bg-linear-to-br from-violet-600 via-purple-600 to-indigo-700 rounded-3xl shadow-2xl overflow-hidden">
+                        <div className={`${theme.headerCard} rounded-3xl shadow-2xl`}>
                             <div className="flex flex-col md:flex-row items-center justify-between p-8 gap-6">
                                 <div className="flex-1 text-white">
                                     <h1 className=" text-xl md:text-4xl font-bold mb-2">User Management</h1>
@@ -222,7 +269,7 @@ const COLORS = ["#7c3aed", "#c4b5fd"];
   initial={{ opacity: 0, y: 30 }}
   animate={{ opacity: 1, y: 0 }}
   transition={{ duration: 0.6 }}
-  className="max-w-7xl mx-auto mb-10 bg-white rounded-3xl border border-black/10 shadow-xl overflow-hidden"
+ className={`max-w-7xl mx-auto mb-10 rounded-3xl overflow-hidden ${theme.card}`}
 >
   
 
@@ -257,15 +304,39 @@ const COLORS = ["#7c3aed", "#c4b5fd"];
                   <Cell key={index} fill={COLORS[index]} />
                 ))}
               </Pie>
-              <Tooltip 
+              {/* <Tooltip 
                  contentStyle={{
-                  backgroundColor: '#fffff',
-              border: '2px solid #e2e8f0',
+                   backgroundColor: isDarkMode ? '#1e1b4b' : '#ffffff', // dark/light bg
+    color: isDarkMode ? '#ffffff' : '#000000',   
+    border: isDarkMode ? '1px solid #7c3aed' : '1px solid #e2e8f0',
                   borderRadius: '12px',
                   padding: '12px',
                   boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
                  }}
-              />
+              /> */}
+<Tooltip
+  content={({ active, payload }) => {
+    if (!active || !payload || payload.length === 0) return null;
+
+    return (
+      <div
+        className="p-3 rounded-xl shadow-lg"
+        style={{
+          backgroundColor: isDarkMode ? '#1e1b4b' : '#ffffff',
+          border: isDarkMode ? '1px solid #7c3aed' : '1px solid #e2e8f0',
+          color: isDarkMode ? '#ffffff' : '#000000', // <- text color
+        }}
+      >
+        {payload.map((item, index) => (
+          <div key={index} className="flex justify-between gap-2">
+            <span>{item.name}</span>
+            <span className="font-bold">{item.value}</span>
+          </div>
+        ))}
+      </div>
+    );
+  }}
+/>
 
 
             </PieChart>
@@ -275,8 +346,8 @@ const COLORS = ["#7c3aed", "#c4b5fd"];
 
           {/* Center Total Display */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
-            <p className="text-4xl font-extrabold text-slate-800">{userData.length}</p>
-            <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Total Users</p>
+            <p className={theme.textMain}>{userData.length}</p>
+            <p  className={theme.textMuted}>Total Users</p>
           </div>
         </div>
       </div>
@@ -289,7 +360,11 @@ const COLORS = ["#7c3aed", "#c4b5fd"];
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2 }}
-          className="bg-linear-to-br from-fuchsia-50 to-fuchsia-100 border-2 border-fuchsia-200 rounded-2xl p-6 shadow-md hover:shadow-lg transition-all group"
+         className={`rounded-2xl p-6 shadow-md transition-all ${
+  isDarkMode
+    ? "bg-fuchsia-500/10 border border-fuchsia-500/30"
+    : "bg-linear-to-br from-fuchsia-50 to-fuchsia-100 border-2 border-fuchsia-200"
+}`}
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -300,7 +375,7 @@ const COLORS = ["#7c3aed", "#c4b5fd"];
                 <p className="text-sm font-bold text-fuchsia-700 uppercase tracking-wider mb-1">
                   Active Users
                 </p>
-                <p className="text-4xl font-extrabold text-fuchsia-600">
+                <p  className={isDarkMode ? "text-fuchsia-300" : "text-fuchsia-700"}>
                   {activeUsersCount}
                 </p>
               </div>
@@ -314,7 +389,11 @@ const COLORS = ["#7c3aed", "#c4b5fd"];
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.3 }}
-          className="bg-linear-to-br from-sky-50 to-sky-100 border-2 border-sky-200 rounded-2xl p-6 shadow-md hover:shadow-lg transition-all group"
+          className={`rounded-2xl p-6 shadow-md transition-all ${
+  isDarkMode
+    ? "bg-fuchsia-500/10 border border-fuchsia-500/30"
+    : "bg-linear-to-br from-fuchsia-50 to-fuchsia-100 border-2 border-fuchsia-200"
+}`}
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
@@ -325,7 +404,7 @@ const COLORS = ["#7c3aed", "#c4b5fd"];
                 <p className="text-sm font-bold text-sky-700 uppercase tracking-wider mb-1">
                   Inactive Users
                 </p>
-                <p className="text-4xl font-extrabold text-sky-500">
+                <p  className={isDarkMode ? "text-fuchsia-300" : "text-fuchsia-700"}>
                   {inactiveUsersCount}
                 </p>
               </div>
@@ -343,9 +422,12 @@ const COLORS = ["#7c3aed", "#c4b5fd"];
 </motion.div>
 
             {/* Filters and Table */}
-                    <div className='max-w-7xl mx-auto bg-white rounded-2xl border border-slate-200 shadow-md overflow-hidden'>   
+                    <div className={`max-w-7xl mx-auto rounded-2xl overflow-hidden ${theme.card}`}>   
 
-                        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 px-6 py-4 border-b border-slate-100 bg-slate-50/60">
+                        <div className={`flex flex-col md:flex-row md:items-center md:justify-between gap-4 px-6 py-4 border-b ${theme.border} ${
+  isDarkMode ? "bg-slate-900/40" : "bg-slate-50/60"
+}`}
+>
     <h2 className="text-lg font-bold text-slate-800">
       Users
     </h2>
@@ -380,11 +462,13 @@ const COLORS = ["#7c3aed", "#c4b5fd"];
 
 
 
-                        <div className="p-6 border-b border-slate-100 flex flex-col lg:flex-row gap-4">
+                        <div  className={`p-6 border-b flex flex-col lg:flex-row gap-4 ${theme.border} ${
+    isDarkMode ? "bg-slate-900/30" : "bg-white"
+  }`}>
                             <div className="relative flex-1">
                                 <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
                                 <input
-                                    className="w-full pl-11 pr-4 py-3 font-semibold bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-violet-500 transition-all"
+                                  className={`w-full pl-11 pr-4 py-3 font-semibold rounded-xl outline-none focus:ring-2 focus:ring-violet-500 transition-all ${theme.input}`}
                                     type="text"
                                     placeholder="Search name or email..."
                                     value={searchedUser}
@@ -395,7 +479,7 @@ const COLORS = ["#7c3aed", "#c4b5fd"];
                                 <select 
                                     value={filterRole} 
                                     onChange={(e) => setFilterRole(e.target.value)} 
-                                    className="px-4 py-3 font-semibold bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-violet-500 transition-all"
+                                    className={`px-4 py-3 font-semibold rounded-xl outline-none focus:ring-2 focus:ring-violet-500 transition-all ${theme.input}`}
                                 >
                                     <option value="all">All Roles</option>
                                     <option value="ADMIN">Admin</option>
@@ -416,7 +500,7 @@ const COLORS = ["#7c3aed", "#c4b5fd"];
 
                         <div className='overflow-x-auto'>
                             <table className='w-full text-left'>
-                                <thead className="bg-linear-to-r from-slate-50 to-slate-100 border-b border-slate-200">
+                                <thead className={`${theme.tableHeader} border-b ${theme.border}`}>
                                     <tr>
                                         <th className="px-6 py-4 text-xs font-semibold text-slate-600 uppercase tracking-wider">User Info</th>
                                         <th className="px-6 py-4 text-xs font-semibold text-slate-600 uppercase tracking-wider">Role</th>
@@ -445,7 +529,9 @@ const COLORS = ["#7c3aed", "#c4b5fd"];
                                                 initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.3, delay: index * 0.05 }}//
-                                            className="hover:bg-indigo-100/30 transition-colors group">
+                                           className={`transition-colors group ${
+  isDarkMode ? "hover:bg-purple-500/5" : "hover:bg-indigo-100/30"
+}`}>
                                                 <td className="px-6 py-4">
                                                     <div className="flex items-center gap-3">
                                                         {/* Avatar with initials */}
@@ -453,7 +539,7 @@ const COLORS = ["#7c3aed", "#c4b5fd"];
                                                             {getInitials(user.name)}
                                                         </div>
                                                         <div>
-                                                            <div className="font-semibold text-slate-800">{user.name}</div>
+                                                            <div className={theme.textMuted}>{user.name}</div>
                                                             <div className="text-sm text-slate-500">{user.email}</div>
                                                         </div>
                                                     </div>
@@ -488,7 +574,11 @@ const COLORS = ["#7c3aed", "#c4b5fd"];
                                                         •••
                                                     </button>
                                                     {openMenuIndex === user.userId && (
-                                                        <div className="absolute right-12 top-0 bg-white border border-slate-200 rounded-xl shadow-2xl z-50 min-w-[140px] py-2">
+                                                        <div className={`absolute right-12 top-0 rounded-xl shadow-2xl z-50 min-w-[140px] py-2 ${
+    isDarkMode
+      ? "bg-slate-900 border border-purple-500/30 text-white"
+      : "bg-white border border-slate-200"
+  }`}>
                                                             <div className="flex justify-between items-center px-3 pb-2 border-b border-slate-100 mb-1">
                                                                 <span className="text-[10px] font-bold text-slate-400 uppercase">Options</span>
                                                                 <button onClick={() => setOpenMenuIndex(null)} className="text-slate-300 hover:text-red-500 transition-colors"><FaTimes size={10}/></button>
@@ -510,7 +600,10 @@ const COLORS = ["#7c3aed", "#c4b5fd"];
                         </div>
 
                         {/* Pagination */}
-                        <div className="flex justify-between items-center px-6 py-4 border-t border-slate-100 bg-slate-50/50">
+                        <div  className={`flex justify-between items-center px-6 py-4 border-t ${theme.border} ${
+    isDarkMode ? "bg-slate-900/40" : "bg-slate-50/50"
+  }`}
+>
                             <span className="text-sm text-slate-600 font-medium">Page {currentPage} of {totalPages}</span>
                             <div className="flex gap-2">
                                 <button 
@@ -549,11 +642,11 @@ const COLORS = ["#7c3aed", "#c4b5fd"];
                             animate={{ x: 0 }} 
                             exit={{ x: "100%" }} 
                             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                            className="fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl z-50   overflow-y-auto "
+                            className={`fixed top-0 right-0 h-full w-full max-w-md shadow-2xl z-50 overflow-y-auto ${theme.modalBg}`}
                         >
                             <div className="p-6">
                                 <div className="flex justify-between items-center mb-8">
-                                    <h2 className="text-2xl font-bold text-slate-800">{isAddMode ? "Create New User" : "Edit User Profile"}</h2>
+                                    <h2 className={`text-2xl font-bold ${theme.textMain}`}>{isAddMode ? "Create New User" : "Edit User Profile"}</h2>
                                     <button 
                                         onClick={handleDismiss} 
                                         className="p-2 hover:bg-slate-100 rounded-full transition-colors"
@@ -576,7 +669,7 @@ const COLORS = ["#7c3aed", "#c4b5fd"];
                                             value={editingUser.name} 
                                             onChange={handleEditChange} 
                                             required 
-                                            className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all" 
+                                           className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${theme.input}`}
                                             placeholder="Enter full name"
                                         />
                                     </div>
@@ -588,7 +681,7 @@ const COLORS = ["#7c3aed", "#c4b5fd"];
                                             value={editingUser.email} 
                                             onChange={handleEditChange} 
                                             required 
-                                            className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all" 
+                                           className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${theme.input}`}
                                             placeholder="user@example.com"
                                         />
                                     </div>
@@ -602,8 +695,7 @@ const COLORS = ["#7c3aed", "#c4b5fd"];
                                             value={editingUser.password || ""} 
                                             onChange={handleEditChange} 
                                             required={isAddMode} 
-                                            className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all" 
-                                            placeholder={isAddMode ? "Enter password" : "Leave blank to keep current"}
+                                        className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${theme.input}`}
                                         />
                                     </div>
                                     <div>
@@ -613,7 +705,7 @@ const COLORS = ["#7c3aed", "#c4b5fd"];
                                             value={editingUser.role} 
                                             onChange={handleEditChange} 
                                             required 
-                                            className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all"
+                                          className={`w-full px-4 py-3 rounded-xl border-2 transition-all ${theme.input}`}
                                         >
                                             <option value="">Select Role</option>
                                             <option value="ADMIN">Admin</option>
@@ -651,13 +743,15 @@ const COLORS = ["#7c3aed", "#c4b5fd"];
                             animate={{ opacity: 1 }} 
                             exit={{ opacity: 0 }} 
                             onClick={handleDismiss} 
-                            className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" 
+                            className={`fixed inset-0${
+        isDarkMode ? "bg-slate-900/80" : "bg-slate-900/40 backdrop-blur-sm"
+    }`}
                         />
                         <motion.div 
                             initial={{ scale: 0.9, opacity: 0 }} 
                             animate={{ scale: 1, opacity: 1 }} 
                             exit={{ scale: 0.9, opacity: 0 }} 
-                            className="bg-white rounded-2xl p-8 w-full max-w-sm relative z-10 shadow-2xl text-center"
+                           className={`rounded-2xl p-8 shadow-2xl ${theme.modalBg}`}
                         >
                             <div className="w-20 h-20 bg-linear-to-br from-red-100 to-red-200 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
                                 <FaTrash size={28} />
@@ -691,5 +785,6 @@ const COLORS = ["#7c3aed", "#c4b5fd"];
 };
 
 export default UserDetails;
+
 
 

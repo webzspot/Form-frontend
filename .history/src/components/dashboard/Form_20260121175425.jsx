@@ -6063,8 +6063,8 @@ const Form = () => {
                     }
                     const baseUrl = import.meta.env.VITE_URL?.replace(/\/$/, "") || window.location.origin
                     const formLink = `${baseUrl}/public/form/${viewData.slug}`
-                    // const embedCode = <iframe src="${formLink}" title="${viewData.title}" width="100%" height="700" style="border:none; border-radius:12px;" allow="clipboard-write"></iframe>
-                      const embedCode = `<iframe src="${formLink}" title="${viewData.title}" width="100%" height="700" style="border:none; border-radius:12px;" allow="clipboard-write"></iframe>`;
+                    const embedCode = <iframe src="${formLink}" title="${viewData.title}" width="100%" height="700" style="border:none; border-radius:12px;" allow="clipboard-write"></iframe>
+
                     await navigator.clipboard.writeText(embedCode)
                     toast.success("Embed code copied!")
                   }}
@@ -6077,50 +6077,7 @@ const Form = () => {
                   className={`flex-1   px-3 py-1 md:px-6 md:py-3.5 rounded-xl font-bold transition-all ${viewData.isPublic ? "shadow-lg hover:brightness-110 active:scale-95" : "cursor-not-allowed"}`}
                 >
                   Copy Embed Code
-                </motion.button> 
-
-
-                <motion.button
-    whileHover={{ scale: viewData.isPublic ? 1.02 : 1 }}
-    whileTap={{ scale: viewData.isPublic ? 0.98 : 1 }}
-    onClick={async () => {
-      if (!viewData.isPublic) {
-        toast.error("Form is private. Make it public first.")
-        return
-      }
-      const baseUrl = import.meta.env.VITE_URL?.replace(/\/$/, "") || window.location.origin
-     const scriptCode = `<script 
-  src="${baseUrl}/publicFormEmbed.js"
-  data-form-id="${viewData.slug}"
-  data-primary-color="${viewData.theme?.buttonColor || "#7C3AED"}"
-  data-bg-color="${viewData.theme?.bgColor || "#ffffff"}"
-  data-font="${viewData.theme?.labelFont || "Inter"}"
-  data-input-bg-color="${viewData.theme?.inputBgColor || "#ffffff"}"
-  data-label-color="${viewData.theme?.labelColor || "#374151"}"
-  data-border-radius="${viewData.theme?.borderRadius || "16px"}"
-  data-width="100%">
-</script>`;
-
-
-      await navigator.clipboard.writeText(scriptCode)
-      toast.success("Script code copied!")
-    }}
-    style={{
-      background: viewData.isPublic
-        ? `linear-gradient(135deg, ${viewData.theme?.buttonColor || "#7C3AED"}, ${viewData.theme?.buttonColor || "#7C3AED"}dd)`
-        : "#E5E7EB",
-      color: viewData.isPublic ? "white" : "#9CA3AF",
-    }}
-    className={`flex-1 px-3 py-1 md:px-6 md:py-3.5 rounded-xl font-bold transition-all ${
-      viewData.isPublic ? "shadow-lg hover:brightness-110 active:scale-95" : "cursor-not-allowed"
-    }`}
-  >
-    Copy Script Code
-  </motion.button>
-
-
-
-
+                </motion.button>
               </div>
             </motion.div>
           </div>

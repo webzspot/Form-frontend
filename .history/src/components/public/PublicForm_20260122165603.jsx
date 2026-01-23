@@ -221,7 +221,20 @@ import { useFormContext } from '../dashboard/FormContext';
 
 
 
+// Get query params from the URL (used by script embed)
+const params = new URLSearchParams(window.location.search);
 
+const embedTheme = {
+  buttonColor: params.get("primaryColor"),
+  bgColor: params.get("bgColor"),
+  labelFont: params.get("font"),
+};
+
+// Merge original theme with embed overrides
+const theme = {
+  ...activePublicForm?.theme, // original theme saved in dashboard
+  ...embedTheme               // overrides from script embed
+};
 
 
 const PublicForm = () => {
@@ -244,29 +257,9 @@ const PublicForm = () => {
       }
     };
     fetchPublicForm();
-  }, [slug, setActivePublicForm]); 
+  }, [slug, setActivePublicForm]);
 
-
-  const params = new URLSearchParams(window.location.search);
-  const embedTheme = {
-    buttonColor: params.get("primaryColor"),
-    bgColor: params.get("bgColor"),
-    labelFont: params.get("font"), 
-      inputBgColor: params.get("inputBgColor"),
-  labelColor: params.get("labelColor"),
-  borderRadius: params.get("borderRadius"),
-
-  };
-const theme = {
-  ...activePublicForm?.theme,
-   ...Object.fromEntries(
-    Object.entries(embedTheme).filter(([_, v]) => v)
-  ),
-};
-
-
-
-  //const theme = activePublicForm?.theme || {};
+  const theme = activePublicForm?.theme || {};
   const styles = {
     bg: theme.bgColor || "#f3f4f6",
     button: theme.buttonColor || "#6C3BFF",

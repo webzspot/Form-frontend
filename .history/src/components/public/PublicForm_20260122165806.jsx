@@ -251,19 +251,13 @@ const PublicForm = () => {
   const embedTheme = {
     buttonColor: params.get("primaryColor"),
     bgColor: params.get("bgColor"),
-    labelFont: params.get("font"), 
-      inputBgColor: params.get("inputBgColor"),
-  labelColor: params.get("labelColor"),
-  borderRadius: params.get("borderRadius"),
-
+    labelFont: params.get("font"),
   };
-const theme = {
-  ...activePublicForm?.theme,
-   ...Object.fromEntries(
-    Object.entries(embedTheme).filter(([_, v]) => v)
-  ),
-};
 
+  const theme = {
+    ...activePublicForm?.theme, // original theme saved in dashboard
+    ...embedTheme               // overrides from script embed
+  };
 
 
   //const theme = activePublicForm?.theme || {};

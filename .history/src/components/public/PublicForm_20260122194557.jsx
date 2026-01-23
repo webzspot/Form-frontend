@@ -259,9 +259,9 @@ const PublicForm = () => {
   };
 const theme = {
   ...activePublicForm?.theme,
-   ...Object.fromEntries(
-    Object.entries(embedTheme).filter(([_, v]) => v)
-  ),
+  ...(embedTheme.bgColor && { bgColor: embedTheme.bgColor }),
+  ...(embedTheme.buttonColor && { buttonColor: embedTheme.buttonColor }),
+  ...(embedTheme.labelFont && { labelFont: embedTheme.labelFont }),
 };
 
 

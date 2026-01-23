@@ -11,7 +11,7 @@ import {
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
-const Design = ({ editingFormId, token, formTheme, setFormTheme }) => {
+const Design = ({ editingFormId, token, formTheme, setFormTheme, isDarkMode }) => {
   const [isDesigning, setIsDesigning] = useState(false);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('presets'); // 'presets', 'button', 'background', 'typography'
@@ -61,7 +61,11 @@ const Design = ({ editingFormId, token, formTheme, setFormTheme }) => {
     <div className="w-full mb-4">
       <button
         onClick={() => setIsDesigning(!isDesigning)}
-        className="bg-gray-900 text-white px-4 py-3 rounded-2xl font-semibold flex items-center gap-3 w-full justify-center hover:bg-black transition-all shadow-lg"
+           className={`w-full py-3 rounded-xl font-semibold flex items-center justify-center gap-2 transition-all duration-300
+   
+       bg-[#1f2937] text-gray-100 hover:bg-[#374151] border border-white/10"
+      
+  `}
       >
         <MdOutlineDesignServices size={20} /> 
         {isDesigning ? "Close Designer" : "Customize Form"}
@@ -73,10 +77,19 @@ const Design = ({ editingFormId, token, formTheme, setFormTheme }) => {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="mt-4 bg-white border border-gray-200 rounded-2xl shadow-2xl overflow-hidden flex flex-col"
+            className={`mt-4 rounded-2xl shadow-2xl overflow-hidden flex flex-col border transition-colors
+  ${isDarkMode
+    ? "bg-[#0f172a] border-slate-800 text-gray-100"
+    : "bg-white border-gray-200 text-gray-900"
+  }`}
           >
             {/* --- TAB NAVIGATION --- */}
-            <div className="flex border-b border-gray-100 bg-gray-50/50 p-1">
+            <div className={`flex border-b p-1 transition-colors
+  ${isDarkMode
+    ? "bg-[#020617] border-slate-800"
+    : "bg-gray-50/50 border-gray-100"
+  }`}
+>
               {[
                 { id: 'presets', icon: <MdOutlinePalette />, label: 'Themes' },
                 { id: 'button', icon: <MdOutlineAdsClick />, label: 'Buttons' },
@@ -86,11 +99,15 @@ const Design = ({ editingFormId, token, formTheme, setFormTheme }) => {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex-1 flex flex-col items-center py-3 gap-1 transition-all rounded-xl ${
-                    activeTab === tab.id 
-                    ? "bg-white text-violet-600 shadow-sm font-bold" 
-                    : "text-gray-400 hover:text-gray-600"
-                  }`}
+                 className={`flex-1 flex flex-col items-center py-3 gap-1 transition-all rounded-xl
+${activeTab === tab.id
+  ? isDarkMode
+    ? "bg-slate-800 text-violet-300 font-bold"
+    : "bg-white text-violet-600 shadow-sm font-bold"
+  : isDarkMode
+    ? "text-gray-400 hover:text-gray-200"
+    : "text-gray-400 hover:text-gray-600"
+}`}
                 >
                   <span className="text-xl">{tab.icon}</span>
                   <span className="text-[10px] uppercase tracking-tighter">{tab.label}</span>
@@ -116,7 +133,9 @@ const Design = ({ editingFormId, token, formTheme, setFormTheme }) => {
                           <div className="w-6 h-6 rounded-full border-2 border-white shadow-sm" style={{ backgroundColor: p.bg }}></div>
                           <div className="w-6 h-6 rounded-full border-2 border-white shadow-sm" style={{ backgroundColor: p.btn }}></div>
                         </div>
-                        <span className="text-xs font-bold text-gray-700">{p.name}</span>
+                        <span  className={`text-xs font-bold ${
+    isDarkMode ? "text-gray-300" : "text-gray-700"
+  }`}>{p.name}</span>
                       </button>
                     ))}
                   </motion.div>
@@ -176,14 +195,23 @@ const Design = ({ editingFormId, token, formTheme, setFormTheme }) => {
                     className="space-y-4"
                   >
                     <div className="space-y-3">
-                        <label className="uppercase text-gray-400">Font Family</label>
+                        <label className={`uppercase text-gray-200" `}>Font Family</label>
                         <div className="grid grid-cols-1 gap-2 mt-4">
                             {["Inter", "Poppins", "Roboto", "Montserrat", "Playfair Display", "Space Grotesk"].map((font) => (
                                 <button
                                     key={font}
                                     onClick={() => handleLiveUpdate('labelFont', font)}
                                     style={{ fontFamily: font }}
-                                    className={`w-full px-2 py-2 text-left rounded-xl border transition-all ${formTheme.labelFont === font ? "border-violet-600 bg-violet-50 text-violet-700 shadow-sm" : "border-gray-100 hover:border-gray-300"}`}
+                                    className={`w-full px-2 py-2 text-left rounded-xl border transition-all
+${formTheme.labelFont === font
+  ? isDarkMode
+    ? "border-violet-500 bg-violet-500/10 text-violet-300 font-bold"
+    : "border-violet-600 bg-violet-50 text-violet-700 font-bold"
+  : isDarkMode
+    ? "border-slate-700 text-gray-200 hover:bg-slate-800 hover:border-slate-500"
+    : "border-gray-200 text-gray-800 hover:bg-gray-100 hover:border-gray-400"
+}
+`}
                                 >
                                     {font}
                                 </button>
@@ -191,7 +219,9 @@ const Design = ({ editingFormId, token, formTheme, setFormTheme }) => {
                         </div>
                     </div>
                     <div className="space-y-3">
-                        <label className="uppercase text-gray-400">Text Color</label>
+                        <label className={`uppercase text-sm ${
+    isDarkMode ? "text-gray-400" : "text-gray-700"
+  }`}>Text Color</label>
                         <input type="color" value={formTheme.labelColor || "#374151"} onChange={(e) => handleLiveUpdate('labelColor', e.target.value)} className="w-full mt-2 h-10 cursor-pointer rounded-lg" />
                     </div>
                   </motion.div>
@@ -200,11 +230,21 @@ const Design = ({ editingFormId, token, formTheme, setFormTheme }) => {
             </div>
 
             {/* --- FOOTER ACTION --- */}
-            <div className="p-5 bg-gray-50 border-t border-gray-100">
+            <div className={`p-5 border-t transition-colors
+  ${isDarkMode
+    ? "bg-[#020617] border-slate-800"
+    : "bg-gray-50 border-gray-100"
+  }`}>
               <button 
                 onClick={saveThemeOnly} 
                 disabled={loading} 
-                className={`w-full py-4 rounded-2xl text-sm font-bold transition-all shadow-lg active:scale-95 ${editingFormId ? 'bg-gray-900 text-white hover:bg-black' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
+               className={`w-full py-4 rounded-2xl text-sm font-bold transition-all shadow-lg active:scale-95
+${editingFormId
+  ? isDarkMode
+    ? "bg-violet-600 hover:bg-violet-500 text-white"
+    : "bg-gray-900 hover:bg-black text-white"
+  : "bg-gray-200 text-gray-400 cursor-not-allowed"
+}`}
               >
                 {loading ? "Saving Styles..." : "Apply & Save Design"}
               </button>
