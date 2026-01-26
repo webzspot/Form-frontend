@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
+import { motion, AnimatePresence } from "framer-motion";
 import { 
   FiBarChart2, FiAlertCircle, FiCheckCircle, FiClock, 
   FiXCircle, FiTrendingUp, FiActivity, FiFilter, FiLayers 
@@ -54,7 +55,7 @@ const Reportstatus = () => {
     switch (status?.toUpperCase()) {
       case 'RISED':
         return { 
-          color: isDarkMode ? 'text-amber-300 bg-amber-500/10 border-amber-500/20' : 'text-amber-600 bg-amber-50 border-amber-100', 
+          color: isDarkMode ? 'text-amber-300 bg-amber-500/20 border-amber-500/20' : 'text-amber-600 bg-amber-50/40 border-amber-100', 
           icon: <FiClock />, 
           label: 'In Review' 
         };
@@ -79,30 +80,31 @@ const Reportstatus = () => {
     }
   };
 
-  // --- THEME CONFIGURATION ---
   const theme = {
     pageBg: isDarkMode 
       ? "bg-[#05070f] text-white selection:bg-purple-500/30" 
-      : "bg-slate-50 text-slate-900 selection:bg-purple-200",
+      : "bg-gradient-to-br from-[#F3E8FF] via-[#ffffff] to-[#D8B4FE] text-[#4c1d95] selection:bg-purple-200",
     
-    // Main Card / List Container
     card: isDarkMode
-      ? "bg-[#12121a]/80 backdrop-blur-xl border border-purple-500/20 shadow-[0_0_30px_rgba(139,92,246,0.05)]"
-      : "bg-white border border-slate-200 shadow-xl shadow-slate-200/40",
+      ? "bg-[#12121a]/80 backdrop-blur-xl border border-purple-500/20 shadow-[0_0_20px_rgba(139,92,246,0.05)]"
+      : "bg-white/60 backdrop-blur-xl border border-white/60 shadow-[0_8px_32px_0_rgba(31,38,135,0.15)]",
 
-    // Header of the List
-    listHeader: isDarkMode
-      ? "bg-[#1e1b4b]/40 border-purple-500/20 text-purple-200"
-      : "bg-slate-50 border-slate-100 text-slate-700",
+    input: isDarkMode
+      ? "bg-[#05070f] border-purple-500/20 text-white placeholder-gray-600 focus:border-[#8b5cf6] focus:ring-[#8b5cf6]"
+      : "bg-violet-100 border-white/60 text-[#4c1d95] placeholder-[#4c1d95]/50 focus:border-[#8b5cf6] focus:ring-[#8b5cf6] focus:bg-white/80",
 
-    // Individual List Items
-    listItem: isDarkMode
-      ? "hover:bg-purple-500/5 border-purple-500/10"
-      : "hover:bg-slate-50 border-slate-100",
+    buttonPrimary: isDarkMode
+      ? "bg-[#8b5cf6] hover:bg-[#7c3aed] text-white shadow-[0_0_20px_rgba(139,92,246,0.4)]"
+      : "bg-gradient-to-r from-[#8b5cf6] to-[#6d28d9] text-white hover:shadow-lg hover:shadow-purple-500/30",
 
-    // Text Colors
-    heading: isDarkMode ? "text-white" : "text-slate-900",
-    subtext: isDarkMode ? "text-gray-400" : "text-slate-500",
+    textSub: isDarkMode ? "text-gray-400" : "text-[#4c1d95]/40",
+    label: isDarkMode ? "text-gray-300" : "text-[#4c1d95]",
+    
+    previewBox: isDarkMode 
+      ? "bg-[#1e1b4b]/40 border-purple-500/10" 
+      : "bg-purple-50/50 border-purple-200/50",
+    
+    divider: isDarkMode ? "bg-purple-500/20" : "bg-purple-200"
   };
 
   if (loading) {
@@ -111,43 +113,42 @@ const Reportstatus = () => {
   
   return (
     <>
-    <div className={`min-h-screen relative font-sans transition-colors duration-500 ${theme.pageBg}`}>
+    <div className={`min-h-screen relative font-sans  transition-colors duration-500 ${theme.pageBg}`}>
       <UserNavbar />
       
       {/* Background Effects */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-          <WaveBackground position="top" height="h-100" color={isDarkMode ? "#1e1b4b" : "#6c2bd9"} />
-          <WaveBackground position="bottom" height="h-100" color={isDarkMode ? "#1e1b4b" : "#6c2bd9"} />
-      </div>
-
+      <WaveBackground position="top" height="h-120" color={isDarkMode ? "#1e1b4b" : "#6c2bd9"} />
+     
+    <WaveBackground position="bottom" height="h-100" color={isDarkMode ? "#1e1b4b" : "#6c2bd9"} />
+    
       <main className="max-w-6xl relative z-10 mx-auto px-4 sm:px-6 lg:px-8 py-10">
         
         {/* Header Section */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-4">
+        <div className={`flex flex-col ${theme.card} px-4 py-6 rounded-3xl md:flex-row md:items-end  justify-between mb-10 gap-4`}>
           <div>
-            <h1 className={`text-3xl font-black tracking-tight flex items-center gap-3 ${theme.heading}`}>
+            <h1 className={`sm:text-3xl text-xl font-bold flex items-center gap-3 ${theme.text}`}>
                Report Analytics {isDarkMode && <SparkleIcon className="w-6 h-6 text-[#8b5cf6]" />}
             </h1>
-            <p className={`mt-1 font-medium ${theme.subtext}`}>Monitor and track your support tickets in real-time.</p>
+            <p className={`mt-2 text-xs sm:text-lg ${theme.subtext}`}>Monitor and track your support tickets in real-time.</p>
           </div>
         </div>
 
         {/* Analytics Overview Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
-          <StatBox isDarkMode={isDarkMode} label="Total Reports" value={stats.total} icon={<FiLayers />} color="text-blue-400" />
-          <StatBox isDarkMode={isDarkMode} label="Resolution Rate" value={`${stats.rate}%`} icon={<FiTrendingUp />} color="text-violet-400" />
-          <StatBox isDarkMode={isDarkMode} label="Active Tickets" value={stats.pending} icon={<FiClock />} color="text-amber-400" />
-          <StatBox isDarkMode={isDarkMode} label="Closed Tickets" value={stats.resolved} icon={<FiCheckCircle />} color="text-emerald-400" />
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+          <StatBox isDarkMode={isDarkMode} label="Total Reports" value={stats.total} icon={<FiLayers />} color="text-violet-800" />
+          <StatBox isDarkMode={isDarkMode} label="Resolution Rate" value={`${stats.rate}%`} icon={<FiTrendingUp />} color="text-violet-800" />
+          <StatBox isDarkMode={isDarkMode} label="Active Tickets" value={stats.pending} icon={<FiClock />} color="text-violet-800" />
+          <StatBox isDarkMode={isDarkMode} label="Closed Tickets" value={stats.resolved} icon={<FiCheckCircle />} color="text-violet-800" />
         </div>
 
         {/* Report List UI */}
         <div className={`rounded-3xl border overflow-hidden transition-all ${theme.card}`}>
           
-          <div className={`px-8 py-6 border-b flex justify-between items-center ${theme.listHeader}`}>
+          <div className={`sm:px-8 px-2 py-6 border-b flex justify-between items-center ${theme.input}`}>
             <h3 className={`font-bold flex items-center gap-2 ${theme.heading}`}>
                 Recent Activity
             </h3>
-            <span className={`text-[10px] font-bold uppercase tracking-widest px-3 py-1 rounded-full ${isDarkMode ? 'bg-purple-500/20 text-purple-300' : 'bg-slate-200 text-slate-600'}`}>
+            <span className={`text-[10px] font-bold uppercase px-3 py-1 rounded-full ${isDarkMode ? 'bg-purple-500/20 text-purple-300' : 'bg-violet-300'}`}>
                 Live Updates
             </span>
           </div>
@@ -157,44 +158,44 @@ const Reportstatus = () => {
               userReportStatus.map((report) => {
                 const { color, icon, label } = getStatusDetails(report.status);
                 return (
-                  <div key={report.reportId} className={`p-6 transition-all group ${theme.listItem}`}>
+                  <div key={report.reportId} className={`sm:p-6 p-3 transition-all group ${theme.listItem}`}>
                     <div className="flex flex-col lg:flex-row lg:items-center gap-6">
                       
                       {/* Left Side: Status Icon */}
-                      <div className={`hidden lg:flex w-14 h-14 rounded-2xl items-center justify-center text-2xl shadow-sm border backdrop-blur-sm ${color}`}>
+                      <div className={`hidden lg:flex sm:w-14 sm:h-14 h-8 w-8 rounded-2xl items-center justify-center sm:text-2xl shadow-sm border backdrop-blur-sm ${color}`}>
                         {icon}
                       </div>
 
                       {/* Middle: Content */}
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
-                          <span className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wide border ${
+                          <span className={`px-2.5 py-1  rounded-lg sm:text-[10px] text-[8px] font-semibold uppercase  border ${
                               isDarkMode 
                               ? 'bg-[#05070f] border-purple-500/30 text-purple-300' 
-                              : 'bg-slate-800 text-white border-transparent'
+                              : 'bg-violet-800 text-white border-transparent'
                           }`}>
                             {report.reportData?.issueType || "Task"}
                           </span>
-                          <span className={`lg:hidden flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-md ${color}`}>
+                          <span className={`lg:hidden flex items-center gap-1 sm:text-xs text-[10px] font-semibold px-2 py-0.5 rounded-md ${color}`}>
                             {report.status}
                           </span>
                         </div>
                         
-                        <h4 className={`font-bold text-lg leading-tight mb-2 transition-colors group-hover:text-[#8b5cf6] ${theme.heading}`}>
+                        <h4 className={`font-bold sm:text-lg text-[13px] leading-tight mb-2 transition-colors group-hover:text-[#8b5cf6] ${theme.heading}`}>
                           {report.reportData?.description}
                         </h4>
                         
-                        <div className={`flex items-center gap-4 text-xs font-medium ${theme.subtext}`}>
+                        <div className={`flex items-center gap-4 sm:text-xs text-[10px] font-medium ${theme.subtext}`}>
                           <span className="flex items-center gap-1"><FiClock className={isDarkMode ? "text-purple-400" : ""} /> {new Date(report.createdAt).toLocaleDateString()}</span>
                           <span className={`hidden sm:inline px-2 py-0.5 rounded ${isDarkMode ? 'bg-white/5' : 'bg-slate-100'}`}>ID: {report.reportId.slice(0, 8)}</span>
                         </div>
                       </div>
 
                       {/* Right Side: Priority & Desktop Status */}
-                      <div className={`flex items-center justify-between lg:justify-end gap-8 border-t lg:border-t-0 pt-4 lg:pt-0 ${isDarkMode ? 'border-purple-500/10' : 'border-slate-100'}`}>
+                      <div className={`flex items-center justify-between lg:justify-end gap-8 border-t lg:border-t-0 pt-4 lg:pt-0 ${isDarkMode ? 'border-purple-500/10' : 'border-violet-200'}`}>
                         <div className="text-left lg:text-right">
-                          <p className={`text-[10px] font-black uppercase tracking-widest mb-1 ${isDarkMode ? 'text-gray-500' : 'text-slate-400'}`}>Priority</p>
-                          <p className={`text-sm font-bold ${
+                          <p className={`sm:text-[16px] text-[13px] font-bold mb-1 ${isDarkMode ? 'text-gray-500' : 'text-violet-800'}`}>Priority</p>
+                          <p className={`sm:text-sm text-[10px] font-bold ${
                               report.reportData?.priority === 'High' 
                               ? 'text-rose-400 drop-shadow-[0_0_8px_rgba(244,63,94,0.4)]' 
                               : (isDarkMode ? 'text-gray-300' : 'text-slate-600')
@@ -230,20 +231,20 @@ const Reportstatus = () => {
 
 // Sub-component for Analytics Stats
 const StatBox = ({ label, value, icon, color, isDarkMode }) => (
-  <div className={`p-6 rounded-2xl border transition-all duration-300 hover:-translate-y-1 ${
+  <div className={`sm:p-6 px-2 py-1 rounded-2xl border transition-all duration-300 hover:-translate-y-1 ${
       isDarkMode 
       ? 'bg-[#12121a]/60 backdrop-blur-xl border-purple-500/20 shadow-[0_0_20px_rgba(139,92,246,0.05)] hover:shadow-[0_0_30px_rgba(139,92,246,0.1)]' 
       : 'bg-white border-slate-200 shadow-sm hover:shadow-lg'
   }`}>
-    <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-4 text-2xl border ${
+    <div className={`sm:w-12 sm:h-12 w-6 h-6 rounded-xl flex items-center justify-center sm:mb-4 mb-2 mt-1 text-2xl border ${
         isDarkMode 
-        ? `bg-opacity-10 bg-white border-white/10 ${color}` 
+        ? `bg-opacity-10 bg-black border-white/10 ${color}` 
         : `bg-slate-50 border-slate-100 ${color.replace('400', '600')}`
     }`}>
       {icon}
     </div>
-    <p className={`text-xs font-bold uppercase tracking-wider ${isDarkMode ? 'text-gray-500' : 'text-slate-400'}`}>{label}</p>
-    <h3 className={`text-3xl font-black mt-1 ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>{value}</h3>
+    <p className={`sm:text-sm text-xs font-bold  ${isDarkMode ? 'text-gray-500' : 'text-slate-400'}`}>{label}</p>
+    <h3 className={`sm:text-3xl font-bold mt-1 ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>{value}</h3>
   </div>
 );
 

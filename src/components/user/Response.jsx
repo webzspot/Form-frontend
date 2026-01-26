@@ -7,42 +7,66 @@ import UserNavbar from './UserNavbar';
 import usePagination from "../../hooks/usePagination";
 import WaveBackground from '../dashboard/WaveBackground';
 import TableSkeleton from '../dashboard/TableSkeleton';
+import { useFormContext } from "../dashboard/FormContext"; // Import Context for Theme
 import { 
-  ArrowLeft, 
-  FileSpreadsheet, 
-  RefreshCcw, 
-  
-} from 'lucide-react';
-import { FaFileAlt,FaSearch, FaDownload, FaCheckCircle, FaClock,FaArrowLeft } from "react-icons/fa";
+  FaFileAlt, FaSearch, FaDownload, FaDatabase, 
+  FaFilter, FaArrowLeft, FaClock, FaLayerGroup 
+} from "react-icons/fa";
+      
+   // --- Custom Sparkle Icon for consistency ---
+const SparkleIcon = ({ className }) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+    <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z" />
+  </svg>
+);
+
 
 const Response = () => {
   const { formId } = useParams();
   const navigate = useNavigate();
+  const { isDarkMode } = useFormContext(); // Get theme state
   const [fullData, setFullData] = useState([]);
   const [formFields, setFormFields] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const token = localStorage.getItem("token");
+ const [selectedField, setSelectedField] = useState("ALL");
 
-  // 1. Core Fetch Logic: Merges Meta-data with Detailed Values
+
+  // --- Theme Logic (Matching Admin UI) ---
+  const theme = {
+    pageBg: isDarkMode 
+      ? "bg-[#05070f] text-white selection:bg-purple-500/30" 
+      : "bg-gradient-to-br from-[#F3E8FF] via-[#ffffff] to-[#D8B4FE] text-[#4c1d95] selection:bg-purple-200",
+    card: isDarkMode
+      ? "bg-[#12121a]/80 backdrop-blur-xl border border-purple-500/20 shadow-[0_0_20px_rgba(139,92,246,0.05)]"
+      : "bg-white/60 backdrop-blur-xl border border-white/60 shadow-[0_8px_32px_0_rgba(31,38,135,0.15)]",
+    input: isDarkMode
+      ? "bg-[#05070f] border-purple-500/20 text-white placeholder-gray-600 focus:border-[#8b5cf6] focus:ring-[#8b5cf6]"
+      : "bg-white/50 border-white/60 text-[#4c1d95] placeholder-[#4c1d95]/50 focus:border-[#8b5cf6] focus:ring-[#8b5cf6] focus:bg-white/80",
+    buttonPrimary: isDarkMode
+      ? "bg-[#8b5cf6] hover:bg-[#7c3aed] text-white shadow-[0_0_20px_rgba(139,92,246,0.4)]"
+      : "bg-gradient-to-r from-[#8b5cf6] to-[#6d28d9] text-white hover:shadow-lg hover:shadow-purple-500/30",
+    tableHeader: isDarkMode ? "bg-[#1e1b4b]/60 text-purple-300" : "bg-purple-100/50 text-[#4c1d95]",
+    textSub: isDarkMode ? "text-gray-400" : "text-[#4c1d95]/70",
+  };
+
+  // ... (Keep your existing fetchData and getResponseValue logic here) ...
   const fetchData = async () => {
     setLoading(true);
     try {
-      // Step A: Fetch Form Structure (to get Labels for Headers)
       const formRes = await axios.get(
         `https://formbuilder-saas-backend.onrender.com/api/dashboard/form/details/${formId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setFormFields(formRes.data.data.formField);
 
-      // Step B: Fetch the list of Response IDs
       const responsesListRes = await axios.get(
         `https://formbuilder-saas-backend.onrender.com/api/dashboard/form/responses/${formId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
       const list = responsesListRes.data.data;
 
-      // Step C: Fetch detailed data for EVERY response to get the actual "value"
       const detailedResponses = await Promise.all(
         list.map(resp => 
           axios.get(`https://formbuilder-saas-backend.onrender.com/api/dashboard/form/response/${resp.formResponseId}`, {
@@ -50,107 +74,55 @@ const Response = () => {
           }).then(res => res.data.data)
         )
       ); 
-       
-
-              
-
       setFullData(detailedResponses);
     } catch (err) {
-      console.error("Fetch Error:", err);
       toast.error("Failed to sync response data");
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    if (formId) fetchData();
-  }, [formId]);
+  useEffect(() => { if (formId) fetchData(); }, [formId]);
 
-  // Helper to extract value based on column header
-  // const getResponseValue = (responseValues, fieldId) => {
-  //   const entry = responseValues?.find(v => v.formFieldId === fieldId);
-  //   if (!entry) return <span className="text-gray-300">—</span>;
-  //   return Array.isArray(entry.value) ? entry.value.join(", ") : entry.value;
-  // };
- 
- const getResponseValue = (responseValues, fieldId) => {
-  if (!responseValues || !Array.isArray(responseValues)) {
-    return <span className="text-gray-300">—</span>;
-  }
-
-  const entry = responseValues.find(v => v.formFieldId === fieldId);
-  
-  if (!entry || entry.value === null || entry.value === undefined || entry.value === "") {
-    return <span className="text-gray-300">—</span>;
-  }
-
-  if (Array.isArray(entry.value) && entry.value.length === 0) {
-    return <span className="text-gray-300">—</span>;
-  }
-
-  return Array.isArray(entry.value) ? entry.value.join(", ") : entry.value;
-};
+  const getResponseValue = (responseValues, fieldId) => {
+    const entry = responseValues?.find(v => v.formFieldId === fieldId);
+    if (!entry || !entry.value) return "—";
+    return Array.isArray(entry.value) ? entry.value.join(", ") : entry.value;
+  };
+    const displayedFields =
+  selectedField === "ALL"
+    ? formFields
+    : formFields.filter(
+        (f) => f.formFieldId === selectedField
+      );
 
 
-
-  // Filter logic for search
-  // const filteredData = fullData.filter(resp => 
-  //   JSON.stringify(resp.responseValue).toLowerCase().includes(searchTerm.toLowerCase()) ||
-  //   resp.formResponseId.toLowerCase().includes(searchTerm.toLowerCase())
-  // );   
-
- 
   const filteredData = fullData.filter((resp) => {
-  if (!searchTerm) return true; // show all if search is empty
+  // Search filter (existing)
+  const matchesSearch = searchTerm
+    ? resp.responseValue
+        ?.map(e => e.value?.toString().toLowerCase() || "")
+        .join(" ")
+        .includes(searchTerm.toLowerCase())
+    : true;
 
-  // Flatten all field values into one string
-  const flattenedValues = resp.responseValue?.map((entry) => {
-    if (!entry || entry.value === null || entry.value === undefined || entry.value === "") return "";
+  // Question filter (NEW)
+  const matchesQuestion =
+    selectedField === "ALL"
+      ? true
+      : resp.responseValue?.some(
+          (v) => v.formFieldId === selectedField && v.value
+        );
 
-    if (Array.isArray(entry.value) && entry.value.length > 0) {
-      return entry.value.join(" "); // for checkboxes
-    }
-
-    const date = new Date(entry.value);
-    if (!isNaN(date)) {
-      return date.toLocaleString(undefined, {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-        hour: "2-digit",
-        minute: "2-digit",
-      });
-    }
-
-    return entry.value.toString(); // text, radio, dropdown
-  }).join(" ").toLowerCase();
-
-  // Search in flattened values OR in Submission ID
-  return flattenedValues.includes(searchTerm.toLowerCase()) ||
-         resp.formResponseId.toLowerCase().includes(searchTerm.toLowerCase());
+  return matchesSearch && matchesQuestion;
 });
 
 
-
-
-   
-  //For Pagination
-  const {
-  currentData,
-  currentPage,
-  totalPages,
-  nextPage,
-  prevPage
-} = usePagination(filteredData, 10); // 10 responses per page
+  const { currentData, currentPage, totalPages, nextPage, prevPage } = usePagination(filteredData, 10); 
 
 
 
-
-
-
-  //export data in csv
-  const exportToCSV = () => {
+   const exportToCSV = () => {
   if (filteredData.length === 0) {
     return toast.error("No data available to export");
   }
@@ -199,324 +171,234 @@ const Response = () => {
   
   toast.success("CSV Downloaded!");
 };
+   // Count total answered fields from first response
+const answeredFields = fullData.length > 0 
+  ? fullData[0].responseValue?.length || 0
+  : 0;
+
   return (
-    <div className="min-h-screen relative font-sans bg-linear-to-br from-slate-50 via-indigo-50/20 to-purple-50/10">
+    <div className={`min-h-screen relative font-sans transition-colors duration-500 overflow-hidden pb-20 ${theme.pageBg}`}>
       <UserNavbar />
-       <WaveBackground position="top" />
-  <WaveBackground position="bottom"  /> 
-
-      <main className=" relative z-10 max-w-[1600px] mx-auto p-6 md:p-10"> 
-         
-
-          {/* Header Section */}
-                   <motion.div
-                     initial={{ opacity: 0, y: -20 }}
-                     animate={{ opacity: 1, y: 0 }}
-                     transition={{ duration: 0.5 }}
-                     className="mb-8"
-                   >
-                     {/* Back Button */}
-                     <motion.button
-                       onClick={() => navigate("/admindashboard")}
-                       whileHover={{ x: -5 }}
-                       whileTap={{ scale: 0.95 }}
-                       className="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-xl bg-white border-2 border-indigo-200 text-indigo-600 hover:bg-indigo-50 transition-all shadow-sm hover:shadow-md font-semibold"
-                     >
-                       <FaArrowLeft size={14} />
-                       Back to Dashboard
-                     </motion.button>
-         
-                     {/* Header Card */}
-                     <div className="bg-linear-to-br from-violet-600 via-purple-600 to-indigo-700 rounded-3xl shadow-2xl p-8">
-                       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                         <div className="text-white flex-1">
-                           <h1 className=" text-lg md:text-4xl font-extrabold tracking-tight mb-2">
-                             Form Responses
-                           </h1>
-                          
-                           <p className="text-indigo-200 text-sm md:text-lg">
-                             Monitor and analyze all submissions for this form
-                           </p>
-                         </div>
-                       </div>
-                     </div>
-                   </motion.div>
-         
-                   {/* Stats Cards */}
-                   <motion.div
-                     className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8"
-                     initial="hidden"
-                     animate="visible"
-                     variants={{
-                       hidden: {},
-                       visible: {
-                         transition: { staggerChildren: 0.1 }
-                       }
-                     }}
-                   >
-                     {/* Total Responses */}
-                     <motion.div
-                       variants={{
-                         hidden: { opacity: 0, y: 20 },
-                         visible: { opacity: 1, y: 0, transition: { duration: 0.4 } }
-                       }}
-                       className="bg-white border-2 border-indigo-200 rounded-2xl p-6 shadow-md hover:shadow-xl transition-all group hover:border-indigo-300"
-                     >
-                       <div className="flex items-center gap-4">
-                         <div className="p-4 rounded-xl bg-linear-to-br from-indigo-100 to-indigo-200 text-indigo-600 group-hover:scale-110 transition-transform">
-                           <FaFileAlt size={24} />
-                         </div>
-                         <div>
-                           <p className="text-xs font-bold text-indigo-600 uppercase tracking-wider mb-1">
-                             Total Responses
-                           </p>
-                           <p className="text-3xl font-extrabold text-slate-900">{fullData.length}</p>
-                         </div>
-                       </div>
-                     </motion.div>
-         
-                     {/* Filtered Responses */}
-                     <motion.div
-                       variants={{
-                         hidden: { opacity: 0, y: 20 },
-                         visible: { opacity: 1, y: 0, transition: { duration: 0.4 } }
-                       }}
-                       className="bg-white border-2 border-emerald-200 rounded-2xl p-6 shadow-md hover:shadow-xl transition-all group hover:border-emerald-300"
-                     >
-                       <div className="flex items-center gap-4">
-                         <div className="p-4 rounded-xl bg-linear-to-br from-emerald-100 to-emerald-200 text-emerald-600 group-hover:scale-110 transition-transform">
-                           <FaCheckCircle size={24} />
-                         </div>
-                         <div>
-                           <p className="text-xs font-bold text-emerald-600 uppercase tracking-wider mb-1">
-                             Filtered Responses
-                           </p>
-                           <p className="text-3xl font-extrabold text-slate-900">{filteredData.length}</p>
-                         </div>
-                       </div>
-                     </motion.div>
-         
-                     {/* Last Submitted */}
-                     <motion.div
-                       variants={{
-                         hidden: { opacity: 0, y: 20 },
-                         visible: { opacity: 1, y: 0, transition: { duration: 0.4 } }
-                       }}
-                       className="bg-white border-2 border-amber-200 rounded-2xl p-6 shadow-md hover:shadow-xl transition-all group hover:border-amber-300"
-                     >
-                       <div className="flex items-center gap-4">
-                         <div className="p-4 rounded-xl bg-linear-to-br from-amber-100 to-amber-200 text-amber-600 group-hover:scale-110 transition-transform">
-                           <FaClock size={24} />
-                         </div>
-                         <div>
-                           <p className="text-xs font-bold text-amber-600 uppercase tracking-wider mb-1">
-                             Last Submitted
-                           </p>
-                           <p className="text-sm font-bold text-slate-700">
-                             {fullData.length > 0 ? new Date(fullData[fullData.length - 1].createdAt).toLocaleDateString('en-US', {
-                               month: 'short',
-                               day: 'numeric',
-                               hour: '2-digit',
-                               minute: '2-digit'
-                             }) : "-"}
-                           </p>
-                         </div>
-                       </div>
-                     </motion.div>
-                   </motion.div>
-   
-
-
-
-        
-      <motion.div
-  initial={{ opacity: 0, y: 20 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.5, delay: 0.2 }}
-  className="bg-white rounded-2xl shadow-md border border-slate-200 p-6 mb-6"
->
-  <div className="flex flex-col md:flex-row gap-4 justify-between items-start md:items-center">
-
-    {/* Search */}
-    <div className="relative w-full md:w-96">
-      <FaSearch
-        className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"
-        size={14}
-      />
-      <input
-        type="text"
-        placeholder="Search responses..."
-        className="w-full pl-11 pr-4 py-3 rounded-xl border-2 border-slate-200 text-sm outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-slate-50 font-medium transition-all"
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-      />
-    </div>
-
-    {/* Actions (Export) */}
-    <div className="flex items-center gap-3 flex-wrap">
       
-      {/* <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={fetchData}
-        className="p-3 bg-white border-2 border-slate-200 rounded-xl hover:bg-slate-50 text-slate-600 transition-all shadow-sm"
-        title="Refresh Data"
-      >
-        <RefreshCcw
-          size={18}
-          className={loading ? "animate-spin text-indigo-600" : ""}
-        />
-      </motion.button> */}
+      {/* Background Waves */}
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <WaveBackground position="top" height="h-100" color={isDarkMode ? "#1e1b4b" : "#a78bfa"} />
+        <WaveBackground position="bottom" height="h-100" color={isDarkMode ? "#1e1b4b" : "#a78bfa"} />
 
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={exportToCSV}
-        className="flex items-center gap-2 px-5 py-3 bg-linear-to-r from-slate-800 to-slate-900 text-white rounded-xl text-sm font-bold shadow-md hover:shadow-lg transition-all"
-      >
-        <FaDownload size={14} />
-        Export CSV
-      </motion.button>
-
-    </div>
-  </div>
-</motion.div>
+         <motion.div 
+                   animate={{ y: [-10, 10, -10], opacity: [0.5, 1, 0.5] }} 
+                   transition={{ duration: 4, repeat: Infinity }}
+                   className="absolute top-1/4 left-10 text-white/40"
+                 >
+                   <SparkleIcon className="w-12 h-12" />
+                 </motion.div>
 
 
-     
-{/* Table Section */}
-<motion.div
-  initial={{ opacity: 0, y: 20 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.5, delay: 0.3 }}
-  className="bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden"
->
-  <div className="overflow-x-auto">
-    <table className="min-w-max border-collapse w-full">
-      {/* Table Head */}
-      <thead className="bg-linear-to-r from-slate-50 to-slate-100 sticky top-0 z-10">
-        <tr className="border-b-2 border-slate-200">
-          <th className="px-6 py-4 text-xs font-bold text-slate-600 uppercase tracking-wider text-center whitespace-nowrap">
-            No.
-          </th>
-          <th className="px-6 py-4 text-xs font-bold text-slate-600 uppercase tracking-wider whitespace-nowrap">
-            Submission ID
-          </th>
-          {formFields.map((field) => (
-            <th key={field.formFieldId} className="px-6 py-4 text-xs font-bold text-slate-600 uppercase tracking-wider whitespace-nowrap">
-              {field.label}
-            </th>
-          ))}
-          <th className="px-6 py-4 text-xs font-bold text-slate-600 uppercase tracking-wider text-right whitespace-nowrap">
-            Timestamp
-          </th>
-        </tr>
-      </thead>
-
-      {/* Table Body */}
-      <tbody className="divide-y divide-slate-100">
-        <AnimatePresence>
-          {loading ? (
-            <TableSkeleton rows={5} columns={formFields.length + 3} />
-          ) : currentData.length === 0 ? (
-            <tr>
-              <td colSpan={formFields.length + 3} className="px-6 py-20 text-center">
-                <div className="text-slate-400 italic">No responses yet</div>
-              </td>
-            </tr>
-          ) : (
-            currentData.map((resp, index) => (
-              <motion.tr
-                key={resp.formResponseId}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                transition={{ duration: 0.3, delay: index * 0.03 }}
-                className="transition-colors hover:bg-indigo-50/40 group"
-              >
-                {/* No. */}
-                <td className="px-6 py-4 text-sm font-bold text-slate-500 text-center whitespace-nowrap">
-                  {index + 1 + (currentPage - 1) * 10}
-                </td>
-
-                {/* Submission ID */}
-                <td className="px-6 py-4 text-xs font-mono text-indigo-600 bg-indigo-50 max-w-[180px] truncate whitespace-nowrap group-hover:bg-indigo-100 transition-colors">
-                  {resp.formResponseId.slice(0, 8)}...
-                </td>
-
-                {/* Responses */}
-                {formFields.map((field) => (
-                  <td key={field.formFieldId} className={`px-6 py-4 text-sm font-medium whitespace-nowrap ${
-                    getResponseValue(resp.responseValue, field.formFieldId) !== "—"
-                      ? "bg-emerald-50/50 text-slate-700 group-hover:bg-emerald-100/50"
-                      : "text-slate-400 bg-slate-50/50"
-                  } transition-colors`}>
-                    {getResponseValue(resp.responseValue, field.formFieldId)}
-                  </td>
-                ))}
-
-                {/* Timestamp */}
-                <td className="px-6 py-4 text-right whitespace-nowrap">
-                  <div className="inline-flex flex-col items-end">
-                    <span className="text-xs font-bold text-slate-800">
-                      {new Date(resp.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
-                    </span>
-                    <span className="text-[10px] text-slate-400 font-medium uppercase tracking-tighter">
-                      {new Date(resp.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                    </span>
-                  </div>
-                </td>
-              </motion.tr>
-            ))
-          )}
-        </AnimatePresence>
-      </tbody>
-    </table>
-  </div>
-
-  {/* Pagination */}
-  {!loading && filteredData.length > 0 && (
-    <div className="flex justify-between items-center px-6 py-4 border-t-2 border-slate-100 bg-slate-50/50">
-      <span className="text-sm text-slate-600 font-semibold">
-        Page <span className="text-indigo-600">{currentPage}</span> of <span className="text-indigo-600">{totalPages}</span>
-      </span>
-
-      <div className="flex gap-2">
-        <button
-          onClick={prevPage}
-          disabled={currentPage === 1}
-          className="px-5 py-2 border-2 border-slate-300 rounded-xl disabled:opacity-30 disabled:cursor-not-allowed text-slate-700 font-semibold hover:bg-slate-100 transition-all hover:border-slate-400 disabled:hover:bg-transparent disabled:hover:border-slate-300"
-        >
-          Prev
-        </button>
-
-        <button
-          onClick={nextPage}
-          disabled={currentPage === totalPages}
-          className="px-5 py-2 bg-linear-to-r from-indigo-600 to-purple-600 text-white rounded-xl font-semibold disabled:opacity-30 disabled:cursor-not-allowed hover:from-indigo-700 hover:to-purple-700 transition-all shadow-md hover:shadow-lg disabled:hover:from-indigo-600 disabled:hover:to-purple-600"
-        >
-          Next
-        </button>
       </div>
+
+      <main className="relative z-10 max-w-7xl mx-auto px-4 py-12">
+        {/* Back Button */}
+        <motion.button
+          onClick={() => navigate("/form")}
+          whileHover={{ x: -5 }}
+          className={`flex items-center  gap-2 mb-8 px-5 py-2.5 rounded-2xl font-semibold transition-all border ${
+            isDarkMode ? 'bg-[#12121a] border-purple-500/30 text-purple-400' : 'bg-white/60 border-purple-200 shadow-sm'
+          }`}
+        >
+          <FaArrowLeft size={14} /> Back to Dashboard
+        </motion.button>
+
+        {/* Header Section */}
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className={`p-8 rounded-[2.5rem] mb-8 shadow-2xl relative overflow-hidden ${
+            isDarkMode ? 'bg-[#12121a]/90 border border-purple-500/20' : 'bg-white/80 backdrop-blur-md border border-white'
+          }`}
+        >
+          <div className="relative z-10">
+            <span className={`px-4 py-1 rounded-full text-sm font-bold ${isDarkMode ? 'bg-purple-500/20 text-purple-300' : 'bg-purple-100'}`}>
+              Data Analytics
+            </span>
+            <h1 className={`sm:text-3xl text-xl mt-3 font-bold mb-2 ${isDarkMode ? 'text-white' : 'text-[#4c1d95]'}`}>
+              Form Submissions
+            </h1>
+          <p className={`max-w-2xl text-[10px] sm:text-sm sm:font-medium ${theme.textSub}`}>
+                Viewing all submitted entries. You can filter by specific questions or search through text responses.
+              </p>
+        </div>
+        </motion.div>
+        {/* Stats Summary */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          {[
+            { label: 'Total Entries', count: fullData.length, icon: FaDatabase, bg: 'bg-purple-500/10' },
+            { label: 'Visible Results', count: filteredData.length, icon: FaFilter, bg: 'bg-purple-500/10' },
+          { label: 'Total Questions', count: formFields.length, icon: FaLayerGroup, bg: 'bg-purple-500/10' }
+
+          ].map((stat, i) => (
+            <motion.div key={i} className={`${theme.card} sm:p-6 p-2 rounded-3xl flex items-center gap-5 transition-transform hover:scale-[1.02]`}>
+              <div className={`sm:p-4 p-2 rounded-2xl ${stat.bg} ${stat.color}`}>
+                <stat.icon size={24} />
+              </div>
+              <div>
+                <p className={`sm:text-sm text-[10px] font-bold ${theme.textSub}`}>{stat.label}</p>
+                <p className={`sm:text-2xl text-lg font-bold ${isDarkMode ? 'text-white' : 'text-slate-800'}`}>{stat.count}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Controls */}
+        <div className={`${theme.card} p-3 rounded-2xl mb-8 flex flex-col sm:flex-row gap-4 items-center justify-between`}>
+          <div className="relative w-full md:w-96">
+            <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-purple-400" />
+            <input
+              type="text"
+              placeholder="Search across all responses..."
+              className={`w-full flex-1 px-12 sm:py-3 py-1 rounded-2xl border-none outline-none text-sm font-semibold transition-all ${theme.input}`}
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </div> 
+
+
+            <div className="flex flex-wrap gap-3 w-full sm:w-auto">
+          <select
+  value={selectedField}
+  onChange={(e) => setSelectedField(e.target.value)}
+  className={`sm:px-6 py-3 rounded-2xl text-sm font-bold ${theme.input}`}
+>
+  <option value="ALL">All Questions</option>
+  {formFields.map((f) => (
+    <option key={f.formFieldId} value={f.formFieldId}>
+      {f.label}
+    </option>
+  ))}
+</select>
+
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            onClick={exportToCSV}
+            className={`flex items-center  sm:px-6 py-1 px-2 sm:py-3 rounded-xl sm:text-sm text-[10px] font-semibold transition-all ${theme.buttonPrimary}`}
+          >
+            Export CSV
+          </motion.button>
+        </div>
     </div>
-  )}
-</motion.div>
-
-
-       
-         
-
-   
+        {/* Table */}
+        <motion.div 
+         initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
         
+        className={`${theme.card} rounded-3xl overflow-hidden`}>
+          <div className="overflow-x-auto custom-scrollbar">
+            <table className="w-full text-left border-collapse">
+              <thead>
+                <tr className={theme.tableHeader}>
+                  <th className="px-6 py-5 text-sm font-bold">No.</th>
+                  <th className="px-6 py-5 text-sm font-bold">Submission ID</th>
+                   <th className="px-6 py-5 text-sm font-bold">Timestamp</th>
+                  {displayedFields.map(f => <th key={f.formFieldId} className="px-6 py-5 text-sm font-bold">{f.label}</th>)}
+                 
+                </tr>
+              </thead>
+              <tbody className={`divide-y ${isDarkMode ? 'divide-purple-500/10' : 'divide-purple-100'}`}>
+                {loading ? (
+                  <tr><td colSpan={100}><TableSkeleton rows={5} columns={4} isDarkMode={isDarkMode} /></td></tr>
+                ) : currentData.length === 0 ? (
+                                    <tr>
+                                      <td colSpan={100} className="py-32 text-center">
+                                        <FaFileAlt size={48} className="mx-auto mb-4  opacity-20" />
+                                        <p className={`text-xl font-bold ${theme.textSub}`}>No entries found matching your criteria</p>
+                                      </td>
+                                    </tr>
+                                  ) : (currentData.map((resp, idx) => (
+                  <motion.tr 
+                    key={resp.formResponseId}
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  transition={{ delay: idx * 0.05 }}
+  className={`group transition-colors ${
+    isDarkMode ? 'hover:bg-purple-500/5' : 'hover:bg-purple-50/50'
+  }`}
+                  
+                  >
+                    <td className="px-6 py-4 text-sm font-bold opacity-70">{(currentPage - 1) * 10 + idx + 1}</td>
+                   <td className="px-6 py-4">
+  <span className={`font-mono text-[10px] px-2 py-1 rounded-lg ${
+    isDarkMode ? 'bg-purple-500/10 text-purple-300' : 'bg-purple-100'
+  }`}>
+    {resp.formResponseId.slice(-8).toUpperCase()}
+  </span>
+</td>
+
+                     
+                     <td className="px-6 py-4">
+  <div className="flex flex-col">
+    <span className="text-xs font-bold">
+      {new Date(resp.createdAt).toLocaleDateString()}
+    </span>
+    <span className="text-[10px] opacity-50">
+      {new Date(resp.createdAt).toLocaleTimeString()}
+    </span>
+  </div>
+</td>
+
+                  
+                    {displayedFields.map(f => (
+                     <td className="px-6 py-4">
+  <span
+    className={`text-sm font-medium ${
+      getResponseValue(resp.responseValue, f.formFieldId) === "—"
+        ? "opacity-30"
+        : ""
+    }`}
+  >
+    {getResponseValue(resp.responseValue, f.formFieldId)}
+  </span>
+</td>
+
+                    ))}
+                   
+                  </motion.tr>
+                )))}
+              </tbody>
+            </table>
+          </div>
+          {/* Pagination UI Location */}
+{!loading && filteredData.length > 0 && (
+  <div className={`p-6 flex items-center justify-between border-t ${isDarkMode ? 'border-purple-500/10' : 'border-purple-100'}`}>
+   <p className={`text-xs font-bold uppercase tracking-widest ${theme.textSub}`}>
+                Showing {currentPage} of {totalPages} Pages
+              </p>
+
+    <div className="flex gap-3">
+      <button
+        onClick={prevPage}
+        disabled={currentPage === 1}
+        className={`px-6 py-2 rounded-xl text-sm font-bold transition-all disabled:opacity-20 ${
+                    isDarkMode ? 'bg-white/5 hover:bg-white/10' : 'bg-purple-100 hover:bg-purple-200 text-purple-700'
+                  }`}
+      >
+        Prev
+      </button>
+
+      <button
+        onClick={nextPage}
+        disabled={currentPage === totalPages}
+        className={`px-6 py-2 rounded-xl text-sm font-bold transition-all disabled:opacity-20 ${theme.buttonPrimary}`}
+                >
+      
+        Next
+      </button>
+    </div>
+  </div>
+)}
+        </motion.div>
         
       </main>
     </div>
-    
   );
 };
 
 export default Response;
-
-
-
-

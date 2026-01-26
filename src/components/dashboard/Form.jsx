@@ -1,856 +1,3 @@
-// import React, { useEffect, useState } from 'react';
-// import { motion, AnimatePresence } from 'framer-motion';
-// import axios from 'axios';
-// import toast from 'react-hot-toast';
-// import UserNavbar from "../user/UserNavbar";
-// import { useFormContext } from './FormContext';
-// import { EditIcon, Trash2, X, Send } from 'lucide-react';
-// import { useNavigate } from 'react-router-dom';
-// import { MdAddCard, MdOutlineDesignServices } from 'react-icons/md';
-// import Footer from '../landingPage/Footer';
-// import Design from './Design';
-// import WaveBackground from '../dashboard/WaveBackground';
-// import { FaSpinner } from 'react-icons/fa';
-
-
-// const Form = () => {
-//   // masterfield
-//   const [masterFields, setMasterFields] = useState([]);
-//   const [selectedFields, setSelectedFields] = useState([]);
-//   const [showFormBuilder, setShowFormBuilder] = useState(false);
-//   const [formTitle, setFormTitle] = useState("Untitled Form");
-//   const [isAddingMaster, setIsAddingMaster] = useState(false);
-// const [newField, setNewField] = useState({ label: "", type: "TEXT", options: [""] });
-
-//   // formfield
-//   const { forms, setForms, updateFormLocally, deleteFormLocally } = useFormContext();
-//   const [loading, setLoading] = useState(false);
-//   const [isDeleting, setIsDeleting] = useState(null);
-//   const [isPublic, setIsPublic] = useState(true);
-
-//   // --- THEME STATE ---
-//   const [formTheme, setFormTheme] = useState({
-//     bgColor: "#ffffff",
-//     buttonColor: "#7c3aed",
-//     inputBgColor: "#f3f4f6",
-//     labelFont: "Inter",
-//     borderRadius: "8px"
-//   });
-
-//   const token = localStorage.getItem("token");
-//   const navigate = useNavigate();
-
-//   const URL = import.meta.env.VITE_URL;
-//   const navi = useNavigate();
-
-//   // 1. Fetch Master Fields
-//   useEffect(() => {
-//     const getMasterFields = async () => {
-//       try {
-//         const res = await axios.get("https://formbuilder-saas-backend.onrender.com/api/dashboard/master-fields", {
-//           headers: { Authorization: `Bearer ${token}` }
-//         });
-//         setMasterFields(res.data.data);
-//       } catch (err) {
-//         toast.error("Error loading master fields");
-//       }
-//     };
-//     getMasterFields();
-//   }, [token]);
-
-//   const handleInlineCreate = async () => {
-//   if (!newField.label) return toast.error("Label name required");
-
-//   try {
-//     const res = await axios.post("https://formbuilder-saas-backend.onrender.com/api/dashboard/master-fields", newField, {
-//       headers: { Authorization: `Bearer ${token}` }
-//     });
-
-//     toast.success("Field Created!");
-    
-//     // Add new field to the list on the left
-//     setMasterFields(prev => [...prev, res.data.data]);
-    
-//     // Reset and hide the form
-//     setNewField({ label: "", type: "TEXT", options: [""] });
-//     setIsAddingMaster(false);
-//   } catch (err) {
-//     toast.error("Failed to add master field");
-//   }
-// };
-
-//   // 2. Toggle field selection
-//   const toggleField = (toggledField) => {
-//     setSelectedFields(prev => {
-//       const exists = prev.find(f => f.masterFieldId === toggledField.masterFieldId);
-//       if (exists) {
-//         return prev.filter(f => f.masterFieldId !== toggledField.masterFieldId);
-//       }
-//       return [...prev, { ...toggledField, required: false }];
-//     });
-//   };
-
-//   // 3. Update Logic for any field property (Label, Type, etc.)
-//   const updateFieldProperty = (index, key, value) => {
-//     const updatedFields = [...selectedFields];
-//     updatedFields[index] = { ...updatedFields[index], [key]: value };
-//     setSelectedFields(updatedFields);
-//   };
-
-//   // 4. Create Form API
-//   const createForm = async () => {
-//     if (selectedFields.length === 0) return toast.error("Please select at least one field");
-//     setLoading(true);
-//     try {
-//       const uniqueTitle = formTitle === "Untitled Form" ? `Untitled Form ${Date.now()}` : formTitle;
-//       const payload = {
-//         title: uniqueTitle,
-//         description: formdescription,
-//        isPublic: isPublic,
-//           theme: formTheme,
-//         fields: selectedFields.map((field, index) => ({
-//           label: field.label,
-//           type: field.type,
-//           required: field.required,
-//           order: index,
-//           masterFieldId: field.masterFieldId || null,
-//           options: field.options || null
-//         }))
-//       };
-//       const res = await axios.post(
-//         "https://formbuilder-saas-backend.onrender.com/api/dashboard/form",
-//         payload,
-//         { headers: { Authorization: `Bearer ${token}` } }
-//       );
-//       toast.success("Form Published Successfully!");
-//       setShowFormBuilder(false);
-//       setSelectedFields([]);
-//       setForms(prev => [res.data.data, ...prev]);
-//       setIsPublic(true);//isPublic
-//     } catch (err) {
-//       toast.error("Failed to create form");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   // 5. Fetch All Forms
-//   useEffect(() => {
-//     const fetchForms = async () => {
-//       setLoading(true);
-//       try {
-//         const res = await axios.get("https://formbuilder-saas-backend.onrender.com/api/dashboard/forms", {
-//           headers: { Authorization: `Bearer ${token}` }
-//         });
-//         setForms(res.data.data);
-//       } catch (err) {
-//         toast.error("Failed to load forms");
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-//     fetchForms();
-//   }, [token]);
-
-//   // 6. Delete Form
-//   const confirmDelete = async () => {
-//     if (!isDeleting) return;
-//     const idToDelete = isDeleting.formId;
-//     try {
-//       await axios.delete(`https://formbuilder-saas-backend.onrender.com/api/dashboard/form/${idToDelete}`, {
-//         headers: { Authorization: `Bearer ${token}` }
-//       });
-//       deleteFormLocally(idToDelete);
-//       toast.success("Form deleted successfully");
-//     } catch (err) {
-//       toast.error("Delete failed");
-//     } finally {
-//       setIsDeleting(null);
-//     }
-//   };
-
-//   // 7. Edit Handler (Load data into builder)
-//   const [editingFormId, setEditingFormId] = useState(null);
-//   const [formdescription, setformdescription] = useState("");
-
-//   const handleEditClick = async (formId) => {
-//     setLoading(true);
-//     try {
-//       const res = await axios.get(`https://formbuilder-saas-backend.onrender.com/api/dashboard/form/details/${formId}`, {
-//         headers: { Authorization: `Bearer ${token}` }
-//       });
-//       const data = res.data.data;
-//       setFormTitle(data.title);
-//       setformdescription(data.description || "");
-//       setIsPublic(data.isPublic); //isPublic true or false
-
-//       setEditingFormId(formId);
-
-//       const mappedFields = data.formField.map(f => ({
-//         masterFieldId: f.masterFieldId,
-//         formFieldId: f.formFieldId,
-//         label: f.label,
-//         type: f.type,
-//         required: f.isRequired,
-//         options: f.options
-//       }));
-
-//       setSelectedFields(mappedFields);
-//       setShowFormBuilder(true);
-//     } catch (err) {
-//       toast.error("Failed to load form for editing");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   // 8. Update Form API
-//   const updateForm = async () => {
-//     if (selectedFields.length === 0) return toast.error("Please select at least one field");
-//     setLoading(true);
-//     try {
-//       const payload = {
-//         title: formTitle,
-//         description: formdescription,
-//         isPublic: isPublic,
-//         theme: formTheme,
-//         fields: selectedFields.map((field, index) => ({
-//           formFieldId: field.formFieldId || null,
-//           label: field.label,
-//           type: field.type,
-//           required: field.required,
-//           order: index,
-//           masterFieldId: field.masterFieldId || null,
-//           options: field.options || null
-//         }))
-//       };
-//       const res = await axios.put(
-//         `https://formbuilder-saas-backend.onrender.com/api/dashboard/form/${editingFormId}`,
-//         payload,
-//         { headers: { Authorization: `Bearer ${token}` } }
-//       );
-//       toast.success("Form Updated Successfully!");
-//       setForms(prev => prev.map(f => f.formId === editingFormId ? res.data.data : f));
-//       setShowFormBuilder(false);
-//       setEditingFormId(null);
-//       setFormTitle("Untitled Form");
-//       setformdescription("");
-//       setSelectedFields([]);
-//     } catch (err) {
-//       toast.error("Failed to update form");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-
-//   // VIEW FORM STATE
-//   const [viewform, setviewform] = useState(false);
-//   const [viewData, setViewData] = useState(null);
-
-//   const formview = async (formId) => {
-//     setLoading(true);
-//     try {
-//       const response = await axios.get(`https://formbuilder-saas-backend.onrender.com/api/dashboard/form/details/${formId}`, {
-//         headers: { Authorization: `Bearer ${token}` }
-//       });
-//       setViewData(response.data.data);
-//       setviewform(true);
-//     } catch (err) {
-//       toast.error("Failed to load form details");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-
-//   //design
-
-
-//   return (
-//     <div className="min-h-screen font-sans relative bg-gray-50">
-//       <UserNavbar />
-
-//        <WaveBackground position="top" />
-         
-//       <div className="max-w-6xl relative z-10 mx-auto p-6">
-//         <header className="flex justify-between items-center mb-8">
-//           {!showFormBuilder ? (
-//             <button
-//               onClick={() => {
-//                 setShowFormBuilder(true);
-//                 setSelectedFields([]);
-//                 setEditingFormId(null);
-//                 setFormTitle("Untitled Form");
-//                 setformdescription("");
-//               }}
-//               className="bg-violet-600 text-white text-sm sm:text-lg px-4 sm:px-6 py-3 rounded-xl shadow-lg hover:bg-violet-700 transition font-semibold"
-//             >
-//               Create New Form
-//             </button>
-//           ) : (
-//             <motion.div
-//               initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }}
-//               className="w-full max-w-6xl mx-auto bg-white border border-gray-200 rounded-3xl shadow-2xl flex flex-col md:flex-row gap-0 overflow-hidden"
-//             >
-//               {/* Left Side: Master Fields */}
-//               <div className="w-full  md:w-2/5 bg-gray-50 py-6 px-4 border-r border-gray-100">
-//                 <h2 className="text-lg font-bold text-violet-700 mb-6 flex items-center gap-2">Available Fields</h2>
-             
-//                 <div className="space-y-3 overflow-y-auto max-h-[80vh] pr-2 custom-scrollbar">
-//                   {masterFields.map((field) => (
-//                     <label
-//                       key={field.masterFieldId}
-//                       className={`flex items-center gap-3 py-2 px-4 rounded-2xl cursor-pointer transition-all border-2 ${selectedFields.some(f => f.masterFieldId === field.masterFieldId)
-//                         ? 'bg-violet-100 border-violet-500 shadow-sm'
-//                         : 'bg-white border-transparent hover:border-gray-200 shadow-sm'
-//                         }`}
-//                     >
-//                       <input
-//                         type="checkbox"
-//                         checked={selectedFields.some(f => f.masterFieldId === field.masterFieldId)}
-//                         onChange={() => toggleField(field)}
-//                         className="accent-violet-600 w-5 h-5 rounded-lg"
-//                       />
-//                       <span className="font-semibold text-gray-700">{field.label}</span>
-//                     </label>
-//                   ))}
-//                   <div>
-          
-//                     <button
-//                  onClick={() => setIsAddingMaster(!isAddingMaster)}
-//                  className="bg-violet-600 text-white px-4 py-2 rounded-xl font-semibold mt-10 flex items-center gap-4 w-full justify-center"
-//                   >
-//                    <MdAddCard /> {isAddingMaster ? "Close" : "Add Input Fields"}
-//                   </button>
-
-
-//                   </div>
-
-//  {isAddingMaster && (
-//       <motion.div
-//         initial={{ height: 0, opacity: 0 }}
-//         animate={{ height: "auto", opacity: 1 }}
-//         className="mt-4 p-4 bg-white border border-violet-200 rounded-2xl shadow-inner space-y-4"
-//       >
-//         {/* Label Input */}
-//         <div className="space-y-1">
-//           <label className="text-[10px] font-bold text-violet-500 uppercase">New Label</label>
-//           <input
-//             className="w-full border bg-black/10 border-black/20 rounded-lg px-2 py-1 outline-none text-sm focus:border-violet-600"
-//             value={newField.label}
-//             onChange={(e) => setNewField({ ...newField, label: e.target.value })}
-//             placeholder="Enter label name..."
-//           />
-//         </div>
-
-//         {/* Type Selection */}
-//         <div className="space-y-1">
-//           <label className="text-[10px] font-bold text-violet-500 uppercase">Type</label>
-//           <select
-//             className="w-full text-sm bg-transparent outline-none cursor-pointer"
-//             value={newField.type}
-//             onChange={(e) => {
-//               // Reset options to one empty string if switching to a selection type
-//               const isSelectionType = ["DROPDOWN", "RADIO", "CHECKBOX"].includes(e.target.value);
-//               setNewField({ 
-//                 ...newField, 
-//                 type: e.target.value,
-//                 options: isSelectionType ? [""] : [] 
-//               });
-//             }}
-//           >
-//             {["TEXT", "NUMBER", "EMAIL", "DATE", "TEXTAREA", "CHECKBOX", "RADIO", "DROPDOWN"].map(t => (
-//               <option key={t} value={t}>{t}</option>
-//             ))}
-//           </select>
-//         </div>
-
-//         {/* Dynamic Options Section - Shows only for selection types */}
-//         {["DROPDOWN", "RADIO", "CHECKBOX"].includes(newField.type) && (
-//           <div className="space-y-2 border border-black/20 rounded-lg px-2 py-1 pt-2">
-//             <label className="text-[10px] font-bold text-violet-500 uppercase">Field Options</label>
-//             {newField.options.map((opt, i) => (
-//               <div key={i} className="flex gap-2">
-//                 <input
-//                   className="flex-1 border bg-black/10 border-black/20 rounded-lg px-2 py-1 text-sm outline-none focus:border-violet-600"
-//                   placeholder={`Option ${i + 1}`}
-//                   value={opt}
-//                   onChange={(e) => {
-//                     const newOpts = [...newField.options];
-//                     newOpts[i] = e.target.value;
-//                     setNewField({ ...newField, options: newOpts });
-//                   }}
-//                 />
-//                 {newField.options.length > 1 && (
-//                   <button
-//                     type="button"
-//                     onClick={() => {
-//                       const newOpts = newField.options.filter((_, idx) => idx !== i);
-//                       setNewField({ ...newField, options: newOpts });
-//                     }}
-//                     className="text-red-400 hover:text-red-600"
-//                   >✕</button>
-//                 )}
-//               </div>
-//             ))}
-//             <button
-//               type="button"
-//               onClick={() => setNewField({ ...newField, options: [...newField.options, ""] })}
-//               className="text-[10px] text-violet-600 font-bold hover:underline mt-1"
-//             >
-//               + ADD OPTION
-//             </button>
-//           </div>
-//         )}
-
-//         {/* Save Button */}
-//         <button
-//           onClick={handleInlineCreate}
-//           className="w-full bg-violet-600 text-white py-2 rounded-lg text-xs font-bold hover:bg-violet-800 transition-all"
-//         >
-//           Save Input Field
-//         </button>
-
-     
-//       </motion.div>
-//     )}
-  
-//            {/* DESIGN COMPONENT INTEGRATION */}
-//            <div className='mt-4'>
-//                 <Design 
-//                 editingFormId={editingFormId} 
-//                 token={token} 
-//                 formTheme={formTheme} 
-//                 setFormTheme={setFormTheme} 
-//               />
-//               </div>
-
-//                 </div>
-//               </div>
-
-//               {/* Right Side: Preview & Edit */}
-//             <div 
-//               className="w-full md:w-3/5 p-5 flex flex-col transition-all duration-500" 
-//               style={{ 
-//                backgroundColor: formTheme.bgColor || "#ffffff", 
-//                fontFamily: `${formTheme.labelFont || 'Inter'}, sans-serif`,
-             
-//               }}
-//             >
-//               <div className="w-full  flex flex-col">
-//                 <div className="mb-8 space-y-4">
-//                   <div className='flex items-center gap-2 border-b-2 border-transparent focus-within:border-violet-200'>
-                    
-//                     <input
-//                       value={formTitle || ""}
-//                       onChange={(e) => setFormTitle(e.target.value)}
-//                       placeholder="Enter Form Title..."
-//                       style={{ color: formTheme.labelColor || "#111827" }}
-//                       className="text-xl font-bold text-gray-800 w-full focus:outline-none pb-2"
-//                     />
-//                     <EditIcon size={15} className="text-gray-400" />
-//                   </div>
-//                   <div className='flex items-center gap-2 border-b-2 border-transparent focus-within:border-violet-200'>
-//                     <input
-//                       value={formdescription}
-//                       onChange={(e) => setformdescription(e.target.value)}
-//                       placeholder="Enter Form description"
-//                       style={{ color: `${formTheme.labelColor}99` || "#4b5563" }}
-//                       className="text-sm text-gray-800 w-full focus:outline-none pb-2"
-//                     />
-//                     <EditIcon size={15} className="text-gray-400" />
-//                   </div>
-//                 </div>
-//                     {/*Radio for public or private */}
-//                  <div className="flex gap-6 items-center mb-6">
-//   <label className="flex items-center gap-2 cursor-pointer">
-//     <input
-//       type="radio"
-//       name="visibility"
-//       checked={isPublic === true}
-//       onChange={() => setIsPublic(true)}
-//     />
-//     <span className="font-semibold text-gray-700" style={{ color: formTheme.labelColor }}>Public</span>
-//   </label>
-
-//   <label className="flex items-center gap-2 cursor-pointer">
-//     <input
-//       type="radio"
-//       name="visibility"
-//       checked={isPublic === false}
-//       onChange={() => setIsPublic(false)}
-//     />
-//     <span className="font-semibold text-gray-700" style={{ color: formTheme.labelColor }}>Private</span>
-//   </label>
-// </div>
-//                 <div className="flex flex-col space-y-6 flex-1 overflow-y-auto max-h-[50vh] pr-2">
-//                   {selectedFields.length === 0 ? (
-//                     <div className="h-64 border-2 border-dashed border-gray-200 text-center rounded-3xl flex flex-col items-center justify-center text-gray-400">
-//                       <p>Select fields from the left to start building</p>
-//                     </div>
-//                   ) : (
-//                     selectedFields.map((field, index) => (
-//                       <motion.div
-//                         key={field.masterFieldId || index} layout
-//                         initial={{ opacity: 0, x: 20 }} 
-//                         animate={{ opacity: 1, x: 0 }}
-//                         className="bg-gray-50 p-5 rounded-2xl border
-//                          border-gray-100"
-//                          style={{ 
-//                          backgroundColor: "#ffffff", 
-//                          borderRadius: formTheme.borderRadius || "16px" 
-//                       }}
-//                       >
-//                         <div className="flex flex-col sm:flex-row gap-4 mb-4">
-//                           {/* Label Update */}
-//                           <div className="flex-1">
-//                             <label 
-//                             className="text-xs font-bold text-gray-400 uppercase ml-2"
-//                             style={{ color: formTheme.labelColor || "#9ca3af" }}
-//                             >Field Label</label>
-//                             <input
-//                               type="text"
-//                               value={field.label}
-//                               onChange={(e) => updateFieldProperty(index, 'label', e.target.value)}
-//                               style={{ 
-//                     backgroundColor: formTheme.inputBgColor || "#f9fafb",
-//                     borderRadius: `calc(${formTheme.borderRadius} / 2)` || "8px",
-//                     color: formTheme.labelColor 
-//                   }}
-//                               className="w-full bg-white border border-gray-200 p-2 rounded-lg text-sm font-semibold focus:border-violet-500 outline-none"
-//                             />
-//                           </div>
-
-//                           {/* Type Update - NEW FUNCTIONALITY */}
-//                           <div className="w-full sm:w-1/3">
-//                             <label className="text-xs font-bold text-gray-400 uppercase ml-2">Field Type</label>
-//                             <select
-//                               value={field.type}
-//                               onChange={(e) => updateFieldProperty(index, 'type', e.target.value)}
-//                               className="w-full bg-white border border-gray-200 p-2 rounded-lg text-sm font-semibold focus:border-violet-500 outline-none"
-//                             >
-//                               <option value="TEXT">Short Text</option>
-//                               <option value="TEXTAREA">Long Text</option>
-//                               <option value="NUMBER">Number</option>
-//                               <option value="EMAIL">Email</option>
-//                               <option value="DATE">Date</option>
-//                               <option value="DROPDOWN">Dropdown</option>
-//                               <option value="RADIO">Radio</option>
-//                               <option value="CHECKBOX">Checkbox</option>
-//                             </select>
-//                           </div>
-//                         </div>
-
-//                         <div className="flex justify-between items-center">
-//                           <div className="flex items-center gap-2 bg-white px-3 py-1 rounded-full shadow-sm border border-gray-100">
-//                             <span className="text-xs font-bold text-gray-500 uppercase">Required</span>
-//                             <input
-//                               type="checkbox"
-//                               checked={field.required}
-//                               onChange={() => updateFieldProperty(index, 'required', !field.required)}
-//                               className="accent-violet-600"
-//                             />
-//                           </div>
-//                           <span className="text-xs text-gray-400 italic">Preview: {field.type}</span>
-//                         </div>
-
-//                         {/* Options Rendering */}
-//                         {["DROPDOWN", "RADIO", "CHECKBOX"].includes(field.type) && field.options && (
-//                           <div className="space-y-2 mt-4 p-3 bg-white rounded-xl border border-gray-100">
-//                             <p className="text-xs font-bold text-violet-600 uppercase">Options Management:</p>
-//                             {field.options.map((opt, optIndex) => (
-//                               <div key={optIndex} className="flex items-center gap-2">
-//                                 <input
-//                                   type="text"
-//                                   value={opt}
-//                                   onChange={(e) => {
-//                                     const updatedFields = [...selectedFields];
-//                                     updatedFields[index].options[optIndex] = e.target.value;
-//                                     setSelectedFields(updatedFields);
-//                                   }}
-//                                   className="flex-1 text-sm bg-violet-50 border border-violet-100 rounded px-2 py-1 outline-none focus:border-violet-400"
-//                                 />
-//                                 <button
-//                                   onClick={() => {
-//                                     const updatedFields = [...selectedFields];
-//                                     updatedFields[index].options = updatedFields[index].options.filter((_, i) => i !== optIndex);
-//                                     setSelectedFields(updatedFields);
-//                                   }}
-//                                   className="text-red-400 hover:text-red-600"
-//                                 >
-//                                   <X size={14} />
-//                                 </button>
-//                               </div>
-//                             ))}
-//                             <button
-//                               onClick={() => {
-//                                 const updatedFields = [...selectedFields];
-//                                 updatedFields[index].options = [...(updatedFields[index].options || []), "New Option"];
-//                                 setSelectedFields(updatedFields);
-//                               }}
-//                               className="text-xs font-bold text-violet-600 hover:underline mt-1"
-//                             >
-//                               + Add Option
-//                             </button>
-//                           </div>
-//                         )}
-//                       </motion.div>
-//                     ))
-//                   )}
-//                 </div>
-
-//                 <div className="mt-auto pt-4 flex justify-center gap-2 border-gray-100">
-//                   <button
-//                     onClick={editingFormId ? updateForm : createForm}
-//                     disabled={loading}
-//                     style={{ 
-//             backgroundColor: formTheme.buttonColor || "#7c3aed",
-//             borderRadius: formTheme.borderRadius || "16px"
-//         }}
-//                     className=" w-full bg-violet-600 text-sm text-white py-2 rounded-xl font-semibold hover:bg-violet-700 px-2 shadow-lg transition-all  disabled:opacity-50"
-//                   >
-//                     {loading ? "Processing..." : editingFormId ? "Update Form" : "Publish Form"}
-//                   </button>
-//                   <button
-//                     onClick={() => {
-//                       setShowFormBuilder(false);
-//                       setSelectedFields([]);
-//                       setEditingFormId(null);
-//                     }}
-//                     className="px-2 w-full text-sm bg-gray-100 text-gray-600 py-2 rounded-xl font-bold hover:bg-gray-200 transition"
-//                   >
-//                     Cancel
-//                   </button>
-//                 </div>
-//               </div>
-//                 </div>
-//             </motion.div>
-          
-//           )}
-//         </header>
-
-//         {/* List of Forms Grid */}
-//         {loading && !showFormBuilder ? (
-//            <div className="flex flex-col items-center justify-center h-64 gap-3">
-//     <FaSpinner className="animate-spin text-violet-600" size={32} />
-   
-//   </div>
-//         ) : (
-//           <motion.div layout className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-//             <AnimatePresence>
-//               {forms.map((form) => (
-//                 <motion.div
-//                   key={form.formId}
-//                   layout
-//                   initial={{ opacity: 0, scale: 0.9 }}
-//                   animate={{ opacity: 1, scale: 1 }}
-//                   exit={{ opacity: 0, scale: 0.8 }}
-//                   className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col justify-between hover:shadow-md transition-shadow"
-//                 >
-//                   <div>
-//                     <div className="flex justify-between items-start mb-4">
-//                       <span className={`px-3 py-1 rounded-full text-xs font-semibold ${form.isPublic ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'}`}>
-//                         {form.isPublic ? "● Public" : "○ Private"}
-//                       </span>
-//                       <div className="flex gap-2">
-//                         <button onClick={() => handleEditClick(form.formId)} className="p-2 hover:bg-gray-100 rounded-lg text-gray-500">
-//                           <EditIcon size={16} />
-//                         </button>
-//                         <button onClick={() => setIsDeleting(form)} className="p-2 hover:bg-red-50 rounded-lg text-red-500">
-//                           <Trash2 size={16} />
-//                         </button>
-//                       </div>
-//                     </div>
-//                     <h3 className="text-xl font-semibold text-gray-800 mb-2">{form.title}</h3>
-//                     <p className="text-gray-500 text-sm line-clamp-2 mb-4">{form.description}</p>
-//                   </div>
-
-//                   <div className="mt-4 pt-4 border-t border-gray-50 flex gap-2">
-//                     <button onClick={() => navigate(`/responses/${form.formId}`)} className="flex-1 bg-violet-50 text-violet-700 font-semibold py-2 rounded-xl hover:bg-violet-100 transition">
-//                       Responses
-//                     </button>
-//                     <button onClick={() => formview(form.formId)} className="flex-1 bg-black text-white font-semibold py-2 rounded-xl hover:bg-gray-800 transition">
-//                       View
-//                     </button>
-//                   </div>
-//                 </motion.div>
-//               ))}
-//             </AnimatePresence>
-//           </motion.div>
-//         )}
-//       </div>
-
-//       {/* Delete and View Modals follow same structure as original... */}
-//       {/* (Kept original logic for Modals below to ensure functionality) */}
-//       <AnimatePresence>
-//         {isDeleting && (
-//           <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
-//             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsDeleting(null)} className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
-//             <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="relative bg-white rounded-2xl p-6 shadow-2xl max-w-sm w-full">
-//               <h3 className="text-xl font-bold mb-2">Delete Form?</h3>
-//               <p className="text-gray-500 mb-6">Are you sure you want to delete <span className="font-bold text-gray-900">"{isDeleting.title}"</span>?</p>
-//               <div className="flex gap-3">
-//                 <button onClick={() => setIsDeleting(null)} className="flex-1 px-4 py-2 bg-gray-100 rounded-xl font-semibold">Cancel</button>
-//                 <button onClick={confirmDelete} className="flex-1 px-4 py-2 bg-red-500 text-white rounded-xl font-semibold hover:bg-red-600">Delete</button>
-//               </div>
-//             </motion.div>
-//           </div>
-//         )}
-//       </AnimatePresence>
-
-// <AnimatePresence>
-//   {viewform && viewData && (
-//     <div className="fixed inset-0 z-250 flex items-center justify-center p-4 md:p-10">
-//       {/* Backdrop */}
-//       <motion.div 
-//         initial={{ opacity: 0 }} 
-//         animate={{ opacity: 1 }} 
-//         exit={{ opacity: 0 }} 
-//         onClick={() => setviewform(false)} 
-//         className="absolute inset-0 bg-gray-900/60 backdrop-blur-md" 
-//       />
-
-//       <motion.div 
-//         initial={{ scale: 0.9, opacity: 0, y: 20 }} 
-//         animate={{ scale: 1, opacity: 1, y: 0 }} 
-//         exit={{ scale: 0.9, opacity: 0, y: 20 }} 
-//         className="relative bg-white w-full max-w-2xl max-h-[90vh] overflow-hidden rounded-3xl shadow-2xl flex flex-col"
-//         style={{ fontFamily: `${viewData.theme?.labelFont || 'Inter'}, sans-serif` }}
-//       >
-//         {/* --- THEME STRIP --- */}
-//         <div 
-//           className="h-2 w-full" 
-//           style={{ backgroundColor: viewData.theme?.buttonColor || "#6C3BFF" }} 
-//         />
-
-//         {/* Header */}
-//         <div className="p-8 flex justify-between items-start border-b border-gray-50">
-//           <div>
-//             <div className="flex items-center gap-2 mb-1">
-//                <h2 className="text-2xl text-black font-bold" style={{ color: viewData.theme?.labelColor }}>
-//                 {viewData.title}
-//               </h2>
-//               <span className="px-2 py-1 bg-gray-100 text-[10px] font-black uppercase rounded-md text-gray-400">Preview Mode</span>
-//             </div>
-//             <p className="text-gray-500">{viewData.description || "No description provided."}</p>
-//           </div>
-//           <button 
-//             onClick={() => setviewform(false)} 
-//             className="bg-gray-100 hover:bg-red-50 hover:text-red-500 p-2 rounded-full transition-all"
-//           >
-//             <X size={20} />
-//           </button>
-//         </div>
-
-//         {/* Form Preview Area */}
-//         <div 
-//           className="flex-1 overflow-y-auto p-8 space-y-6" 
-//           style={{ backgroundColor: viewData.theme?.bgColor || "#f9fafb" }}
-//         >
-//           {viewData.formField?.map((field) => (
-//             <div 
-//               key={field.formFieldId} 
-//               className="bg-white p-6 shadow-sm border border-gray-100 transition-all"
-//               style={{ borderRadius: viewData.theme?.borderRadius || "12px" }}
-//             >
-//               <label 
-//                 className="block text-sm font-bold mb-3"
-//                 style={{ color: viewData.theme?.labelColor || "#374151" }}
-//               >
-//                 {field.label} {field.required && <span className="text-red-500">*</span>}
-//               </label>
-              
-//               <div 
-//                 className="w-full px-4 py-3 border border-gray-200 text-gray-400 text-sm flex items-center justify-between"
-//                 style={{ 
-//                     backgroundColor: viewData.theme?.inputBgColor || "#ffffff",
-//                     borderRadius: `calc(${viewData.theme?.borderRadius || '12px'} / 2)` 
-//                 }}
-//               >
-//                 Preview for {field.type}
-//                 <div className="h-2 w-2 rounded-full bg-gray-200" />
-//               </div>
-//             </div>
-//           ))}
-//         </div>
-
-//         {/* Action Footer */}
-//         <div className="p-6 bg-white border-t border-gray-100 flex flex-wrap gap-3">
-//           {/* Close Button */}
-//           <button 
-//             onClick={() => setviewform(false)} 
-//             className="px-6 py-3 bg-gray-100 text-gray-600 rounded-xl font-bold hover:bg-gray-200 transition-all"
-//           >
-//             Close
-//           </button>
-
-//           {/* Copy Link Button */}
-//           <button
-//             onClick={() => {
-//               if (!viewData.isPublic) {
-//                 toast.error("Form is private. Make it public to copy link.");
-//                 return;
-//               }
-//               const baseUrl = import.meta.env.VITE_URL.replace(/\/$/, "");
-//               const link = `${baseUrl}/public/form/${viewData.slug}`;
-//               navigator.clipboard.writeText(link);
-//               toast.success("Link copied!");
-//             }}
-//             className={`flex-1 py-3 rounded-xl font-bold flex items-center justify-center gap-2 transition-all ${
-//               viewData.isPublic ? "bg-black text-white hover:bg-gray-800" : "bg-gray-200 text-gray-400 cursor-not-allowed"
-//             }`}
-//           >
-//             <Send size={18} /> Copy Link
-//           </button>
-
-//           {/* Embed Button */}
-//           <button
-//             onClick={async () => { 
-//               if (!viewData.isPublic) {
-//                 toast.error("Form is private. Make it public first.");
-//                 return;
-//               }
-//               const baseUrl = import.meta.env.VITE_URL?.replace(/\/$/, "") || window.location.origin;
-//               const formLink = `${baseUrl}/public/form/${viewData.slug}`;
-//               const embedCode = `<iframe src="${formLink}" title="${viewData.title}" width="100%" height="700" style="border:none; border-radius:12px;" allow="clipboard-write"></iframe>`;
-              
-//               await navigator.clipboard.writeText(embedCode);
-//               toast.success("Embed code copied!");
-//             }}
-//             style={{ 
-//               backgroundColor: viewData.isPublic ? (viewData.theme?.buttonColor || "#7C3AED") : "#E5E7EB",
-//               color: viewData.isPublic ? "white" : "#9CA3AF"
-//             }}
-//             className="flex-1 py-3 rounded-xl font-bold hover:brightness-110 transition-all shadow-md active:scale-95"
-//           >
-//             Copy Embed Code
-//           </button>
-//         </div>
-//       </motion.div>
-//     </div>
-//   )}
-// </AnimatePresence>
-
-//       {/* ===== Bottom Wave Section ===== */}
-//               <div className="relative w-full h-56 overflow-hidden">
-//                 <WaveBackground position="bottom" height="h-56"
-//          />
-//               </div>
-             
-       
-//       <Footer/>
-     
-//     </div>
-//   );
-// };
-
-// export default Form;
-
-
-
-// "use client"
-
 // import { useEffect, useState } from "react"
 // import { motion, AnimatePresence } from "framer-motion"
 // import axios from "axios"
@@ -858,14 +5,7 @@
 // import UserNavbar from "../user/UserNavbar"
 // import { useFormContext } from "./FormContext"
 // import {
-//   EditIcon,
-//   Trash2,
-//   X,
-//   Send,
-//   Plus,
-//   Sparkles,
-//   Layers,
-//   Eye,
+//   EditIcon,Trash2,X,Send,Plus,Sparkles,Layers,Eye,
 //   ChevronRight,
 //   GripVertical,
 //   Check,
@@ -877,6 +17,7 @@
 // import Design from "./Design"
 // import WaveBackground from "../dashboard/WaveBackground"
 // import { FaSpinner } from "react-icons/fa"
+// import LoadingScreen from "../shared/LoadingScreen"
 
 // // Enhanced animation variants
 // const containerVariants = {
@@ -910,12 +51,13 @@
 //   const [formTitle, setFormTitle] = useState("Untitled Form")
 //   const [isAddingMaster, setIsAddingMaster] = useState(false)
 //   const [newField, setNewField] = useState({ label: "", type: "TEXT", options: [""] })
-
+//   const [introloading, setintroLoading] = useState(true);
 //   // formfield
 //   const { forms, setForms, updateFormLocally, deleteFormLocally } = useFormContext()
 //   const [loading, setLoading] = useState(false)
 //   const [isDeleting, setIsDeleting] = useState(null)
 //   const [isPublic, setIsPublic] = useState(true)
+//   const { isDarkMode } = useFormContext(); 
 
 //   // --- THEME STATE ---
 //   const [formTheme, setFormTheme] = useState({
@@ -942,6 +84,9 @@
 //         setMasterFields(res.data.data)
 //       } catch (err) {
 //         toast.error("Error loading master fields")
+//       }
+//       finally {
+//         setintroLoading(false);
 //       }
 //     }
 //     getMasterFields()
@@ -1175,7 +320,12 @@
 //     </div>
 //   )
 
+
+//     if (loading) {
+//     return <LoadingScreen isDarkMode={isDarkMode} />;
+//   }
 //   return (
+//     <>
 //     <div className="min-h-screen font-sans relative bg-gradient-to-br from-slate-50 via-white to-violet-50/30 overflow-x-hidden">
 //       <UserNavbar />
 
@@ -1198,7 +348,8 @@
 //         />
 //       </div>
 
-//       <WaveBackground position="top" />
+//       <WaveBackground position="top" height="h-120" color={isDarkMode ? "#1e1b4b" : "#6c2bd9"} />
+//       <WaveBackground position="bottom" height="h-100" color={isDarkMode ? "#1e1b4b" : "#6c2bd9"} />
 
 //       <div className="max-w-7xl relative z-10 mx-auto px-4 sm:px-6 lg:px-8 py-8">
 //         <header className="mb-10">
@@ -1248,7 +399,7 @@
 //               initial={{ opacity: 0, scale: 0.95, y: 20 }}
 //               animate={{ opacity: 1, scale: 1, y: 0 }}
 //               transition={{ duration: 0.4, ease: "easeOut" }}
-//               className="w-full bg-white/80 backdrop-blur-xl border border-white/50 rounded-[2rem] shadow-2xl shadow-violet-500/10 flex flex-col lg:flex-row gap-0 overflow-hidden"
+//               className="w-full bg-white/80 backdrop-blur-xl border border-white/50 rounded shadow-2xl shadow-violet-500/10 flex flex-col lg:flex-row gap-0 overflow-hidden"
 //             >
 //               {/* Left Side: Master Fields */}
 //               <div className="w-full lg:w-[380px] bg-gradient-to-b from-gray-50/80 to-white/50 backdrop-blur-sm py-6 px-5 border-r border-gray-100/80">
@@ -1276,7 +427,7 @@
 //                       whileTap={{ scale: 0.98 }}
 //                       className={`group flex items-center gap-3 py-3 px-4 rounded-2xl cursor-pointer transition-all duration-300 border-2 ${
 //                         selectedFields.some((f) => f.masterFieldId === field.masterFieldId)
-//                           ? "bg-gradient-to-r from-violet-50 to-indigo-50 border-violet-300 shadow-md shadow-violet-100"
+//                           ? "bg-violet-50 border-violet-300 shadow-md shadow-violet-100"
 //                           : "bg-white/70 border-transparent hover:border-gray-200 hover:bg-white shadow-sm hover:shadow-md"
 //                       }`}
 //                     >
@@ -1318,7 +469,7 @@
 //                     className={`w-full py-3 px-4 rounded-2xl font-semibold flex items-center justify-center gap-3 transition-all duration-300 ${
 //                       isAddingMaster
 //                         ? "bg-gray-100 text-gray-600 hover:bg-gray-200"
-//                         : "bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-lg shadow-violet-500/25 hover:shadow-xl hover:shadow-violet-500/30"
+//                         : "bg-violet-600 text-white shadow-lg shadow-violet-500/25 hover:shadow-xl hover:shadow-violet-500/30"
 //                     }`}
 //                   >
 //                     <motion.div animate={{ rotate: isAddingMaster ? 45 : 0 }} transition={{ duration: 0.2 }}>
@@ -1336,7 +487,7 @@
 //                         transition={{ duration: 0.3 }}
 //                         className="overflow-hidden"
 //                       >
-//                         <div className="p-5 bg-gradient-to-br from-white to-violet-50/50 border border-violet-100 rounded-2xl shadow-inner space-y-4">
+//                         <div className="p-5 bg-violet-50/50 border border-violet-100 rounded-2xl shadow-inner space-y-4">
 //                           {/* Label Input */}
 //                           <div className="space-y-2">
 //                             <label className="text-[11px] font-bold text-violet-600 uppercase tracking-wider">
@@ -1444,7 +595,7 @@
 //                             onClick={handleInlineCreate}
 //                             whileHover={{ scale: 1.01 }}
 //                             whileTap={{ scale: 0.99 }}
-//                             className="w-full bg-gradient-to-r from-violet-600 to-indigo-600 text-white py-3 rounded-xl text-sm font-bold hover:shadow-lg hover:shadow-violet-500/25 transition-all duration-300"
+//                             className="w-full bg-violet-600  text-white py-3 rounded-xl text-sm font-bold hover:shadow-lg hover:shadow-violet-500/25 transition-all duration-300"
 //                           >
 //                             Save Input Field
 //                           </motion.button>
@@ -1490,7 +641,7 @@
 //                       />
 //                       <EditIcon
 //                         size={18}
-//                         className="text-gray-300 group-hover:text-violet-400 transition-colors flex-shrink-0"
+//                         className="text-gray-300 group-hover:text-violet-400 transition-colors "
 //                       />
 //                     </div>
 //                     <div className="group flex items-center gap-3 border-b-2 border-transparent hover:border-violet-100 focus-within:border-violet-300 pb-2 transition-all duration-300">
@@ -1503,7 +654,7 @@
 //                       />
 //                       <EditIcon
 //                         size={14}
-//                         className="text-gray-300 group-hover:text-violet-400 transition-colors flex-shrink-0"
+//                         className="text-gray-300 group-hover:text-violet-400 transition-colors "
 //                       />
 //                     </div>
 //                   </motion.div>
@@ -2130,19 +1281,15 @@
 //         )}
 //       </AnimatePresence>
 
-//       {/* Bottom Wave Section */}
-//       <div className="relative w-full h-56 overflow-hidden">
-//         <WaveBackground position="bottom" height="h-56" />
-//       </div>
 
-//       <Footer />
+    
 //     </div>
+//     <Footer/>
+//     </>
 //   )
 // }
 
 // export default Form
-
-
 
 
 import { useEffect, useState } from "react"
@@ -2173,6 +1320,7 @@ import WaveBackground from "../dashboard/WaveBackground"
 import { FaSpinner } from "react-icons/fa"
 import LoadingScreen from "../shared/LoadingScreen"
 
+
 // Enhanced animation variants
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -2197,7 +1345,11 @@ const pulseAnimation = {
   transition: { duration: 2, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" },
 }
 
-const Form = () => {
+const Form = () => { 
+
+
+  
+
   // masterfield
   const [masterFields, setMasterFields] = useState([])
   const [selectedFields, setSelectedFields] = useState([])
@@ -2223,7 +1375,34 @@ const Form = () => {
   })
 
   const token = localStorage.getItem("token")
-  const navigate = useNavigate()
+  const navigate = useNavigate() 
+
+  const theme = {
+    pageBg: isDarkMode 
+      ? "bg-[#05070f] text-white selection:bg-purple-500/30" 
+      : "bg-gradient-to-br from-[#F3E8FF] via-[#ffffff] to-[#D8B4FE] text-[#4c1d95] selection:bg-purple-200",
+    
+    card: isDarkMode
+      ? "bg-[#12121a]/80 backdrop-blur-xl border border-purple-500/20 shadow-[0_0_20px_rgba(139,92,246,0.05)]"
+      : "bg-white backdrop-blur-xl border border-white/60 shadow-[0_8px_32px_0_rgba(31,38,135,0.15)]",
+
+    input: isDarkMode
+      ? "bg-[#05070f] border-purple-500/20 text-white placeholder-gray-600 focus:border-[#8b5cf6] focus:ring-[#8b5cf6]"
+      : "bg-white/50 border-white/60 text-[#4c1d95] placeholder-[#4c1d95]/50 focus:border-[#8b5cf6] focus:ring-[#8b5cf6] focus:bg-white/80",
+
+    buttonPrimary: isDarkMode
+      ? "bg-[#8b5cf6] hover:bg-[#7c3aed] text-white shadow-[0_0_20px_rgba(139,92,246,0.4)]"
+      : "bg-gradient-to-r from-[#8b5cf6] to-[#6d28d9] text-white hover:shadow-lg hover:shadow-purple-500/30",
+
+    textSub: isDarkMode ? "text-gray-400" : "text-[#4c1d95]/40",
+    label: isDarkMode ? "text-gray-300" : "text-[#4c1d95]",
+    
+    previewBox: isDarkMode 
+      ? "bg-[#1e1b4b]/40 border-purple-500/10" 
+      : "bg-purple-50/50 border-purple-200/50",
+    
+    divider: isDarkMode ? "bg-purple-500/20" : "bg-purple-200"
+  };
 
   const URL = import.meta.env.VITE_URL
   const navi = useNavigate()
@@ -2362,8 +1541,7 @@ const Form = () => {
   const handleEditClick = async (formId) => {
     setLoading(true)
     try {
-      const res = await axios.get(
-        `https://formbuilder-saas-backend.onrender.com/api/dashboard/form/details/${formId}`,
+      const res = await axios.get(`https://formbuilder-saas-backend.onrender.com/api/dashboard/form/details/${formId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         },
@@ -2413,8 +1591,7 @@ const Form = () => {
           options: field.options || null,
         })),
       }
-      const res = await axios.put(
-        `https://formbuilder-saas-backend.onrender.com/api/dashboard/form/${editingFormId}`,
+      const res = await axios.put(`https://formbuilder-saas-backend.onrender.com/api/dashboard/form/${editingFormId}`,
         payload,
         { headers: { Authorization: `Bearer ${token}` } },
       )
@@ -2439,8 +1616,7 @@ const Form = () => {
   const formview = async (formId) => {
     setLoading(true)
     try {
-      const response = await axios.get(
-        `https://formbuilder-saas-backend.onrender.com/api/dashboard/form/details/${formId}`,
+      const response = await axios.get(`https://formbuilder-saas-backend.onrender.com/api/dashboard/form/details/${formId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         },
@@ -2480,30 +1656,12 @@ const Form = () => {
   }
   return (
     <>
-    <div className="min-h-screen font-sans relative bg-gradient-to-br from-slate-50 via-white to-violet-50/30 overflow-x-hidden">
+    <div className={`min-h-screen relative  ${theme.pageBg}`}>
       <UserNavbar />
-
-      {/* Animated Background Elements */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <motion.div
-          animate={{ x: [0, 100, 0], y: [0, -50, 0] }}
-          transition={{ duration: 20, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
-          className="absolute top-20 left-10 w-72 h-72 bg-violet-200/20 rounded-full blur-3xl"
-        />
-        <motion.div
-          animate={{ x: [0, -80, 0], y: [0, 80, 0] }}
-          transition={{ duration: 25, repeat: Number.POSITIVE_INFINITY, ease: "linear" }}
-          className="absolute bottom-40 right-10 w-96 h-96 bg-indigo-200/20 rounded-full blur-3xl"
-        />
-        <motion.div
-          animate={{ scale: [1, 1.2, 1] }}
-          transition={{ duration: 15, repeat: Number.POSITIVE_INFINITY, ease: "easeInOut" }}
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-purple-100/10 rounded-full blur-3xl"
-        />
-      </div>
-
       <WaveBackground position="top" height="h-120" color={isDarkMode ? "#1e1b4b" : "#6c2bd9"} />
-      <WaveBackground position="bottom" height="h-100" color={isDarkMode ? "#1e1b4b" : "#6c2bd9"} />
+     
+    <WaveBackground position="bottom" height="h-100" color={isDarkMode ? "#1e1b4b" : "#6c2bd9"} />
+  
 
       <div className="max-w-7xl relative z-10 mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <header className="mb-10">
@@ -2511,13 +1669,13 @@ const Form = () => {
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
+              className={`${theme.card} rounded-3xl flex justify-between items-center gap-4`}
             >
-              <div>
+              <div className={` w-full px-6 py-9 rounded-3xl`}>
                 <motion.h1
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-gray-900 via-violet-800 to-violet-600 bg-clip-text text-transparent"
+                 className={`sm:text-3xl font-bold  ${theme.text}`}
                 >
                   Your Forms
                 </motion.h1>
@@ -2525,9 +1683,10 @@ const Form = () => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.2 }}
-                  className="text-gray-500 mt-2"
+                  className={`${theme.textSub} text-[12px] sm:text-lg mt-1`}
+ 
                 >
-                  Create, manage and share your forms
+                  Create Manage Share Store your Forms
                 </motion.p>
               </div>
               <motion.button
@@ -2540,12 +1699,11 @@ const Form = () => {
                 }}
                 whileHover={{ scale: 1.02, boxShadow: "0 20px 40px -15px rgba(124, 58, 237, 0.4)" }}
                 whileTap={{ scale: 0.98 }}
-                className="group relative bg-gradient-to-r from-violet-600 via-violet-600 to-indigo-600 text-white text-sm sm:text-base px-6 sm:px-8 py-3.5 sm:py-4 rounded-2xl shadow-lg shadow-violet-500/25 font-semibold flex items-center gap-3 overflow-hidden"
+                className={`group relative ${theme.buttonPrimary} text-[10px]  w-30 sm:w-50 text-center  mr-4 px-3 py-1 rounded shadow-lg shadow-violet-500/25 font-semibold flex items-center overflow-hidden`}
               >
-                <span className="absolute inset-0 bg-gradient-to-r from-violet-500 to-indigo-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <Plus className="w-5 h-5 relative z-10 group-hover:rotate-90 transition-transform duration-300" />
-                <span className="relative z-10">Create New Form</span>
-                <Sparkles className="w-4 h-4 relative z-10 opacity-0 group-hover:opacity-100 transition-all duration-300 group-hover:translate-x-1" />
+                <span className="absolute inset  opacity-0 group-hover:opacity-100  transition-opacity duration-300" />
+                <span className="relative  z-10 text-[10px] sm:text-lg">Create New Form</span>
+               
               </motion.button>
             </motion.div>
           ) : (
@@ -2553,16 +1711,23 @@ const Form = () => {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ duration: 0.4, ease: "easeOut" }}
-              className="w-full bg-white/80 backdrop-blur-xl border border-white/50 rounded shadow-2xl shadow-violet-500/10 flex flex-col lg:flex-row gap-0 overflow-hidden"
+             className={`w-full backdrop-blur-xl rounded shadow-2xl flex flex-col lg:flex-row overflow-hidden
+  ${theme.card}
+`}
             >
               {/* Left Side: Master Fields */}
-              <div className="w-full lg:w-[380px] bg-gradient-to-b from-gray-50/80 to-white/50 backdrop-blur-sm py-6 px-5 border-r border-gray-100/80">
+              <div  className={`w-full lg:w-[380px] py-6 px-5 border-r
+    ${isDarkMode
+      ? "bg-[#0b0e17] border-white/10"
+      : "bg-gradient-to-b from-gray-50/80 to-white/50 border-gray-100"}
+  `}>
                 <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-lg font-bold bg-gradient-to-r from-violet-700 to-indigo-600 bg-clip-text text-transparent flex items-center gap-2">
-                    <Layers className="w-5 h-5 text-violet-600" />
+                  <h2 className={`sm:text-lg text-sm ${theme.text} font-bold  flex items-center gap-2`}>
+                    <Layers className={`w-5 h-5 ${theme.text}`} />
                     Available Fields
                   </h2>
-                  <span className="text-xs font-medium text-gray-400 bg-gray-100 px-2.5 py-1 rounded-full">
+                  <span 
+                  className={`text-xs ${theme.buttonPrimary} font-medium px-2.5 py-1 rounded-full`}>
                     {masterFields.length} fields
                   </span>
                 </div>
@@ -2579,18 +1744,22 @@ const Form = () => {
                       variants={itemVariants}
                       whileHover={{ x: 4 }}
                       whileTap={{ scale: 0.98 }}
-                      className={`group flex items-center gap-3 py-3 px-4 rounded-2xl cursor-pointer transition-all duration-300 border-2 ${
-                        selectedFields.some((f) => f.masterFieldId === field.masterFieldId)
-                          ? "bg-violet-50 border-violet-300 shadow-md shadow-violet-100"
-                          : "bg-white/70 border-transparent hover:border-gray-200 hover:bg-white shadow-sm hover:shadow-md"
-                      }`}
+                       className={`group flex items-center gap-3 sm:py-3 sm:px-4 px-2 py-2 text-[11px] sm:text-[14px] rounded-2xl cursor-pointer transition-all duration-300 border-2 ${
+    selectedFields.some((f) => f.masterFieldId === field.masterFieldId)
+      ? "bg-violet-50 border-violet-300 shadow-md shadow-violet-100"
+      : "bg-white/70 border-transparent hover:border-gray-200 hover:bg-white shadow-sm hover:shadow-md"
+  }`}
                     >
                       <div
-                        className={`relative w-5 h-5 rounded-lg border-2 flex items-center justify-center transition-all duration-300 ${
-                          selectedFields.some((f) => f.masterFieldId === field.masterFieldId)
-                            ? "bg-violet-600 border-violet-600"
-                            : "border-gray-300 group-hover:border-violet-400"
-                        }`}
+                       className={`relative w-5 h-5  rounded-lg border-2 flex items-center justify-center transition-all duration-300
+  ${
+    selectedFields.some((f) => f.masterFieldId === field.masterFieldId)
+      ? "bg-violet-600 border-violet-600"
+      : isDarkMode
+        ? "border-gray-900"
+        : "border-gray-300"
+  }
+`}
                       >
                         <input
                           type="checkbox"
@@ -2607,8 +1776,10 @@ const Form = () => {
                         />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <span className="font-semibold text-gray-700 block truncate">{field.label}</span>
-                        <span className="text-xs text-gray-400">{field.type}</span>
+                        <span className={`font-semibold block  ${
+    isDarkMode ? "text-gray-600" : "text-gray-800"
+  }`}>{field.label}</span>
+                        <span className="text-xs text-gray-600">{field.type}</span>
                       </div>
                       <GripVertical className="w-4 h-4 text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </motion.label>
@@ -2620,10 +1791,10 @@ const Form = () => {
                     onClick={() => setIsAddingMaster(!isAddingMaster)}
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.99 }}
-                    className={`w-full py-3 px-4 rounded-2xl font-semibold flex items-center justify-center gap-3 transition-all duration-300 ${
+                    className={`w-full sm:py-3 px-4 py-1 text-[13px] sm:text-[16px] rounded-2xl font-semibold flex items-center justify-center gap-3 transition-all duration-300 ${
                       isAddingMaster
-                        ? "bg-gray-100 text-gray-600 hover:bg-gray-200"
-                        : "bg-violet-600 text-white shadow-lg shadow-violet-500/25 hover:shadow-xl hover:shadow-violet-500/30"
+                        ? `${theme.buttonsecondary}`
+                        : `${theme.buttonPrimary}`
                     }`}
                   >
                     <motion.div animate={{ rotate: isAddingMaster ? 45 : 0 }} transition={{ duration: 0.2 }}>
@@ -2641,14 +1812,14 @@ const Form = () => {
                         transition={{ duration: 0.3 }}
                         className="overflow-hidden"
                       >
-                        <div className="p-5 bg-violet-50/50 border border-violet-100 rounded-2xl shadow-inner space-y-4">
+                        <div className={`p-5 ${theme.card} rounded-2xl shadow-inner space-y-4`}>
                           {/* Label Input */}
                           <div className="space-y-2">
-                            <label className="text-[11px] font-bold text-violet-600 uppercase tracking-wider">
+                            <label className={`block text-[12px] font-bold ${theme.text}`}>
                               New Label
                             </label>
                             <input
-                              className="w-full bg-white border-2 border-gray-100 rounded-xl px-4 py-2.5 outline-none text-sm font-medium focus:border-violet-400 focus:ring-4 focus:ring-violet-100 transition-all duration-200"
+                             className={`w-full border-2 rounded-xl  text-[12px] sm:text-sm px-4 sm:py-2.5 py-1 outline-none text-sm font-medium transition-all ${theme.input}`}
                               value={newField.label}
                               onChange={(e) => setNewField({ ...newField, label: e.target.value })}
                               placeholder="Enter label name..."
@@ -2657,11 +1828,11 @@ const Form = () => {
 
                           {/* Type Selection */}
                           <div className="space-y-2">
-                            <label className="text-[11px] font-bold text-violet-600 uppercase tracking-wider">
+                            <label className={`block text-[12px] font-bold ${theme.text}`}>
                               Type
                             </label>
                             <select
-                              className="w-full text-sm bg-white border-2 border-gray-100 rounded-xl px-4 py-2.5 outline-none cursor-pointer font-medium focus:border-violet-400 focus:ring-4 focus:ring-violet-100 transition-all duration-200 appearance-none"
+                              className={`w-full border-2 rounded-xl text-[12px] sm:text-sm px-4 sm:py-2.5 py-1 outline-none text-sm font-medium cursor-pointer appearance-none ${theme.input}`}
                               style={{
                                 backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
                                 backgroundRepeat: "no-repeat",
@@ -2675,9 +1846,7 @@ const Form = () => {
                                   ...newField,
                                   type: e.target.value,
                                   options: isSelectionType ? [""] : [],
-                                })
-                              }}
-                            >
+                                })}}>
                               {["TEXT", "NUMBER", "EMAIL", "DATE", "TEXTAREA", "CHECKBOX", "RADIO", "DROPDOWN"].map(
                                 (t) => (
                                   <option key={t} value={t}>
@@ -2695,9 +1864,9 @@ const Form = () => {
                                 initial={{ opacity: 0, height: 0 }}
                                 animate={{ opacity: 1, height: "auto" }}
                                 exit={{ opacity: 0, height: 0 }}
-                                className="space-y-3 border-2 border-violet-100 rounded-xl p-4 bg-white/50"
+                                className={`space-y-3 rounded-xl p-4 ${theme.card}`}
                               >
-                                <label className="text-[11px] font-bold text-violet-600 uppercase tracking-wider">
+                                <label className={`block text-[12px] ${theme.text} font-bold`}>
                                   Field Options
                                 </label>
                                 {newField.options.map((opt, i) => (
@@ -2705,18 +1874,15 @@ const Form = () => {
                                     key={i}
                                     initial={{ opacity: 0, x: -10 }}
                                     animate={{ opacity: 1, x: 0 }}
-                                    className="flex gap-2"
-                                  >
+                                    className="flex gap-2">
                                     <input
-                                      className="flex-1 bg-white border-2 border-gray-100 rounded-lg px-3 py-2 text-sm outline-none focus:border-violet-400 transition-all"
+                                      className={`flex-1 border-2 rounded-lg px-1 py-1 text-[10px] sm:text-sm outline-none transition-all ${theme.input}`}
                                       placeholder={`Option ${i + 1}`}
                                       value={opt}
                                       onChange={(e) => {
                                         const newOpts = [...newField.options]
                                         newOpts[i] = e.target.value
-                                        setNewField({ ...newField, options: newOpts })
-                                      }}
-                                    />
+                                        setNewField({ ...newField, options: newOpts })}}/>
                                     {newField.options.length > 1 && (
                                       <motion.button
                                         type="button"
@@ -2726,7 +1892,7 @@ const Form = () => {
                                           const newOpts = newField.options.filter((_, idx) => idx !== i)
                                           setNewField({ ...newField, options: newOpts })
                                         }}
-                                        className="text-red-400 hover:text-red-600 hover:bg-red-50 p-2 rounded-lg transition-all"
+                                        className={`p-2 ${theme.text} rounded-lg transition-all`}
                                       >
                                         <X size={14} />
                                       </motion.button>
@@ -2736,7 +1902,7 @@ const Form = () => {
                                 <button
                                   type="button"
                                   onClick={() => setNewField({ ...newField, options: [...newField.options, ""] })}
-                                  className="text-sm text-violet-600 font-bold hover:text-violet-700 flex items-center gap-1 transition-colors"
+                                  className={`sm:text-sm text-[10px] font-bold ${theme.text} flex items-center gap-1 transition-colors`}
                                 >
                                   <Plus size={14} /> Add Option
                                 </button>
@@ -2749,8 +1915,7 @@ const Form = () => {
                             onClick={handleInlineCreate}
                             whileHover={{ scale: 1.01 }}
                             whileTap={{ scale: 0.99 }}
-                            className="w-full bg-violet-600  text-white py-3 rounded-xl text-sm font-bold hover:shadow-lg hover:shadow-violet-500/25 transition-all duration-300"
-                          >
+                            className={`w-full sm:py-3 py-1 rounded-xl  text-sm ${theme.buttonPrimary} font-bold hover:shadow-lg hover:shadow-violet-900/25 transition-all duration-300`}>
                             Save Input Field
                           </motion.button>
                         </div>
@@ -2765,6 +1930,7 @@ const Form = () => {
                       token={token}
                       formTheme={formTheme}
                       setFormTheme={setFormTheme}
+                        isDarkMode={isDarkMode}
                     />
                   </div>
                 </div>
@@ -2773,26 +1939,28 @@ const Form = () => {
               {/* Right Side: Preview & Edit */}
               <div
                 className="flex-1 p-6 lg:p-8 flex flex-col transition-all duration-500 min-h-[60vh]"
-                style={{
-                  backgroundColor: formTheme.bgColor || "#ffffff",
-                  fontFamily: `${formTheme.labelFont || "Inter"}, sans-serif`,
-                }}
-              >
+                 style={{
+    backgroundColor: formTheme.bgColor || "#ffffff",
+  // fontFamily: `${formTheme.labelFont || "Inter"}, sans-serif`
+  }} >
                 <div className="w-full flex flex-col h-full">
                   {/* Form Title & Description */}
                   <motion.div
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="mb-8 space-y-4"
+                    className="sm:mb-8 sm:space-y-4"
                   >
-                    <div className="group flex items-center gap-3 border-b-2 border-transparent hover:border-violet-100 focus-within:border-violet-300 pb-2 transition-all duration-300">
-                      <input
-                        value={formTitle || ""}
-                        onChange={(e) => setFormTitle(e.target.value)}
-                        placeholder="Enter Form Title..."
-                        style={{ color: formTheme.labelColor || "#111827" }}
-                        className="text-2xl lg:text-3xl font-bold w-full focus:outline-none bg-transparent placeholder:text-gray-300"
-                      />
+                    <div className="group flex items-center gap-3 border-b-2  border-transparent hover:border-violet-100 focus-within:border-violet-300 pb-2 transition-all duration-300">
+<input
+  value={formTitle || ""}
+  onChange={(e) => setFormTitle(e.target.value)}
+  placeholder="Enter Form Title..."
+  style={{
+    color: formTheme.labelColor|| "#111827"
+    
+  }}
+  className="sm:text-2xl text-lg lg:text-3xl font-semibold w-full focus:outline-none bg-transparent placeholder:text-gray-300"
+/>
                       <EditIcon
                         size={18}
                         className="text-gray-300 group-hover:text-violet-400 transition-colors "
@@ -2800,12 +1968,14 @@ const Form = () => {
                     </div>
                     <div className="group flex items-center gap-3 border-b-2 border-transparent hover:border-violet-100 focus-within:border-violet-300 pb-2 transition-all duration-300">
                       <input
-                        value={formdescription}
-                        onChange={(e) => setformdescription(e.target.value)}
-                        placeholder="Add a description for your form..."
-                        style={{ color: `${formTheme.labelColor}99` || "#4b5563" }}
-                        className="text-sm lg:text-base w-full focus:outline-none bg-transparent placeholder:text-gray-300"
-                      />
+  value={formdescription}
+  onChange={(e) => setformdescription(e.target.value)}
+  placeholder="Add a description for your form..."
+   style={{
+    color: formTheme.labelColor || "#6b7280",
+  }}
+  className="sm:text-sm lg:text-base text-[10px] w-full focus:outline-none bg-transparent placeholder:text-gray-300"
+/>
                       <EditIcon
                         size={14}
                         className="text-gray-300 group-hover:text-violet-400 transition-colors "
@@ -2823,9 +1993,9 @@ const Form = () => {
                     <motion.label
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className={`flex items-center gap-3 cursor-pointer px-4 py-2.5 rounded-xl border-2 transition-all duration-300 ${
+                      className={`flex items-center gap-3 cursor-pointer sm:px-4 px-1 sm:py-2.5 py-1 text-[10px] sm:text-sm rounded-xl border-2 transition-all duration-300 ${
                         isPublic
-                          ? "border-green-300 bg-green-50 shadow-md shadow-green-100"
+                          ? "border-violet-600 bg-violet-600 shadow-md "
                           : "border-gray-200 bg-white hover:border-gray-300"
                       }`}
                     >
@@ -2838,13 +2008,13 @@ const Form = () => {
                       />
                       <div
                         className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
-                          isPublic ? "border-green-500 bg-green-500" : "border-gray-300"
+                          isPublic ? "border-white/60 bg-violet-800" : "border-gray-300"
                         }`}
                       >
                         {isPublic && <Check className="w-3 h-3 text-white" />}
                       </div>
-                      <Globe className={`w-4 h-4 ${isPublic ? "text-green-600" : "text-gray-400"}`} />
-                      <span className={`font-semibold text-sm ${isPublic ? "text-green-700" : "text-gray-500"}`}>
+                      <Globe className={`w-4 h-4 ${isPublic ?`${theme.text}` : "text-gray-400"}`} />
+                      <span className={`font-semibold text-sm ${isPublic ?`${theme.text}` : "text-gray-500"}`}>
                         Public
                       </span>
                     </motion.label>
@@ -2852,9 +2022,9 @@ const Form = () => {
                     <motion.label
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className={`flex items-center gap-3 cursor-pointer px-4 py-2.5 rounded-xl border-2 transition-all duration-300 ${
+                      className={`flex items-center gap-3 cursor-pointer sm:px-4 px-1 sm:py-2.5 py-1 text-[10px] sm:text-sm  rounded-xl border-2 transition-all duration-300 ${
                         !isPublic
-                          ? "border-amber-300 bg-amber-50 shadow-md shadow-amber-100"
+                          ? "border-violet-100 bg-violet-300 shadow-md shadow-violet-100"
                           : "border-gray-200 bg-white hover:border-gray-300"
                       }`}
                     >
@@ -2867,13 +2037,13 @@ const Form = () => {
                       />
                       <div
                         className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
-                          !isPublic ? "border-amber-500 bg-amber-500" : "border-gray-300"
+                          !isPublic ? "border-white" : "border-gray-300"
                         }`}
                       >
                         {!isPublic && <Check className="w-3 h-3 text-white" />}
                       </div>
-                      <Lock className={`w-4 h-4 ${!isPublic ? "text-amber-600" : "text-gray-400"}`} />
-                      <span className={`font-semibold text-sm ${!isPublic ? "text-amber-700" : "text-gray-500"}`}>
+                      <Lock className={`w-4 h-4 ${!isPublic ? "text-white" : "text-gray-400"}`} />
+                      <span className={`font-semibold text-sm ${!isPublic ? "text-white" : "text-gray-500"}`}>
                         Private
                       </span>
                     </motion.label>
@@ -2891,7 +2061,7 @@ const Form = () => {
                           animate={pulseAnimation}
                           className="w-16 h-16 bg-violet-100 rounded-2xl flex items-center justify-center mb-4"
                         >
-                          <Layers className="w-8 h-8 text-violet-400" />
+                          <Layers className="w-8 h-8 text-violet-800" />
                         </motion.div>
                         <p className="font-medium">Select fields from the left to start building</p>
                         <p className="text-sm text-gray-300 mt-1">Drag and drop to reorder</p>
@@ -2908,16 +2078,19 @@ const Form = () => {
                             transition={{ duration: 0.3 }}
                             whileHover={{ y: -2 }}
                             className="group bg-white p-5 lg:p-6 rounded-2xl border-2 border-gray-100 hover:border-violet-200 shadow-sm hover:shadow-lg transition-all duration-300"
-                            style={{
-                              borderRadius: formTheme.borderRadius || "16px",
-                            }}
+                            style={{ borderRadius: `calc(${formTheme.borderRadius || 16}px / 2)` }}
                           >
                             <div className="flex flex-col sm:flex-row gap-4 mb-4">
                               {/* Label Update */}
                               <div className="flex-1">
                                 <label
-                                  className="text-xs font-bold uppercase ml-1 mb-2 block tracking-wider"
-                                  style={{ color: formTheme.labelColor || "#9ca3af" }}
+                                  className="text-xs uppercase font-bold ml-1 mb-2 block "
+                                 style={{
+  color:
+    formTheme.labelColor && formTheme.labelColor !== "#ffffff"
+      ? formTheme.labelColor
+      : "#6b7280", 
+}}
                                 >
                                   Field Label
                                 </label>
@@ -2926,23 +2099,26 @@ const Form = () => {
                                   value={field.label}
                                   onChange={(e) => updateFieldProperty(index, "label", e.target.value)}
                                   style={{
-                                    backgroundColor: formTheme.inputBgColor || "#f9fafb",
-                                    borderRadius: `calc(${formTheme.borderRadius} / 2)` || "8px",
-                                    color: formTheme.labelColor,
-                                  }}
-                                  className="w-full border-2 border-gray-100 p-3 text-sm font-semibold focus:border-violet-400 focus:ring-4 focus:ring-violet-50 outline-none transition-all duration-200"
-                                />
-                              </div>
-
-                              {/* Type Update */}
+  backgroundColor: formTheme.inputBgColor || "#f9fafb",
+  borderRadius: `calc(${formTheme.borderRadius || 16}px / 2)`,
+  color: formTheme.labelColor
+    ? formTheme.labelColor
+    : "#111827", 
+}}
+ className={`w-full border-2 sm:px-3 sm:py-3 px-2 py-1 rounded-lg text-sm font-semibold outline-none transition-all
+  ${theme.input}
+`}/></div>
+{/* Type Update */}
                               <div className="w-full sm:w-1/3">
-                                <label className="text-xs font-bold text-gray-400 uppercase ml-1 mb-2 block tracking-wider">
+                                <label className="text-xs font-bold text-gray-500 uppercase ml-1 mb-2 block ">
                                   Field Type
                                 </label>
                                 <select
                                   value={field.type}
                                   onChange={(e) => updateFieldProperty(index, "type", e.target.value)}
-                                  className="w-full bg-white border-2 border-gray-100 p-3 rounded-xl text-sm font-semibold focus:border-violet-400 focus:ring-4 focus:ring-violet-50 outline-none transition-all duration-200 cursor-pointer appearance-none"
+                                  className={`w-full border-2 sm:px-3 sm:py-3 px-3 py-1 rounded-xl text-sm font-semibold outline-none cursor-pointer appearance-none
+  ${theme.input}
+`}
                                   style={{
                                     backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
                                     backgroundRepeat: "no-repeat",
@@ -2981,12 +2157,12 @@ const Form = () => {
                                   {field.required && <Check className="w-3 h-3 text-white" />}
                                 </div>
                                 <span
-                                  className={`text-xs font-bold uppercase ${field.required ? "text-violet-700" : "text-gray-500"}`}
+                                  className={`text-[10px] sm:text-sm font-bold uppercase ${field.required ? "text-violet-700" : "text-gray-500"}`}
                                 >
                                   Required
                                 </span>
                               </motion.div>
-                              <span className="text-xs text-gray-400 italic bg-gray-50 px-3 py-1.5 rounded-full">
+                              <span className="sm:text-xs text-[10px] text-gray-400 italic bg-gray-50 px-3 py-1.5 rounded-full">
                                 Preview: {field.type}
                               </span>
                             </div>
@@ -3000,7 +2176,7 @@ const Form = () => {
                                   exit={{ opacity: 0, height: 0 }}
                                   className="space-y-3 mt-4 p-4 bg-gradient-to-br from-violet-50/50 to-white rounded-xl border-2 border-violet-100"
                                 >
-                                  <p className="text-xs font-bold text-violet-600 uppercase tracking-wider">
+                                  <p className="sm:text-xs text-[10px] font-bold text-gray-500 uppercase ">
                                     Options Management
                                   </p>
                                   {field.options.map((opt, optIndex) => (
@@ -3008,7 +2184,7 @@ const Form = () => {
                                       key={optIndex}
                                       initial={{ opacity: 0, x: -10 }}
                                       animate={{ opacity: 1, x: 0 }}
-                                      className="flex items-center gap-2"
+                                      className="flex items-center sm:gap-2"
                                     >
                                       <input
                                         type="text"
@@ -3018,7 +2194,10 @@ const Form = () => {
                                           updatedFields[index].options[optIndex] = e.target.value
                                           setSelectedFields(updatedFields)
                                         }}
-                                        className="flex-1 text-sm bg-white border-2 border-violet-100 rounded-lg px-3 py-2 outline-none focus:border-violet-400 focus:ring-4 focus:ring-violet-50 transition-all"
+                                        className={`sm:text-sm text-[10px] border-2 rounded-lg sm:px-3 sm:py-2 px-1 py-1 outline-none transition-all
+  ${theme.input}
+`}
+
                                       />
                                       <motion.button
                                         whileHover={{ scale: 1.1 }}
@@ -3045,7 +2224,7 @@ const Form = () => {
                                       ]
                                       setSelectedFields(updatedFields)
                                     }}
-                                    className="text-sm font-bold text-violet-600 hover:text-violet-700 flex items-center gap-1 transition-colors"
+                                    className="sm:text-sm text-[10px] font-bold text-gray-500 hover:text-gray-800 flex items-center gap-1 transition-colors"
                                   >
                                     <Plus size={14} /> Add Option
                                   </button>
@@ -3077,7 +2256,7 @@ const Form = () => {
                         backgroundColor: formTheme.buttonColor || "#7c3aed",
                         borderRadius: formTheme.borderRadius || "16px",
                       }}
-                      className="flex-1 text-white py-3.5 font-semibold shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      className="flex-1 text-white sm:py-3 py-1 font-semibold shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
                       {loading ? (
                         <>
@@ -3091,7 +2270,7 @@ const Form = () => {
                         </>
                       ) : (
                         <>
-                          <Sparkles className="w-5 h-5" />
+                
                           {editingFormId ? "Update Form" : "Publish Form"}
                         </>
                       )}
@@ -3104,7 +2283,7 @@ const Form = () => {
                       }}
                       whileHover={{ scale: 1.01 }}
                       whileTap={{ scale: 0.99 }}
-                      className="px-8 py-3.5 bg-gray-100 text-gray-600 rounded-2xl font-bold hover:bg-gray-200 transition-all duration-300"
+                      className="px-8 sm:py-3 py-1 bg-gray-200 text-gray-600 rounded-2xl font-bold hover:bg-gray-200 transition-all duration-300"
                     >
                       Cancel
                     </motion.button>
@@ -3147,7 +2326,14 @@ const Form = () => {
                   animate="visible"
                   exit={{ opacity: 0, scale: 0.8, y: 20 }}
                   whileHover="hover"
-                  className="group relative bg-white/80 backdrop-blur-sm p-6 rounded-3xl border border-gray-100 flex flex-col justify-between hover:border-violet-200 transition-all duration-500 overflow-hidden"
+                  className={`
+  group relative backdrop-blur-sm sm:p-6 p-4 rounded-3xl border 
+  flex flex-col justify-between transition-all duration-500 overflow-hidden
+  ${isDarkMode
+      ? "bg-[#0f172a]/80 backdrop-blur-md border-slate-800 shadow-2xl text-gray-100"
+      : "bg-white/80 border-gray-100 text-gray-900"
+    }
+`}
                 >
                   {/* Gradient Overlay on Hover */}
                   <div className="absolute inset-0 bg-gradient-to-br from-violet-500/5 via-transparent to-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
@@ -3163,11 +2349,15 @@ const Form = () => {
                     <div className="flex justify-between items-start mb-4">
                       <motion.span
                         whileHover={{ scale: 1.05 }}
-                        className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 ${
-                          form.isPublic
-                            ? "bg-gradient-to-r from-green-50 to-emerald-50 text-green-700 border border-green-200"
-                            : "bg-gradient-to-r from-gray-50 to-slate-50 text-gray-600 border border-gray-200"
-                        }`}
+                        className={`sm:px-3 sm:py-1.5 px-1 py-1 rounded-full text-xs font-bold flex items-center gap-1.5 border
+  ${form.isPublic
+    ? isDarkMode
+      ? "bg-green-900/30 text-green-300 border-green-700"
+      : "bg-green-50 text-green-700 border-green-200"
+    : isDarkMode
+      ? "bg-gray-700 text-gray-300 border-gray-600"
+      : "bg-gray-50 text-gray-600 border-gray-200"}
+`}
                       >
                         {form.isPublic ? <Globe className="w-3 h-3" /> : <Lock className="w-3 h-3" />}
                         {form.isPublic ? "Public" : "Private"}
@@ -3177,34 +2367,59 @@ const Form = () => {
                           whileHover={{ scale: 1.1, backgroundColor: "#f3f4f6" }}
                           whileTap={{ scale: 0.9 }}
                           onClick={() => handleEditClick(form.formId)}
-                          className="p-2.5 rounded-xl text-gray-400 hover:text-violet-600 transition-all"
+                          className={`p-2.5 rounded-xl transition-all
+  ${isDarkMode
+    ? "text-gray-300 hover:text-violet-400 hover:bg-gray-700"
+    : "text-gray-400 hover:text-violet-600 hover:bg-gray-100"}
+`}
+                         
                         >
-                          <EditIcon size={16} />
+                          <EditIcon  size={15} />
                         </motion.button>
                         <motion.button
                           whileHover={{ scale: 1.1, backgroundColor: "#fef2f2" }}
                           whileTap={{ scale: 0.9 }}
                           onClick={() => setIsDeleting(form)}
-                          className="p-2.5 rounded-xl text-gray-400 hover:text-red-500 transition-all"
+                          className={`p-2.5 rounded-xl transition-all
+  ${isDarkMode
+    ? "text-gray-300 hover:text-violet-400 hover:bg-gray-700"
+    : "text-gray-400 hover:text-violet-600 hover:bg-gray-100"}
+`}
                         >
-                          <Trash2 size={16} />
+                          <Trash2  size={15}  />
                         </motion.button>
                       </div>
                     </div>
-                    <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-violet-700 transition-colors duration-300">
+                    <h3 className={`sm:text-xl font-bold mb-2 transition-colors duration-300
+  ${isDarkMode 
+    ? "text-gray-100 group-hover:text-violet-400" 
+    : "text-gray-800 group-hover:text-violet-700"}
+`}
+>
                       {form.title}
                     </h3>
-                    <p className="text-gray-500 text-sm line-clamp-2 mb-4 leading-relaxed">
+                    <p className={`sm:text-sm text-[10px] line-clamp-2 mb-4 leading-relaxed
+  ${isDarkMode ? "text-gray-400" : "text-gray-500"}
+`}
+>
+
                       {form.description || "No description provided"}
                     </p>
                   </div>
 
-                  <div className="relative z-10 mt-4 pt-4 border-t border-gray-100 flex gap-3">
+                  <div className={`relative z-10 mt-4 pt-4 border-t flex gap-3
+  ${isDarkMode ? "border-gray-700" : "border-gray-100"}
+`}>
                     <motion.button
                       whileHover={{ scale: 1.02, y: -2 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => navigate(`/responses/${form.formId}`)}
-                      className="flex-1 bg-gradient-to-r from-violet-50 to-indigo-50 text-violet-700 font-semibold py-3 rounded-xl hover:from-violet-100 hover:to-indigo-100 transition-all duration-300 flex items-center justify-center gap-2 border border-violet-100"
+                     className={`flex-1 font-semibold sm:py-3 py-1 text-[10px] sm:text-sm rounded-xl transition-all duration-300
+  flex items-center justify-center gap-2 border
+  ${isDarkMode
+    ? "bg-gray-700 text-violet-300 border-gray-600 hover:bg-gray-600"
+    : "bg-gradient-to-r from-violet-50 to-indigo-50 text-violet-700 border-violet-100 hover:from-violet-100 hover:to-indigo-100"}
+`}
                     >
                       <Layers className="w-4 h-4" />
                       Responses
@@ -3213,7 +2428,7 @@ const Form = () => {
                       whileHover={{ scale: 1.02, y: -2 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => formview(form.formId)}
-                      className="flex-1 bg-gradient-to-r from-gray-900 to-gray-800 text-white font-semibold py-3 rounded-xl hover:from-gray-800 hover:to-gray-700 transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-gray-900/20"
+                      className={`flex-1 sm:py-3 py-1 text-[10px] sm:text-sm  font-semibold py-3 rounded-xl ${theme.buttonPrimary} transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-gray-900/20`}
                     >
                       <Eye className="w-4 h-4" />
                       View
@@ -3242,14 +2457,14 @@ const Form = () => {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="relative bg-white rounded-3xl p-8 shadow-2xl max-w-sm w-full border border-gray-100"
+              className={`relative ${theme.card} rounded-3xl p-8 shadow-2xl max-w-sm w-full border border-gray-100`}
             >
-              <div className="w-16 h-16 bg-red-100 rounded-2xl flex items-center justify-center mx-auto mb-5">
+              <div className="w-16 h-16  rounded-2xl flex items-center justify-center mx-auto mb-5">
                 <Trash2 className="w-8 h-8 text-red-500" />
               </div>
-              <h3 className="text-2xl font-bold mb-2 text-center text-gray-900">Delete Form?</h3>
+              <h3 className={`text-2xl font-bold ${theme.textSub} mb-2 text-center`}>Delete Form?</h3>
               <p className="text-gray-500 mb-8 text-center">
-                Are you sure you want to delete <span className="font-bold text-gray-900">"{isDeleting.title}"</span>?
+                Are you sure you want to delete <span className={`${theme.text} font-bold`}>"{isDeleting.title}"</span>?
                 This action cannot be undone.
               </p>
               <div className="flex gap-3">
@@ -3257,7 +2472,7 @@ const Form = () => {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => setIsDeleting(null)}
-                  className="flex-1 px-6 py-3.5 bg-gray-100 rounded-2xl font-semibold hover:bg-gray-200 transition-all"
+                  className="flex-1 px-6 py-3.5 text-gray-500 bg-gray-100 rounded-2xl font-semibold hover:bg-gray-200 transition-all"
                 >
                   Cancel
                 </motion.button>
@@ -3276,7 +2491,7 @@ const Form = () => {
       </AnimatePresence>
 
       {/* View Form Modal */}
-      <AnimatePresence>
+         <AnimatePresence>
         {viewform && viewData && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-10">
             <motion.div
@@ -3292,8 +2507,11 @@ const Form = () => {
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 30 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="relative bg-white w-full max-w-2xl max-h-[90vh] overflow-hidden rounded-3xl shadow-2xl flex flex-col border border-gray-100"
-              style={{ fontFamily: `${viewData.theme?.labelFont || "Inter"}, sans-serif` }}
+              className="relative w-[350px] max-w-2xl max-h-[90vh] overflow-hidden rounded-xl shadow-2xl flex flex-col border border-gray-100"
+              style={{
+    backgroundColor: viewData.theme?.bgColor || "#ffffff",
+    fontFamily: `${viewData.theme?.labelFont || "Inter"}, sans-serif`,
+  }}
             >
               {/* Theme Strip with Gradient */}
               <div
@@ -3304,20 +2522,21 @@ const Form = () => {
               />
 
               {/* Header */}
-              <div className="p-6 lg:p-8 flex justify-between items-start border-b border-gray-100 bg-gradient-to-b from-gray-50/50 to-white">
+              <div   className="p-6 lg:p-8 flex justify-between items-start "
+  style={{ backgroundColor: viewData.theme?.bgColor || "#ffffff" }}>
                 <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-3 mb-2 flex-wrap">
+                  <div className="flex items-center gap-1 mb-1 flex-wrap">
                     <h2
-                      className="text-2xl lg:text-3xl font-bold truncate"
+                      className="text-2xl lg:text-3xl font-bold "
                       style={{ color: viewData.theme?.labelColor || "#111827" }}
                     >
                       {viewData.title}
                     </h2>
-                    <span className="px-2.5 py-1 bg-violet-100 text-violet-700 text-[10px] font-black uppercase rounded-lg flex-shrink-0">
+                    <span className={` ${theme.text} font-bold text-[10px] uppercase px-3 mt-1 rounded-lg`}>
                       Preview Mode
                     </span>
                   </div>
-                  <p className="text-gray-500 text-sm lg:text-base">
+                  <p className="text-sm w-full lg:text-base" style={{ color: viewData.theme?.labelColor || "#111827" }}>
                     {viewData.description || "No description provided."}
                   </p>
                 </div>
@@ -3325,7 +2544,7 @@ const Form = () => {
                   whileHover={{ scale: 1.1, rotate: 90 }}
                   whileTap={{ scale: 0.9 }}
                   onClick={() => setviewform(false)}
-                  className="bg-gray-100 hover:bg-red-100 hover:text-red-500 p-2.5 rounded-xl transition-all ml-4 flex-shrink-0"
+                  className=" text-black hover:bg-red-100 hover:text-red-500  rounded-xl transition-all ml-2"
                 >
                   <X size={20} />
                 </motion.button>
@@ -3333,7 +2552,7 @@ const Form = () => {
 
               {/* Form Preview Area */}
               <div
-                className="flex-1 overflow-y-auto p-6 lg:p-8 space-y-5"
+                className="flex-1 overflow-y-auto p-1 sm:p-3 space-y-5"
                 style={{ backgroundColor: viewData.theme?.bgColor || "#f9fafb" }}
               >
                 <AnimatePresence>
@@ -3343,18 +2562,18 @@ const Form = () => {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.05 }}
-                      className="bg-white p-5 lg:p-6 shadow-sm border border-gray-100 hover:shadow-md hover:border-violet-100 transition-all duration-300"
+                      className="bg-white py-1  px-2 shadow-sm border border-gray-100 hover:shadow-md hover:border-violet-100 transition-all duration-300"
                       style={{ borderRadius: viewData.theme?.borderRadius || "12px" }}
                     >
                       <label
-                        className="block text-sm font-bold mb-3"
+                        className="block text-sm mt-1 font-bold mb-2"
                         style={{ color: viewData.theme?.labelColor || "#374151" }}
                       >
                         {field.label} {field.required && <span className="text-red-500">*</span>}
                       </label>
 
                       <div
-                        className="w-full px-4 py-3.5 border-2 border-dashed border-gray-200 text-gray-400 text-sm flex items-center justify-between"
+                        className="w-full px-2 py-1 mb-1 border-2 border-dashed border-gray-200 text-gray-400 text-sm flex items-center justify-between"
                         style={{
                           backgroundColor: viewData.theme?.inputBgColor || "#ffffff",
                           borderRadius: `calc(${viewData.theme?.borderRadius || "12px"} / 2)`,
@@ -3372,12 +2591,12 @@ const Form = () => {
               </div>
 
               {/* Action Footer */}
-              <div className="p-5 lg:p-6 bg-gradient-to-t from-gray-50 to-white border-t border-gray-100 flex flex-wrap gap-3">
+              <div className="p-5  lg:p-6 bg-gradient-to-t from-gray-50 to-white border-t border-gray-100 flex justify-around flex-wrap gap-3">
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => setviewform(false)}
-                  className="px-6 py-3.5 bg-gray-100 text-gray-600 rounded-xl font-bold hover:bg-gray-200 transition-all"
+                  className=" px-2 py-1 md:px-3 md:py-2 bg-gray-100 flex-1 text-gray-600 text-xs rounded-xl font-bold hover:bg-gray-200 transition-all"
                 >
                   Close
                 </motion.button>
@@ -3394,17 +2613,21 @@ const Form = () => {
                     const link = `${baseUrl}/public/form/${viewData.slug}`
                     navigator.clipboard.writeText(link)
                     toast.success("Link copied!")
-                  }}
-                  className={`flex-1 py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all ${
-                    viewData.isPublic
-                      ? "bg-gradient-to-r from-gray-900 to-gray-800 text-white hover:from-gray-800 hover:to-gray-700 shadow-lg shadow-gray-900/20"
-                      : "bg-gray-200 text-gray-400 cursor-not-allowed"
-                  }`}
-                >
-                  <Send size={18} /> Copy Link
-                </motion.button>
+                  }}  
 
-                <motion.button
+                  style={{
+    background: viewData.isPublic
+      ? `linear-gradient(135deg, ${viewData.theme?.buttonColor || "#7C3AED"}, ${viewData.theme?.buttonColor || "#7C3AED"}dd)`
+      : "#E5E7EB",
+    color: viewData.isPublic ? "white" : "#9CA3AF",
+  }}
+  className={`flex flex-1 items-center justify-around text-xs gap-2 px-2 py-1 md:px-3 md:py-2 rounded-xl font-bold transition-all ${
+    viewData.isPublic
+      ? "shadow-lg hover:brightness-110 active:scale-95"
+      : "cursor-not-allowed"
+  }`}>   Link
+                </motion.button>
+<motion.button
                   whileHover={{ scale: viewData.isPublic ? 1.02 : 1 }}
                   whileTap={{ scale: viewData.isPublic ? 0.98 : 1 }}
                   onClick={async () => {
@@ -3414,8 +2637,8 @@ const Form = () => {
                     }
                     const baseUrl = import.meta.env.VITE_URL?.replace(/\/$/, "") || window.location.origin
                     const formLink = `${baseUrl}/public/form/${viewData.slug}`
-                    const embedCode = `<iframe src="${formLink}" title="${viewData.title}" width="100%" height="700" style="border:none; border-radius:12px;" allow="clipboard-write"></iframe>`
-
+                    // const embedCode = <iframe src="${formLink}" title="${viewData.title}" width="100%" height="700" style="border:none; border-radius:12px;" allow="clipboard-write"></iframe>
+                      const embedCode = `<iframe src="${formLink}" title="${viewData.title}" width="100%" height="700" style="border:none; border-radius:12px;" allow="clipboard-write"></iframe>`;
                     await navigator.clipboard.writeText(embedCode)
                     toast.success("Embed code copied!")
                   }}
@@ -3425,10 +2648,53 @@ const Form = () => {
                       : "#E5E7EB",
                     color: viewData.isPublic ? "white" : "#9CA3AF",
                   }}
-                  className={`flex-1 py-3.5 rounded-xl font-bold transition-all ${viewData.isPublic ? "shadow-lg hover:brightness-110 active:scale-95" : "cursor-not-allowed"}`}
+                  className={`flex-1 text-xs px-2 py-1 md:px-3 md:py-2 rounded-xl font-bold transition-all ${viewData.isPublic ? "shadow-lg hover:brightness-110 active:scale-95" : "cursor-not-allowed"}`}
                 >
-                  Copy Embed Code
-                </motion.button>
+                  iframe
+                </motion.button> 
+
+
+                <motion.button
+    whileHover={{ scale: viewData.isPublic ? 1.02 : 1 }}
+    whileTap={{ scale: viewData.isPublic ? 0.98 : 1 }}
+    onClick={async () => {
+      if (!viewData.isPublic) {
+        toast.error("Form is private. Make it public first.")
+        return
+      }
+      const baseUrl = import.meta.env.VITE_URL?.replace(/\/$/, "") || window.location.origin
+     const scriptCode = `<script 
+  src="${baseUrl}/publicFormEmbed.js"
+  data-form-id="${viewData.slug}"
+  data-primary-color="${viewData.theme?.buttonColor || "#7C3AED"}"
+  data-bg-color="${viewData.theme?.bgColor || "#ffffff"}"
+  data-font="${viewData.theme?.labelFont || "Inter"}"
+  data-input-bg-color="${viewData.theme?.inputBgColor || "#ffffff"}"
+  data-label-color="${viewData.theme?.labelColor || "#374151"}"
+  data-border-radius="${viewData.theme?.borderRadius || "16px"}"
+  data-width="100%">
+</script>`;
+
+
+      await navigator.clipboard.writeText(scriptCode)
+      toast.success("Script code copied!")
+    }}
+    style={{
+      background: viewData.isPublic
+        ? `linear-gradient(135deg, ${viewData.theme?.buttonColor || "#7C3AED"}, ${viewData.theme?.buttonColor || "#7C3AED"}dd)`
+        : "#E5E7EB",
+      color: viewData.isPublic ? "white" : "#9CA3AF",
+    }}
+    className={`flex-1 text-xs px-2 py-1 md:px-3 md:py:2 rounded-xl font-bold transition-all ${
+      viewData.isPublic ? "shadow-lg hover:brightness-110 active:scale-95" : "cursor-not-allowed"
+    }`}
+  >
+    Script
+  </motion.button>
+
+
+
+
               </div>
             </motion.div>
           </div>
@@ -3444,5 +2710,3 @@ const Form = () => {
 }
 
 export default Form
-
-

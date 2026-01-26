@@ -22,9 +22,8 @@ import UserActivity from './components/dashboard/UserActivity.jsx';
 import AllForms from './components/dashboard/AllForms.jsx';
 import AdminFormResponses from './components/dashboard/AdminFormResponses.jsx';
 import Reportstatus from './components/user/Reportstatus.jsx';
+import Admindetails from './components/dashboard/Admindetails.jsx';
 const App = () => {
-
-
 
   return (
     <>
@@ -126,18 +125,18 @@ const App = () => {
   }
 />
 
-
-    
-
-
-    <Route path="/adminreport" element={
+ <Route path="/adminreport" element={
       <ProtectedRoute allowedRoles={["ADMIN"]}>
       <AllReports/>
       </ProtectedRoute>
       } />
   
  
-
+<Route path="/admindetails" element={
+      <ProtectedRoute allowedRoles={["ADMIN"]}>
+      <Admindetails/>
+      </ProtectedRoute>
+      } />
 
 
      </Routes>

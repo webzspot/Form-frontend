@@ -158,6 +158,7 @@ import {
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useFormContext } from "../dashboard/FormContext"; 
+import { MdOutlineAdminPanelSettings } from "react-icons/md";
 
 const UserNavbar = () => {
   const navigate = useNavigate();
@@ -175,6 +176,7 @@ const UserNavbar = () => {
     { label: "Status", icon: <FileChartColumn size={18}/> , allowedRoles: ["user"] },
     { label: "UserDetail", icon: <User2Icon size={18} />, allowedRoles: ["admin"] },
     { label: "UserReport", icon: <BarChart size={18} />, allowedRoles: ["admin"] },
+     { label: "AdminDetail", icon: <MdOutlineAdminPanelSettings size={18} />, allowedRoles: ["admin"] },
     { label: Name, icon: <User2 size={18} />, allowedRoles: ["user", "admin"] },
   ];
 
@@ -189,6 +191,7 @@ const UserNavbar = () => {
     else if (label === "Status") navigate("/reportstatus");
     else if (label === "UserDetail") navigate("/admindashboard");
     else if (label === "UserReport") navigate("/adminreport");
+    else if(label==="AdminDetail") navigate("/admindetails");
     else if (label === Name) navigate("/profile");
   };
 
@@ -200,7 +203,7 @@ const UserNavbar = () => {
         ? "bg-[#0f172a]/80 backdrop-blur-md border-slate-800 shadow-2xl" 
         : "bg-white/90 backdrop-blur-md border-slate-100 shadow-lg"
       } p-4`}>
-        <div className="flex items-center gap-4 w-full max-w-6xl justify-between">
+        <div className="flex items-center gap-4 w-full justify-between">
           <div 
             className={`flex items-center gap-2 font-bold text-lg cursor-pointer transition-colors ${isDarkMode ? "text-white" : "text-slate-900"}`} 
             onClick={() => navigate("/home")}

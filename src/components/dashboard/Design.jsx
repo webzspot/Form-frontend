@@ -10,6 +10,7 @@ import {
 } from 'react-icons/md';
 import axios from 'axios';
 import toast from 'react-hot-toast';
+import { useFormContext } from './FormContext';
 
 const Design = ({ editingFormId, token, formTheme, setFormTheme }) => {
   const [isDesigning, setIsDesigning] = useState(false);
@@ -57,11 +58,40 @@ const Design = ({ editingFormId, token, formTheme, setFormTheme }) => {
     }
   };
 
+   const { isDarkMode } = useFormContext(); 
+      const theme = {
+      pageBg: isDarkMode 
+        ? "bg-[#05070f] text-white selection:bg-purple-500/30" 
+        : "bg-gradient-to-br from-[#F3E8FF] via-[#ffffff] to-[#D8B4FE] text-[#4c1d95] selection:bg-purple-200",
+      
+      card: isDarkMode
+        ? "bg-[#12121a]/80 backdrop-blur-xl border border-purple-500/20 shadow-[0_0_20px_rgba(139,92,246,0.05)]"
+        : "bg-white/60 backdrop-blur-xl border border-white/60 shadow-[0_8px_32px_0_rgba(31,38,135,0.15)]",
+  
+      input: isDarkMode
+        ? "bg-[#05070f] border border-purple-800/30 hover:border-purple-800/50 text-white placeholder-gray-600 focus:border-[#8b5cf6] focus:ring-[#8b5cf6]"
+        : "bg-white/50 border-white/60 text-[#4c1d95] placeholder-[#4c1d95]/50 focus:border-[#8b5cf6] focus:ring-[#8b5cf6] focus:bg-white/80",
+  
+      buttonPrimary: isDarkMode
+        ? "bg-[#8b5cf6] hover:bg-[#7c3aed] text-white shadow-[0_0_20px_rgba(139,92,246,0.4)]"
+        : "bg-gradient-to-r from-[#8b5cf6] to-[#6d28d9] text-white hover:shadow-lg hover:shadow-purple-500/30",
+  
+      textSub: isDarkMode ? "text-gray-400" : "text-[#4c1d95]/70",
+      label: isDarkMode ? "text-gray-300" : "text-[#4c1d95]",
+      texttwo: isDarkMode ? "text-gray-400" : "text-black",
+      previewBox: isDarkMode 
+        ? "bg-[#1e1b4b]/40 border-purple-500/10" 
+        : "bg-purple-50/50 border-purple-200/50",
+      
+      buttonsecondary: isDarkMode?
+      "bg-gray-900 text-white":"bg-gray-600 text-white",
+    };
+
   return (
     <div className="w-full mb-4">
       <button
         onClick={() => setIsDesigning(!isDesigning)}
-        className="bg-gray-900 text-white px-4 py-3 rounded-2xl font-semibold flex items-center gap-3 w-full justify-center hover:bg-black transition-all shadow-lg"
+        className="bg-gray-900 text-white px-4 sm:py-3 py-1 text-[13px] sm:text-[16px] rounded-2xl font-semibold flex items-center gap-3 w-full justify-center transition-all shadow-lg"
       >
         <MdOutlineDesignServices size={20} /> 
         {isDesigning ? "Close Designer" : "Customize Form"}
@@ -73,10 +103,10 @@ const Design = ({ editingFormId, token, formTheme, setFormTheme }) => {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="mt-4 bg-white border border-gray-200 rounded-2xl shadow-2xl overflow-hidden flex flex-col"
+            className={`mt-4 ${theme.card} rounded-2xl shadow-2xl overflow-hidden flex flex-col`}
           >
             {/* --- TAB NAVIGATION --- */}
-            <div className="flex border-b border-gray-100 bg-gray-50/50 p-1">
+            <div className={`flex ${theme.previewBox} p-1`}>
               {[
                 { id: 'presets', icon: <MdOutlinePalette />, label: 'Themes' },
                 { id: 'button', icon: <MdOutlineAdsClick />, label: 'Buttons' },
@@ -86,19 +116,19 @@ const Design = ({ editingFormId, token, formTheme, setFormTheme }) => {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex-1 flex flex-col items-center py-3 gap-1 transition-all rounded-xl ${
+                  className={`flex-1 flex flex-col items-center sm:py-3 py-1  gap-1 transition-all rounded-xl ${
                     activeTab === tab.id 
-                    ? "bg-white text-violet-600 shadow-sm font-bold" 
+                    ? `${theme.buttonPrimary}` 
                     : "text-gray-400 hover:text-gray-600"
                   }`}
                 >
-                  <span className="text-xl">{tab.icon}</span>
-                  <span className="text-[10px] uppercase tracking-tighter">{tab.label}</span>
+                  <span className="sm:text-xl">{tab.icon}</span>
+                  <span className="text-[8px] sm:text-[12px] uppercase">{tab.label}</span>
                 </button>
               ))}
             </div>
 
-            <div className="p-6 min-h-[280px]">
+            <div className="sm:p-6 p-4 ">
               <AnimatePresence mode="wait">
                 {/* 1. THEMES SECTION */}
                 {activeTab === 'presets' && (
@@ -110,11 +140,11 @@ const Design = ({ editingFormId, token, formTheme, setFormTheme }) => {
                       <button 
                         key={p.name} 
                         onClick={() => applyPalette(p)} 
-                        className="group p-3 border border-gray-100 rounded-2xl flex flex-col gap-3 hover:border-violet-300 hover:bg-violet-50/50 transition-all text-left"
+                        className={`group sm:p-3 p-2 ${theme.input} rounded-2xl flex flex-col gap-3  transition-all text-left`}
                       >
                         <div className="flex gap-1">
-                          <div className="w-6 h-6 rounded-full border-2 border-white shadow-sm" style={{ backgroundColor: p.bg }}></div>
-                          <div className="w-6 h-6 rounded-full border-2 border-white shadow-sm" style={{ backgroundColor: p.btn }}></div>
+                          <div className="sm:w-6 sm:h-6 w-4 h-4 rounded-full shadow-sm" style={{ backgroundColor: p.bg }}></div>
+                          <div className="sm:w-6 sm:h-6 w-4 h-4  rounded-full shadow-sm" style={{ backgroundColor: p.btn }}></div>
                         </div>
                         <span className="text-xs font-bold text-gray-700">{p.name}</span>
                       </button>
@@ -129,12 +159,12 @@ const Design = ({ editingFormId, token, formTheme, setFormTheme }) => {
                     className="space-y-6"
                   >
                     <div className="space-y-3">
-                      <label className="text-sm uppercase text-gray-400">Button Color</label>
-                      <input type="color" value={formTheme.buttonColor} onChange={(e) => handleLiveUpdate('buttonColor', e.target.value)} className="w-full mt-2 h-12 cursor-pointer rounded-xl overflow-hidden" />
+                      <label className={` text-[12px] sm:text-sm uppercase ${theme.text}`}>Button Color</label>
+                      <input type="color" value={formTheme.buttonColor} onChange={(e) => handleLiveUpdate('buttonColor', e.target.value)} className="w-full mt-2 sm:h-12 h-8 cursor-pointer rounded-xl overflow-hidden" />
                     </div>
                     <div className="space-y-3">
                       <div className="flex justify-between">
-                        <label className="text-sm uppercase text-gray-400">Corner Rounding</label>
+                        <label className={` text-[12px] sm:text-sm uppercase ${theme.text}`}>Corner Rounding</label>
                         <span className="text-xs font-mono text-violet-600 font-bold">{formTheme.borderRadius}</span>
                       </div>
                       <input 
@@ -154,17 +184,17 @@ const Design = ({ editingFormId, token, formTheme, setFormTheme }) => {
                     className="grid grid-cols-1 gap-6"
                   >
                     <div className="space-y-3">
-                      <label className="text-sm uppercase text-gray-400">Page Background</label>
+                      <label className={` text-[12px] sm:text-sm uppercase ${theme.text}`}>Page Background</label>
                       <div className="flex gap-4 items-center">
                         <input type="color" value={formTheme.bgColor} onChange={(e) => handleLiveUpdate('bgColor', e.target.value)} className="w-20 h-20 cursor-pointer rounded-2xl" />
-                        <div className="flex-1 p-3 bg-gray-50 rounded-xl border border-dashed border-gray-200 text-[11px] text-gray-500">
+                        <div className={`flex-1 p-3 text-[7px] sm:text-sm rounded-xl ${theme.input} text-[11px]`}>
                           This color applies to the entire page background of your public form.
                         </div>
                       </div>
                     </div>
                     <div className="space-y-3">
-                      <label className="text-sm uppercase text-gray-400">Form Input Background</label>
-                      <input type="color" value={formTheme.inputBgColor || "#ffffff"} onChange={(e) => handleLiveUpdate('inputBgColor', e.target.value)} className="w-full mt-2 h-10 cursor-pointer rounded-lg" />
+                      <label className={` text-[12px] sm:text-sm uppercase ${theme.text}`}>Form Input Background</label>
+                      <input type="color" value={formTheme.inputBgColor || "#ffffff"} onChange={(e) => handleLiveUpdate('inputBgColor', e.target.value)} className="w-full mt-2 sm:h-10 h-8 cursor-pointer rounded-lg" />
                     </div>
                   </motion.div>
                 )}
@@ -176,14 +206,14 @@ const Design = ({ editingFormId, token, formTheme, setFormTheme }) => {
                     className="space-y-4"
                   >
                     <div className="space-y-3">
-                        <label className="uppercase text-gray-400">Font Family</label>
+                        <label className={` text-[12px] sm:text-sm uppercase ${theme.text}`}>Font Family</label>
                         <div className="grid grid-cols-1 gap-2 mt-4">
                             {["Inter", "Poppins", "Roboto", "Montserrat", "Playfair Display", "Space Grotesk"].map((font) => (
                                 <button
                                     key={font}
                                     onClick={() => handleLiveUpdate('labelFont', font)}
                                     style={{ fontFamily: font }}
-                                    className={`w-full px-2 py-2 text-left rounded-xl border transition-all ${formTheme.labelFont === font ? "border-violet-600 bg-violet-50 text-violet-700 shadow-sm" : "border-gray-100 hover:border-gray-300"}`}
+                                    className={`w-full  text-[12px] sm:text-sm px-4 sm:py-2 py-0.5 text-left rounded-xl ${theme.texttwo} transition-all ${formTheme.labelFont === font ? "border-violet-600 text-violet-700 shadow-sm" : " hover:border-gray-300"}`}
                                 >
                                     {font}
                                 </button>
@@ -191,8 +221,9 @@ const Design = ({ editingFormId, token, formTheme, setFormTheme }) => {
                         </div>
                     </div>
                     <div className="space-y-3">
-                        <label className="uppercase text-gray-400">Text Color</label>
-                        <input type="color" value={formTheme.labelColor || "#374151"} onChange={(e) => handleLiveUpdate('labelColor', e.target.value)} className="w-full mt-2 h-10 cursor-pointer rounded-lg" />
+                        <label className={` text-[12px] sm:text-sm uppercase ${theme.text}`}>Text Color</label>
+                        <input type="color" value={formTheme.labelColor || "#374151"} onChange={(e) => handleLiveUpdate('labelColor', e.target.value)} 
+                        className="w-full mt-2 sm:h-10 h-8 cursor-pointer rounded-lg" />
                     </div>
                   </motion.div>
                 )}
@@ -200,11 +231,11 @@ const Design = ({ editingFormId, token, formTheme, setFormTheme }) => {
             </div>
 
             {/* --- FOOTER ACTION --- */}
-            <div className="p-5 bg-gray-50 border-t border-gray-100">
+            <div className={`p-5 ${theme.input}`}>
               <button 
                 onClick={saveThemeOnly} 
                 disabled={loading} 
-                className={`w-full py-4 rounded-2xl text-sm font-bold transition-all shadow-lg active:scale-95 ${editingFormId ? 'bg-gray-900 text-white hover:bg-black' : 'bg-gray-200 text-gray-400 cursor-not-allowed'}`}
+                className={`w-full sm:py-4 py-2 rounded-2xl text-sm font-bold transition-all shadow-lg active:scale-95 ${editingFormId ? `${theme.buttonPrimary}` : `${theme.buttonsecondary}`}`}
               >
                 {loading ? "Saving Styles..." : "Apply & Save Design"}
               </button>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import axios from 'axios';
 import { 
-    FaUser, FaPlus, FaSearch, FaFilter, FaSortAmountDown, 
+    FaUser,FaFileAlt,  FaPlus, FaSearch, FaFilter, FaSortAmountDown, 
     FaTrash, FaEdit, FaTimes, FaCheckCircle, FaTimesCircle, 
     FaUserCheck, FaUserTimes,FaArrowRight
 } from 'react-icons/fa';
@@ -13,15 +13,8 @@ import UserNavbar from '../user/UserNavbar';
 import usePagination from '../../hooks/usePagination';
 import TableSkeleton from './TableSkeleton';
 import WaveBackground from "./WaveBackground";
+import { useFormContext } from "../dashboard/FormContext";
 
-import {
-  PieChart,
-  Pie,
-  Cell,
-  ResponsiveContainer,
-  Tooltip,
-  Legend
-} from "recharts";
 
 const UserDetails= () => {
     const [userData, setUserData] = useState([]);
@@ -34,14 +27,11 @@ const UserDetails= () => {
     const [pendingAction, setPendingAction] = useState(null);
     const [showConfirmModal, setShowConfirmModal] = useState(false);
     const [loading, setLoading] = useState(false);
-   
+    const { isDarkMode } = useFormContext();
     const token = localStorage.getItem("token");
-    
     const navigate = useNavigate();
     const menuRef = useRef(null);
-
     const API_BASE_URL = 'https://formbuilder-saas-backend.onrender.com/api/admin/users';
-
     useEffect(() => {
         getAllUsers();
     }, []);
@@ -63,11 +53,12 @@ const UserDetails= () => {
     const handleEditChange = (e) => {
         const { name, value } = e.target;
         setEditingUser({ ...editingUser, [name]: value });
+         
     };
 
     const handleAddUser = async () => {
         try {
-            const res = await axios.post(API_BASE_URL, editingUser, {
+            const res = await axios.post(API_BASE_URL, { ...editingUser, role: "USER" }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setUserData([...userData, res.data.user]);
@@ -76,6 +67,7 @@ const UserDetails= () => {
         } catch (err) {
             toast.error(err.response?.data?.message || "Failed to add user");
         }
+      
     };
 
     const handleUpdate = async () => {
@@ -137,216 +129,107 @@ const UserDetails= () => {
                 return 0;
             });
     }, [userData, searchedUser, filterRole, sortBy]);
-
     const { currentData, currentPage, totalPages, nextPage, prevPage } = usePagination(processedUsers, 10);
-
     const activeUsersCount = userData.filter((user) => user.status === "Active").length;
     const inactiveUsersCount = userData.filter((user) => user.status !== "Active").length;  
     const userChartData = [
   { name: "Active Users", value: activeUsersCount },
   { name: "Inactive Users", value: inactiveUsersCount }
 ];
-
-
 const COLORS = ["#7c3aed", "#c4b5fd"];
-
-    // Helper function to get user avatar initials
+ // Helper function to get user avatar initials
     const getInitials = (name) => {
         return name
             .split(' ')
             .map(word => word[0])
             .join('')
             .toUpperCase()
-            .slice(0, 2);
-    };
-
-    // Helper function to get avatar color based on name
+            .slice(0, 2); };
+ // Helper function to get avatar color based on name
   const getAvatarColor = (role) => {
     if (role === "ADMIN") return "bg-violet-600";
     return "bg-blue-600"; // USER
 };
-
- const ChartSkeleton = () => (
+const ChartSkeleton = () => (
   <div className="h-[300px] flex items-center justify-center">
     <div className="w-40 h-40 rounded-full border-4 border-slate-200 border-t-violet-500 animate-spin"></div>
   </div>
 );
 
+const SparkleIcon = ({ className }) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
+    <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z" />
+  </svg>
+);
+
+  // Theme Logic from AllReports
+  const theme = {
+    pageBg: isDarkMode 
+      ? "bg-[#05070f] text-white selection:bg-purple-500/30" 
+      : "bg-gradient-to-br from-[#F3E8FF] via-[#ffffff] to-[#D8B4FE] text-[#4c1d95] selection:bg-purple-200",
+    
+    card: isDarkMode
+      ? "bg-[#12121a]/80 backdrop-blur-xl border border-purple-500/20 shadow-[0_0_20px_rgba(139,92,246,0.05)]"
+      : "bg-white/80 backdrop-blur-xl border border-white/60 shadow-[0_8px_32px_0_rgba(31,38,135,0.15)]",
+
+    input: isDarkMode
+      ? "bg-[#05070f] border-purple-500/20 text-white placeholder-gray-600 focus:border-[#8b5cf6] focus:ring-[#8b5cf6]"
+      : "bg-white/50 border-white/60 text-[#4c1d95] placeholder-[#4c1d95]/50 focus:border-[#8b5cf6] focus:ring-[#8b5cf6] focus:bg-white/80",
+
+    buttonPrimary: isDarkMode
+      ? "bg-[#8b5cf6] hover:bg-[#7c3aed] text-white shadow-[0_0_20px_rgba(139,92,246,0.4)]"
+      : "bg-gradient-to-r from-[#8b5cf6] to-[#6d28d9] text-white hover:shadow-lg hover:shadow-purple-500/30",
+
+    textSub: isDarkMode ? "text-gray-400" : "text-[#4c1d95]/70",
+    tableHeader: isDarkMode ? "bg-[#1e1b4b]/60 text-purple-300" : "bg-purple-200/50 text-[#4c1d95]",
+    text:isDarkMode ? "text-white" : "text-violet-800",
+  };
+
     return (
         <>
             <UserNavbar />
-            <div className='relative font-sans bg-linear-to-br from-slate-50 via-violet-50/20 to-purple-50/10 min-h-screen w-full overflow-hidden'>
-               
-{/* 
-                <div className="absolute top-0 left-0 w-full h-320px overflow-hidden z-0">
-    <svg
-        viewBox="0 0 1440 320"
-        className="w-full h-full"
-        preserveAspectRatio="none"
-    >
-        <path
-            fill="#7c3aed"
-            fillOpacity="0.12"
-            d="M0,224L60,213.3C120,203,240,181,360,176C480,171,600,181,720,186.7C840,192,960,192,1080,176C1200,160,1320,128,1380,112L1440,96L1440,0L1380,0L1320,0L1200,0L1080,0L960,0L840,0L720,0L600,0L480,0L360,0L240,0L120,0L60,0L0,0Z"
-        />
-    </svg>
-</div>  */} 
-
- 
-  <WaveBackground position="top" />
-   <WaveBackground position="bottom" />
-                <div className="relative z-10 p-4 md:p-8 font-sans text-slate-900">
-                    {/* Header Section with Image */}
+            <div className={`relative ${theme.pageBg} font-sans  min-h-screen w-full overflow-hidden ${isDarkMode ? 'bg-[#8b5cf6]/50 text-white shadow-purple-500/40' : 'bg-white text-[#6C63FF] shadow-indigo-200'}`}> 
+   <div className="absolute inset-0 z-0 pointer-events-none">
+                    <WaveBackground position="top" height="h-100" color={isDarkMode ? "#1e1b4b" : "#a78bfa"} />
+                    <WaveBackground position="bottom" height="h-100" color={isDarkMode ? "#1e1b4b" : "#a78bfa"} />
+                    
                     <motion.div 
-                        className="max-w-7xl mx-auto mb-8"
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6, delay: 0.2 }}
+                        animate={{ y: [-10, 10, -10], opacity: [0.5, 1, 0.5] }} 
+                        transition={{ duration: 4, repeat: Infinity }}
+                        className="absolute top-1/4 left-10 text-white/40 text-4xl"
                     >
-                        <div className="bg-linear-to-br from-violet-600 via-purple-600 to-indigo-700 rounded-3xl shadow-2xl overflow-hidden">
-                            <div className="flex flex-col md:flex-row items-center justify-between p-8 gap-6">
-                                <div className="flex-1 text-white">
-                                    <h1 className=" text-xl md:text-4xl font-bold mb-2">User Management</h1>
-                                    <p className="text-violet-100 text-sm md:text-lg">  View and manage user accounts, roles, and access permissions while maintaining secure and organized control over your platform.</p>
-                                </div>
-                                
-                            </div>
-                        </div>
-
-                      
-                    </motion.div> 
-
+                        <SparkleIcon className="w-8 h-8" />
+                    </motion.div>
+                </div>
+                <div className="relative z-10 p-4 md:p-8 font-sans text-slate-900">
+                  
             
-{/* User Overview Chart  */}
-<motion.div
-  initial={{ opacity: 0, y: 30 }}
-  animate={{ opacity: 1, y: 0 }}
-  transition={{ duration: 0.6 }}
-  className="max-w-7xl mx-auto mb-10 bg-white rounded-3xl border border-black/10 shadow-xl overflow-hidden"
+              {/* New Modern Header Section */}
+<motion.div 
+    initial={{ opacity: 0, y: -20 }}
+    animate={{ opacity: 1, y: 0 }}
+    className={`p-8 rounded-3xl mb-8 shadow-2xl mt-5 relative overflow-hidden max-w-7xl mx-auto ${isDarkMode ? 'bg-[#8b5cf6]/50 text-white shadow-purple-500/40' : 'bg-white shadow-indigo-200'}`}
 >
-  
-
-  {/* Content */}
-  <div className="p-6"> 
- {loading ? (
-    <ChartSkeleton />
-  ) : userData.length === 0 ? (
-    <p className="text-center text-slate-400 font-medium py-20">
-      No users available
-    </p>
-  ) : (
-
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-      
-      {/* Pie Chart Section */}
-      <div className="flex justify-center items-center">
-        <div className="relative w-full max-w-sm">
-           <ResponsiveContainer width="100%" height={300}>
-            <PieChart>
-              <Pie
-               
-                 data={userChartData}
-  innerRadius={90}
-  outerRadius={130}
-  paddingAngle={3}
-  cornerRadius={10}
-  dataKey="value"
+    <div className="relative z-10">
+       
+        <h1 className={`text-3xl font-bold mb-2  ${isDarkMode ? 'text-white' : 'text-[#4c1d95]'}`}>
+            User Management
+        </h1>
+        <p className={`font-semibold/70 text-sm ${theme.textSub}`}>
+            View and manage user accounts, roles, and access permissions while maintaining secure and organized control over your platform.
+        </p>
+    </div>
     
-              >
-                {userChartData.map((entry, index) => (
-                  <Cell key={index} fill={COLORS[index]} />
-                ))}
-              </Pie>
-              <Tooltip 
-                 contentStyle={{
-                  backgroundColor: '#fffff',
-              border: '2px solid #e2e8f0',
-                  borderRadius: '12px',
-                  padding: '12px',
-                  boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
-                 }}
-              />
-
-
-            </PieChart>
-          </ResponsiveContainer> 
-     
-
-
-          {/* Center Total Display */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">
-            <p className="text-4xl font-extrabold text-slate-800">{userData.length}</p>
-            <p className="text-sm font-semibold text-slate-500 uppercase tracking-wider">Total Users</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Stats Cards Section */}
-      <div className="space-y-4">
-        
-        {/* Active Users Card */}
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.2 }}
-          className="bg-linear-to-br from-fuchsia-50 to-fuchsia-100 border-2 border-fuchsia-200 rounded-2xl p-6 shadow-md hover:shadow-lg transition-all group"
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-fuchsia-500 rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
-                <FaUserCheck size={24} className="text-white" />
-              </div>
-              <div>
-                <p className="text-sm font-bold text-fuchsia-700 uppercase tracking-wider mb-1">
-                  Active Users
-                </p>
-                <p className="text-4xl font-extrabold text-fuchsia-600">
-                  {activeUsersCount}
-                </p>
-              </div>
-            </div>
-           
-          </div>
-        </motion.div>
-
-        {/* Inactive Users Card */}
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: 0.3 }}
-          className="bg-linear-to-br from-sky-50 to-sky-100 border-2 border-sky-200 rounded-2xl p-6 shadow-md hover:shadow-lg transition-all group"
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 bg-sky-500 rounded-xl flex items-center justify-center shadow-md group-hover:scale-110 transition-transform">
-                <FaUserTimes size={24} className="text-white" />
-              </div>
-              <div>
-                <p className="text-sm font-bold text-sky-700 uppercase tracking-wider mb-1">
-                  Inactive Users
-                </p>
-                <p className="text-4xl font-extrabold text-sky-500">
-                  {inactiveUsersCount}
-                </p>
-              </div>
-            </div>
-         
-          </div>
-        </motion.div>
-
-
-
-      </div>
-    </div> 
-  )}
-  </div>
+    {/* Optional: Add a subtle glow effect for dark mode */}
+    <div className="absolute -top-24 -right-24 w-48 h-48 bg-purple-500/10 blur-[100px] rounded-full"></div>
 </motion.div>
 
             {/* Filters and Table */}
-                    <div className='max-w-7xl mx-auto bg-white rounded-2xl border border-slate-200 shadow-md overflow-hidden'>   
+                    {/* <div className={max-w-7xl mx-auto ${theme.pageBg} rounded-2xl  shadow-md overflow-hidden}>    */}
+                     <div className={`rounded-xl ${isDarkMode ? 'border-white/10 bg-white/5' : 'border-slate-100 bg-violet-300/50'}`}>
 
-                        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 px-6 py-4 border-b border-slate-100 bg-slate-50/60">
-    <h2 className="text-lg font-bold text-slate-800">
+                        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 px-6 py-6 ">
+    <h2 className={`font-bold text-xl ${theme.textSub}`}>
       Users
     </h2>
 
@@ -354,11 +237,14 @@ const COLORS = ["#7c3aed", "#c4b5fd"];
       <motion.button
         onClick={() => {
           setIsAddMode(true);
-          setEditingUser({ name: "", email: "", password: "", role: "" });
+          setEditingUser({ name: "", email: "", password: "", role: "USER" });
         }}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="flex items-center gap-2 bg-violet-600 hover:bg-violet-700 text-white px-4 py-2.5 rounded-xl shadow-md"
+       className={`px-4 py-2 rounded-xl font-semibold transition-all shadow-md flex items-center gap-1
+                ${theme.buttonPrimary} 
+                disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed`}
+        
       >
         <FaPlus size={14} />
         Add New User
@@ -368,114 +254,118 @@ const COLORS = ["#7c3aed", "#c4b5fd"];
         onClick={() => navigate("/admin/forms")}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-        className="flex items-center gap-2 bg-violet-600 hover:bg-violet-700 border-2 text-white px-4 py-2.5 rounded-xl shadow-md"
-      >
+       className={`px-4 py-2 rounded-xl font-semibold transition-all shadow-md flex items-center gap-1
+                ${theme.buttonPrimary} 
+                disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed`}
+        >
         <FaArrowRight size={16} />
         Go To Forms
       </motion.button>
     </div>
   </div>
-
-
-
-
-
-                        <div className="p-6 border-b border-slate-100 flex flex-col lg:flex-row gap-4">
+<div className="px-4 py-2  border-slate-100 flex flg:flex-col gap-1 items-center">
                             <div className="relative flex-1">
                                 <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
                                 <input
-                                    className="w-full pl-11 pr-4 py-3 font-semibold bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-violet-500 transition-all"
-                                    type="text"
+                                    className={`w-full px-10 py-2 font-semibold ${theme.input} border border-white/10  rounded-xl outline-none transition-all`}
+                                    type="text" outline-none
                                     placeholder="Search name or email..."
                                     value={searchedUser}
                                     onChange={(e) => setSearchedUser(e.target.value)}
                                 />
                             </div>
-                            <div className="flex gap-2">
-                                <select 
-                                    value={filterRole} 
-                                    onChange={(e) => setFilterRole(e.target.value)} 
-                                    className="px-4 py-3 font-semibold bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-violet-500 transition-all"
-                                >
-                                    <option value="all">All Roles</option>
-                                    <option value="ADMIN">Admin</option>
-                                    <option value="USER">User</option>
-                                </select>
-                                <select 
-                                    value={sortBy} 
-                                    onChange={(e) => setSortBy(e.target.value)} 
-                                    className="px-4 py-3 font-semibold bg-slate-50 border border-slate-200 rounded-xl outline-none focus:ring-2 focus:ring-violet-500 transition-all"
-                                >
-                                    <option value="">Sort By</option>
-                                    <option value="name-asc">A-Z</option>
-                                    <option value="name-desc">Z-A</option>
-                                    <option value="date-new">Newest</option>
-                                </select>
-                            </div>
+                   
+
+<div className="flex items-center gap-2">
+ 
+  {/* Sort By Styled Select Container */}
+  <div >
+    <select 
+      value={sortBy} 
+      onChange={(e) => setSortBy(e.target.value)} 
+       className={`px-2 py-2 cursor-pointer font-bold rounded-xl border border-black/30 outline-none transition-all ${
+        isDarkMode 
+          ? "bg-[#12121a] border-purple-500/20 text-white hover:border-purple-500/50 " 
+          : "bg-white  border-purple-100 text-[#4c1d95] hover:border-purple-300  "
+      }`}
+    >
+      <option value="">Sort By</option>
+      <option value="name-asc">A-Z (Name)</option>
+      <option value="name-desc">Z-A (Name)</option>
+      <option value="date-new">Newest First</option>
+    </select>
+    
+   
+    
+  </div>
+</div>
                         </div>
 
-                        <div className='overflow-x-auto'>
-                            <table className='w-full text-left'>
-                                <thead className="bg-linear-to-r from-slate-50 to-slate-100 border-b border-slate-200">
+                        <div className='overflow-x-auto ' >
+                            <table className={`w-full text-left ${theme.pageBg}`}>
+                                <thead className={`${theme.tableHeader}`}>
                                     <tr>
-                                        <th className="px-6 py-4 text-xs font-semibold text-slate-600 uppercase tracking-wider">User Info</th>
-                                        <th className="px-6 py-4 text-xs font-semibold text-slate-600 uppercase tracking-wider">Role</th>
-                                        <th className="px-6 py-4 text-xs font-semibold text-slate-600 uppercase tracking-wider">Joined Date</th>
-                                        <th className="px-6 py-4 text-center text-xs font-semibold text-slate-600 uppercase tracking-wider">Activity</th>
-                                        <th className="px-6 py-4 text-xs font-semibold text-slate-600 uppercase tracking-wider">Status</th>
-                                        <th className="px-6 py-4 text-center text-xs font-semibold text-slate-600 uppercase tracking-wider">Actions</th>
+                                        <th className="px-6 py-4 text-xs font-semibold  uppercase ">User Info</th>
+                                        <th className="px-6 py-4 text-xs font-semibold uppercase ">Role</th>
+                                        <th className="px-6 py-4 text-xs font-semibold uppercase ">Joined Date</th>
+                                        <th className="px-6 py-4 text-center text-xs font-semibold  uppercase">Activity</th>
+                                        <th className="px-6 py-4 text-xs font-semibold  uppercase ">Status</th>
+                                        <th className="px-6 py-4 text-center text-xs font-semibold  uppercase ">Actions</th>
                                     </tr>
                                 </thead>
-                                <tbody className="divide-y divide-slate-100">
+                                <tbody >
                                     {loading ? (
-                                         <TableSkeleton rows={5} columns={6} />
+                                          <TableSkeleton rows={5} columns={6} isDarkMode={isDarkMode} />
                                     ) : currentData.length === 0 ? (
                                         <tr>
-                                            <td colSpan={6} className="py-16">
-                                                <div className="flex flex-col items-center justify-center">
-                                                   
-                                                    <p className="text-xl font-semibold text-slate-700 mb-2">No users found</p>
-                                                   
-                                                </div>
-                                            </td>
+                                             <td colSpan="6" className="px-6 py-20 text-center">
+    <div className="flex flex-col items-center justify-center w-full">
+      <FaFileAlt className="text-slate-400 mx-auto mb-4" size={36} />
+      <p className="font-semibold text-lg">No Details found</p>
+    </div>
+  </td>
                                         </tr>
                                     ) : (
                                         currentData.map((user,index) => (
                                             <motion.tr key={user.userId} 
                                                 initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.3, delay: index * 0.05 }}//
+                        transition={{ duration: 0.3, delay: index * 0.05 }}
                                             className="hover:bg-indigo-100/30 transition-colors group">
                                                 <td className="px-6 py-4">
                                                     <div className="flex items-center gap-3">
                                                         {/* Avatar with initials */}
-                                                        <div className={`w-10 h-10 ${getAvatarColor(user.role)} rounded-full flex items-center justify-center text-white font-bold text-sm shadow-md`}>
-                                                            {getInitials(user.name)}
-                                                        </div>
-                                                        <div>
-                                                            <div className="font-semibold text-slate-800">{user.name}</div>
-                                                            <div className="text-sm text-slate-500">{user.email}</div>
+                                                       <div className={`w-10 h-10 ${getAvatarColor(user.role)} rounded-full 
+    ${isDarkMode ? 'bg-violet-500' : `${theme.buttonPrimary}`} 
+    flex items-center justify-center text-white font-semibold text-sm shadow-md`}>
+    {getInitials(user.name)}
+</div>
+                                                        <div >
+                                                            <div className="font-semibold">{user.name}</div>
+                                                            <div className={`text-sm ${theme.textSub}`}>{user.email}</div>
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    <span className={`px-3 py-1.5 rounded-full text-xs font-semibold ${user.role === 'ADMIN' ? 'bg-purple-100 text-purple-700 border border-purple-200' : 'bg-blue-100 text-blue-700 border border-blue-200'}`}>
+                                                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${user.role === 'ADMIN' ? 'bg-purple-100 text-purple-700  border-purple-200' : 'bg-purple-100 text-violet-800 '}`}>
                                                         {user.role}
                                                     </span>
                                                 </td>
-                                                <td className="px-6 py-4 text-sm text-slate-600 font-medium">
+                                                <td className="px-6 py-4 text-sm font-medium">
                                                     <div>{new Date(user.createdAt).toLocaleDateString()}</div>
                                                 </td>
                                                 <td className="px-6 py-4 text-center">
                                                     <button 
                                                         onClick={() => navigate(`/admin/users/${user.userId}/activity`)}
-                                                        className="px-4 py-2 text-sm rounded-lg bg-violet-600 text-white hover:bg-violet-700 transition-all shadow-sm hover:shadow-md"
-                                                    >
+                                                      className={`px-2 py-1 rounded-xl font-semibold transition-all text-sm shadow-md flex items-center
+                                                      ${theme.buttonPrimary} 
+                                                    disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed`}
+                                                      >
                                                         View
                                                     </button>
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold ${user.status === "Active" ? "bg-green-100 text-green-700 border border-green-200" : "bg-gray-100 text-gray-600 border border-gray-200"}`}>
+                                                    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold ${user.status === "Active" ? " text-gray-600 border border-gray-200" : " border-gray-200"}`}>
                                                         {user.status === "Active" ? <FaCheckCircle size={10} /> : <FaTimesCircle size={10} />}
                                                         {user.status || "Inactive"}
                                                     </span>
@@ -483,17 +373,17 @@ const COLORS = ["#7c3aed", "#c4b5fd"];
                                                 <td className="px-6 py-4 text-center relative">
                                                     <button 
                                                         onClick={() => setOpenMenuIndex(openMenuIndex === user.userId ? null : user.userId)}
-                                                        className="w-8 h-8 flex items-center justify-center hover:bg-slate-200 rounded-full text-slate-400 hover:text-slate-600 transition-all"
+                                                        className="w-8 h-8 flex items-center justify-center hover:bg-slate-200 rounded-full  hover:text-slate-600 transition-all"
                                                     >
                                                         •••
                                                     </button>
                                                     {openMenuIndex === user.userId && (
-                                                        <div className="absolute right-12 top-0 bg-white border border-slate-200 rounded-xl shadow-2xl z-50 min-w-[140px] py-2">
-                                                            <div className="flex justify-between items-center px-3 pb-2 border-b border-slate-100 mb-1">
-                                                                <span className="text-[10px] font-bold text-slate-400 uppercase">Options</span>
+                                                        <div className={`absolute right-12 top-0 ${theme.card}  rounded-xl shadow-2xl z-50 min-w-[140px] py-2`}>
+                                                            <div className="flex justify-between items-center px-3 pb-2  mb-1">
+                                                                <span className="text-[10px] font-bold  uppercase">Options</span>
                                                                 <button onClick={() => setOpenMenuIndex(null)} className="text-slate-300 hover:text-red-500 transition-colors"><FaTimes size={10}/></button>
                                                             </div>
-                                                            <button onClick={() => { setEditingUser(user); setIsAddMode(false); setOpenMenuIndex(null); }} className="w-full flex items-center gap-3 px-4 py-2 text-sm text-slate-600 hover:bg-violet-50 hover:text-violet-600 transition-colors">
+                                                            <button onClick={() => { setEditingUser(user); setIsAddMode(false); setOpenMenuIndex(null); }} className="w-full flex items-center gap-3 px-4 py-2 text-sm  hover:bg-violet-50 hover:text-violet-600 transition-colors">
                                                                 <FaEdit size={12}/> Edit
                                                             </button>
                                                             <button onClick={() => { setPendingAction({ type: "delete", payload: user }); setShowConfirmModal(true); setOpenMenuIndex(null); }} className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">
@@ -510,21 +400,23 @@ const COLORS = ["#7c3aed", "#c4b5fd"];
                         </div>
 
                         {/* Pagination */}
-                        <div className="flex justify-between items-center px-6 py-4 border-t border-slate-100 bg-slate-50/50">
+                        <div className="flex justify-between items-center px-6 py-4 ">
                             <span className="text-sm text-slate-600 font-medium">Page {currentPage} of {totalPages}</span>
                             <div className="flex gap-2">
                                 <button 
                                     onClick={prevPage} 
                                     disabled={currentPage === 1} 
-                                    className="px-5 py-2 border-2 border-slate-300 rounded-xl disabled:opacity-30 text-slate-700 font-semibold hover:bg-slate-100 transition-all disabled:hover:bg-transparent"
+                                    className={`px-5 py-2 rounded-xl disabled:opacity-30 ${theme.text} font-semibold hover:bg-slate-100 transition-all disabled:hover:bg-transparent`}
                                 >
                                     Prev
                                 </button>
                                 <button 
                                     onClick={nextPage} 
                                     disabled={currentPage === totalPages} 
-                                    className="px-5 py-2 bg-violet-600 text-white font-semibold rounded-xl disabled:opacity-30 hover:bg-violet-700 transition-all disabled:hover:bg-violet-600"
-                                >
+                                   className={`px-4 py-2 rounded-xl font-semibold transition-all shadow-md flex items-center gap-2
+                ${theme.buttonPrimary} 
+                disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed`}
+        >
                                     Next
                                 </button>
                             </div>
@@ -549,11 +441,11 @@ const COLORS = ["#7c3aed", "#c4b5fd"];
                             animate={{ x: 0 }} 
                             exit={{ x: "100%" }} 
                             transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                            className="fixed top-0 right-0 h-full w-full max-w-md bg-white shadow-2xl z-50   overflow-y-auto "
+                            className={`fixed top-0 right-0 h-full w-full max-w-md  shadow-2xl z-50 ${theme.card}   overflow-y-auto `}
                         >
                             <div className="p-6">
                                 <div className="flex justify-between items-center mb-8">
-                                    <h2 className="text-2xl font-bold text-slate-800">{isAddMode ? "Create New User" : "Edit User Profile"}</h2>
+                                    <h2 className={`text-2xl font-bold ${theme.text} `}>{isAddMode ? "Create New User" : "Edit User Profile"}</h2>
                                     <button 
                                         onClick={handleDismiss} 
                                         className="p-2 hover:bg-slate-100 rounded-full transition-colors"
@@ -563,37 +455,38 @@ const COLORS = ["#7c3aed", "#c4b5fd"];
                                 </div>
 
                                 {/* User Icon*/}
-                                <div className="mb-6 rounded-2xl overflow-hidden h-32 bg-linear-to-r from-violet-500 to-purple-600 flex items-center justify-center">
+                                <div className={`mb-6 rounded-2xl overflow-hidden h-32 ${theme.buttonPrimary} flex items-center justify-center`}>
                                     <FaUser size={48} className="text-white/30" />
                                 </div>
 
                                 <form className="space-y-5" onSubmit={(e) => { e.preventDefault(); isAddMode ? handleAddUser() : handleUpdate(); }}>
                                     <div>
-                                        <label className="block text-sm font-semibold text-slate-700 mb-2">Full Name</label>
+                                        <label className={`block text-sm font-semibold ${theme.text} mb-2`}>Full Name</label>
                                         <input 
                                             type="text" 
                                             name="name" 
                                             value={editingUser.name} 
                                             onChange={handleEditChange} 
                                             required 
-                                            className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all" 
+                                            // className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all" 
+                                            className={`${theme.input} w-full px-4 py-3 rounded-xl text-semibold outline-none` }
                                             placeholder="Enter full name"
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-semibold text-slate-700 mb-2">Email Address</label>
+                                        <label className={`${theme.text} block text-sm font-semibold text-slate-700 mb-2`}>Email Address</label>
                                         <input 
                                             type="email" 
                                             name="email" 
                                             value={editingUser.email} 
                                             onChange={handleEditChange} 
                                             required 
-                                            className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all" 
+                                           className={`${theme.input} w-full px-4 py-3 rounded-xl text-semibold outline-none` }
                                             placeholder="user@example.com"
                                         />
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-semibold text-slate-700 mb-2">
+                                        <label className={`block text-sm font-semibold  ${theme.text} mb-2`}>
                                             {isAddMode ? "Password" : "New Password (Optional)"}
                                         </label>
                                         <input 
@@ -602,35 +495,23 @@ const COLORS = ["#7c3aed", "#c4b5fd"];
                                             value={editingUser.password || ""} 
                                             onChange={handleEditChange} 
                                             required={isAddMode} 
-                                            className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all" 
+                                            className={`${theme.input} w-full px-4 py-3 rounded-xl text-semibold outline-none` }
                                             placeholder={isAddMode ? "Enter password" : "Leave blank to keep current"}
                                         />
                                     </div>
-                                    <div>
-                                        <label className="block text-sm font-semibold text-slate-700 mb-2">Account Role</label>
-                                        <select 
-                                            name="role" 
-                                            value={editingUser.role} 
-                                            onChange={handleEditChange} 
-                                            required 
-                                            className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all"
-                                        >
-                                            <option value="">Select Role</option>
-                                            <option value="ADMIN">Admin</option>
-                                            <option value="USER">User</option>
-                                        </select>
-                                    </div>
+                                    
                                     <div className="pt-6 flex gap-3">
                                         <button 
                                             type="submit" 
-                                            className="flex-1 bg-linear-to-r from-violet-600 to-purple-600 text-white py-3 rounded-xl font-bold hover:from-violet-700 hover:to-purple-700 transition-all shadow-lg hover:shadow-xl"
+                                            className={`flex-1 text-white py-3 rounded-xl font-bold ${theme.buttonPrimary} transition-all shadow-lg hover:shadow-xl`}
                                         >
                                             {isAddMode ? "Create User" : "Update Profile"}
                                         </button>
                                         <button 
                                             type="button" 
                                             onClick={handleDismiss} 
-                                            className="flex-1 bg-slate-100 text-slate-600 py-3 rounded-xl font-bold hover:bg-slate-200 transition-all"
+                                            // className="flex-1 bg-slate-100 text-slate-600 py-3 rounded-xl font-bold hover:bg-slate-200 transition-all"
+                                            className={`${theme.input} flex-1 rounded-xl py-3 px-4 font-bold`}
                                         >
                                             Cancel
                                         </button>
@@ -691,5 +572,3 @@ const COLORS = ["#7c3aed", "#c4b5fd"];
 };
 
 export default UserDetails;
-
-

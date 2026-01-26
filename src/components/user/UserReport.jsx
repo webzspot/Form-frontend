@@ -124,20 +124,21 @@ const SparkleIcon = ({ className }) => (
   // --- THEME ---
   const theme = {
     pageBg: isDarkMode 
-      ? "bg-[#0B0F19] text-white selection:bg-purple-500/30" 
-      : "bg-gradient-to-br from-[#d8b4fe] via-[#ffffff] to-[#c084fc] text-[#4c1d95] selection:bg-purple-200",
+      ? "bg-[#05070f] text-white" : 
+      "bg-gradient-to-br from-[#F3E8FF] via-[#ffffff] to-[#D8B4FE] text-[#4c1d95]",
     formCard: isDarkMode
       ? "bg-[#12121a]/80 backdrop-blur-xl border border-purple-500/20 shadow-[0_0_20px_rgba(139,92,246,0.05)]"
-      : "bg-white/60 backdrop-blur-xl border border-white/60 shadow-[0_8px_32px_0_rgba(31,38,135,0.15)]",
+      : "bg-white backdrop-blur-xl border border-white/60 shadow-[0_8px_32px_0_rgba(31,38,135,0.15)]",
     input: isDarkMode
       ? "bg-[#05070f] border-purple-500/20 text-white placeholder-gray-600 focus:border-[#8b5cf6] focus:ring-[#8b5cf6]"
-      : "bg-white/50 border-white/60 text-[#4c1d95] placeholder-[#4c1d95]/50 focus:border-[#8b5cf6] focus:ring-[#8b5cf6] focus:bg-white/80",
+      : "bg-white/90 border-white/60 text-[#4c1d95] placeholder-[#4c1d95]/50 focus:border-[#8b5cf6] focus:ring-[#8b5cf6] focus:bg-white/80",
     leftPanel: isDarkMode
       ? "bg-gradient-to-b from-[#1e1b4b] to-[#0f0c29] border-r border-purple-500/10" 
       : "bg-[#8b5cf6] text-white", 
     button: isDarkMode
       ? "bg-[#8b5cf6] hover:bg-[#7c3aed] text-white shadow-[0_0_20px_rgba(139,92,246,0.4)]"
       : "bg-gradient-to-r from-[#8b5cf6] to-[#6d28d9] text-white hover:shadow-lg hover:shadow-purple-500/30",
+    textSub: isDarkMode ? "text-gray-400" : "text-[#4c1d95]/40",
   };
 
   return (
@@ -163,15 +164,33 @@ const SparkleIcon = ({ className }) => (
           initial={{ scale: 0.95, y: 30, opacity: 0 }}
           animate={{ scale: 1, y: 0, opacity: 1 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-          className="w-full max-w-6xl px-4 relative z-10"
+          className="w-full max-w-6xl  px-2 sm:px-4 relative z-10"
         >
-          <div className={`grid grid-cols-1 lg:grid-cols-12 gap-0 overflow-hidden rounded ${theme.formCard}`}>
+           <div className={` w-full px-6 py-9 ${theme.formCard} mb-4 rounded-3xl`}>
+                          <motion.h1
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                           className={`sm:text-3xl text-xl font-bold  ${theme.text}`}
+                          >
+                            Your Reports
+                          </motion.h1>
+                          <motion.p
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.2 }}
+                            className={`${theme.textSub} text-[12px] sm:text-lg mt-1`}
+           
+                          >
+                            Create Manage Share Store your Forms
+                          </motion.p>
+                        </div>
+          <div className={`grid grid-cols-1  lg:grid-cols-12 gap-0 overflow-hidden rounded-xl ${theme.formCard}`}>
             
             {/* ================= LEFT PANEL (ANALYTICS) ================= */}
             <div className={`hidden lg:flex lg:col-span-4 flex-col justify-between p-8 relative overflow-hidden text-white ${theme.leftPanel}`}>
               
               {/* Background Glows */}
-              <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-[60px] pointer-events-none" />
+              <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full blur-[60px] pointer-events-none" />
               
               <div className="relative z-10 h-full flex flex-col">
                 <div className="flex items-center gap-3 mb-8">
@@ -179,8 +198,8 @@ const SparkleIcon = ({ className }) => (
                         {isDarkMode ? <FiMoon className="w-5 h-5"/> : <FiSun className="w-5 h-5"/>}
                     </div>
                     <div>
-                        <h2 className="text-2xl font-bold tracking-tight">Report</h2>
-                        <p className="text-xs opacity-70 uppercase tracking-widest">Live Impact Data</p>
+                        <h2 className="text-2xl font-bold ">Report</h2>
+                        <p className="text-xs opacity-70">Live Impact Data</p>
                     </div>
                 </div>
 
@@ -231,21 +250,21 @@ const SparkleIcon = ({ className }) => (
                     </div>
                 </div>
 
-                <div className="relative z-10 text-center opacity-60 text-xs tracking-[0.2em] mt-8">
+                <div className="relative z-10 text-center opacity-60 text-sm mt-8">
                  Submit Your Bug Here 
                 </div>
               </div>
             </div>
 
             {/* ================= RIGHT PANEL (FORM) ================= */}
-            <div className="lg:col-span-8 p-8 md:p-12 relative">
-              <div className="absolute top-0 left-0 w-full h-1 " />
+            <div className="lg:col-span-8 p-4 sm:p-8 md:p-12 relative ">
+              <div className="absolute top-0 left-0  w-full h-1 " />
 
               <div className="mb-8">
-                <h2 className={`text-3xl font-extrabold mb-2 flex items-center gap-2 ${isDarkMode ? 'text-white' : 'text-[#4c1d95]'}`}>
+                <h2 className={`sm:text-3xl text-xl font-bold sm:mb-2 flex items-center gap-2 ${isDarkMode ? 'text-white' : 'text-[#4c1d95]'}`}>
                   Submit Report 
                 </h2>
-                <p className={`font-medium ${isDarkMode ? 'text-gray-400' : 'text-[#4c1d95]/70'}`}>
+                <p className={`font-semibold text-[10px] sm:text-sm ${isDarkMode ? 'text-gray-400' : 'text-[#4c1d95]/60'}`}>
                   Select priority to visualize impact.
                 </p>
               </div>
@@ -255,14 +274,14 @@ const SparkleIcon = ({ className }) => (
                   
                   {/* Issue Type */}
                   <div className="space-y-2">
-                    <label className={`text-xs font-bold uppercase tracking-wide ${isDarkMode ? 'text-gray-400' : 'text-[#4c1d95]/80'}`}>
+                    <label className={`sm:text-sm text-[10px] block font-bold  ${isDarkMode ? 'text-gray-400' : 'text-[#4c1d95]/80'}`}>
                       Issue Type <span className="text-[#8b5cf6]">*</span>
                     </label>
                     <div className="relative group">
                        <select
                          value={issuetype}
                          onChange={(e) => setIssuetype(e.target.value)}
-                         className={`w-full rounded-xl px-4 py-3.5 outline-none transition-all duration-300 appearance-none cursor-pointer ${theme.input} hover:shadow-[0_0_15px_rgba(139,92,246,0.15)]`}
+                         className={`w-full rounded-xl px-2 py-2 sm:px-4 sm:py-3.5 text-[10px] sm:text-sm outline-none transition-all duration-300 appearance-none cursor-pointer ${theme.input} hover:shadow-[0_0_15px_rgba(139,92,246,0.15)]`}
                        >
                          <option value="" className="text-gray-500">Select Category...</option>
                          <option value="Bug">Bug Report</option>
@@ -275,14 +294,14 @@ const SparkleIcon = ({ className }) => (
 
                   {/* Priority Selector (TRIGGERS GRAPH) */}
                   <div className="space-y-2">
-                    <label className={`text-xs font-bold uppercase tracking-wide ${isDarkMode ? 'text-gray-400' : 'text-[#4c1d95]/80'}`}>
+                    <label className={`sm:text-sm text-[10px] block font-bold ${isDarkMode ? 'text-gray-400' : 'text-[#4c1d95]/80'}`}>
                       Priority Level
                     </label>
                     <div className="relative group">
                       <select
                         value={priority}
                         onChange={(e) => setPriority(e.target.value)}
-                        className={`w-full rounded-xl px-4 py-3.5 outline-none transition-all duration-300 appearance-none cursor-pointer ${theme.input} hover:shadow-[0_0_15px_rgba(139,92,246,0.15)]`}
+                        className={`w-full rounded-xl px-2 py-2 sm:px-4 sm:py-3.5 text-[10px] sm:text-sm  outline-none transition-all duration-300 appearance-none cursor-pointer ${theme.input} hover:shadow-[0_0_15px_rgba(139,92,246,0.15)]`}
                       >
                         <option value="">Select Priority...</option>
                         <option value="Low">Low (Stable)</option>
@@ -298,7 +317,7 @@ const SparkleIcon = ({ className }) => (
 
                 {/* Description */}
                 <div className="space-y-2">
-                  <label className={`text-xs font-bold uppercase tracking-wide ${isDarkMode ? 'text-gray-400' : 'text-[#4c1d95]/80'}`}>
+                  <label className={`sm:text-sm text-[10px] block font-bold ${isDarkMode ? 'text-gray-400' : 'text-[#4c1d95]/80'}`}>
                     Description <span className="text-[#8b5cf6]">*</span>
                   </label>
                   <textarea
@@ -306,7 +325,7 @@ const SparkleIcon = ({ className }) => (
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Describe the phenomenon..."
-                    className={`w-full rounded-xl px-4 py-3 outline-none transition-all duration-300 resize-none ${theme.input} hover:shadow-[0_0_15px_rgba(139,92,246,0.15)]`}
+                    className={`w-full rounded-xl px-2 py-2 sm:px-4 sm:py-3.5 text-[10px] sm:text-sm  outline-none transition-all duration-300 resize-none ${theme.input} hover:shadow-[0_0_15px_rgba(139,92,246,0.15)]`}
                   />
                 </div>
 
@@ -320,7 +339,7 @@ const SparkleIcon = ({ className }) => (
                       className="flex items-center gap-2 text-red-500 bg-red-500/10 border border-red-500/20 p-3 rounded-xl backdrop-blur-sm"
                     >
                       <FiAlertCircle />
-                      <span className="text-sm font-bold">{message}</span>
+                      <span className="text-sm font-semibold">{message}</span>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -330,7 +349,7 @@ const SparkleIcon = ({ className }) => (
                   whileTap={{ scale: 0.97 }}
                   whileHover={{ scale: 1.02 }}
                   disabled={loading}
-                  className={`w-full py-4 rounded-xl font-bold tracking-widest uppercase text-sm transition-all flex justify-center items-center gap-2 ${theme.button}`}
+                  className={`w-full sm:py-4 py-1 rounded-xl font-bold text-sm transition-all flex justify-center items-center gap-2 ${theme.button}`}
                 >
                   {loading ? (
                     <>

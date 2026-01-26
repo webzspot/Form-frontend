@@ -108,8 +108,8 @@ const Home = () => {
     label: isDarkMode ? "text-gray-300" : "text-[#4c1d95]",
     
     previewBox: isDarkMode 
-      ? "bg-[#1e1b4b]/40 border-purple-500/10" 
-      : "bg-purple-50/50 border-purple-200/50",
+      ? "bg-black border-purple-500/10 text-white" 
+      : "bg-white border-purple-200/50 ",
     
     divider: isDarkMode ? "bg-purple-500/20" : "bg-purple-200"
   };
@@ -145,7 +145,7 @@ const Home = () => {
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ duration: 0.5 }}
-              className={`w-full max-w-5xl min-h-[550px] rounded-[2rem] border overflow-hidden relative transition-all duration-500 ${theme.card}`}
+              className={`w-full max-w-5xl min-h-[400px] rounded-4xl border overflow-hidden relative transition-all duration-500 ${theme.card}`}
             >
               
               <AnimatePresence mode="wait">
@@ -162,15 +162,15 @@ const Home = () => {
                     
                     <motion.div 
                       whileHover={{ scale: 1.05, rotate: 5 }}
-                      className={`w-24 h-24 rounded-3xl flex items-center justify-center mb-6 shadow-2xl ${isDarkMode ? 'bg-[#8b5cf6] text-white shadow-purple-500/40' : 'bg-white text-[#6C63FF] shadow-indigo-200'}`}
+                      className={`w-24 h-24 rounded-3xl flex items-center justify-center mb-6 shadow-2xl ${isDarkMode ? 'bg-[#8b5cf6] text-white shadow-purple-500/40' : 'bg-white'}`}
                     >
-                      <Layers className="w-12 h-12" />
+                      <Layers className="w-10 h-10" />
                     </motion.div>
                     
-                    <h2 className={`text-4xl font-extrabold mb-3 tracking-tight ${isDarkMode ? 'text-white' : 'text-[#4c1d95]'}`}>
+                    <h2 className={`text-2xl font-bold mb-3 ${isDarkMode ? 'text-white' : 'text-[#4c1d95]'}`}>
                       Field Builder
                     </h2>
-                    <p className={`max-w-md mb-10 text-lg leading-relaxed ${theme.textSub}`}>
+                    <p className={`max-w-4/5 mb-5 text-sm  ${theme.textSub}`}>
                       Design your data collection flow. Start by adding a new input field to your master form.
                     </p>
                     
@@ -178,9 +178,9 @@ const Home = () => {
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => setformfields(true)}
-                      className={`px-10 py-4 rounded-2xl font-bold flex items-center gap-3 text-lg transition-all ${theme.buttonPrimary}`}
+                      className={`px-4 py-3 text-sm rounded-2xl font-bold flex items-center gap-3  transition-all ${theme.buttonPrimary}`}
                     >
-                      <Plus size={24} /> <span>Create New Field</span>
+                     <span>Create New Field</span>
                     </motion.button>
                   </motion.div>
                 ) : (
@@ -190,25 +190,25 @@ const Home = () => {
                     initial={{ opacity: 0, x: 50 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -50 }}
-                    className="p-8 md:p-10 h-full flex flex-col"
+                    className=" px-4 py-6 h-full flex flex-col"
                   >
                     {/* Header */}
                     <div className="flex justify-between items-center mb-8">
                       <button 
                         onClick={() => setformfields(false)}
-                        className={`p-3 rounded-xl transition-colors flex items-center gap-2 group ${isDarkMode ? 'hover:bg-white/5 text-gray-400' : 'hover:bg-purple-100 text-[#4c1d95]/70'}`}
+                        className={`rounded-xl transition-colors flex items-center gap-2 group ${isDarkMode ? 'hover:bg-white/5 text-gray-400' : 'hover:bg-purple-100 text-[#4c1d95]/70'}`}
                       >
                         <ArrowLeftIcon size={20} className="group-hover:-translate-x-1 transition-transform" />
-                        <span className="font-semibold">Back</span>
+                        <span className="font-semibold hidden sm:block">Back</span>
                       </button>
                       
-                      <div className={`flex p-1.5 rounded-xl border ${isDarkMode ? 'bg-[#05070f] border-purple-500/20' : 'bg-white border-purple-100'}`}>
-                        <button className={`px-5 py-2 rounded-lg text-sm font-bold shadow-sm ${isDarkMode ? 'bg-[#8b5cf6] text-white' : 'bg-purple-100 text-purple-700'}`}>
+                      <div className={`flex p-1 rounded-xl border ${isDarkMode ? 'bg-[#05070f] border-purple-500/20' : 'bg-white border-purple-100'}`}>
+                        <button className={`px-3 py-1 sm:py-2 rounded-lg text-sm font-bold shadow-sm ${isDarkMode ? 'bg-[#8b5cf6] text-white' : 'bg-purple-100 text-purple-700'}`}>
                             Properties
                         </button>
                         <button 
                           onClick={() => setcontent(true)}
-                          className={`px-5 py-2 text-sm font-semibold transition-all flex items-center gap-2 ${isDarkMode ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-purple-700'}`}
+                          className={`px-3 py-1 sm:py-2 text-sm font-semibold transition-all flex items-center gap-2 ${isDarkMode ? 'text-gray-400 hover:text-white' : 'text-gray-500 hover:text-purple-700'}`}
                         >
                           <Settings2 size={14} /> Change Type
                         </button>
@@ -219,7 +219,7 @@ const Home = () => {
                       {/* Left Column: Settings */}
                       <div className="space-y-8">
                         <div className="space-y-3">
-                          <label className={`text-xs font-bold uppercase tracking-widest flex items-center gap-2 ${theme.label}`}>
+                          <label className={`text-xs  font-bold uppercase flex items-center gap-2 ${theme.label}`}>
                               Field Label
                           </label>
                           <input
@@ -227,18 +227,18 @@ const Home = () => {
                             value={labelname}
                             onChange={(e) => setlabelname(e.target.value)}
                             placeholder="e.g. Full Name"
-                            className={`w-full px-5 py-4 rounded-2xl outline-none transition-all duration-300 font-medium ${theme.input} hover:shadow-[0_0_15px_rgba(139,92,246,0.15)]`}
+                            className={`w-full px-5 py-2 sm:py-4 rounded-2xl outline-none transition-all duration-300 font-medium ${theme.input} hover:shadow-[0_0_15px_rgba(139,92,246,0.15)]`}
                           />
                         </div>
 
                         <div className="space-y-3">
-                          <label className={`text-xs font-bold uppercase tracking-widest ${theme.label}`}>Selected Type</label>
-                          <div className={`flex items-center gap-4 p-5 rounded-2xl border ${isDarkMode ? 'bg-purple-500/10 border-purple-500/30' : 'bg-purple-50 border-purple-200'}`}>
+                          <label className={`text-xs font-bold block uppercase ${theme.label}`}>Selected Type</label>
+                          <div className={`flex items-center gap-4 px-5 py-2 sm:py-4 rounded-2xl border ${isDarkMode ? 'bg-purple-500/10 border-purple-500/30' : 'bg-purple-50 border-purple-200'}`}>
                             <div className={`p-2 rounded-lg ${isDarkMode ? 'bg-purple-500/20 text-purple-300' : 'bg-white text-purple-600'}`}>
                                 <Settings2 size={20} />
                             </div>
                             <div>
-                                <p className={`font-bold text-lg ${isDarkMode ? 'text-white' : 'text-[#4c1d95]'}`}>{selectedType}</p>
+                                <p className={`font-bold  text-sm sm:text-lg ${isDarkMode ? 'text-white' : 'text-[#4c1d95]'}`}>{selectedType}</p>
                                 <p className={`text-xs ${theme.textSub}`}>Currently editing this field type</p>
                             </div>
                           </div>
@@ -246,7 +246,7 @@ const Home = () => {
 
                         {["CHECKBOX", "RADIO", "DROPDOWN"].includes(selectedType) && (
                           <div className="space-y-4 animate-in fade-in slide-in-from-top-4">
-                             <label className={`text-xs font-bold uppercase tracking-widest ${theme.label}`}>Options</label>
+                             <label className={`text-xs font-bold uppercase ${theme.label}`}>Options</label>
                              <div className="space-y-3 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
                                {options.map((opt, i) => (
                                  <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} key={i} className="flex gap-2">
@@ -254,16 +254,16 @@ const Home = () => {
                                      value={opt}
                                      onChange={(e) => handleoptionchange(i, e.target.value)}
                                      placeholder={`Option ${i + 1}`}
-                                     className={`px-4 py-3 rounded-xl outline-none border w-full ${theme.input}`}
+                                     className={`px-4 py-2 sm:py-3 rounded-xl outline-none border w-full ${theme.input}`}
                                    />
                                  </motion.div>
                                ))}
                              </div>
                              <button 
                               onClick={() => setoptions([...options, ""])}
-                              className={`text-sm font-bold flex items-center gap-2 transition-colors ${isDarkMode ? 'text-purple-400 hover:text-purple-300' : 'text-purple-600 hover:text-purple-800'}`}
+                              className={`text-sm font-bold flex items-center gap-1 transition-colors ${isDarkMode ? 'text-purple-400 hover:text-purple-300' : 'text-purple-600 hover:text-purple-800'}`}
                              >
-                               <div className="w-6 h-6 rounded-full border border-current flex items-center justify-center"><Plus size={12} /></div> Add Option
+                               <div className="w-4 h-4 mt-1 rounded-full border border-current flex items-center justify-center"><Plus size={12} /></div> Add Option
                              </button>
                           </div>
                         )}
@@ -273,7 +273,7 @@ const Home = () => {
                           onClick={handlesubmit}
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
-                          className={`w-full py-4 rounded-2xl font-bold tracking-wide shadow-lg transition-all mt-4 flex justify-center items-center gap-2 ${theme.buttonPrimary} disabled:opacity-50`}
+                          className={`w-full py-2 sm:py-4 rounded-2xl font-bold tracking-wide shadow-lg transition-all mt-4 flex justify-center items-center gap-2 ${theme.buttonPrimary} disabled:opacity-50`}
                         >
                           {isSubmitting ? (
                             <>
@@ -290,21 +290,21 @@ const Home = () => {
                       </div>
 
                       {/* Right Column: Preview */}
-                      <div className={`rounded-[2.5rem] p-8 border flex flex-col relative overflow-hidden ${isDarkMode ? 'bg-black/20 border-white/10' : 'bg-white/50 border-purple-100'}`}>
+                      <div className={`rounded-5xl p-8 hidden border sm:flex flex-col relative overflow-hidden ${isDarkMode ? 'bg-black/20 border-white/10' : 'bg-white/50 border-purple-100'}`}>
                          <div className="absolute top-0 right-0 p-6 opacity-30">
                              <Layout size={100} strokeWidth={0.5} />
                          </div>
                          
                          <div className="flex items-center gap-2 mb-8 opacity-70">
                              <Eye size={16} />
-                             <span className="text-[10px] font-bold uppercase tracking-[0.2em]">Live Preview</span>
+                             <span className="text-[12px] font-bold uppercase ">Live Preview</span>
                          </div>
 
                          <div className="flex-1 flex items-center justify-center">
                              <div className={`w-full p-8 rounded-3xl shadow-xl border backdrop-blur-md transition-all duration-300 ${isDarkMode ? 'bg-[#05070f]/80 border-purple-500/20 shadow-purple-900/10' : 'bg-white/90 border-white shadow-purple-100'}`}>
                                <div className="space-y-4">
                                    <div className="flex justify-between">
-                                        <p className={`text-sm font-bold ${isDarkMode ? 'text-gray-200' : 'text-gray-700'}`}>{labelname || "Field Label"}</p>
+                                        <p className={`text-sm font-bold ${isDarkMode ? 'text-gray-200' : 'text-violet-800'}`}>{labelname || "Field Label"}</p>
                                         <span className="text-xs text-purple-500 opacity-50">*</span>
                                    </div>
                                    
@@ -325,10 +325,6 @@ const Home = () => {
                                </div>
                              </div>
                          </div>
-                         
-                         <div className="mt-8 text-center opacity-40 text-[10px] uppercase tracking-widest">
-                             Simulated Environment
-                         </div>
                       </div>
                     </div>
                   </motion.div>
@@ -342,23 +338,23 @@ const Home = () => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="absolute inset-0 bg-white/50 backdrop-blur-2xl z-50 flex items-center justify-center p-6"
+                    className="absolute inset-0  backdrop-blur-3xl z-50 flex items-center justify-center p-6"
                   >
                     <motion.div 
                       initial={{ scale: 0.9, y: 20 }}
                       animate={{ scale: 1, y: 0 }}
                       exit={{ scale: 0.9, opacity: 0 }}
-                      className={`w-full max-w-lg rounded-3xl p-8 shadow-2xl relative overflow-hidden ${theme.card}`}
+                      className={`rounded-2xl px-4 py-4 shadow-2xl relative overflow-hidden  ${theme.previewBox}`}
                     >
                       {/* Modal Background Glow */}
-                      <div className="absolute -top-20 -right-20 w-60 h-60 bg-purple-500/20 rounded-full blur-[60px] pointer-events-none" />
+                      <div className={`absolute -top-20 -right-20 w-60 h-60 ${theme.previewBox}  rounded-full blur-[60px] pointer-events-none`}/>
 
                       <div className="flex justify-between items-center mb-8 relative z-10">
                         <div>
-                            <h3 className={`font-bold text-2xl ${isDarkMode ? 'text-white' : 'text-[#4c1d95]'}`}>Input Type</h3>
-                            <p className={`text-xs ${theme.textSub}`}>Select data format</p>
+                            <h3 className={`font-bold text-sm sm:text-xl ${isDarkMode ? 'text-white' : 'text-[#4c1d95]'}`}>Input Type</h3>
+                            <p className={`text-xs mt-1 ${theme.textSub}`}>Select data format </p>
                         </div>
-                        <button onClick={() => setcontent(false)} className={`p-2 rounded-full transition-colors ${isDarkMode ? 'hover:bg-white/10 text-white' : 'hover:bg-purple-100 text-[#4c1d95]'}`}>
+                        <button onClick={() => setcontent(false)} className={`rounded-full transition-colors ${isDarkMode ? 'hover:bg-white/10 text-white' : 'hover:bg-purple-100 text-[#4c1d95]'}`}>
                           <Plus size={24} className="rotate-45" />
                         </button>
                       </div>
@@ -368,14 +364,14 @@ const Home = () => {
                           <button
                             key={type}
                             onClick={() => { setSelectedType(type); setcontent(false); }}
-                            className={`p-4 rounded-xl border text-sm font-bold transition-all duration-300 flex items-center justify-between group ${
+                            className={`px-2 py-2 rounded-xl border text-[10px] font-semibold transition-all duration-300 flex items-center justify-between group ${
                               selectedType === type
                                 ? (isDarkMode ? 'bg-[#8b5cf6] border-[#8b5cf6] text-white shadow-[0_0_15px_rgba(139,92,246,0.5)]' : 'bg-[#4c1d95] text-white border-[#4c1d95]')
                                 : (isDarkMode ? 'bg-[#05070f] border-purple-500/20 text-gray-400 hover:border-purple-500 hover:text-white' : 'bg-white border-purple-100 text-gray-600 hover:border-purple-300 hover:text-[#4c1d95]')
                             }`}
                           >
                             <span>{type}</span>
-                            {selectedType === type && <SparkleIcon className="w-4 h-4" />}
+                            {selectedType === type }
                           </button>
                         ))}
                       </div>
