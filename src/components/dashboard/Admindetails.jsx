@@ -188,7 +188,7 @@ const Admindetails = () => {
                                     </tr>
                                 </thead>
                                 <tbody className={`${theme.input}`}>
-                                    {loading ? <TableSkeleton /> : currentData.map((user) => (
+                                    {loading ?  <p className={`py-10 px-10 ${isDarkMode ? 'border-white/10 bg-white/5' : 'border-slate-100 bg-violet-300/50'} font-bold text-lg`}>Loading..</p> : currentData.map((user) => (
                                         <tr key={user.userId} className="hover:bg-purple-500/5 transition-colors group">
                                             <td className="px-8 py-5">
                                                 <div className="flex items-center gap-4">

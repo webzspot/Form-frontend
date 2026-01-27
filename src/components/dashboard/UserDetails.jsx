@@ -16,8 +16,8 @@ import WaveBackground from "./WaveBackground";
 import { useFormContext } from "../dashboard/FormContext";
 
 
-const UserDetails= () => {
-    const [userData, setUserData] = useState([]);
+const UserDetails= () => { 
+  const [userData, setUserData] = useState([]);
     const [openMenuIndex, setOpenMenuIndex] = useState(null);
     const [editingUser, setEditingUser] = useState(null);
     const [searchedUser, setSearchedUser] = useState("");
@@ -229,9 +229,7 @@ const SparkleIcon = ({ className }) => (
                      <div className={`rounded-xl ${isDarkMode ? 'border-white/10 bg-white/5' : 'border-slate-100 bg-violet-300/50'}`}>
 
                         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 px-6 py-6 ">
-    <h2 className={`font-bold text-xl ${theme.textSub}`}>
-      Users
-    </h2>
+   
 
     <div className="flex gap-3">
       <motion.button
@@ -241,7 +239,7 @@ const SparkleIcon = ({ className }) => (
         }}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-       className={`px-4 py-2 rounded-xl font-semibold transition-all shadow-md flex items-center gap-1
+       className={`px-4 py-2 rounded-xl text-[10px] sm:text-sm font-semibold transition-all shadow-md flex items-center gap-1
                 ${theme.buttonPrimary} 
                 disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed`}
         
@@ -254,7 +252,7 @@ const SparkleIcon = ({ className }) => (
         onClick={() => navigate("/admin/forms")}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-       className={`px-4 py-2 rounded-xl font-semibold transition-all shadow-md flex items-center gap-1
+       className={`px-4 py-2 rounded-xl font-semibold text-[10px] text-sm transition-all shadow-md flex items-center gap-1
                 ${theme.buttonPrimary} 
                 disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed`}
         >
@@ -267,7 +265,7 @@ const SparkleIcon = ({ className }) => (
                             <div className="relative flex-1">
                                 <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
                                 <input
-                                    className={`w-full px-10 py-2 font-semibold ${theme.input} border border-white/10  rounded-xl outline-none transition-all`}
+                                    className={`w-full px-10 py-2 text-[10px] sm:text-sm font-semibold ${theme.input} border border-white/10  rounded-xl outline-none transition-all`}
                                     type="text" outline-none
                                     placeholder="Search name or email..."
                                     value={searchedUser}
@@ -283,7 +281,7 @@ const SparkleIcon = ({ className }) => (
     <select 
       value={sortBy} 
       onChange={(e) => setSortBy(e.target.value)} 
-       className={`px-2 py-2 cursor-pointer font-bold rounded-xl border border-black/30 outline-none transition-all ${
+       className={`px-2 py-2 cursor-pointer  text-[10px] sm:text-sm font-bold rounded-xl border border-black/30 outline-none transition-all ${
         isDarkMode 
           ? "bg-[#12121a] border-purple-500/20 text-white hover:border-purple-500/50 " 
           : "bg-white  border-purple-100 text-[#4c1d95] hover:border-purple-300  "
@@ -335,29 +333,29 @@ const SparkleIcon = ({ className }) => (
                                                 <td className="px-6 py-4">
                                                     <div className="flex items-center gap-3">
                                                         {/* Avatar with initials */}
-                                                       <div className={`w-10 h-10 ${getAvatarColor(user.role)} rounded-full 
+                                                       <div className={`sm:w-10 sm:h-10 w-5 h-5 ${getAvatarColor(user.role)} rounded-full 
     ${isDarkMode ? 'bg-violet-500' : `${theme.buttonPrimary}`} 
     flex items-center justify-center text-white font-semibold text-sm shadow-md`}>
     {getInitials(user.name)}
 </div>
                                                         <div >
-                                                            <div className="font-semibold">{user.name}</div>
-                                                            <div className={`text-sm ${theme.textSub}`}>{user.email}</div>
+                                                            <div className="text-[13px] sm:text-sm font-semibold">{user.name}</div>
+                                                            <div className={` text-[10px] sm:text-sm ${theme.textSub}`}>{user.email}</div>
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${user.role === 'ADMIN' ? 'bg-purple-100 text-purple-700  border-purple-200' : 'bg-purple-100 text-violet-800 '}`}>
+                                                    <span className={`px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold ${user.role === 'ADMIN' ? 'bg-purple-100 text-purple-700  border-purple-200' : 'bg-purple-100 text-violet-800 '}`}>
                                                         {user.role}
                                                     </span>
                                                 </td>
-                                                <td className="px-6 py-4 text-sm font-medium">
+                                                <td className="px-6 py-4 text-[10px] sm:text-sm font-medium">
                                                     <div>{new Date(user.createdAt).toLocaleDateString()}</div>
                                                 </td>
                                                 <td className="px-6 py-4 text-center">
                                                     <button 
                                                         onClick={() => navigate(`/admin/users/${user.userId}/activity`)}
-                                                      className={`px-2 py-1 rounded-xl font-semibold transition-all text-sm shadow-md flex items-center
+                                                      className={`px-2 text-[10px] sm:text-sm py-1 rounded-xl font-semibold transition-all text-sm shadow-md flex items-center
                                                       ${theme.buttonPrimary} 
                                                     disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed`}
                                                       >
@@ -526,37 +524,39 @@ const SparkleIcon = ({ className }) => (
             {/* Delete Modal */}
             <AnimatePresence>
                 {showConfirmModal && (
-                    <div className="fixed inset-0 flex items-center justify-center z-100 p-4">
+                    <div className="fixed inset-0 flex items-center justify-center z-100 sm:p-4 p-7">
                         <motion.div 
                             initial={{ opacity: 0 }} 
                             animate={{ opacity: 1 }} 
                             exit={{ opacity: 0 }} 
                             onClick={handleDismiss} 
-                            className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm" 
+                            className={`fixed inset-0${
+        isDarkMode ? "bg-slate-900/80" : "bg-slate-900/40 backdrop-blur-sm"
+    }`}
                         />
                         <motion.div 
                             initial={{ scale: 0.9, opacity: 0 }} 
                             animate={{ scale: 1, opacity: 1 }} 
                             exit={{ scale: 0.9, opacity: 0 }} 
-                            className="bg-white rounded-2xl p-8 w-full max-w-sm relative z-10 shadow-2xl text-center"
+                           className={`rounded-2xl p-8 w-[300px] shadow-2xl ${theme.card}`}
                         >
-                            <div className="w-20 h-20 bg-linear-to-br from-red-100 to-red-200 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                                <FaTrash size={28} />
+                            <div className="sm:w-20 sm:h-20 w-10 h-10 bg-linear-to-br from-red-100 to-red-200 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+                                <FaTrash size={25} />
                             </div>
-                            <h2 className="text-2xl font-bold text-slate-800 mb-2">Confirm Delete</h2>
-                            <p className="text-slate-500 mb-8">
+                            <h2 className={`sm:text-2xl font-bold ${theme.text} mb-2`}>Confirm Delete</h2>
+                            <p className={`${theme.text} text-[10px] sm:text-sm mb-8`}>
                                 Are you sure you want to remove <span className="font-bold text-slate-700">{pendingAction?.payload?.name}</span>? This action cannot be undone.
                             </p>
                             <div className="flex gap-3">
                                 <button 
                                     onClick={handleDeleteConfirm} 
-                                    className="flex-1 bg-linear-to-r from-red-600 to-red-700 text-white py-3 rounded-xl font-semibold hover:from-red-700 hover:to-red-800 transition-all shadow-lg"
+                                    className="flex-1 bg-linear-to-r from-red-600 to-red-700 text-white sm:py-3 py-1 text-[10px] sm:text-sm rounded-xl font-semibold hover:from-red-700 hover:to-red-800 transition-all shadow-lg"
                                 >
                                     Delete
                                 </button>
                                 <button 
                                     onClick={handleDismiss} 
-                                    className="flex-1 bg-slate-100 text-slate-600 py-3 rounded-xl font-semibold hover:bg-slate-200 transition-all"
+                                    className="flex-1 bg-slate-100 text-slate-600 sm:py-3 py-1 text-[10px] sm:text-sm rounded-xl font-semibold hover:bg-slate-200 transition-all"
                                 >
                                     Cancel
                                 </button>

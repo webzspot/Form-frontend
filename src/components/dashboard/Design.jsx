@@ -12,7 +12,7 @@ import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useFormContext } from './FormContext';
 
-const Design = ({ editingFormId, token, formTheme, setFormTheme }) => {
+const Design = ({ editingFormId, token, formTheme, setFormTheme, isDarkMode }) => {
   const [isDesigning, setIsDesigning] = useState(false);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('presets'); // 'presets', 'button', 'background', 'typography'
@@ -58,7 +58,6 @@ const Design = ({ editingFormId, token, formTheme, setFormTheme }) => {
     }
   };
 
-   const { isDarkMode } = useFormContext(); 
       const theme = {
       pageBg: isDarkMode 
         ? "bg-[#05070f] text-white selection:bg-purple-500/30" 
@@ -146,7 +145,9 @@ const Design = ({ editingFormId, token, formTheme, setFormTheme }) => {
                           <div className="sm:w-6 sm:h-6 w-4 h-4 rounded-full shadow-sm" style={{ backgroundColor: p.bg }}></div>
                           <div className="sm:w-6 sm:h-6 w-4 h-4  rounded-full shadow-sm" style={{ backgroundColor: p.btn }}></div>
                         </div>
-                        <span className="text-xs font-bold text-gray-700">{p.name}</span>
+                        <span  className={`text-xs font-bold ${
+    isDarkMode ? "text-gray-300" : "text-gray-700"
+  }`}>{p.name}</span>
                       </button>
                     ))}
                   </motion.div>

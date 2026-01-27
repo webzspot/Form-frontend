@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -5,10 +6,46 @@ import { CheckCircle2, Loader2, Send, ChevronDown } from 'lucide-react';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 import { useFormContext } from '../dashboard/FormContext'; 
+=======
+
+(function () {
+  // The <script> tag that included this script
+  const script = document.currentScript;
+
+  // Read data attributes from the script
+  const formId = script.dataset.formId;               // REQUIRED: your form slug/id
+  const primaryColor = script.dataset.primaryColor || "#7C3AED";
+  const bgColor = script.dataset.bgColor || "#ffffff";
+  const font = script.dataset.font || "Inter";
+  const width = script.dataset.width || "100%";
+  const inputBgColor = script.dataset.inputBgColor || "#ffffff";
+const labelColor = script.dataset.labelColor || "#374151";
+const borderRadius = script.dataset.borderRadius || "16px";
+
+
+  if (!formId) {
+    console.error("Form ID is required for the embed script");
+    return;
+  }
+
+  // Create a container div
+  const container = document.createElement("div");
+  container.style.width = width;
+  container.style.margin = "0 auto";
+
+  // Create iframe to load the actual public form
+  const iframe = document.createElement("iframe");
+   
+  const baseUrl = script.src.includes("localhost")
+  ? "http://localhost:5173"
+  : "https://form-saas.netlify.app";
+ 
+>>>>>>> bef578f29714ba94182c69cb45e9ebb22ee0b879
 
 
 
 
+<<<<<<< HEAD
 
 
 const PublicForm = () => {
@@ -286,3 +323,31 @@ const theme = {
 };
 
 export default PublicForm;
+=======
+  iframe.src =
+    `${baseUrl}/public/form/${formId}` +
+    `?primaryColor=${encodeURIComponent(primaryColor)}` +
+    `&bgColor=${encodeURIComponent(bgColor)}` +
+    `&font=${encodeURIComponent(font)}` +
+    `&inputBgColor=${encodeURIComponent(inputBgColor)}` +
+    `&labelColor=${encodeURIComponent(labelColor)}` +
+    `&borderRadius=${encodeURIComponent(borderRadius)}`;
+  iframe.style.width = "100%";
+  iframe.style.border = "none";
+
+  // Adjust iframe height dynamically
+  iframe.onload = () => {
+    try {
+      iframe.style.height = iframe.contentWindow.document.body.scrollHeight + "px";
+    } catch (e) {
+      // Ignore cross-origin issues if any
+      iframe.style.height = "700px"; 
+    }
+  };
+
+  container.appendChild(iframe);
+
+  // Insert the iframe container before this script tag
+  script.parentNode.insertBefore(container, script);
+})();
+>>>>>>> bef578f29714ba94182c69cb45e9ebb22ee0b879

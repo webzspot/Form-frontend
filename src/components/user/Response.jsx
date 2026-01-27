@@ -196,16 +196,16 @@ const answeredFields = fullData.length > 0
 
       </div>
 
-      <main className="relative z-10 max-w-7xl mx-auto px-4 py-12">
+      <main className="relative z-10 max-w-7xl mx-auto px-4 py-5 sm:py-12">
         {/* Back Button */}
         <motion.button
           onClick={() => navigate("/form")}
           whileHover={{ x: -5 }}
-          className={`flex items-center  gap-2 mb-8 px-5 py-2.5 rounded-2xl font-semibold transition-all border ${
+          className={`flex items-center gap-2 sm:mb-8 mb-2 px-5 py-2.5 rounded-2xl font-semibold transition-all border ${
             isDarkMode ? 'bg-[#12121a] border-purple-500/30 text-purple-400' : 'bg-white/60 border-purple-200 shadow-sm'
           }`}
         >
-          <FaArrowLeft size={14} /> Back to Dashboard
+          <FaArrowLeft size={14} /> <span className='hidden sm:block'>Back to Dashboard</span>
         </motion.button>
 
         {/* Header Section */}
@@ -266,7 +266,7 @@ const answeredFields = fullData.length > 0
           <select
   value={selectedField}
   onChange={(e) => setSelectedField(e.target.value)}
-  className={`sm:px-6 py-3 rounded-2xl text-sm font-bold ${theme.input}`}
+  className={`sm:px-6 py-1 sm:py-2 rounded-2xl sm:text-sm text-[10px] font-bold ${theme.input}`}
 >
   <option value="ALL">All Questions</option>
   {formFields.map((f) => (
@@ -279,9 +279,9 @@ const answeredFields = fullData.length > 0
           <motion.button
             whileHover={{ scale: 1.02 }}
             onClick={exportToCSV}
-            className={`flex items-center  sm:px-6 py-1 px-2 sm:py-3 rounded-xl sm:text-sm text-[10px] font-semibold transition-all ${theme.buttonPrimary}`}
+            className={`flex items-center sm:px-6 py-0.5 px-2 sm:py-2 rounded-xl sm:text-sm text-[10px] font-semibold transition-all ${theme.buttonPrimary}`}
           >
-            Export CSV
+            Export
           </motion.button>
         </div>
     </div>
