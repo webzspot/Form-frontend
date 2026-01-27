@@ -101,7 +101,7 @@ const ProfileSettings = () => {
       : "bg-gradient-to-r from-[#8b5cf6] to-[#6d28d9] text-white hover:shadow-lg hover:shadow-purple-500/30",
 
     textSub: isDarkMode ? "text-gray-400" : "text-[#4c1d95]/70",
-    tableHeader: isDarkMode ? "bg-[#1e1b4b]/60 text-purple-300" : "bg-violet-800/40 text-[#4c1d95]",
+    tableHeader: isDarkMode ? "bg-[#1e1b4b]/60 text-purple-300" : "bg-indigo-700 text-[#4c1d95]",
   };
  
 
@@ -110,21 +110,21 @@ const ProfileSettings = () => {
   }
   return (
     <>
-    <div className={`min-h-screen relative font-sans transition-colors duration-300 ${isDarkMode ? 'bg-[#0f172a]' : 'bg-[#F8FAFC]'}`}>
+    <div className={`min-h-screen relative transition-colors duration-300 ${isDarkMode ? 'bg-[#0f172a]' : 'bg-[#F8FAFC]'}`}>
       <UserNavbar />
       <WaveBackground position="top" height="h-180" color={isDarkMode ? "#1e1b4b" : "#6c2bd9"} />
       <WaveBackground position="bottom" height="h-150" color={isDarkMode ? "#1e1b4b" : "#6c2bd9"} />
 
-      <main className="max-w-5xl relative z-10 mx-auto mt-10 pb-12 px-4 sm:px-6">
+      <main className="max-w-7xl relative z-10 mx-auto mt-10 pb-12 px-4 sm:px-6">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           className={`${isDarkMode ? 'bg-slate-800 border-slate-700 shadow-2xl shadow-black/20' : 'bg-white border-gray-100 shadow-xl shadow-indigo-100/50'} rounded-3xl overflow-hidden border`}
         >
           {/* Header Banner */}
-          <div className={`h-32 relative ${isDarkMode ? 'bg-indigo-950' : `${theme.tableHeader}`}`}>
+          <div className={`h-32 relative ${isDarkMode ? 'bg-indigo-950' : `${theme.buttonPrimary}`}`}>
              <div className={`absolute -bottom-12 left-8 p-1 rounded-2xl shadow-lg ${isDarkMode ? 'bg-slate-800' : 'bg-white'}`}>
-                <div className={`w-24 h-24 rounded-xl flex items-center justify-center text-3xl font-bold ${isDarkMode ? 'bg-slate-700 text-indigo-400' : 'bg-indigo-50 text-indigo-600'}`}>
+                <div className={`w-24 h-24 rounded-xl flex items-center justify-center text-3xl font-bold ${isDarkMode ? 'bg-slate-700 text-indigo-400' : 'bg-indigo-50 text-violet-900'}`}>
                   {user?.name?.charAt(0).toUpperCase()}
                 </div>
              </div>
@@ -133,13 +133,13 @@ const ProfileSettings = () => {
           <div className="pt-16 px-8 pb-8 ">
             <div className={`flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b pb-6 ${isDarkMode ? 'border-slate-700' : 'border-gray-50'}`}>
               <div>
-                <h1 className={`text-3xl font-extrabold ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{user?.name}</h1>
+                <h1 className={`text-3xl font-bold mb-2 ${isDarkMode ? 'text-white' : 'text-gray-900'}`}>{user?.name}</h1>
                 <p className={`flex items-center gap-2 mt-1 ${isDarkMode ? 'text-slate-400' : 'text-gray-500'}`}>
-                  <FiMail className="text-indigo-400" /> {user?.email}
+                  <FiMail className="text-violet-800 mt-1" /> {user?.email}
                 </p>
               </div>
               <div className="flex gap-2">
-                <button onClick={() => setEditingUser({ name: user.name, email: user.email })} className="px-5 py-2.5 bg-indigo-600 text-white rounded-xl font-medium flex items-center gap-2 hover:bg-indigo-700 transition-all shadow-lg">
+                <button onClick={() => setEditingUser({ name: user.name, email: user.email })} className={`px-5 py-2.5 ${theme.buttonPrimary} text-white rounded-xl font-medium flex items-center gap-2 hover:bg-indigo-700 transition-all shadow-lg`}>
                   <FiEdit size={16}/> Edit
                 </button>
                 <button onClick={handleLogout} className={`px-5 py-2.5 rounded-xl font-medium flex items-center gap-2 transition-all ${isDarkMode ? 'bg-slate-700 text-slate-200 hover:bg-slate-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>

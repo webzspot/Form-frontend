@@ -1,4 +1,3 @@
-
 (function () {
   // The <script> tag that included this script
   const script = document.currentScript;
@@ -12,6 +11,8 @@
   const inputBgColor = script.dataset.inputBgColor || "#ffffff";
 const labelColor = script.dataset.labelColor || "#374151";
 const borderRadius = script.dataset.borderRadius || "16px";
+ 
+
 
 
   if (!formId) {
@@ -21,8 +22,11 @@ const borderRadius = script.dataset.borderRadius || "16px";
 
   // Create a container div
   const container = document.createElement("div");
-  container.style.width = width;
-  container.style.margin = "0 auto";
+ container.style.width = width;
+container.style.margin = "0 auto";
+
+
+
 
   // Create iframe to load the actual public form
   const iframe = document.createElement("iframe");
@@ -55,8 +59,7 @@ const borderRadius = script.dataset.borderRadius || "16px";
       iframe.style.height = "700px"; 
     }
   };
-
-  container.appendChild(iframe);
+   container.appendChild(iframe);
 
   // Insert the iframe container before this script tag
   script.parentNode.insertBefore(container, script);

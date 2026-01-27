@@ -54,11 +54,7 @@ const pulseAnimation = {
   
 
 const Form = () => { 
-
-
-  
-
-  // masterfield
+// masterfield
   const [masterFields, setMasterFields] = useState([])
   const [selectedFields, setSelectedFields] = useState([])
   const [showFormBuilder, setShowFormBuilder] = useState(false)
@@ -357,9 +353,7 @@ const Form = () => {
       </div>
     </div>
   )
-
-
-    if (loading) {
+   if (loading) {
     return <LoadingScreen isDarkMode={isDarkMode} />;
   }
   return (
@@ -655,7 +649,7 @@ const Form = () => {
                 className="flex-1 p-6 lg:p-8 flex flex-col transition-all duration-500 min-h-[60vh]"
                  style={{
     backgroundColor: formTheme.bgColor || "#ffffff",
-  // fontFamily: `${formTheme.labelFont || "Inter"}, sans-serif`
+    fontFamily: `${formTheme.labelFont || "Inter"}, sans-serif`
   }} >
                 <div className="w-full flex flex-col h-full">
                   {/* Form Title & Description */}

@@ -226,7 +226,7 @@ const SparkleIcon = ({ className }) => (
 
             {/* Filters and Table */}
                     {/* <div className={max-w-7xl mx-auto ${theme.pageBg} rounded-2xl  shadow-md overflow-hidden}>    */}
-                     <div className={`rounded-xl ${isDarkMode ? 'border-white/10 bg-white/5' : 'border-slate-100 bg-violet-300/50'}`}>
+                     <div className={`rounded-xl max-w-7xl mx-auto ${isDarkMode ? 'border-white/10 bg-white/5' : 'border-slate-100 bg-violet-300/50'}`}>
 
                         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 px-6 py-6 ">
    
@@ -239,7 +239,7 @@ const SparkleIcon = ({ className }) => (
         }}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-       className={`px-4 py-2 rounded-xl text-[10px] sm:text-sm font-semibold transition-all shadow-md flex items-center gap-1
+       className={`px-4 py-2 rounded-xl text-[10px] sm:text-sm font-semibold transition-all shadow-md flex items-center gap-1 sm:gap-2
                 ${theme.buttonPrimary} 
                 disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed`}
         
@@ -252,7 +252,7 @@ const SparkleIcon = ({ className }) => (
         onClick={() => navigate("/admin/forms")}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-       className={`px-4 py-2 rounded-xl font-semibold text-[10px] text-sm transition-all shadow-md flex items-center gap-1
+       className={`px-4 py-2 rounded-xl font-semibold text-[10px] sm:text-sm transition-all shadow-md flex items-center gap-1 sm:gap-2
                 ${theme.buttonPrimary} 
                 disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed`}
         >
@@ -333,7 +333,7 @@ const SparkleIcon = ({ className }) => (
                                                 <td className="px-6 py-4">
                                                     <div className="flex items-center gap-3">
                                                         {/* Avatar with initials */}
-                                                       <div className={`sm:w-10 sm:h-10 w-5 h-5 ${getAvatarColor(user.role)} rounded-full 
+                                                       <div className={`sm:w-10 sm:h-10 w-7 h-7 ${getAvatarColor(user.role)} rounded-full 
     ${isDarkMode ? 'bg-violet-500' : `${theme.buttonPrimary}`} 
     flex items-center justify-center text-white font-semibold text-sm shadow-md`}>
     {getInitials(user.name)}

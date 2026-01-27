@@ -97,27 +97,41 @@ const AdminFormResponses = () => {
     res.responseValue.some((rv) => (rv.value || "").toString().toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
-  const { currentData, currentPage, totalPages, nextPage, prevPage } = usePagination(filteredResponses, 10);
+   const { currentData, currentPage, totalPages, nextPage, prevPage } = usePagination(filteredResponses, 10);
+
 
   const exportToCSV = () => {
-    if (filteredResponses.length === 0) return toast.error("No data to export");
-    const headers = ["Submission ID", "Submitted At", ...displayedQuestions.map(q => q.label)];
-    const rows = filteredResponses.map(res => [
-      res.formResponseId, 
-      new Date(res.createdAt).toLocaleString(),
+  if (filteredResponses.length === 0) {
+    return toast.error("No data available to export");
+  }
+
+  // Headers: Submission ID + dynamic questions + Timestamp
+  const headers = ["Submission ID", ...displayedQuestions.map(q => q.label), "Submission Date"];
+
+  const rows = filteredResponses.map((resp) => {
+    return [
+      resp.formResponseId,
+      // Map question values
       ...displayedQuestions.map(q => {
-        const answer = res.responseValue.find(rv => rv.formFieldId === q.id);
-        return answer ? (Array.isArray(answer.value) ? answer.value.join(" | ") : answer.value) : "-";
-      })
-    ]);
-    const csv = [headers.join(","), ...rows.map(r => r.join(","))].join("\n");
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = `Responses_${formTitle.replace(/\s+/g, '_')}.csv`;
-    link.click();
-    toast.success("Exported Successfully");
-  };
+        const entry = resp.responseValue?.find(v => v.formFieldId === q.id);
+        if (!entry) return "—";
+        return Array.isArray(entry.value) ? entry.value.join(" | ") : `"${entry.value}"`;
+      }),
+      new Date(resp.createdAt).toLocaleString()
+    ];
+  });
+
+  const csvContent = [headers.join(","), ...rows.map(r => r.join(","))].join("\n");
+
+  const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `Responses_${formTitle.replace(/\s+/g, "_")}.csv`;
+  link.click();
+
+  toast.success("CSV Downloaded!");
+};
 
   return (
     <>
