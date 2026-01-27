@@ -1,277 +1,306 @@
-import { Link } from "react-router-dom"
-import React, { useEffect, useState } from 'react'
-import axios from "axios"
-import { Rocket } from 'lucide-react';
-import { motion } from "framer-motion";
-
-
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
+import { Rocket, User, Mail, Lock, ArrowRight, CheckCircle2, AlertCircle, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Register = () => {
+  const navigate = useNavigate();
+  
+  // Form State
+  const [name, setname] = useState("");
+  const [email, setemail] = useState("");
+  const [password, setpassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
+  // Toast State
+  const [toast, setToast] = useState({ show: false, message: "", type: "success" }); 
 
- const [name,setname]=useState("");
- const [email,setemail]=useState("");
- const [password,setpassword]=useState("");
- const [nodataerror,setnodataerror]=useState("");
- const [sucessmessage,setsucessmessage]=useState(false);
- const [errormessage,seterrormessage]=useState(false);
+  // Testimonial State
+  const [currentTestimonial, setCurrentTestimonial] = useState(0);
 
+  // --- TOAST HANDLER ---
+  const showToast = (message, type) => {
+    setToast({ show: true, message, type });
+    // Auto hide after 3 seconds
+    setTimeout(() => {
+      setToast((prev) => ({ ...prev, show: false }));
+    }, 3000);
+  };
 
- const handlesubmit=async(e)=>{
- e.preventDefault();
+  // --- HANDLE SUBMIT ---
+  const handlesubmit = async (e) => {
+    e.preventDefault();
 
-if(!name || !email || !password){
-  setnodataerror("Please Fill All The Fields")
-  return;
-}
-setnodataerror("");
+    if (!name || !email || !password) {
+      showToast("Please fill all the fields", "error");
+      return;
+    }
 
-const response=await axios.post("https://formbuilder-saas-backend.onrender.com/api/users/register" ,{
-  name:name,
-  email:email,
-  password:password,
-})
+    setIsLoading(true);
 
-console.log(response);
-setsucessmessage(true);
+    try {
+      const response = await axios.post(
+        "https://formbuilder-saas-backend.onrender.com/api/users/register",
+        { name, email, password }
+      );
 
+      if(response.data){
+          showToast("Account Created Successfully!", "success");
+          setTimeout(() => {
+            navigate("/login");
+          }, 1500);
+      }
 
+    } catch (err) {
+      console.error(err);
+      const errorMsg = err.response?.data?.message || "Registration failed. Please try again.";
+      showToast(errorMsg, "error");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
- }
-
-
-
-
-// ANIMATION
-const container = {
-  hidden: {},
-  show: {
-    transition: {
-      staggerChildren: 0.15,
+  // --- TESTIMONIAL DATA ---
+  const testimonials = [
+    {
+      id: 1,
+      name: "Sarah Johnson",
+      initials: "SJ",
+      text: "This platform changed my workflow completely. Highly recommended!",
+      color: "from-violet-400 to-purple-500"
     },
-  },
-};
-
-const wordAnimation = {
-  hidden: {
-    opacity: 0,
-    y: 20,
-  },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: {
-      duration: 0.5,
-      ease: "easeOut",
+    {
+      id: 2,
+      name: "David Chen",
+      initials: "DC",
+      text: "The interface is incredibly intuitive. I love the design.",
+      color: "from-blue-400 to-indigo-500"
     },
-  },
-};
+    {
+      id: 3,
+      name: "Emily Davis",
+      initials: "ED",
+      text: "Best decision I made for my business this year.",
+      color: "from-pink-400 to-rose-500"
+    }
+  ];
 
-const heading = "Start Your Journey With Us.";
+  // --- TESTIMONIAL ROTATION EFFECT ---
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
+    }, 4000); // Change every 4 seconds
 
+    return () => clearInterval(interval);
+  }, [testimonials.length]);
 
+  // --- ANIMATION VARIANTS ---
+  const container = {
+    hidden: { opacity: 0 },
+    show: { opacity: 1, transition: { staggerChildren: 0.1 } },
+  };
+
+  const itemAnimation = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+  };
+
+  const floatingAnimation = (duration) => ({
+    y: [0, -30, 0],
+    transition: { duration: duration, repeat: Infinity, ease: "easeInOut" },
+  });
+
+  const heading = "Start Your Journey With Us.";
 
   return (
-
-
-    <div className="relative h-screen flex">
-
-
-      {/* introduction */}
+    <div className="relative min-h-screen flex bg-white">
       
+      {/* --- TOAST COMPONENT (Absolute Overlay) --- */}
+      <AnimatePresence>
+        {toast.show && (
+          <motion.div
+            initial={{ opacity: 0, y: -20, x: 20 }}
+            animate={{ opacity: 1, y: 0, x: 0 }}
+            exit={{ opacity: 0, y: -20, x: 20 }}
+            className={`fixed top-5 right-5 z-50 flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl border ${
+              toast.type === "success" 
+                ? "bg-white border-green-500/20 text-green-700" 
+                : "bg-white border-red-500/20 text-red-600"
+            }`}
+          >
+            {toast.type === "success" ? <CheckCircle2 className="w-5 h-5 text-green-500" /> : <AlertCircle className="w-5 h-5 text-red-500" />}
+            <p className="text-sm font-semibold">{toast.message}</p>
+            <button onClick={() => setToast({ ...toast, show: false })} className="ml-2 hover:bg-gray-100 rounded-full p-1">
+               <X className="w-4 h-4 text-gray-400" />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-  <div className="relative flex-1 px-12 py-6 hidden sm:flex flex-col justify-between rounded-2xl bg-[#0b0331]">
-   
- 
-
-  <div className="relative z-10 flex flex-col justify-between h-full text-white pointer-events-none">
-
-            <div className='text-3xl flex items-center gap-2 font-bold text-white'>
-            < Rocket className="text-violet-500 font-bold"/>
-              <h1>Stellar</h1>
-            </div>
-
-            <div className="w-[90%]">
-             <motion.h1
-               variants={container}
-               initial="hidden"
-               animate="show"
-              className="text-white text-4xl py-2 font-bold flex flex-wrap">
-             {heading.split(" ").map((word, index) => (
-            <motion.span
-             key={index}
-             variants={wordAnimation}
-             className="mr-2 inline-block"> {word}  </motion.span> ))} </motion.h1>
-
-              <p className="text-sm  text-white/60">Discover a new world of possibilities.Create your
-                account to unlock exclusive features and content.
-              </p>
-            </div>
-
-            <div >
-            
-              <h1 className='text-white text-sm font-bold py-1 '>"This platform changed my workflow completely.Highly recommended!"</h1>
-              <p className='text-white/60 text-sm'>-Sarah johnson</p>
-            </div>
- 
-        </div>
-
-       
-        </div>
-
-        {/* Register */}
-        <div className='flex-1 flex flex-col px-12 justify-center gap-2 rounded-2xl'>
-
-          <div className="my-4">
-
-           <h1 className='text-xl font-bold text-center'>Create an Account</h1>
-           <p className='text-sm text-center text-black/60'>Let's get you started!</p>
-
-          </div>
+      {/* --- LEFT SECTION --- */}
+      <div className="relative flex-1 px-8 lg:px-12 py-8 hidden md:flex flex-col justify-between overflow-hidden bg-[#0b0331]">
         
-        {/* inputfields */}
-        <form>
-        <div className='space-y-4'>
- <p className='font-bold'>!!!!!!!!!!!</p>
-            <div>
-            <label className='text-sm'>Full Name</label>
-            <input 
-           value={name}
-           onChange={(e)=>setname(e.target.value)}
-            className='border my-1 border-black/20 shadow-2xl w-full rounded-lg px-2 py-1 focus:outline-none' 
-            type="text" 
-            placeholder="John Doe"/>
+        {/* Animated Background */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <motion.div animate={floatingAnimation(3)} className="absolute top-20 right-20 w-48 h-48 bg-violet-400/40 rounded-full blur-3xl" />
+          <motion.div animate={floatingAnimation(4)} className="absolute bottom-40 left-10 w-40 h-40 bg-indigo-400/40 rounded-full blur-3xl" />
+          {[...Array(12)].map((_, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0.2 }}
+              animate={{ opacity: [0.2, 0.8, 0.2], y: [0, -15, 0] }}
+              transition={{ duration: 2 + i, repeat: Infinity }}
+              className="absolute w-1 h-1 bg-white/40 rounded-full"
+              style={{ left: `${10 + (i * 7)}%`, top: `${20 + (i % 4) * 20}%` }}
+            />
+          ))}
+          <div className="absolute inset-0 opacity-10" style={{ backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.15) 1px, transparent 0)`, backgroundSize: '40px 40px' }} />
+          <motion.div animate={{ rotate: 360 }} transition={{ duration: 30, repeat: Infinity, ease: "linear" }} className="absolute -top-20 -right-20 w-96 h-96 border border-violet-400/20 rounded-full" />
+        </div>
+
+        {/* Content */}
+        <div className="relative z-10 flex flex-col justify-between h-full text-white">
+          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="text-2xl lg:text-3xl flex items-center gap-3 font-bold">
+            <div className="w-10 h-8 bg-gradient-to-br from-violet-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-violet-500/30">
+              <Rocket className="w-5 h-5" />
+            </div>
+            <span>Stellar</span>
+          </motion.div>
+
+          <motion.div variants={container} initial="hidden" animate="show" className="w-full max-w-md">
+            <h1 className="flex flex-wrap text-3xl lg:text-4xl font-bold leading-tight">
+              {heading.split(" ").map((word, index) => (
+                <motion.span key={index} variants={itemAnimation} className="mr-2">{word}</motion.span>
+              ))}
+            </h1>
+            <motion.p variants={itemAnimation} className="text-sm lg:text-base text-white/60 mt-4 leading-relaxed">
+              Discover a new world of possibilities. Create your account to unlock exclusive features and content.
+            </motion.p>
+          </motion.div>
+
+          {/* ROTATING TESTIMONIAL SECTION */}
+          <div className="h-32 w-full max-w-md relative">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={testimonials[currentTestimonial].id}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
+                className="absolute inset-0 "
+              >
+                <div className="flex items-center gap-3">
+                  <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${testimonials[currentTestimonial].color} flex items-center justify-center text-xs font-bold shadow-lg`}>
+                    {testimonials[currentTestimonial].initials}
+                  </div>
+                  <div>
+                    <p className="text-white/90 text-sm font-medium leading-relaxed italic">
+                      "{testimonials[currentTestimonial].text}"
+                    </p>
+                    <p className="text-white/50 text-xs mt-1">- {testimonials[currentTestimonial].name}</p>
+                  </div>
+                </div>
+              </motion.div>
+            </AnimatePresence>
           </div>
 
-            <div >
-            <label className='text-sm'>Email Address</label>
-            <input 
-           value={email}
-           onChange={(e)=>setemail(e.target.value)}
-            className='border my-1 border-black/20 rounded-lg shadow-2xl w-full px-2 py-1 focus:outline-none' 
-             type="email" 
-             placeholder="you@example.com"/>
-          </div>
-
-            <div>
-            <label className='text-sm'>Password</label>
-            <input
-             value={password}
-           onChange={(e)=>setpassword(e.target.value)}
-            className='border my-1 border-black/20 rounded-lg shadow-2xl w-full px-2 py-1 focus:outline-none' 
-            type="password" 
-            placeholder="••••••••"/>
-          </div>
-         
-         {/* error message */}
-         <div>
-          {nodataerror &&(
-            <p className="text-red-500 py-2 font-semibold">{nodataerror}</p>
-          )}
-         </div>
         </div>
-
-        {/* button */}
-
-  <div>
-    <button 
-      disabled={sucessmessage}
-    onClick={handlesubmit}
-    type="submit"
-        className={`my-3 w-full py-2 rounded ${
-                sucessmessage
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-violet-700 text-white"
-              }`}
-            >
-      Create Account</button>
-  </div>  
-  </form>
-
-  {/* authetication */}
-   
-   <div className="text-black/20" >
-   
-   <hr />
- 
-  </div>
-
-
-
-  {/* login */}
-
-  <h1 className='text-center'>Already have an account?<Link to={"/login"} className="text-violet-600 font-bold">Sign in</Link></h1>
-
-        </div>
-
-
-
-    {/* sucessmessage */}
-    { sucessmessage &&
-  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-    <motion.div
-      initial={{ scale: 0.8, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      className="bg-white space-y-5 px-4 py-5 rounded w-4/5 sm:w-3/5 lg:w-2/5 text-center shadow-xl"
-    >
-   
-
-      <h1 className="font-semibold text-xl ">Sucess!</h1>
-      <p className="text-sm text-black/70">Your action has been completed succesfully.
-        All changes have been saved and you're all set to continue.</p>
-
-        <div className="flex flex-wrap gap-6 justify-center">
- 
- <Link to={"/login"}>
-           <button
-           
-              className="bg-violet-600 text-white px-4 py-1 rounded"
-            >
-              Continue
-            </button>
-            </Link>
-
-          <button onClick={() => setsucessmessage(false)}
-           className="bg-white/30 text-black/50 px-2 py-1 rounded">Dismiss</button>
-        </div>
-       </motion.div>
-       </div>
-}
-
-  {/* errorsmessage */}
-    { errormessage &&
-  <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-    <motion.div
-      initial={{ scale: 0.8, opacity: 0 }}
-      animate={{ scale: 1, opacity: 1 }}
-      className="bg-white space-y-5 px-4 py-5 rounded-xl w-4/5 sm:w-3/5 lg:w-2/5 text-center shadow-2xl"
-    >
-     
-      
-      <h1 className="font-semibold text-xl ">Something Went Wrong!</h1>
-      <p className="text-sm text-black/70">We encountered an error while processing your request.Already have an account try login.Please try again or contact support if the problem presists.</p>
-
-        <div className="flex flex-wrap gap-6 justify-center">
- 
- <Link to={"/login"}>
-           <button
-             className="bg-rose-500 text-white px-4 py-1 rounded"
-            >
-              Try Again
-            </button>
-            </Link>
- 
-
-         <button onClick={() => seterrormessage(false)} 
-         className="bg-white/30 text-black/50 px-2 py-1 rounded">Dismiss</button>
-       
-        </div>
-       </motion.div>
-       </div>
-}
       </div>
-   
-  )
-}
 
-export default Register 
+      {/* --- RIGHT SECTION (Form) --- */}
+      <div className="flex-1 flex flex-col px-6 sm:px-12 justify-center bg-gray-50">
+        <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }} className="w-full max-w-md mx-auto">
+          
+
+
+          <div className="mb-8 mt-4">
+            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Create an Account</h1>
+            <p className="text-sm text-gray-500 ">Let's get you started!</p>
+          </div>
+
+          <form onSubmit={handlesubmit} className="space-y-5">
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">Full Name</label>
+              <div className="relative">
+                <User className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 " />
+                <input
+                  value={name}
+                  onChange={(e) => setname(e.target.value)}
+                  className="w-full px-12 py-2 mt-1 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-600 transition-all text-gray-900 shadow-sm"
+                  type="text"
+                  placeholder="John Doe"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium text-gray-700">Email Address</label>
+              <div className="relative">
+                <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  value={email}
+                  onChange={(e) => setemail(e.target.value)}
+                  className="w-full px-12 py-2 mt-1 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-600 transition-all text-gray-900 shadow-sm"
+                  type="email"
+                  placeholder="you@example.com"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium text-gray-700">Password</label>
+              <div className="relative">
+                <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                <input
+                  value={password}
+                  onChange={(e) => setpassword(e.target.value)}
+                  className="w-full px-12 py-2 mt-1 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-600 transition-all text-gray-900 shadow-sm"
+                  type="password"
+                  placeholder="••••••••"
+                />
+              </div>
+            </div>
+
+            <button
+              disabled={isLoading}
+              type="submit"
+              className={`w-full py-3.5 rounded-xl text-white font-semibold flex items-center justify-center gap-2 transition-all shadow-lg 
+                ${isLoading 
+                  ? "bg-violet-400 cursor-not-allowed" 
+                  : "bg-violet-600 hover:bg-violet-700 hover:scale-[1.01] shadow-violet-500/20"
+                }`}
+            >
+              {isLoading ? (
+                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <>
+                  Create Account
+                  <ArrowRight className="w-4 h-4" />
+                </>
+              )}
+            </button>
+          </form>
+
+          <div className="relative my-8">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-200" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-gray-50 px-4 text-gray-500">or</span>
+            </div>
+          </div>
+
+          <p className="text-center text-gray-600 mb-4">
+            Already have an account?{" "}
+            <Link to="/login" className="text-violet-600 font-bold hover:underline">
+              Sign in
+            </Link>
+          </p>
+        </motion.div>
+      </div>
+    </div>
+  );
+};
+
+export default Register;

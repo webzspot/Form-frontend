@@ -1,9 +1,11 @@
-import {React , useState} from 'react'
+import {React } from 'react'
 import Nav from './components/landingPage/Nav'
 import Hero from './components/landingPage/Hero'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import  About  from './components/landingPage/About.jsx'
 import Footer from './components/landingPage/Footer.jsx'
+
+
 import Register from './components/user/Register.jsx'
 import Login from './components/user/Login.jsx';
 import Home from './components/user/Home.jsx';
@@ -15,15 +17,29 @@ import UserDetails from "./components/dashboard/UserDetails.jsx"
 import Response from './components/user/Response.jsx';
 import ProfileSettings from './components/user/ProfileSettings.jsx';
 import AllReports from './components/dashboard/AllReports.jsx';
-import UserNavbar from './components/user/UserNavbar.jsx';
 import ProtectedRoute from './routes/ProtectedRoute.jsx';
-
-
+import UserActivity from './components/dashboard/UserActivity.jsx';
+import AllForms from './components/dashboard/AllForms.jsx';
+import AdminFormResponses from './components/dashboard/AdminFormResponses.jsx';
+import Reportstatus from './components/user/Reportstatus.jsx';
+import Admindetails from './components/dashboard/Admindetails.jsx';
 const App = () => {
 
-
-
   return (
+    <>
+
+    <Toaster
+        position="top-right"
+        reverseOrder={false}
+        toastOptions={{
+          duration: 3000,
+        }}
+         containerStyle={{
+    top: 60, 
+  }}
+        />
+
+
 
     <BrowserRouter>
    
@@ -57,6 +73,17 @@ const App = () => {
       <Form/>
       </ProtectedRoute>
      }/>    
+    
+    <Route path="/reportstatus" element={
+      <ProtectedRoute allowedRoles={["USER"]}>
+     <Reportstatus/>
+      </ProtectedRoute>
+      } />
+
+
+
+
+
      <Route path="/profile" element={
       <ProtectedRoute allowedRoles={["USER","ADMIN"]}>
       <ProfileSettings />
@@ -74,26 +101,50 @@ const App = () => {
      </ProtectedRoute>
       
       }/>
-    <Route path="/adminreport" element={
+      <Route path="/admin/forms" element={
+         <ProtectedRoute allowedRoles={["ADMIN"]}>
+        <AllForms />
+        </ProtectedRoute>
+        } />
+
+      <Route
+  path="/admin/users/:id/activity"
+  element={
+    <ProtectedRoute allowedRoles={["ADMIN"]}>
+      <UserActivity />
+    </ProtectedRoute>
+  }
+/>
+      <Route
+  path="/admin/form/:formId/responses"
+  element={
+  <ProtectedRoute allowedRoles={["ADMIN"]}>
+  <AdminFormResponses />
+  </ProtectedRoute>
+  
+  }
+/>
+
+ <Route path="/adminreport" element={
       <ProtectedRoute allowedRoles={["ADMIN"]}>
       <AllReports/>
       </ProtectedRoute>
       } />
+  
+ 
+<Route path="/admindetails" element={
+      <ProtectedRoute allowedRoles={["ADMIN"]}>
+      <Admindetails/>
+      </ProtectedRoute>
+      } />
+
+
      </Routes>
 
- <Toaster
-        position="top-right"
-        reverseOrder={false}
-        toastOptions={{
-          duration: 4000,
-        }}
-         containerStyle={{
-    top: 60, 
-  }}
-        />
+
 
     </BrowserRouter>
-   
+   </>
 
   )
 }

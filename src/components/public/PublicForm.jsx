@@ -1,289 +1,273 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle2, AlertCircle, Loader2, Send } from 'lucide-react';
+import { CheckCircle2, Loader2, Send, ChevronDown } from 'lucide-react';
 import axios from 'axios';
-import toast, { Toaster } from 'react-hot-toast'; // 1. Added Toaster import
-
+import toast from 'react-hot-toast';
+import { useFormContext } from '../dashboard/FormContext'; 
 const PublicForm = () => {
   const { slug } = useParams();
-  const [form, setForm] = useState(null);
+  const { activePublicForm, setActivePublicForm } = useFormContext();
   const [responses, setResponses] = useState({});
-  const [successMessage, setSuccessMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
   const [submitting, setSubmitting] = useState(false);
-
-  const getForm = async () => {
-    try {
-      const res = await axios.get(`https://formbuilder-saas-backend.onrender.com/api/public/form/${slug}`);
-      setForm(res.data.data);
-    } catch (err) {
-      console.log("Error", err);
-      setErrorMessage("Could not load the form. It may have been deleted or the link is invalid.");
-    }
-  };
+  const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getForm();
-  }, []);
+    const fetchPublicForm = async () => {
+      try {
+        const res = await axios.get(`https://formbuilder-saas-backend.onrender.com/api/public/form/${slug}`);
+        setActivePublicForm(res.data.data);
+      } catch (err) {
+        toast.error("Form not found");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchPublicForm();
+  }, [slug, setActivePublicForm]); 
 
-  const handleChange = (fieldId, value) => {
-    setResponses((prev) => ({
-      ...prev,
-      [fieldId]: value
-    }));
+
+  const params = new URLSearchParams(window.location.search);
+  const embedTheme = {
+    buttonColor: params.get("primaryColor"),
+    bgColor: params.get("bgColor"),
+    labelFont: params.get("font"), 
+      inputBgColor: params.get("inputBgColor"),
+  labelColor: params.get("labelColor"),
+  borderRadius: params.get("borderRadius"),
+
+  };
+const theme = {
+  ...activePublicForm?.theme,
+   ...Object.fromEntries(
+    Object.entries(embedTheme).filter(([_, v]) => v)
+  ),
+};
+
+  //const theme = activePublicForm?.theme || {};
+  const styles = {
+    bg: theme.bgColor || "#f3f4f6",
+    button: theme.buttonColor || "#6C3BFF",
+    input: theme.inputBgColor || "#ffffff",
+    font: theme.labelFont || "Inter",
+    radius: theme.borderRadius || "16px",
+    labelColor: theme.labelColor || "#374151"
+  };
+
+  const handleInputChange = (id, value) => {
+    setResponses(prev => ({ ...prev, [id]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage("");
-    setSuccessMessage("");
-    setSubmitting(true);
 
-    // 2. Updated Validation Loop with Toast
-    for (const field of form.formField) {
+    // 1. Get all fields and filter which ones are required
+    const formFields = activePublicForm?.formField || [];
+    const requiredFields = formFields.filter(f => f.required);
+
+    // 2. Validate that every required field has valid data in 'responses' state
+    const missingFields = requiredFields.filter(field => {
       const value = responses[field.formFieldId];
-      // Check if required field is empty (handles strings, arrays for checkboxes, and null/undefined)
-      if (field.required && (!value || (Array.isArray(value) && value.length === 0))) {
-        toast.error(`Required: ${field.label}`, {
-          style: {
-            borderRadius: '12px',
-            background: '#333',
-            color: '#fff',
-          },
-        });
-        setSubmitting(false);
-        return;
-      }
+
+      // Check if value is undefined (never touched)
+      if (value === undefined || value === null) return true;
+      
+      // Check if string is empty or just spaces
+      if (typeof value === 'string' && value.trim() === "") return true;
+
+      // Check if checkbox array is empty
+      if (Array.isArray(value) && value.length === 0) return true;
+
+      return false;
+    });
+
+    // 3. HARD STOP: If there are missing fields, stop the function here
+    if (missingFields.length > 0) {
+      toast.error(`Please fill all required fields!`);
+      return; // THIS PREVENTS SUBMISSION
     }
 
-    const payload = {
-      responses: Object.entries(responses).map(([formFieldId, value]) => ({
-        formFieldId,
-        value
-      }))
-    };
+    // 4. Double check if form is completely empty (no data at all)
+    if (Object.keys(responses).length === 0 && formFields.length > 0) {
+        toast.error("Please provide your response before submitting.");
+        return;
+    }
 
+    setSubmitting(true);
     try {
+      const payload = {
+        responses: Object.entries(responses).map(([formFieldId, value]) => ({ 
+            formFieldId, 
+            value 
+        }))
+      };
+      
       await axios.post(`https://formbuilder-saas-backend.onrender.com/api/public/form/submit/${slug}`, payload);
-      toast.success("Submitted successfully!"); // 3. Added success toast
-      setSuccessMessage("Your response has been submitted successfully!");
+      setSubmitted(true);
+      
     } catch (err) {
-      toast.error("Failed to submit. Try again."); // 4. Added error toast
-      setErrorMessage("Submission failed. Please try again.");
+      console.error("Submission error:", err);
+      toast.error(err.response?.data?.message || "Submission failed");
     } finally {
       setSubmitting(false);
     }
   };
 
-  if (!form) {
-    return (
-      <div className="min-h-screen bg-[#F8F9FD] flex flex-col justify-center items-center">
-        <motion.div 
-          animate={{ rotate: 360 }} 
-          transition={{ repeat: Infinity, duration: 1, ease: "linear" }}
-          className="mb-4"
-        >
-          <Loader2 size={40} className="text-[#6C3BFF]" />
-        </motion.div>
-        <p className='text-gray-500 font-medium text-lg animate-pulse'>Loading FormCraft...</p>
-      </div>
-    );
-  }
+  if (loading) return (
+    <div className="h-screen flex items-center justify-center">
+      <Loader2 className="animate-spin text-indigo-600" size={40} />
+    </div>
+  );
 
   return (
-    <div className="min-h-screen bg-[#F3F4F6] selection:bg-[#6C3BFF] selection:text-white flex justify-center items-start py-12 px-4 sm:px-6">
-      {/* 5. Place the Toaster here */}
-      <Toaster position="top-center" reverseOrder={false} />
-      
-      <div className="w-full max-w-2xl">
-        
-        {/* Brand Logo */}
-        <div className="flex items-center gap-2 mb-10">
-          <div className="w-10 h-10 bg-[#6C3BFF] rounded-xl flex items-center justify-center shadow-lg shadow-indigo-200">
-            <span className="text-white text-xl font-bold">⧉</span>
-          </div>
-          <h2 className="text-2xl font-bold text-gray-900 tracking-tight">FormCraft</h2>
-        </div>
-
+    <div 
+      className="min-h-screen py-12 px-4 transition-all duration-500"
+      style={{ backgroundColor: styles.bg, fontFamily: `${styles.font}, sans-serif` }}
+    >
+      <div className="max-w-xl mx-auto">
         <AnimatePresence mode="wait">
-          {successMessage ? (
+          {submitted ? (
             <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              className="bg-white p-10 rounded-3xl shadow-2xl shadow-indigo-100 text-center border border-gray-100"
+                initial={{ scale: 0.9, opacity: 0 }} 
+                animate={{ scale: 1, opacity: 1 }} 
+                className="bg-white p-10 rounded-3xl shadow-xl text-center"
             >
-              <div className="w-20 h-20 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                <CheckCircle2 size={44} className="text-green-500" />
-              </div>
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">Thank You!</h1>
-              <p className="text-gray-600 mb-8">{successMessage}</p>
-              <button
-                onClick={() => {
-                  setResponses({});
-                  setSuccessMessage("");
-                  setErrorMessage("");
-                }}
-                className="inline-flex items-center gap-2 bg-[#6C3BFF] hover:bg-[#582edb] text-white py-3 px-8 rounded-2xl font-bold transition-all transform hover:scale-[1.02] active:scale-95 shadow-lg shadow-indigo-200"
-              >
-                Submit another response
-              </button>
+              <CheckCircle2 size={60} className="text-green-500 mx-auto mb-4" />
+              <h2 className="text-2xl font-bold text-gray-800">Submission Successful!</h2>
+              <p className="text-gray-500 mt-2">Thank you for your response.</p>
             </motion.div>
           ) : (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-white rounded-3xl shadow-2xl shadow-indigo-50 border border-gray-100 overflow-hidden"
+            <motion.div 
+              initial={{ y: 20, opacity: 0 }} 
+              animate={{ y: 0, opacity: 1 }}
+              className="bg-white shadow-2xl overflow-hidden"
+              style={{ borderRadius: styles.radius }}
             >
-              <div className="h-2 bg-[#A084FF]" />
-              
-              <div className="p-8 sm:p-12">
-                <h1 className="text-3xl font-semibold text-gray-900 mb-3 tracking-tight">{form.title}</h1>
-                <p className="text-gray-500 text-lg leading-relaxed mb-10">{form.description}</p>
-
-                <form onSubmit={handleSubmit} className="space-y-8">
-                  {/* Keep the inline error as a backup, or remove if you only want toasts */}
-                  {errorMessage && (
-                    <motion.div 
-                      initial={{ x: -10, opacity: 0 }} 
-                      animate={{ x: 0, opacity: 1 }}
-                      className="bg-red-50 border-l-4 border-red-500 p-4 flex items-center gap-3 text-red-700 rounded-r-xl"
-                    >
-                      <AlertCircle size={20} />
-                      <span className="text-sm font-semibold">{errorMessage}</span>
-                    </motion.div>
-                  )}
-
-                  {form.formField.map((field) => (
-                    <div key={field.formFieldId} className="group transition-all">
-                      <label className="block text-black/80 font-bold mb-2 group-focus-within:text-[#6C3BFF] transition-colors">
-                        {field.label}
-                        {field.required && <span className="text-red-500 ml-1">*</span>}
+              <div className="h-2" style={{ backgroundColor: styles.button }} />
+              <div className="p-8">
+                <h1 className="text-3xl font-bold mb-2" style={{ color: styles.labelColor }}>
+                    {activePublicForm?.title}
+                </h1>
+                <p className="text-gray-500 mb-8" style={{ color: styles.labelColor, opacity: 0.8 }}>
+                    {activePublicForm?.description}
+                </p>
+                
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  {activePublicForm?.formField?.map((field) => (
+                    <div key={field.formFieldId} className="space-y-2">
+                      <label className="block font-bold text-sm" style={{ color: styles.labelColor }}>
+                        {field.label} {field.required && <span className="text-red-500">*</span>}
                       </label>
 
-                      <div className="relative">
-                        {field.type === "TEXT" && (
-                          <input
-                            type="text"
-                            placeholder="Type your answer here..."
-                            onChange={(e) => handleChange(field.formFieldId, e.target.value)}
-                            className="w-full bg-gray-50 border border-gray-200 focus:border-[#6C3BFF] focus:bg-white focus:ring-4 focus:ring-indigo-100 transition-all px-4 py-3 rounded-xl outline-none text-gray-700"
-                          />
-                        )}
+                      {/* TEXT & EMAIL & NUMBER */}
+                      {(field.type === "TEXT" || field.type === "EMAIL" || field.type === "NUMBER") && (
+                        <input
+                          type={field.type.toLowerCase()}
+                          placeholder={`Enter ${field.label.toLowerCase()}...`}
+                          onChange={(e) => handleInputChange(field.formFieldId, e.target.value)}
+                          style={{ backgroundColor: styles.input, borderRadius: `calc(${styles.radius} / 2)` }}
+                          className="w-full border border-gray-200 p-4 outline-none focus:ring-2 focus:ring-opacity-50 transition-all shadow-sm"
+                        />
+                      )}   
 
-                        {field.type === "EMAIL" && (
-                          <input
-                            type="email"
-                            placeholder="name@example.com"
-                            onChange={(e) => handleChange(field.formFieldId, e.target.value)}
-                            className="w-full bg-gray-50 border border-gray-200 focus:border-[#6C3BFF] focus:bg-white focus:ring-4 focus:ring-indigo-100 transition-all px-4 py-3 rounded-xl outline-none text-gray-700"
-                          />
-                        )}
 
-                        {field.type === "NUMBER" && (
-                          <input
-                            type="number"
-                            placeholder="0"
-                            onChange={(e) => handleChange(field.formFieldId, e.target.value)}
-                            className="w-full bg-gray-50 border border-gray-200 focus:border-[#6C3BFF] focus:bg-white focus:ring-4 focus:ring-indigo-100 transition-all px-4 py-3 rounded-xl outline-none text-gray-700"
-                          />
-                        )}
+                  {field.type === "DATE" && (
+  <input
+    type="date"
+    onChange={(e) => handleInputChange(field.formFieldId, e.target.value)}
+    style={{ backgroundColor: styles.input, borderRadius: `calc(${styles.radius} / 2)` }}
+    className="w-full border border-gray-200 p-4 outline-none focus:ring-2 focus:ring-opacity-50 transition-all shadow-sm"
+  />
+)}
 
-                        {field.type === "DATE" && (
-                          <input
-                            type="date"
-                            onChange={(e) => handleChange(field.formFieldId, e.target.value)}
-                            className="w-full bg-gray-50 border border-gray-200 focus:border-[#6C3BFF] focus:bg-white focus:ring-4 focus:ring-indigo-100 transition-all px-4 py-3 rounded-xl outline-none text-gray-700"
-                          />
-                        )}
+                      {/* TEXTAREA */}
+                      {field.type === "TEXTAREA" && (
+                        <textarea
+                          rows={4}
+                          placeholder={`Type your message...`}
+                          onChange={(e) => handleInputChange(field.formFieldId, e.target.value)}
+                          style={{ backgroundColor: styles.input, borderRadius: `calc(${styles.radius} / 2)` }}
+                          className="w-full border border-gray-200 p-4 outline-none focus:ring-2 focus:ring-opacity-50 transition-all shadow-sm resize-none"
+                        />
+                      )}
 
-                        {field.type === "TEXTAREA" && (
-                          <textarea
-                            placeholder="Enter detailed information..."
-                            rows={4}
-                            onChange={(e) => handleChange(field.formFieldId, e.target.value)}
-                            className="w-full bg-gray-50 border border-gray-200 focus:border-[#6C3BFF] focus:bg-white focus:ring-4 focus:ring-indigo-100 transition-all px-4 py-3 rounded-xl outline-none text-gray-700 resize-none"
-                          />
-                        )}
-
-                        {field.type === "CHECKBOX" && (
-                          <div className="grid grid-cols-1 gap-2 mt-2">
-                            {field.options.map((opt, i) => (
-                              <label key={i} className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 hover:bg-indigo-50 cursor-pointer transition-colors group/opt">
-                                <input
-                                  type="checkbox"
-                                  onChange={(e) => {
-                                    setResponses((prev) => {
-                                      const prevValues = prev[field.formFieldId] || [];
-                                      return {
-                                        ...prev,
-                                        [field.formFieldId]: e.target.checked
-                                          ? [...prevValues, opt]
-                                          : prevValues.filter((v) => v !== opt),
-                                      };
-                                    });
-                                  }}
-                                  className="w-5 h-5 accent-[#6C3BFF] rounded"
-                                />
-                                <span className="text-gray-700 font-medium">{opt}</span>
-                              </label>
-                            ))}
-                          </div>
-                        )}
-
-                        {field.type === "RADIO" && (
-                          <div className="grid grid-cols-1 gap-2 mt-2">
-                            {field.options.map((opt, i) => (
-                              <label key={i} className="flex items-center gap-3 p-3 rounded-xl border border-gray-100 hover:bg-indigo-50 cursor-pointer transition-colors">
-                                <input
-                                  type="radio"
-                                  name={field.formFieldId}
-                                  onChange={() => handleChange(field.formFieldId, opt)}
-                                  className="w-5 h-5 accent-[#6C3BFF]"
-                                />
-                                <span className="text-gray-700 font-medium">{opt}</span>
-                              </label>
-                            ))}
-                          </div>
-                        )}
-
-                        {field.type === "DROPDOWN" && (
+                      {/* DROPDOWN */}
+                      {field.type === "DROPDOWN" && (
+                        <div className="relative">
                           <select
-                            onChange={(e) => handleChange(field.formFieldId, e.target.value)}
-                            className="w-full bg-gray-50 border border-gray-200 focus:border-[#6C3BFF] focus:bg-white focus:ring-4 focus:ring-indigo-100 transition-all px-4 py-3 rounded-xl outline-none text-gray-700 appearance-none cursor-pointer"
+                            onChange={(e) => handleInputChange(field.formFieldId, e.target.value)}
+                            style={{ backgroundColor: styles.input, borderRadius: `calc(${styles.radius} / 2)` }}
+                            className="w-full border border-gray-200 p-4 outline-none appearance-none focus:ring-2 focus:ring-opacity-50 transition-all shadow-sm cursor-pointer"
                           >
                             <option value="">Select an option</option>
-                            {field.options.map((opt, i) => (
-                              <option key={i} value={opt}>
-                                {opt}
-                              </option>
+                            {field.options?.map((opt, idx) => (
+                              <option key={idx} value={opt}>{opt}</option>
                             ))}
                           </select>
-                        )}
-                      </div>
+                          <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" size={20} />
+                        </div>
+                      )}
+
+                      {/* RADIO BUTTONS */}
+                      {field.type === "RADIO" && (
+                        <div className="grid grid-cols-1 gap-2">
+                          {field.options?.map((opt, idx) => (
+                            <label key={idx} className="flex items-center gap-3 p-3 border border-gray-100 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors">
+                              <input
+                                type="radio"
+                                name={field.formFieldId}
+                                onChange={() => handleInputChange(field.formFieldId, opt)}
+                                className="w-5 h-5"
+                                style={{ accentColor: styles.button }}
+                              />
+                              <span className="text-gray-700">{opt}</span>
+                            </label>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* CHECKBOXES */}
+                      {field.type === "CHECKBOX" && (
+                        <div className="grid grid-cols-1 gap-2">
+                          {field.options?.map((opt, idx) => (
+                            <label key={idx} className="flex items-center gap-3 p-3 border border-gray-100 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors">
+                              <input
+                                type="checkbox"
+                                onChange={(e) => {
+                                  const currentValues = responses[field.formFieldId] || [];
+                                  const newValues = e.target.checked 
+                                    ? [...currentValues, opt] 
+                                    : currentValues.filter(v => v !== opt);
+                                  handleInputChange(field.formFieldId, newValues);
+                                }}
+                                className="w-5 h-5"
+                                style={{ accentColor: styles.button }}
+                              />
+                              <span className="text-gray-700">{opt}</span>
+                            </label>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   ))}
 
                   <button
                     type="submit"
                     disabled={submitting}
-                    className="w-full mt-8 group relative flex items-center justify-center bg-[#111827] hover:bg-black text-white py-4 rounded-2xl font-bold transition-all transform hover:translate-y-[-2px] active:translate-y-[0px] disabled:opacity-70 disabled:cursor-not-allowed shadow-xl shadow-gray-200"
+                    style={{ backgroundColor: styles.button, borderRadius: `calc(${styles.radius} / 2)` }}
+                    className="w-full text-white py-4 font-bold text-lg shadow-lg hover:brightness-95 active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-4"
                   >
                     {submitting ? (
-                      <Loader2 className="animate-spin mr-2" size={20} />
+                      <Loader2 className="animate-spin" size={24} />
                     ) : (
-                      <div className="flex items-center gap-2">
+                      <>
                         <span>Submit Response</span>
-                        <Send size={18} className="transition-transform group-hover:translate-x-1" />
-                      </div>
+                        <Send size={18} />
+                      </>
                     )}
                   </button>
                 </form>
-              </div>
-              
-              <div className="bg-gray-50 px-8 py-4 text-center border-t border-gray-100">
-                <p className="text-xs text-gray-400 font-medium uppercase tracking-widest">Powered by FormCraft</p>
               </div>
             </motion.div>
           )}
@@ -294,3 +278,6 @@ const PublicForm = () => {
 };
 
 export default PublicForm;
+
+
+
