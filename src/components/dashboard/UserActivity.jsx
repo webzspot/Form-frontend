@@ -47,8 +47,6 @@ const UserActivity = () => {
       setPageLoading(false);
     }
   };
-
-  // Open modal to view form details 
   const openFormModal = async (formId) => {
     try {
       setSelectedForm(null);
