@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { FaChartPie,FaPlug,FaMousePointer,FaMobile,FaShieldAlt } from "react-icons/fa";
 import {MdOutlinePalette} from "react-icons/md";
 import { motion,AnimatePresence } from "framer-motion";
+import Subscription from '../user/Subscription';
 
 const About = () => {
   const [hasInteracted, setHasInteracted] = useState(false);
@@ -296,6 +297,10 @@ return (
 </div>
 </div>
    </div>
+
+<div>
+  <Subscription/>
+</div>
    </section>
 
    

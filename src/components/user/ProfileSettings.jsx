@@ -10,7 +10,7 @@ import WaveBackground from "../dashboard/WaveBackground";
 import { useFormContext } from "../dashboard/FormContext";
 import Footer from "../landingPage/Footer";
 import LoadingScreen from "../shared/LoadingScreen";
-
+import { Link } from "react-router-dom";
 const ProfileSettings = () => {
   const { isDarkMode, toggleTheme } = useFormContext();
   const [user, setUser] = useState(null);
@@ -31,6 +31,7 @@ const ProfileSettings = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUser(res.data.data);
+    
     } catch (err) {
       toast.error("Session expired. Please login again.");
     } finally {
@@ -110,21 +111,27 @@ const ProfileSettings = () => {
   }
   return (
     <>
-    <div className={`min-h-screen relative transition-colors duration-300 ${isDarkMode ? 'bg-[#0f172a]' : 'bg-[#F8FAFC]'}`}>
+   
+      <div
+    className={`relative min-h-screen transition-colors duration-300 ${
+      isDarkMode ? "bg-gray-950 text-white" : "bg-white text-black"
+    }`}
+  >
       <UserNavbar />
+     
       <WaveBackground position="top" height="h-180" color={isDarkMode ? "#1e1b4b" : "#6c2bd9"} />
       <WaveBackground position="bottom" height="h-150" color={isDarkMode ? "#1e1b4b" : "#6c2bd9"} />
 
-      <main className="max-w-7xl relative z-10 mx-auto mt-10 pb-12 px-4 sm:px-6">
+      <main className="max-w-7xl relative z-10 mt-10 mx-auto pb-12 px-4 sm:px-6">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className={`${isDarkMode ? 'bg-slate-800 border-slate-700 shadow-2xl shadow-black/20' : 'bg-white border-gray-100 shadow-xl shadow-indigo-100/50'} rounded-3xl overflow-hidden border`}
+          className={`${isDarkMode ? 'bg-black/60 border-slate-700  shadow-2xl shadow-black/20' : 'bg-white border-gray-100 shadow-xl shadow-indigo-100/50'} rounded-3xl overflow-hidden border`}
         >
           {/* Header Banner */}
           <div className={`h-32 relative ${isDarkMode ? 'bg-indigo-950' : `${theme.buttonPrimary}`}`}>
-             <div className={`absolute -bottom-12 left-8 p-1 rounded-2xl shadow-lg ${isDarkMode ? 'bg-slate-800' : 'bg-white'}`}>
-                <div className={`w-24 h-24 rounded-xl flex items-center justify-center text-3xl font-bold ${isDarkMode ? 'bg-slate-700 text-indigo-400' : 'bg-indigo-50 text-violet-900'}`}>
+             <div className={`absolute -bottom-12 left-8 p-1 rounded-2xl shadow-lg ${isDarkMode ? 'bg-violet-500' : 'bg-white'}`}>
+                <div className={`w-24 h-24 rounded-xl flex items-center justify-center text-3xl font-bold ${isDarkMode ? 'bg-gray-900 text-indigo-400' : 'bg-indigo-50 text-violet-900'}`}>
                   {user?.name?.charAt(0).toUpperCase()}
                 </div>
              </div>
@@ -137,11 +144,38 @@ const ProfileSettings = () => {
                 <p className={`flex items-center gap-2 mt-1 ${isDarkMode ? 'text-slate-400' : 'text-gray-500'}`}>
                   <FiMail className="text-violet-800 mt-1" /> {user?.email}
                 </p>
+             
+
+
+ <Link to={"/"}>
+<div className="mt-3">
+  {user?.plan && (
+    <span className={`px-2.5 py-1 rounded-lg text-[10px] font-extrabold uppercase tracking-tighter border ${
+      user?.plan.toLowerCase() === 'business'
+        ? isDarkMode 
+          ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-400' 
+          : 'bg-emerald-50 border-emerald-200 text-emerald-700'
+        : user?.plan.toLowerCase() === 'pro'
+        ? isDarkMode 
+          ? 'bg-violet-500/10 border-violet-500/40 text-violet-400' 
+          : 'bg-violet-50 border-violet-200 text-violet-700'
+        : isDarkMode // Default / Free
+          ? 'bg-slate-500/10 border-slate-500/40 text-slate-400' 
+          : 'bg-gray-100 border-gray-200 text-gray-600'
+    }`}>
+      {user?.plan} Account
+    </span>
+  )}
+</div>
+</Link>
+
               </div>
               <div className="flex gap-2">
                 <button onClick={() => setEditingUser({ name: user.name, email: user.email })} className={`px-5 py-2.5 ${theme.buttonPrimary} text-white rounded-xl font-medium flex items-center gap-2 hover:bg-indigo-700 transition-all shadow-lg`}>
                   <FiEdit size={16}/> Edit
                 </button>
+
+
                 <button onClick={handleLogout} className={`px-5 py-2.5 rounded-xl font-medium flex items-center gap-2 transition-all ${isDarkMode ? 'bg-slate-700 text-slate-200 hover:bg-slate-600' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}>
                   <LogOut size={16}/> Logout
                 </button>
@@ -149,7 +183,7 @@ const ProfileSettings = () => {
             </div>
 
             {/* PREFERENCES SECTION */}
-            <div className={`mt-8 pt-8 border-t ${isDarkMode ? 'border-slate-700' : 'border-gray-50'}`}>
+            <div className={`mt-8 pt-8  ${isDarkMode ? 'border-slate-700' : 'border-gray-50'}`}>
               <h3 className={`font-bold mb-4 ${isDarkMode ? 'text-indigo-400' : 'text-gray-900'}`}>Preferences</h3>
               <div className={`flex items-center justify-between p-4 rounded-2xl transition-colors ${isDarkMode ? 'bg-slate-700/50' : 'bg-gray-50'}`}>
                 <div className="flex items-center gap-3">
@@ -185,6 +219,7 @@ const ProfileSettings = () => {
                     <label className={`text-sm font-semibold ${isDarkMode ? 'text-slate-300' : 'text-gray-700'}`}>Email Address</label>
                     <input value={editingUser.email} onChange={(e) => setEditingUser({...editingUser, email: e.target.value})} className={`w-full px-4 py-3 rounded-xl border outline-none transition-all ${isDarkMode ? 'bg-slate-700 border-slate-600 text-white focus:ring-indigo-500' : 'bg-gray-50 border-gray-200 focus:ring-indigo-500'}`} />
                   </div>
+                  
                   <div className="flex gap-3 pt-4">
                     <button disabled={actionLoading} onClick={handleUpdate} className="flex-1 bg-indigo-600 text-white py-2 rounded-xl font-bold hover:bg-indigo-700 disabled:opacity-50">
                       {actionLoading ? "Saving..." : "Save Changes"}

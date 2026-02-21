@@ -23,6 +23,10 @@ import AllForms from './components/dashboard/AllForms.jsx';
 import AdminFormResponses from './components/dashboard/AdminFormResponses.jsx';
 import Reportstatus from './components/user/Reportstatus.jsx';
 import Admindetails from './components/dashboard/Admindetails.jsx';
+import Apidocumentation from './components/user/Apidocumentation.jsx';
+import ApiReference from './components/user/ApiReference.jsx';
+import Subscription from './components/user/Subscription.jsx';
+import Plandetail from './components/user/Plandetail.jsx';
 const App = () => {
 
   return (
@@ -138,6 +142,32 @@ const App = () => {
       </ProtectedRoute>
       } />
 
+<Route path="/apidocumentation" element={
+      <ProtectedRoute allowedRoles={["USER"]}>
+      <Apidocumentation/>
+      </ProtectedRoute>
+      } />
+
+
+      
+<Route path="/apireference" element={
+      <ProtectedRoute allowedRoles={["USER"]}>
+      <ApiReference/>
+      </ProtectedRoute>
+      } />
+
+
+      <Route path="/subscription" element={
+      <ProtectedRoute allowedRoles={["USER"]}>
+     <Subscription/>
+      </ProtectedRoute>
+      } />
+
+          <Route path="/plandetail" element={
+      <ProtectedRoute allowedRoles={["USER"]}>
+   <Plandetail/>
+      </ProtectedRoute>
+      } />
 
      </Routes>
 
