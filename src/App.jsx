@@ -23,6 +23,8 @@ import AllForms from './components/dashboard/AllForms.jsx';
 import AdminFormResponses from './components/dashboard/AdminFormResponses.jsx';
 import Reportstatus from './components/user/Reportstatus.jsx';
 import Admindetails from './components/dashboard/Admindetails.jsx';
+import ApiReference from './components/pages/ApiReference.jsx'
+import ApiDocumentation from './components/pages/ApiDocumentation.jsx';
 const App = () => {
 
   return (
@@ -80,7 +82,17 @@ const App = () => {
       </ProtectedRoute>
       } />
 
+   <Route path="/api-reference" element={
+     <ProtectedRoute allowedRoles={["USER"]}>
+    <ApiReference />
+    </ProtectedRoute>
+    } />
 
+  <Route path="/apidocumentation" element={
+     <ProtectedRoute allowedRoles={["USER"]}>
+    <ApiDocumentation />
+    </ProtectedRoute>
+    } />
 
 
 

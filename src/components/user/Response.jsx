@@ -52,70 +52,132 @@ const Response = () => {
   };
 
   // ... (Keep your existing fetchData and getResponseValue logic here) ...
+  // const fetchData = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const formRes = await axios.get(
+  //       `https://formbuilder-saas-backend.onrender.com/api/dashboard/form/details/${formId}`,
+  //       { headers: { Authorization: `Bearer ${token}` } }
+  //     );
+  //     setFormFields(formRes.data.data.formField);
+
+  //     const responsesListRes = await axios.get(
+  //       `https://formbuilder-saas-backend.onrender.com/api/dashboard/form/responses/${formId}`,
+  //       { headers: { Authorization: `Bearer ${token}` } }
+  //     );
+  //     const list = responsesListRes.data.data;
+
+  //     const detailedResponses = await Promise.all(
+  //       list.map(resp => 
+  //         axios.get(`https://formbuilder-saas-backend.onrender.com/api/dashboard/form/response/${resp.formResponseId}`, {
+  //           headers: { Authorization: `Bearer ${token}` }
+  //         }).then(res => res.data.data)
+  //       )
+  //     ); 
+  //     setFullData(detailedResponses);
+  //   } catch (err) {
+  //     toast.error("Failed to sync response data");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+
+
+
   const fetchData = async () => {
-    setLoading(true);
-    try {
-      const formRes = await axios.get(
-        `https://formbuilder-saas-backend.onrender.com/api/dashboard/form/details/${formId}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      setFormFields(formRes.data.data.formField);
+  setLoading(true);
+  try {
+    const res = await axios.get(
+      `https://formbuilder-saas-backend.onrender.com/api/dashboard/form/responses/${formId}`,
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
 
-      const responsesListRes = await axios.get(
-        `https://formbuilder-saas-backend.onrender.com/api/dashboard/form/responses/${formId}`,
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
-      const list = responsesListRes.data.data;
+    const data = res.data.data;
 
-      const detailedResponses = await Promise.all(
-        list.map(resp => 
-          axios.get(`https://formbuilder-saas-backend.onrender.com/api/dashboard/form/response/${resp.formResponseId}`, {
-            headers: { Authorization: `Bearer ${token}` }
-          }).then(res => res.data.data)
-        )
-      ); 
-      setFullData(detailedResponses);
-    } catch (err) {
-      toast.error("Failed to sync response data");
-    } finally {
-      setLoading(false);
-    }
-  };
+    // Columns => formFields
+    setFormFields(data.columns);
+
+    // Rows => fullData
+    const normalizedRows = data.rows.map(row => ({
+      formResponseId: row.id,
+      createdAt: row.submittedAt,
+      values: row,  // Keep all fields in 'values'
+    }));
+    setFullData(normalizedRows);
+
+  } catch (err) {
+    toast.error("Failed to sync response data");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   useEffect(() => { if (formId) fetchData(); }, [formId]);
 
-  const getResponseValue = (responseValues, fieldId) => {
-    const entry = responseValues?.find(v => v.formFieldId === fieldId);
-    if (!entry || !entry.value) return "—";
-    return Array.isArray(entry.value) ? entry.value.join(", ") : entry.value;
-  };
-    const displayedFields =
+  // const getResponseValue = (responseValues, fieldId) => {
+  //   const entry = responseValues?.find(v => v.formFieldId === fieldId);
+  //   if (!entry || !entry.value) return "—";
+  //   return Array.isArray(entry.value) ? entry.value.join(", ") : entry.value;
+  // };
+
+  const getResponseValue = (values, key) => {
+  if (!values || values[key] === undefined || values[key] === null) return "—";
+  return Array.isArray(values[key]) ? values[key].join(" | ") : values[key];
+};
+
+  //   const displayedFields =
+  // selectedField === "ALL"
+  //   ? formFields
+  //   : formFields.filter(
+  //       (f) => f.key === selectedField
+  //     );
+  const displayedFields =
   selectedField === "ALL"
     ? formFields
-    : formFields.filter(
-        (f) => f.formFieldId === selectedField
-      );
+    : formFields.filter(f => f.key === selectedField);
 
 
-  const filteredData = fullData.filter((resp) => {
-  // Search filter (existing)
+
+//   const filteredData = fullData.filter((resp) => {
+//   // Search filter (existing)
+//   const matchesSearch = searchTerm
+//     ? resp.responseValue
+//         ?.map(e => e.value?.toString().toLowerCase() || "")
+//         .join(" ")
+//         .includes(searchTerm.toLowerCase())
+//     : true;
+
+//   // Question filter (NEW)
+//   const matchesQuestion =
+//     selectedField === "ALL"
+//       ? true
+//       : resp.responseValue?.some(
+//           (v) => v.formFieldId === selectedField && v.value
+//         );
+
+//   return matchesSearch && matchesQuestion;
+// });
+
+const filteredData = fullData.filter(resp => {
+  // Search filter
   const matchesSearch = searchTerm
-    ? resp.responseValue
-        ?.map(e => e.value?.toString().toLowerCase() || "")
+    ? Object.values(resp.values)
+        .map(v => (v?.toString() || "").toLowerCase())
         .join(" ")
         .includes(searchTerm.toLowerCase())
     : true;
 
-  // Question filter (NEW)
-  const matchesQuestion =
+  // Question filter
+  const matchesField =
     selectedField === "ALL"
       ? true
-      : resp.responseValue?.some(
-          (v) => v.formFieldId === selectedField && v.value
-        );
+      : resp.values[selectedField];
 
-  return matchesSearch && matchesQuestion;
+  return matchesSearch && matchesField;
 });
+
 
 
   const { currentData, currentPage, totalPages, nextPage, prevPage } = usePagination(filteredData, 10); 
@@ -135,19 +197,29 @@ const Response = () => {
   ];
 
   // 2. Map the data rows
-  const rows = filteredData.map((resp) => {
-    return [
-      resp.formResponseId,
-      // For each header field, find the corresponding value in the response
-      ...formFields.map(field => {
-        const entry = resp.responseValue?.find(v => v.formFieldId === field.formFieldId);
-        if (!entry) return "—";
-        // Handle arrays (for checkboxes) by joining with a pipe | or space
-        return Array.isArray(entry.value) ? entry.value.join(" | ") : `"${entry.value}"`;
-      }),
-      new Date(resp.createdAt).toLocaleString()
-    ];
-  });
+  // const rows = filteredData.map((resp) => {
+  //   return [
+  //     resp.formResponseId,
+  //     // For each header field, find the corresponding value in the response
+  //     ...formFields.map(field => {
+  //       const entry = resp.responseValue?.find(v => v.formFieldId === field.formFieldId);
+  //       if (!entry) return "—";
+  //       // Handle arrays (for checkboxes) by joining with a pipe | or space
+  //       return Array.isArray(entry.value) ? entry.value.join(" | ") : `"${entry.value}"`;
+  //     }),
+  //     new Date(resp.createdAt).toLocaleString()
+  //   ];
+  // });
+
+  const rows = filteredData.map(resp => [
+  resp.formResponseId,
+  ...formFields.map(f => {
+    const val = resp.values[f.key];
+    return Array.isArray(val) ? val.join(" | ") : val ?? "—";
+  }),
+  new Date(resp.createdAt).toLocaleString()
+]);
+
 
   // 3. Combine headers and rows into a CSV string
   // Use map(row => row.join(",")) to turn arrays into comma-separated strings
@@ -172,9 +244,9 @@ const Response = () => {
   toast.success("CSV Downloaded!");
 };
    // Count total answered fields from first response
-const answeredFields = fullData.length > 0 
-  ? fullData[0].responseValue?.length || 0
-  : 0;
+// const answeredFields = fullData.length > 0 
+//   ? fullData[0].responseValue?.length || 0
+//   : 0;
 
   return (
     <div className={`min-h-screen relative font-sans transition-colors duration-500 overflow-hidden pb-20 ${theme.pageBg}`}>
@@ -270,7 +342,7 @@ const answeredFields = fullData.length > 0
 >
   <option value="ALL">All Questions</option>
   {formFields.map((f) => (
-    <option key={f.formFieldId} value={f.formFieldId}>
+    <option key={f.key} value={f.key}>
       {f.label}
     </option>
   ))}
@@ -298,7 +370,7 @@ const answeredFields = fullData.length > 0
                   <th className="px-6 py-5 text-sm font-bold">No.</th>
                   <th className="px-6 py-5 text-sm font-bold">Submission ID</th>
                    <th className="px-6 py-5 text-sm font-bold">Timestamp</th>
-                  {displayedFields.map(f => <th key={f.formFieldId} className="px-6 py-5 text-sm font-bold">{f.label}</th>)}
+                  {displayedFields.map(f => <th key={f.key} className="px-6 py-5 text-sm font-bold">{f.label}</th>)}
                  
                 </tr>
               </thead>
@@ -347,15 +419,25 @@ const answeredFields = fullData.length > 0
                   
                     {displayedFields.map(f => (
                      <td className="px-6 py-4">
-  <span
+  {/* <span
     className={`text-sm font-medium ${
       getResponseValue(resp.responseValue, f.formFieldId) === "—"
         ? "opacity-30"
         : ""
     }`}
   >
-    {getResponseValue(resp.responseValue, f.formFieldId)}
-  </span>
+    {/* {getResponseValue(resp.responseValue, f.formFieldId)} */}
+    {/* getResponseValue(resp.values, f.key)
+
+  </span> */} 
+  <span
+  className={`text-sm font-medium ${
+    getResponseValue(resp.values, f.key) === "—" ? "opacity-30" : ""
+  }`}
+>
+  {getResponseValue(resp.values, f.key)}
+</span>
+
 </td>
 
                     ))}
@@ -402,3 +484,8 @@ const answeredFields = fullData.length > 0
 };
 
 export default Response;
+
+
+
+
+
