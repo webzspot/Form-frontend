@@ -4,8 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   AreaChart, 
   Area, 
-  XAxis, 
-  YAxis, 
+  XAxis,  
   CartesianGrid, 
   Tooltip, 
   ResponsiveContainer 
@@ -26,13 +25,6 @@ import {
   FiMoon,
   FiSun
 } from "react-icons/fi";
-
-// --- Custom Star Icon ---
-const Sparkle = ({ className }) => (
-  <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
-    <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z" />
-  </svg>
-);
 
 const UserReport = () => {
   const token = localStorage.getItem("token");

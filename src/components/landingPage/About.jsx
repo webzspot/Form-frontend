@@ -2,10 +2,30 @@ import React, { useState } from 'react'
 import { FaChartPie,FaPlug,FaMousePointer,FaMobile,FaShieldAlt } from "react-icons/fa";
 import {MdOutlinePalette} from "react-icons/md";
 import { motion,AnimatePresence } from "framer-motion";
-
+import Subscription from '../user/Subscription';
+import { useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
+import { animate } from "framer-motion";
 const About = () => {
   const [hasInteracted, setHasInteracted] = useState(false);
+  const location=useLocation()
 
+   useEffect(() => {
+  if (location.state?.scrollTo === "subscription") {
+    const section = document.getElementById("subscription-cards");
+
+    if (!section) return;
+
+    const start = window.scrollY;
+    const end = section.offsetTop;
+
+    animate(start, end, {
+      duration: 1.8, // increase for slower scroll
+      ease: "easeInOut",
+      onUpdate: (value) => window.scrollTo(0, value),
+    });
+  }
+}, [location]);
   const features = [
   {
     icon: <FaMousePointer />,
@@ -296,6 +316,10 @@ return (
 </div>
 </div>
    </div>
+
+<div id="subscription">
+  <Subscription/>
+</div>
    </section>
 
    
