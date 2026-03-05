@@ -3,6 +3,8 @@ import Nav from './components/landingPage/Nav'
 import Hero from './components/landingPage/Hero'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import  About  from './components/landingPage/About.jsx'
+import Features from './components/landingPage/Features.jsx';
+import Testimonials from './components/landingPage/Testimonials.jsx';
 import Footer from './components/landingPage/Footer.jsx'
 
 
@@ -27,6 +29,7 @@ import Apidocumentation from './components/user/Apidocumentation.jsx';
 import ApiReference from './components/user/ApiReference.jsx';
 import Subscription from './components/user/Subscription.jsx';
 import Plandetail from './components/user/Plandetail.jsx';
+
 const App = () => {
 
   return (
@@ -50,13 +53,16 @@ const App = () => {
  <Routes>
    <Route
   path="/" element={
-    <>
+    <div className='w-full overflow-hidden'>
       <Nav/>
       <Hero/>
-     <About/>
+       <About/>
+      <Features/>
+      <Testimonials/>
+
      <Footer/>
      
-     </>
+     </div>
   }
      />
   

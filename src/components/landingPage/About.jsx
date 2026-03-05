@@ -1,328 +1,431 @@
-import React, { useState } from 'react'
-import { FaChartPie,FaPlug,FaMousePointer,FaMobile,FaShieldAlt } from "react-icons/fa";
-import {MdOutlinePalette} from "react-icons/md";
-import { motion,AnimatePresence } from "framer-motion";
-import Subscription from '../user/Subscription';
-import { useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
-import { animate } from "framer-motion";
-const About = () => {
-  const [hasInteracted, setHasInteracted] = useState(false);
-  const location=useLocation()
+// import React, { useState } from 'react'
+// import { FaChartPie,FaPlug,FaMousePointer,FaMobile,FaShieldAlt } from "react-icons/fa";
+// import {MdOutlinePalette} from "react-icons/md";
+// import { motion,AnimatePresence } from "framer-motion";
+// import Subscription from '../user/Subscription';
+// import { useLocation } from 'react-router-dom';
+// import { useEffect } from 'react';
+// import { animate } from "framer-motion";
+// const About = () => {
+//   const [hasInteracted, setHasInteracted] = useState(false);
+//   const location=useLocation()
 
-   useEffect(() => {
-  if (location.state?.scrollTo === "subscription") {
-    const section = document.getElementById("subscription-cards");
+//    useEffect(() => {
+//   if (location.state?.scrollTo === "subscription") {
+//     const section = document.getElementById("subscription-cards");
 
-    if (!section) return;
+//     if (!section) return;
 
-    const start = window.scrollY;
-    const end = section.offsetTop;
+//     const start = window.scrollY;
+//     const end = section.offsetTop;
 
-    animate(start, end, {
-      duration: 1.8, // increase for slower scroll
-      ease: "easeInOut",
-      onUpdate: (value) => window.scrollTo(0, value),
-    });
-  }
-}, [location]);
-  const features = [
-  {
-    icon: <FaMousePointer />,
-    title: "Drag & Drop Builder",
-    text: "Intuitve visual editor that makes form creation effortless. Simply drag elements and customize to your needs."
-  },
-  {
-    icon: <MdOutlinePalette />,
-    title: "Custom Branding",
-    text: "Make your brand perfectly with custom colors, fonts, logos, and themes. Make every form uniquely yours."
-  },
+//     animate(start, end, {
+//       duration: 1.8, // increase for slower scroll
+//       ease: "easeInOut",
+//       onUpdate: (value) => window.scrollTo(0, value),
+//     });
+//   }
+// }, [location]);
+//   const features = [
+//   {
+//     icon: <FaMousePointer />,
+//     title: "Drag & Drop Builder",
+//     text: "Intuitve visual editor that makes form creation effortless. Simply drag elements and customize to your needs."
+//   },
+//   {
+//     icon: <MdOutlinePalette />,
+//     title: "Custom Branding",
+//     text: "Make your brand perfectly with custom colors, fonts, logos, and themes. Make every form uniquely yours."
+//   },
  
-  {
-    icon: <FaChartPie />,
-    title: "Real-time Analytics",
-    text: "Track form submissions, conversion rates, and user behavior with powerful analytics tools."
-  },
+//   {
+//     icon: <FaChartPie />,
+//     title: "Real-time Analytics",
+//     text: "Track form submissions, conversion rates, and user behavior with powerful analytics tools."
+//   },
    
-  {
-    icon: <FaPlug />,
-    title: "Seamless Integrations",
-    text: "Connect with 1000+ apps including Slack, Google Sheets, Mailchimp, Zapier, and more."
-  },
-  {
-    icon: < FaShieldAlt/>,
-    title: "Enterprise Security",
-    text: "Bank-level encryption, GDPR compliance, and advanced security features to protect your data."
-  },
-  {
-    icon: <FaMobile />,
+//   {
+//     icon: <FaPlug />,
+//     title: "Seamless Integrations",
+//     text: "Connect with 1000+ apps including Slack, Google Sheets, Mailchimp, Zapier, and more."
+//   },
+//   {
+//     icon: < FaShieldAlt/>,
+//     title: "Enterprise Security",
+//     text: "Bank-level encryption, GDPR compliance, and advanced security features to protect your data."
+//   },
+//   {
+//     icon: <FaMobile />,
   
-    title: "Mobile Responsive",
-    text: "Forms that look perfect on any device. Optimized for desktop, tablet, and mobile experiences."
-  }
+//     title: "Mobile Responsive",
+//     text: "Forms that look perfect on any device. Optimized for desktop, tablet, and mobile experiences."
+//   }
  
-];
+// ];
 
-    const testimonials = [
-  {
-    stars: "★★★★★",
-    text: "FormCraft transformed how we collect customer feedback. The analytics are incredible!",
-    name: "Sarah Johnson",
-    role: "Managing Director",
-    img: "/img1.jpeg"
-  },
-  {
-    stars: "★★★★★",
-    text: "Best form builder we've used. The integrations save us hours every week.",
-    name: "Michael Chen",
-    role: "Product Manager",
-    img: "/img2.jpeg"
-  },
-  {
-    stars: "★★★★★",
-    text: "Simple, powerful, and beautiful. FormCraft is a game-changer for our business.",
-    name: "Emily Rodriguez",
-    role: "CEO",
-    img: "/img3.jpeg"
-  }
-];
-    const aboutform=[
-      {
-        heading:"50K+",
-        text:"Active Users"
-},
-{
-        heading:"2M+",
-        text:"Forms Created"
-},
-{
-        heading:"99.9%",
-        text:"Uptime"
-},
-{
-        heading:"24/7",
-        text:"Support"
-}
-    ]
-  const[index,setIndex]=useState(0)
-  const prev = () =>{
-      setHasInteracted(true);
+//     const testimonials = [
+//   {
+//     stars: "★★★★★",
+//     text: "FormCraft transformed how we collect customer feedback. The analytics are incredible!",
+//     name: "Sarah Johnson",
+//     role: "Managing Director",
+//     img: "/img1.jpeg"
+//   },
+//   {
+//     stars: "★★★★★",
+//     text: "Best form builder we've used. The integrations save us hours every week.",
+//     name: "Michael Chen",
+//     role: "Product Manager",
+//     img: "/img2.jpeg"
+//   },
+//   {
+//     stars: "★★★★★",
+//     text: "Simple, powerful, and beautiful. FormCraft is a game-changer for our business.",
+//     name: "Emily Rodriguez",
+//     role: "CEO",
+//     img: "/img3.jpeg"
+//   }
+// ];
+//     const aboutform=[
+//       {
+//         heading:"50K+",
+//         text:"Active Users"
+// },
+// {
+//         heading:"2M+",
+//         text:"Forms Created"
+// },
+// {
+//         heading:"99.9%",
+//         text:"Uptime"
+// },
+// {
+//         heading:"24/7",
+//         text:"Support"
+// }
+//     ]
+//   const[index,setIndex]=useState(0)
+//   const prev = () =>{
+//       setHasInteracted(true);
 
-  setIndex((prevIndex) => (prevIndex - 1 + testimonials.length) % testimonials.length);}
-const next = () =>{
-    setHasInteracted(true);
+//   setIndex((prevIndex) => (prevIndex - 1 + testimonials.length) % testimonials.length);}
+// const next = () =>{
+//     setHasInteracted(true);
 
-  setIndex((prevIndex) => (prevIndex + 1) % testimonials.length);}
+//   setIndex((prevIndex) => (prevIndex + 1) % testimonials.length);}
 
-const prevIndex = (index - 1 + testimonials.length) % testimonials.length;
-const nextIndex = (index + 1) % testimonials.length;
-return (
+// const prevIndex = (index - 1 + testimonials.length) % testimonials.length;
+// const nextIndex = (index + 1) % testimonials.length;
+// return (
    
-  <section id="about">
-    <div className="bg-purple-100 pb-6">
-         <div className='container mx-auto'>
-          <div className='flex gap-4  max-w-7xl mx-auto justify-between  p-6'>
-              {
-                aboutform.map((item,index)=>
-                <div key={index} className='flex flex-col '>
-                  <h1 className=' text-lg md:text-3xl font-bold text-purple-800 text-center'>{item.heading}</h1>
-                  <p className=' text-sm md:text-base text-gray-600 text-center'>{item.text}</p>
+//   <section id="about">
+//     <div className="bg-purple-100 pb-6">
+//          <div className='container mx-auto'>
+//           <div className='flex gap-4  max-w-7xl mx-auto justify-between  p-6'>
+//               {
+//                 aboutform.map((item,index)=>
+//                 <div key={index} className='flex flex-col '>
+//                   <h1 className=' text-lg md:text-3xl font-bold text-purple-800 text-center'>{item.heading}</h1>
+//                   <p className=' text-sm md:text-base text-gray-600 text-center'>{item.text}</p>
 
-                  </div>
+//                   </div>
                   
-                  )
-              }
-            </div>
-         </div>
-    {/*Features */}
-        <div className='bg-purple-50  p-2'>
-            <motion.div
-  initial={{ opacity: 0, y: 20 }}
-  whileInView={{ opacity: 1, y: 0 }}
-  transition={{ duration: 1 }}
-  viewport={{ once: true }}>
-  <div  id='features' className='bg-purple-500 rounded-full p-1 w-fit mt-6 flex flex-col justify-center items-center mx-auto'>
-    <p className='text-white text-sm text-center p-2'>Powerful Features</p>
-  </div>
-<h2 className='text-2xl mt-4 font-bold text-center'>
-    Everything You Need to Build{" "}
-    <span className='relative bg-gradient-to-r bg-clip-text text-transparent from-purple-600 via-purple-800 to-violet-950 '>
-      Amazing Forms
-      <img
-      src="/Line Image.png" 
-      alt="underline"
-      className="absolute left-0 -bottom-1 w-full h-auto"
-    />
-    </span>
-  </h2>
-<p className='text-gray-500 text-center mt-4'>
-    From simple contact forms to complex surveys, our platform has all the tools you need.
-  </p>
-</motion.div>
+//                   )
+//               }
+//             </div>
+//          </div>
+//     {/*Features */}
+//         <div className='bg-purple-50  p-2'>
+//             <motion.div
+//   initial={{ opacity: 0, y: 20 }}
+//   whileInView={{ opacity: 1, y: 0 }}
+//   transition={{ duration: 1 }}
+//   viewport={{ once: true }}>
+//   <div  id='features' className='bg-purple-500 rounded-full p-1 w-fit mt-6 flex flex-col justify-center items-center mx-auto'>
+//     <p className='text-white text-sm text-center p-2'>Powerful Features</p>
+//   </div>
+// <h2 className='text-2xl mt-4 font-bold text-center'>
+//     Everything You Need to Build{" "}
+//     <span className='relative bg-gradient-to-r bg-clip-text text-transparent from-purple-600 via-purple-800 to-violet-950 '>
+//       Amazing Forms
+//       <img
+//       src="/Line Image.png" 
+//       alt="underline"
+//       className="absolute left-0 -bottom-1 w-full h-auto"
+//     />
+//     </span>
+//   </h2>
+// <p className='text-gray-500 text-center mt-4'>
+//     From simple contact forms to complex surveys, our platform has all the tools you need.
+//   </p>
+// </motion.div>
 
-<div className='grid grid-cols-1 md:grid-cols-2   mt-4 lg:grid-cols-3   justify-items-center p-4 gap-4 max-w-4xl lg:max-w-4xl md:max-w-2xl  mx-auto'>
+// <div className='grid grid-cols-1 md:grid-cols-2   mt-4 lg:grid-cols-3   justify-items-center p-4 gap-4 max-w-4xl lg:max-w-4xl md:max-w-2xl  mx-auto'>
             
-             {
-              features.map((item,index)=> 
-< motion.div key={index} initial={{ opacity: 0, x: index % 2 === 0 ? -40 : 40,rotate: -3, scale: 0.95 }} whileInView={{opacity: 1, 
-      x: 0,
-      rotate: 0,         
-        scale: 1  
-    }}
+//              {
+//               features.map((item,index)=> 
+// < motion.div key={index} initial={{ opacity: 0, x: index % 2 === 0 ? -40 : 40,rotate: -3, scale: 0.95 }} whileInView={{opacity: 1, 
+//       x: 0,
+//       rotate: 0,         
+//         scale: 1  
+//     }}
 
-    transition={{ 
-      duration: 0.5, 
-      delay: index * 0.1 
-    }}
+//     transition={{ 
+//       duration: 0.5, 
+//       delay: index * 0.1 
+//     }}
 
-    viewport={{ once:true}}
-                className='bg-white p-2 shadow-md h-56   shadow-gray-400 rounded-xl w-64 md:w-72 lg:w-64'>
-            <div className='w-8 h-8 m-4  rounded-md  bg-purple-200 text-purple-800 p-2  flex justify-center items-center'>{item.icon}</div>
+//     viewport={{ once:true}}
+//                 className='bg-white p-2 shadow-md h-56   shadow-gray-400 rounded-xl w-64 md:w-72 lg:w-64'>
+//             <div className='w-8 h-8 m-4  rounded-md  bg-purple-200 text-purple-800 p-2  flex justify-center items-center'>{item.icon}</div>
               
-                <h1 className='text-lg font-semibold m-4'>{item.title}</h1>
-                <p className='text-sm text-gray-600 m-4'>{item.text}</p>
-                 </motion.div>
-              )
+//                 <h1 className='text-lg font-semibold m-4'>{item.title}</h1>
+//                 <p className='text-sm text-gray-600 m-4'>{item.text}</p>
+//                  </motion.div>
+//               )
 
-        }
-             </div>
-           </div>
-           {/*Testimonals */}
-           <div className=' max-w-2xl lg:max-w-7xl  mx-auto rounded-xl p-2 mt-6 '>
-             <h1 className=' text-lg md:text-2xl font-bold text-center m-4'>Trusted by Teams Worldwide</h1>
-             <p className=' text-sm md:text-base text-gray-600 text-center'>See what our customers are saying about FormCraft</p>
+//         }
+//              </div>
+//            </div>
+//            {/*Testimonals */}
+//            <div className=' max-w-2xl lg:max-w-7xl  mx-auto rounded-xl p-2 mt-6 '>
+//              <h1 className=' text-lg md:text-2xl font-bold text-center m-4'>Trusted by Teams Worldwide</h1>
+//              <p className=' text-sm md:text-base text-gray-600 text-center'>See what our customers are saying about FormCraft</p>
          
-<div className="hidden lg:flex justify-center items-center mt-6 overflow-hidden h-[260px] ">
+// <div className="hidden lg:flex justify-center items-center mt-6 overflow-hidden h-[260px] ">
 
-      {/* Previous card */}
-      <div className="rounded-xl p-4 w-60 scale-95 flex-shrink-0 flex min-h-[200px]
- flex-col mx-4 opacity-50 ">
+//       {/* Previous card */}
+//       <div className="rounded-xl p-4 w-60 scale-95 flex-shrink-0 flex min-h-[200px]
+//  flex-col mx-4 opacity-50 ">
         
-        <p className="mt-2 text-sm text-left">{testimonials[prevIndex].text}</p>
-        <div className="flex gap-2 mt-2 ">
-          <img src={testimonials[prevIndex].img} className="rounded-full  w-10 h-10 object-cover" />
-          <div className="flex flex-col">
-            <h4 className="font-bold">{testimonials[prevIndex].name}</h4>
-            <p className="text-sm">{testimonials[prevIndex].role}</p>
-            <p className="text-yellow-500 text-lg">{testimonials[prevIndex].stars}</p>
-          </div>
-        </div>
-      </div>
+//         <p className="mt-2 text-sm text-left">{testimonials[prevIndex].text}</p>
+//         <div className="flex gap-2 mt-2 ">
+//           <img src={testimonials[prevIndex].img} className="rounded-full  w-10 h-10 object-cover" />
+//           <div className="flex flex-col">
+//             <h4 className="font-bold">{testimonials[prevIndex].name}</h4>
+//             <p className="text-sm">{testimonials[prevIndex].role}</p>
+//             <p className="text-yellow-500 text-lg">{testimonials[prevIndex].stars}</p>
+//           </div>
+//         </div>
+//       </div>
 
-      {/* Middle card */}
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={testimonials[index].name}
-          initial={hasInteracted ? { x: 100, opacity: 0 } : { x: 0, opacity: 1 }}
-  animate={hasInteracted ? { x: 0, opacity: 1 } : { x: 0, opacity: 1 }}
-  exit={hasInteracted ? { x: -100, opacity: 0 } : { x: 0, opacity: 1 }}
+//       {/* Middle card */}
+//       <AnimatePresence mode="wait">
+//         <motion.div
+//           key={testimonials[index].name}
+//           initial={hasInteracted ? { x: 100, opacity: 0 } : { x: 0, opacity: 1 }}
+//   animate={hasInteracted ? { x: 0, opacity: 1 } : { x: 0, opacity: 1 }}
+//   exit={hasInteracted ? { x: -100, opacity: 0 } : { x: 0, opacity: 1 }}
 
-  transition={{ duration: 0.3, ease: "easeInOut" }}
+//   transition={{ duration: 0.3, ease: "easeInOut" }}
 
-          className="bg-white rounded-xl p-6 w-64 flex-shrink-0 min-h-[200px]
- flex flex-col z-10 shadow-md shadow-purple-400 mx-4"
-        >
+//           className="bg-white rounded-xl p-6 w-64 flex-shrink-0 min-h-[200px]
+//  flex flex-col z-10 shadow-md shadow-purple-400 mx-4"
+//         >
          
-          <p className="mt-2 text-base text-left">{testimonials[index].text}</p>
-          <div className="flex gap-2 mt-2  ">
-            <img src={testimonials[index].img} className="rounded-full w-12  h-12 object-cover flex-shrink-0" />
-            <div className="flex flex-col">
-              <h4 className="font-bold">{testimonials[index].name}</h4>
-              <p className="text-sm">{testimonials[index].role}</p>
-               <p className="text-yellow-500  text-lg">{testimonials[index].stars}</p>
-            </div>
-          </div>
-        </motion.div>
-      </AnimatePresence>
+//           <p className="mt-2 text-base text-left">{testimonials[index].text}</p>
+//           <div className="flex gap-2 mt-2  ">
+//             <img src={testimonials[index].img} className="rounded-full w-12  h-12 object-cover flex-shrink-0" />
+//             <div className="flex flex-col">
+//               <h4 className="font-bold">{testimonials[index].name}</h4>
+//               <p className="text-sm">{testimonials[index].role}</p>
+//                <p className="text-yellow-500  text-lg">{testimonials[index].stars}</p>
+//             </div>
+//           </div>
+//         </motion.div>
+//       </AnimatePresence>
 
-      {/* Next card */}
-      <div className="rounded-xl p-4 w-60 scale-95 min-h-[200px]
- flex-shrink-0 flex flex-col mx-4 opacity-50">
+//       {/* Next card */}
+//       <div className="rounded-xl p-4 w-60 scale-95 min-h-[200px]
+//  flex-shrink-0 flex flex-col mx-4 opacity-50">
       
-        <p className="mt-2 text-sm text-left">{testimonials[nextIndex].text}</p>
-        <div className="flex gap-2 mt-2">
-          <img src={testimonials[nextIndex].img} className="rounded-full  w-10 h-10 object-cover" />
-          <div className="flex flex-col">
-            <h4 className="font-bold">{testimonials[nextIndex].name}</h4>
-            <p className="text-sm">{testimonials[nextIndex].role}</p>
-              <p className="text-yellow-500  text-lg">{testimonials[nextIndex].stars}</p>
-          </div>
-        </div>
-      </div>
-      {/* Arrows */}
+//         <p className="mt-2 text-sm text-left">{testimonials[nextIndex].text}</p>
+//         <div className="flex gap-2 mt-2">
+//           <img src={testimonials[nextIndex].img} className="rounded-full  w-10 h-10 object-cover" />
+//           <div className="flex flex-col">
+//             <h4 className="font-bold">{testimonials[nextIndex].name}</h4>
+//             <p className="text-sm">{testimonials[nextIndex].role}</p>
+//               <p className="text-yellow-500  text-lg">{testimonials[nextIndex].stars}</p>
+//           </div>
+//         </div>
+//       </div>
+//       {/* Arrows */}
   
       
-    </div>
-    <div className=" hidden lg:flex   gap-6 justify-center items-center mt-4">
-    <button
-      onClick={prev}
-      className="bg-purple-600 text-white w-10 h-10  rounded-full flex justify-center items-center shadow"
-    >
-      ‹
-    </button>
+//     </div>
+//     <div className=" hidden lg:flex   gap-6 justify-center items-center mt-4">
+//     <button
+//       onClick={prev}
+//       className="bg-purple-600 text-white w-10 h-10  rounded-full flex justify-center items-center shadow"
+//     >
+//       ‹
+//     </button>
 
-    <button
-      onClick={next}
-      className="bg-purple-600 text-white w-10 h-10 rounded-full flex justify-center items-center shadow"
-    >
-      ›
-    </button>
-  </div>
+//     <button
+//       onClick={next}
+//       className="bg-purple-600 text-white w-10 h-10 rounded-full flex justify-center items-center shadow"
+//     >
+//       ›
+//     </button>
+//   </div>
   
 
 
 
-{/* Mobile and Tab Carousel */}
-<div className="flex lg:hidden  flex-col items-center mt-6 relative ">
+// {/* Mobile and Tab Carousel */}
+// <div className="flex lg:hidden  flex-col items-center mt-6 relative ">
 
-  <motion.div
-     key={index}
-           initial={hasInteracted ? { x: 100, opacity: 0 } : { x: 0, opacity: 1 }}
-  animate={hasInteracted ? { x: 0, opacity: 1 } : { x: 0, opacity: 1 }}
-  exit={hasInteracted ? { x: -100, opacity: 0 } : { x: 0, opacity: 1 }}
-  transition={{ duration: 0.2, ease: "easeInOut" }}
-    className="bg-gray-100 h-44 rounded-xl p-4 w-64 mx-6 shadow-md shadow-purple-400 "
-  >
+//   <motion.div
+//      key={index}
+//            initial={hasInteracted ? { x: 100, opacity: 0 } : { x: 0, opacity: 1 }}
+//   animate={hasInteracted ? { x: 0, opacity: 1 } : { x: 0, opacity: 1 }}
+//   exit={hasInteracted ? { x: -100, opacity: 0 } : { x: 0, opacity: 1 }}
+//   transition={{ duration: 0.2, ease: "easeInOut" }}
+//     className="bg-gray-100 h-44 rounded-xl p-4 w-64 mx-6 shadow-md shadow-purple-400 "
+//   >
     
-    <p className="mt-2 text-sm text-left">{testimonials[index].text}</p>
+//     <p className="mt-2 text-sm text-left">{testimonials[index].text}</p>
 
-    <div className="flex gap-2 mt-2  ">
-      <img src={testimonials[index].img} className="rounded-full  w-10 h-10 object-cover flex-shrink-0" />
-      <div className="flex flex-col ">
-        <h4 className="font-bold">{testimonials[index].name}</h4>
-        <p className="text-sm">{testimonials[index].role}</p>
-        <p className="text-yellow-500  text-lg">{testimonials[index].stars}</p>
-      </div>
-    </div>
-  </motion.div>
+//     <div className="flex gap-2 mt-2  ">
+//       <img src={testimonials[index].img} className="rounded-full  w-10 h-10 object-cover flex-shrink-0" />
+//       <div className="flex flex-col ">
+//         <h4 className="font-bold">{testimonials[index].name}</h4>
+//         <p className="text-sm">{testimonials[index].role}</p>
+//         <p className="text-yellow-500  text-lg">{testimonials[index].stars}</p>
+//       </div>
+//     </div>
+//   </motion.div>
 
-  {/* Arrows */}
-  <div className="flex gap-6 mt-4 justify-center items-center">
-    <button
-      onClick={prev}
-      className="bg-purple-600 text-white w-8 h-8 rounded-full flex justify-center items-center shadow"
-    >
-      ‹
-    </button>
+//   {/* Arrows */}
+//   <div className="flex gap-6 mt-4 justify-center items-center">
+//     <button
+//       onClick={prev}
+//       className="bg-purple-600 text-white w-8 h-8 rounded-full flex justify-center items-center shadow"
+//     >
+//       ‹
+//     </button>
 
-    <button
-      onClick={next}
-      className="bg-purple-600 text-white w-8 h-8 rounded-full flex justify-center items-center shadow"
-    >
-      ›
-    </button>
-  </div>
+//     <button
+//       onClick={next}
+//       className="bg-purple-600 text-white w-8 h-8 rounded-full flex justify-center items-center shadow"
+//     >
+//       ›
+//     </button>
+//   </div>
 
-</div>
-</div>
-   </div>
+// </div>
+// </div>
+//    </div>
 
-<div id="subscription">
-  <Subscription/>
-</div>
-   </section>
+// <div id="subscription">
+//   <Subscription/>
+// </div>
+//    </section>
 
    
+//   )
+// }
+
+// export default About
+
+
+
+
+
+
+
+
+import React from 'react'
+import { HiArrowRight } from 'react-icons/hi'
+const About = () => {
+
+
+  const whyData = [
+    {
+      id: "01",
+      title: "Built for speed",
+      desc: "We obsess over performance so your forms load instantly, everywhere. Sub-second render times on any device."
+    },
+    {
+      id: "02",
+      title: "Designed for humans",
+      desc: "Every interaction is crafted to reduce friction. Higher completion rates mean more data for your business."
+    },
+    {
+      id: "03",
+      title: "Scales with you",
+      desc: "From your first form to your millionth submission, the platform grows alongside your team without breaking a sweat."
+    }
+  ]
+  return (
+    <section className='py-20 md:py-26   w-full bg-[#FCFCFC] relative px-6'>
+
+
+    <div className='max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2'>
+
+      {/*First Container */}
+       <div className=''>
+          
+            <p className="text-[#10B77F]  font-['DM_Sans']  font-semibold text-sm leading-5 tracking-widest align-middle uppercase">Why FormCraft</p>
+                     
+          <h2 className="text-[#14181F] font-bold  max-w-70 mt-4 text-4xl font-['Space_Grotesk'] leading-11 tracking-tighter align-middle">
+           We think forms
+deserve better
+          </h2>
+          <p className="text-[#737B8C]   font-['DM_Sans'] font-normal text-base  max-w-100 leading-6 mt-4">Most form tools are stuck in 2010. We started FormCraft
+because we believed data collection should be as thoughtful
+as the products it powers.</p>
+
+
+<a className="text-[#10B77F] font-semibold font-['DM_Sans'] mt-4 text-sm leading-relaxed  inline-flex items-center cursor-pointer gap-2 hover:gap-3 transition-all">Read our story <HiArrowRight /></a>
+       </div>
+
+       {/*Second Container */}
+       <div className='border-l-2  mt-4 md:mt-0 border-[#E5E7EB]  '>
+
+        <div className='flex flex-col py-6 	 gap-12'>
+          {
+            whyData.map((item,index)=>{
+              return(
+                <div key={index} className='flex gap-6 pl-5'>
+                  <div className="md:w-8 md:h-8 w-10 h-6 bg-[#10B77F1A] rounded-md flex items-center justify-center border border-white">
+                  
+                  <span className="text-[#10B77F] font-bold text-xs font-['DM_Sans']">
+                    {item.id}
+                  </span>
+                  
+                </div>
+
+                <div className='flex flex-col'>
+                      
+                <h3 className="text-[#14181F] font-bold text-base font-['Space_Grotesk'] leading-6">
+                  {item.title}
+                </h3>
+
+               
+                <p className="text-[#737B8C] font-['DM_Sans'] 	max-w-xl font-normal text-base leading-6 mt-1 ">
+                  {item.desc}
+                </p>
+             </div>
+              </div>
+                 
+              )
+            })
+          }
+
+        </div>
+
+
+
+
+
+       </div>
+
+    </div>
+
+
+
+    </section>
   )
 }
 
