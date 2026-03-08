@@ -27,6 +27,8 @@ import Apidocumentation from './components/user/Apidocumentation.jsx';
 import ApiReference from './components/user/ApiReference.jsx';
 import Subscription from './components/user/Subscription.jsx';
 import Plandetail from './components/user/Plandetail.jsx';
+import Features from './components/landingPage/Features.jsx';
+import Testimonials from './components/landingPage/Testimonials.jsx';
 const App = () => {
 
   return (
@@ -48,12 +50,16 @@ const App = () => {
     <BrowserRouter>
    
  <Routes>
+
    <Route
   path="/" element={
     <>
       <Nav/>
+
       <Hero/>
      <About/>
+     <Features/>
+     <Testimonials/>
      <Footer/>
      
      </>
