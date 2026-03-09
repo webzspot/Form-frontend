@@ -31,9 +31,8 @@ container.style.margin = "0 auto";
   // Create iframe to load the actual public form
   const iframe = document.createElement("iframe");
    
-  const baseUrl = script.src.includes("localhost")
-  ? "http://localhost:5173"
-  : "https://form-saas.netlify.app";
+  const baseUrl = "https://form-saas.netlify.app";
+
  
 
 

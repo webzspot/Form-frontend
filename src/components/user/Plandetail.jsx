@@ -75,11 +75,13 @@ const cancelplandetail = async () => {
   try {
     const res = await axios.post(
       `${API_BASE}/subscription/cancel`,
-      {}, // 👈 empty body
+      {}, 
       {
         headers: { Authorization: `Bearer ${token}` },
       }
     );
+        window.location.reload();
+
 
     console.log("Cancel success:", res.data);
   } catch (err) {
@@ -144,7 +146,7 @@ const cancelplandetail = async () => {
                 </div>
 
                 <div className="flex gap-3">
-                    <Link to={"/"}>
+                    <Link to={"/"} state={{scrollTo:"subscription"}}>
                   <button className="bg-violet-600 hover:bg-violet-700 text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 transition-all active:scale-95 shadow-lg shadow-violet-200">
                     Upgrade Plan
                   </button>

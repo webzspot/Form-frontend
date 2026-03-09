@@ -81,6 +81,11 @@
 // export default Footer
 
 
+
+
+
+
+
 import React from 'react'
 import { HiArrowRight } from 'react-icons/hi';
 
@@ -251,3 +256,6 @@ const resourceLinks = ["Documentation", "API Reference", "Community", "Status"];
 }
 
 export default Footer
+
+
+

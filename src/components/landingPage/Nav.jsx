@@ -1,63 +1,63 @@
-// // import React, { useState } from "react";
-// // import {Menu, X } from "lucide-react";
-// // import { motion, AnimatePresence } from "framer-motion";
-// // import { Link } from 'react-router-dom';
+// import React, { useState } from "react";
+// import {Menu, X } from "lucide-react";
+// import { motion, AnimatePresence } from "framer-motion";
+// import { Link } from 'react-router-dom';
 
 
-// // const Nav = () => {
-// //   const [open, setOpen] = useState(false);
+// const Nav = () => {
+//   const [open, setOpen] = useState(false);
    
-// //   const token = localStorage.getItem("token");
-// // const role = localStorage.getItem("role");
+//   const token = localStorage.getItem("token");
+// const role = localStorage.getItem("role");
 
-// //   const scrollToSection=(id)=>{
-// //     const section=document.getElementById(id);
-// //     if(section){
-// //       section.scrollIntoView({behavior:"smooth"});
-// //     }
-// //   }
+//   const scrollToSection=(id)=>{
+//     const section=document.getElementById(id);
+//     if(section){
+//       section.scrollIntoView({behavior:"smooth"});
+//     }
+//   }
 
-// //   return (
-// //     <>
-// //       <nav className="w-full bg-white border-b border-gray-100 sticky top-0 z-50  ">
-// //         <div className="mx-auto container flex items-center justify-between py-3 px-3 sm:py-5 sm:px-6 ">
+//   return (
+//     <>
+//       <nav className="w-full bg-white border-b border-gray-100 sticky top-0 z-50  ">
+//         <div className="mx-auto container flex items-center justify-between py-3 px-3 sm:py-5 sm:px-6 ">
 
-// //           {/* Logo */}
-// //           <div className="flex items-center gap-2">
-// //             <div className="w-10 h-10 bg-[#6C3BFF] rounded-xl flex items-center justify-center">
-// //               <span className="text-white text-lg sm:text-2xl font-bold">⧉</span>
-// //             </div>
-// //             <h1 className="text-lg sm:text-2xl font-semibold text-gray-900">
-// //               FormCraft
-// //             </h1>
-// //           </div>
+//           {/* Logo */}
+//           <div className="flex items-center gap-2">
+//             <div className="w-10 h-10 bg-[#6C3BFF] rounded-xl flex items-center justify-center">
+//               <span className="text-white text-lg sm:text-2xl font-bold">⧉</span>
+//             </div>
+//             <h1 className="text-lg sm:text-2xl font-semibold text-gray-900">
+//               FormCraft
+//             </h1>
+//           </div>
 
-// //           {/* Center Menu */}
-// //           <ul className="hidden lg:flex items-center gap-8 text-[14px] font-medium text-gray-700">
+//           {/* Center Menu */}
+//           <ul className="hidden lg:flex items-center gap-8 text-[14px] font-medium text-gray-700">
             
              
-// //               <li
-// //               onClick={()=>scrollToSection("home")}
-// //                className="cursor-pointer hover:text-[#6C3BFF]">Home</li>
+//               <li
+//               onClick={()=>scrollToSection("home")}
+//                className="cursor-pointer hover:text-[#6C3BFF]">Home</li>
              
-// //               <li
-// //               onClick={()=>scrollToSection("about")}
-// //                className="cursor-pointer hover:text-[#6C3BFF]">About</li>
+//               <li
+//               onClick={()=>scrollToSection("about")}
+//                className="cursor-pointer hover:text-[#6C3BFF]">About</li>
 
 
-// //            <li className="cursor-pointer hover:text-[#6C3BFF]">Dashboard</li>
+//            <li className="cursor-pointer hover:text-[#6C3BFF]">Dashboard</li>
       
 
             
-// //             <li className="cursor-pointer hover:text-[#6C3BFF]">Templates</li>
+//             <li className="cursor-pointer hover:text-[#6C3BFF]">Templates</li>
          
 
              
-// //             <li className="cursor-pointer hover:text-[#6C3BFF]">Analytics</li>
+//             <li className="cursor-pointer hover:text-[#6C3BFF]">Analytics</li>
         
 
           
-// //             <li className="cursor-pointer hover:text-[#6C3BFF]">Integrations</li>
+//             <li className="cursor-pointer hover:text-[#6C3BFF]">Integrations</li>
             
 
             
@@ -65,201 +65,83 @@
         
 
             
-// //           </ul>
+//           </ul>
 
-// //           {/* Right Buttons */}
-// //           <div className="flex items-center gap-4">
-// //             <Link to={ !token ? "/login" : role === "ADMIN" ? "/admindashboard" : "/home" }>
-// //             <button className="text-gray-700 font-medium text-sm sm:text-lg hover:text-[#6C3BFF]">
-// //               Sign In
-// //             </button>
-// //             </Link>
+//           {/* Right Buttons */}
+//           <div className="flex items-center gap-4">
+//             <Link to={ !token ? "/login" : role === "ADMIN" ? "/admindashboard" : "/home" }>
+//             <button className="text-gray-700 font-medium text-sm sm:text-lg hover:text-[#6C3BFF]">
+//               Sign In
+//             </button>
+//             </Link>
            
-// //            <Link to={ !token ? "/register" : role === "ADMIN" ? "/admindashboard" : "/home" }>
-// //             <button className="bg-[#6C3BFF] hover:bg-[#5c2dea] hidden lg:block transition-all text-white font-semibold px-5 py-2.5 rounded-xl">
-// //               Get Started
-// //             </button>
-// //             </Link>
+//            <Link to={ !token ? "/register" : role === "ADMIN" ? "/admindashboard" : "/home" }>
+//             <button className="bg-[#6C3BFF] hover:bg-[#5c2dea] hidden lg:block transition-all text-white font-semibold px-5 py-2.5 rounded-xl">
+//               Get Started
+//             </button>
+//             </Link>
 
-// //             {/* Mobile Menu Button */}
-// //             <button
-// //               className="block lg:hidden text-xl"
-// //               onClick={() => setOpen(true)}
-// //             >
-// //               <Menu />
-// //             </button>
-// //           </div>
-// //         </div>
-// //       </nav>
-
-// //       {/* Mobile Slide Menu */}
-// //       <AnimatePresence>
-// //         {open && (
-// //           <>
-// //             {/* Backdrop */}
-// //             <motion.div
-// //               className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
-// //               onClick={() => setOpen(false)}
-// //               initial={{ opacity: 0 }}
-// //               animate={{ opacity: 1 }}
-// //               exit={{ opacity: 0 }}
-// //             />
-
-// //             {/* Slide Panel */}
-// //             <motion.div
-// //               className="fixed top-0 left-0 w-[75%] sm:w-[60%] h-full bg-white z-50 p-6"
-// //               initial={{ x: "-100%" }}
-// //               animate={{ x: 0 }}
-// //               exit={{ x: "-100%" }}
-// //               transition={{ type: "spring", stiffness: 80 }}
-// //             >
-// //               <div className="flex justify-between items-center mb-8">
-// //                 <h2 className="text-xl font-semibold">Menu</h2>
-// //                 <button onClick={() => setOpen(false)}>
-// //                   <X />
-// //                 </button>
-// //               </div>
-
-// //               <ul className="space-y-6 text-lg font-medium text-gray-700">
-// //                  <li
-// //               onClick={()=>scrollToSection("home")}
-// //                className="cursor-pointer hover:text-[#6C3BFF]">Home</li>
-// //                <li
-// //               onClick={()=>scrollToSection("about")}
-// //                className="cursor-pointer hover:text-[#6C3BFF]">About</li>
-
-// //                 <li className="hover:text-[#6C3BFF] cursor-pointer">Dashboard</li>
-// //                 <li className="hover:text-[#6C3BFF] cursor-pointer">Templates</li>
-// //                 <li className="hover:text-[#6C3BFF] cursor-pointer">Analytics</li>
-// //                 <li className="hover:text-[#6C3BFF] cursor-pointer">Integrations</li>
-// //                <Link  to={ !token ? "/register" : role === "ADMIN" ? "/admindashboard" : "/home" }><li className="bg-[#6C3BFF] rounded text-white px-4 py-1 my-4 w-fit hover:bg-[#7553da] cursor-pointer">GetStarted</li></Link> 
-                
-// //               </ul>
-// //             </motion.div>
-// //           </>
-// //         )}
-// //       </AnimatePresence>
-// //     </>
-// //   );
-// // };
-
-// // export default Nav;
-
-
-
-// // import React from 'react'
-// // import { FaArrowRight } from "react-icons/fa";
-
-// // const Nav = () => {
-// //   return (
-// //     <div className='bg-[#FCFCFCCC] h-[56.79999923706055px]'>
-
-// //       <div className='w-full flex justify-around h-14 mx-auto  items-center  px-6'>
-// //       <div className=' w-[103.53px] h-7 top-[14px] flex justify-around items-center left-[24px]'>
-// //         <div className='bg-[#14181F] flex justify-center w-7 h-7 rounded-md'>
-// //          <p className=' text-[#FCFCFC] font-bold'>F</p>
-// //          </div>
-     
-// //          <p className='text-[#14181F] font-semibold text-[15px] leading-[22.5px] 
-// //          tracking-[-0.38px] align-middle '>FormCraft</p>
-// //       </div>
-
-
-// //       <div className='flex text-[#1F1F1F] '>
-// //         <p className='w-[78.57px] font-semibold h-[17.600000381469727]' >Features</p>
-// //         <p  className='w-[78.57px] font-semibold h-[17.600000381469727]'>About</p>
-// //         <p  className='w-[78.57px] font-semibold h-[17.600000381469727]'>Testimonals</p>
-// //       </div>
-
-// //       <div className='flex justify-around gap-2 items-center'>
-// //          <p className='font-semibold '>Log in</p> 
-// //          <p className='bg-[#14181F] text-[#FCFCFC] flex items-center gap-1 rounded-md font-semibold px-2 py-1'>Start free <FaArrowRight size={13} /></p>
-// //       </div>
-
-// //       </div>
-// //     </div>
-// //   )
-// // }
-
-// // export default Nav
-
-
-// import React, { useState } from 'react';
-// import { FaArrowRight, FaBars, FaTimes } from "react-icons/fa";
-
-// const Nav = () => {
-//   const [isOpen, setIsOpen] = useState(false);
-
-//   const toggleMenu = () => setIsOpen(!isOpen);
-
-//   return (
-//     <nav className='bg-[#FCFCFCCC] h-[56.8px] w-[1300px] fixed border-b border-gray-100'>
-//       <div className='w-full flex justify-between md:justify-around h-14 mx-auto items-center px-6'>
-        
-//         {/* Logo Section - Kept exact widths */}
-//         <div className='w-[103.53px] h-7 flex justify-around items-center'>
-//           <div className='bg-[#14181F] flex justify-center items-center w-7 h-7 rounded-md'>
-//             <p className='text-[#FCFCFC] font-bold text-sm'>F</p>
-//           </div>
-//           <p className='text-[#14181F] font-semibold text-[15px] leading-[22.5px] tracking-[-0.38px]'>
-//             FormCraft
-//           </p>
-//         </div>
-
-//         {/* Desktop Navigation - Hidden on mobile */}
-//         <div className='hidden md:flex text-[#1F1F1F] items-center'>
-//           <p className='w-[78.57px] font-semibold h-[17.6px] cursor-pointer'>Features</p>
-//           <p className='w-[78.57px] font-semibold h-[17.6px] cursor-pointer'>About</p>
-//           <p className='w-[78.57px] font-semibold h-[17.6px] cursor-pointer'>Testimonials</p>
-//         </div>
-
-//         {/* CTA Buttons - Hidden on mobile to save space, or kept minimal */}
-//         <div className='hidden md:flex justify-around gap-2 items-center'>
-//           <p className='font-semibold cursor-pointer'>Log in</p> 
-//           <button className='bg-[#14181F] text-[#FCFCFC] flex items-center gap-1 rounded-md font-semibold px-4 py-2 text-sm'>
-//             Start free <FaArrowRight size={13} />
-//           </button>
-//         </div>
-
-//         {/* Mobile Hamburger Icon */}
-//         <div className='md:hidden flex items-center' onClick={toggleMenu}>
-//           {isOpen ? <FaTimes size={24} /> : <FaBars size={24} />}
-//         </div>
-//       </div>
-
-//       {/* Mobile Sidebar - Slides from left */}
-//       <div className={`fixed top-0 left-0 h-full w-[250px] bg-white shadow-2xl z-50 transform ${isOpen ? 'translate-x-0' : '-translate-x-full'} transition-transform duration-300 ease-in-out md:hidden`}>
-//         <div className='p-6 flex flex-col gap-8'>
-//           <div className='flex items-center gap-2'>
-//              <div className='bg-[#14181F] flex justify-center items-center w-7 h-7 rounded-md'>
-//                 <p className='text-[#FCFCFC] font-bold'>F</p>
-//              </div>
-//              <p className='font-bold text-lg'>FormCraft</p>
-//           </div>
-          
-//           <div className='flex flex-col gap-6 text-[#1F1F1F] font-semibold'>
-//             <p onClick={toggleMenu}>Features</p>
-//             <p onClick={toggleMenu}>About</p>
-//             <p onClick={toggleMenu}>Testimonials</p>
-//             <hr />
-//             <p onClick={toggleMenu}>Log in</p>
-//             <button className='bg-[#14181F] text-[#FCFCFC] flex items-center justify-center gap-1 rounded-md font-semibold py-3'>
-//               Start free <FaArrowRight size={13} />
+//             {/* Mobile Menu Button */}
+//             <button
+//               className="block lg:hidden text-xl"
+//               onClick={() => setOpen(true)}
+//             >
+//               <Menu />
 //             </button>
 //           </div>
 //         </div>
-//       </div>
+//       </nav>
 
-//       {/* Overlay for closing menu when clicking outside */}
-//       {isOpen && (
-//         <div 
-//           className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden" 
-//           onClick={toggleMenu}
-//         ></div>
-//       )}
-//     </nav>
+//       {/* Mobile Slide Menu */}
+//       <AnimatePresence>
+//         {open && (
+//           <>
+//             {/* Backdrop */}
+//             <motion.div
+//               className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
+//               onClick={() => setOpen(false)}
+//               initial={{ opacity: 0 }}
+//               animate={{ opacity: 1 }}
+//               exit={{ opacity: 0 }}
+//             />
+
+//             {/* Slide Panel */}
+//             <motion.div
+//               className="fixed top-0 left-0 w-[75%] sm:w-[60%] h-full bg-white z-50 p-6"
+//               initial={{ x: "-100%" }}
+//               animate={{ x: 0 }}
+//               exit={{ x: "-100%" }}
+//               transition={{ type: "spring", stiffness: 80 }}
+//             >
+//               <div className="flex justify-between items-center mb-8">
+//                 <h2 className="text-xl font-semibold">Menu</h2>
+//                 <button onClick={() => setOpen(false)}>
+//                   <X />
+//                 </button>
+//               </div>
+
+//               <ul className="space-y-6 text-lg font-medium text-gray-700">
+//                  <li
+//               onClick={()=>scrollToSection("home")}
+//                className="cursor-pointer hover:text-[#6C3BFF]">Home</li>
+//                <li
+//               onClick={()=>scrollToSection("about")}
+//                className="cursor-pointer hover:text-[#6C3BFF]">About</li>
+
+//                 <li className="hover:text-[#6C3BFF] cursor-pointer">Dashboard</li>
+//                 <li className="hover:text-[#6C3BFF] cursor-pointer">Templates</li>
+//                 <li className="hover:text-[#6C3BFF] cursor-pointer">Analytics</li>
+//                 <li className="hover:text-[#6C3BFF] cursor-pointer">Integrations</li>
+//                <Link  to={ !token ? "/register" : role === "ADMIN" ? "/admindashboard" : "/home" }><li className="bg-[#6C3BFF] rounded text-white px-4 py-1 my-4 w-fit hover:bg-[#7553da] cursor-pointer">GetStarted</li></Link> 
+                
+//               </ul>
+//             </motion.div>
+//           </>
+//         )}
+//       </AnimatePresence>
+//     </>
 //   );
-// }
+// };
 
 // export default Nav;
 

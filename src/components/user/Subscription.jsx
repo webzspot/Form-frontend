@@ -166,7 +166,7 @@ const Subscription = ({ isDarkMode = false }) => {
         </div>
 
         {/* Plan Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div id="subscription-cards" className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {plans.map((plan, i) => (
             <motion.div
               key={plan.name}
@@ -212,15 +212,35 @@ const Subscription = ({ isDarkMode = false }) => {
                   </div>
                 ))}
               </div>
-
+{/* 
               <button 
               onClick={()=>planApi(plan.id)}
               className={`${theme.buttonPrimary} w-full py-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all group`}>
                 {plan.cta} 
                 <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-              </button>
-            
-            </motion.div>
+              </button> */}
+  
+  
+{plan.id === "FREE" ? (
+  <div className={`w-full py-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 border-2 
+    ${isDarkMode 
+      ? 'border-slate-800 text-slate-500 bg-slate-900/50' 
+      : 'border-slate-200 text-slate-400 bg-slate-100'
+    }`}>
+    <Check size={18} />
+    Free Plan
+  </div>
+) : (
+  <button 
+    onClick={() => planApi(plan.id)}
+    className={`${theme.buttonPrimary} w-full py-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 transition-all group`}
+  >
+    {plan.cta} 
+    <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+  </button>
+)}
+             
+     </motion.div>
           ))}
         </div>
       

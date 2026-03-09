@@ -147,7 +147,7 @@ const ProfileSettings = () => {
              
 
 
- <Link to={"/"}>
+ <Link to={"/plandetail"} >
 <div className="mt-3">
   {user?.plan && (
     <span className={`px-2.5 py-1 rounded-lg text-[10px] font-extrabold uppercase tracking-tighter border ${
