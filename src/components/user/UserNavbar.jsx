@@ -56,7 +56,7 @@ const UserNavbar = () => {
         ? "bg-[#0f172a]/80 backdrop-blur-md border-slate-800 shadow-2xl" 
         : "bg-white/90 backdrop-blur-md border-slate-100 "
       } `}>
-        <div className=" max-w-7xl w-full mx-auto  flex  items-center justify-between px-4 sm:px-6 lg:px-6   h-[56.8px]  ">
+        <div className=" max-w-7xl w-full mx-auto  flex  items-center justify-between px-0 md:px-6   h-[56.8px]  ">
           {/* <div 
             className={`flex items-center gap-2 font-bold text-lg cursor-pointer transition-colors ${isDarkMode ? "text-white" : "text-slate-900"}`} 
             onClick={() => navigate("/home")}
@@ -120,7 +120,7 @@ const UserNavbar = () => {
         </div>
       </div>
 
-     <div className={`lg:hidden sticky top-0 z-50 px-4 py-3 flex justify-between items-center transition-colors border-b ${
+     <div className={`lg:hidden sticky top-0 z-50 px-4 py-3  flex justify-between items-center transition-colors border-b ${
         isDarkMode 
         ? "bg-[#0f172a] border-slate-800 text-white" 
         : "bg-white border-black/10 text-slate-900"

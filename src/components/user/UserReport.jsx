@@ -150,7 +150,7 @@ const UserReport = () => {
           initial={{ scale: 0.95, y: 30, opacity: 0 }}
           animate={{ scale: 1, y: 0, opacity: 1 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
-         className="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-6 relative z-10"
+         className="w-full max-w-7xl mx-auto px-4 md:px-6 relative z-10"
          
         >
           {/* Replace your current "Your Reports" div with this */}

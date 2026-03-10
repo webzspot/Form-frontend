@@ -7,7 +7,7 @@ const { isDarkMode } = useFormContext();
         ? "bg-[#0f172a] border-slate-800" 
         : "bg-white border-[#E5E7EB]"
     }`}>
-      <div className="max-w-7xl mx-auto  px-6 flex flex-col md:flex-row justify-between items-center gap-4">
+      <div className="max-w-7xl mx-auto  px-4 md:px-6 flex flex-col md:flex-row justify-between items-center gap-4">
         <p className={`text-[12px] font-medium ${
           isDarkMode ? "text-slate-400" : "text-[#6A7181]"
         }`}>

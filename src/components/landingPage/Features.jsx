@@ -88,11 +88,11 @@ const Features = () => {
     
     {/*Features Section */}
     
-           <section className='py-20 md:py-26  relative w-full bg-[#FCFCFC] px-6'>
-      <div className='max-w-7xl  mx-auto'>
+           <section className='py-20 md:py-26  relative w-full bg-[#FCFCFC] '>
+      <div className='max-w-7xl  mx-auto px-4 md:px-6'>
         
         {/* Paragraph Container */}
-        <div className='flex flex-col items-center md:items-start'>
+        <div className='flex flex-col items-start'>
           <p className="text-[#10B77F] uppercase font-semibold text-sm leading-5  tracking-widest font-[DM_Sans]">Features</p>
          
           <h2 className="text-[#14181F] font-bold max-w-xl mt-4 text-4xl font-['Space_Grotesk'] leading-11 tracking-tighter align-middle">

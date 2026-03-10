@@ -379,7 +379,7 @@ const Form = () => {
     <WaveBackground position="bottom" height="h-100" color={isDarkMode ? "#1e1b4b" : "#6c2bd9"} /> */}
   
 
-      <div className="max-w-7xl relative z-10 mx-auto px-4 sm:px-6 lg:px-6 py-8">
+      <div className="max-w-7xl relative z-10 mx-auto px-4 md:px-6 py-8">
         <header className="mb-10">
           {!showFormBuilder ? (
             <motion.div
@@ -416,10 +416,10 @@ const Form = () => {
                 }}
                 whileHover={{ scale: 1.02, boxShadow: "0 20px 40px -15px rgba(124, 58, 237, 0.4)" }}
                 whileTap={{ scale: 0.98 }}
-                className={`group relative ${theme.buttonPrimary}  text-[10px]  w-30 sm:w-50 text-center  mr-4 px-3 py-1 rounded shadow-lg shadow-violet-500/25 font-semibold flex items-center overflow-hidden`}
+                className={`group relative ${theme.buttonPrimary}  text-xs  w-30  md:text-sm px-4 py-2 md:px-6 md:py-2.5  text-center mr-0  lg:mr-4  rounded shadow-lg shadow-violet-500/25 font-semibold flex items-center overflow-hidden`}
               >
                 <span className="absolute inset  opacity-0 group-hover:opacity-100  transition-opacity duration-300" />
-                <span className="relative  z-10 text-[10px] sm:text-lg">Create New Form</span>
+                <span className="relative  z-10 text-[10px] ">Create New Form</span>
                
               </motion.button>
             </motion.div>
@@ -1035,7 +1035,7 @@ const Form = () => {
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-6"
+            className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6"
           >
             <AnimatePresence mode="popLayout">
               {forms.map((form, index) => (
@@ -1130,7 +1130,7 @@ const Form = () => {
                     </p>
                   </div>
 
-                  <div className={`relative z-10  mt-4 px-6 pt-5 mb-3 border-t flex gap-5
+                  {/* <div className={`relative z-10  mt-4 px-6 pt-5 mb-3 border-t flex gap-5
   ${isDarkMode ? "border-gray-700" : "border-[#E5E7EB]"}
 `}>
 
@@ -1157,7 +1157,23 @@ const Form = () => {
                       
                       View
                     </motion.button>
-                  </div>
+                  </div> */}
+
+                  <div className={`relative z-10 mt-4 px-6 pt-5 mb-4 border-t flex gap-3 ${isDarkMode ? "border-gray-700" : "border-[#E5E7EB]"}`}>
+  <motion.button
+    onClick={() => navigate(`/responses/${form.formId}`)}
+    className="flex-1 py-2.5 rounded-lg font-medium text-sm border border-[#2B4BAB] text-[#2B4BAB] hover:bg-indigo-50 transition-all"
+  >
+    Responses
+  </motion.button>
+  
+  <motion.button
+    onClick={() => formview(form.formId)}
+    className={`flex-1 py-2.5 rounded-lg font-medium text-sm text-white ${theme.buttonPrimary} transition-all`}
+  >
+    View
+  </motion.button>
+</div>
                 </motion.div>
               ))}
             </AnimatePresence>
