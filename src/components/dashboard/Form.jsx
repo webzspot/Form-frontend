@@ -3,8 +3,10 @@ import { motion, AnimatePresence } from "framer-motion"
 import axios from "axios"
 import toast from "react-hot-toast"
 import UserNavbar from "../user/UserNavbar"
+import UserFooter from "../user/userFooter"
 import { useFormContext } from "./FormContext"
 import {
+  Pencil,
   EditIcon,
   Trash2,
   X,
@@ -83,8 +85,8 @@ const Form = () => {
 
   const theme = {
     pageBg: isDarkMode 
-      ? "bg-[#05070f] text-white selection:bg-purple-500/30" 
-      : "bg-gradient-to-br from-[#F3E8FF] via-[#ffffff] to-[#D8B4FE] text-[#4c1d95] selection:bg-purple-200",
+      ? "bg-[#05070f] text-white selection:bg-indigo-500/30" 
+      : "bg-[#FFFFFF]  selection:bg-indigo-200",
     
     card: isDarkMode
       ? "bg-[#12121a]/80 backdrop-blur-xl border border-purple-500/20 shadow-[0_0_20px_rgba(139,92,246,0.05)]"
@@ -95,10 +97,10 @@ const Form = () => {
       : "bg-white/50 border-white/60 text-[#4c1d95] placeholder-[#4c1d95]/50 focus:border-[#8b5cf6] focus:ring-[#8b5cf6] focus:bg-white/80",
 
     buttonPrimary: isDarkMode
-      ? "bg-[#8b5cf6] hover:bg-[#7c3aed] text-white shadow-[0_0_20px_rgba(139,92,246,0.4)]"
-      : "bg-gradient-to-r from-[#8b5cf6] to-[#6d28d9] text-white hover:shadow-lg hover:shadow-purple-500/30",
+      ? "bg-indigo-500 hover:bg-indigo-700 text-white shadow-[0_0_20px_rgba(139,92,246,0.4)]"
+      : "bg-[#2B4BAB]  text-[#FFFFFF] hover:shadow-lg hover:shadow-indigo-500/30",
 
-    textSub: isDarkMode ? "text-gray-400" : "text-[#4c1d95]/40",
+    textSub: isDarkMode ? "text-gray-400" : "text-[#6A7181]",
     label: isDarkMode ? "text-gray-300" : "text-[#4c1d95]",
     
     previewBox: isDarkMode 
@@ -197,7 +199,14 @@ const Form = () => {
       setForms((prev) => [res.data.data, ...prev])
       setIsPublic(true)
     } catch (err) {
-      toast.error("Failed to create form")
+      // toast.error("Failed to create form")
+      if (err.response?.status === 403 || err.response?.data?.message?.includes("limit")) {
+      toast.error("You've reached the limit of 3 forms. Upgrade to Pro for unlimited forms!");
+      // Optional: Open a pricing modal here
+      // setOpenPricingModal(true); 
+    } else {
+      toast.error("Something went wrong");
+    }
     } finally {
       setLoading(false)
     }
@@ -358,29 +367,31 @@ const Form = () => {
   }
   return (
     <>
-    <div className={`min-h-screen relative  ${theme.pageBg}`}>
-      <UserNavbar />
-      <WaveBackground position="top" height="h-120" color={isDarkMode ? "#1e1b4b" : "#6c2bd9"} />
+      <UserNavbar/>
+    <div className={`min-h-screen relative w-full  ${theme.pageBg} `}>
+    
+     
+      {/* <WaveBackground position="top" height="h-120" color={isDarkMode ? "#1e1b4b" : "#6c2bd9"} />
      
     <WaveBackground position="bottom" height="h-100" color={isDarkMode ? "#1e1b4b" : "#6c2bd9"} />
   
      
-    <WaveBackground position="bottom" height="h-100" color={isDarkMode ? "#1e1b4b" : "#6c2bd9"} />
+    <WaveBackground position="bottom" height="h-100" color={isDarkMode ? "#1e1b4b" : "#6c2bd9"} /> */}
   
 
-      <div className="max-w-7xl relative z-10 mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl relative z-10 mx-auto px-4 sm:px-6 lg:px-6 py-8">
         <header className="mb-10">
           {!showFormBuilder ? (
             <motion.div
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
-              className={`${theme.card} rounded-3xl flex justify-between items-center gap-4`}
+              className={`rounded-3xl flex justify-between items-center gap-4`}
             >
-              <div className={` w-full px-6 py-9 rounded-3xl`}>
+              <div className={` w-full  py-2`}>
                 <motion.h1
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                 className={`sm:text-3xl font-bold  ${theme.text}`}
+                 className={`text-4xl font-bold  leading-10 tracking-tight align-middle  ${theme.text}`}
                 >
                   Your Forms
                 </motion.h1>
@@ -388,10 +399,11 @@ const Form = () => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.2 }}
-                  className={`${theme.textSub} text-[12px] sm:text-lg mt-1`}
+                  className={`${theme.textSub} mt-1 font-normal text-base leading-normal tracking-normal align-middle`}
  
                 >
-                  Create Manage Share Store your Forms
+                  Create, manage, and share your forms.
+
                 </motion.p>
               </div>
               <motion.button
@@ -404,7 +416,7 @@ const Form = () => {
                 }}
                 whileHover={{ scale: 1.02, boxShadow: "0 20px 40px -15px rgba(124, 58, 237, 0.4)" }}
                 whileTap={{ scale: 0.98 }}
-                className={`group relative ${theme.buttonPrimary} text-[10px]  w-30 sm:w-50 text-center  mr-4 px-3 py-1 rounded shadow-lg shadow-violet-500/25 font-semibold flex items-center overflow-hidden`}
+                className={`group relative ${theme.buttonPrimary}  text-[10px]  w-30 sm:w-50 text-center  mr-4 px-3 py-1 rounded shadow-lg shadow-violet-500/25 font-semibold flex items-center overflow-hidden`}
               >
                 <span className="absolute inset  opacity-0 group-hover:opacity-100  transition-opacity duration-300" />
                 <span className="relative  z-10 text-[10px] sm:text-lg">Create New Form</span>
@@ -461,7 +473,7 @@ const Form = () => {
                        className={`relative w-5 h-5  rounded-lg border-2 flex items-center justify-center transition-all duration-300
   ${
     selectedFields.some((f) => f.masterFieldId === field.masterFieldId)
-      ? "bg-violet-600 border-violet-600"
+      ? "bg-indigo-600 border-indigo-600"
       : isDarkMode
         ? "border-gray-900"
         : "border-gray-300"
@@ -658,7 +670,7 @@ const Form = () => {
                     animate={{ opacity: 1, y: 0 }}
                     className="sm:mb-8 sm:space-y-4"
                   >
-                    <div className="group flex items-center gap-3 border-b-2  border-transparent hover:border-violet-100 focus-within:border-violet-300 pb-2 transition-all duration-300">
+                    <div className="group flex items-center gap-3 border-b-2  border-transparent hover:border-indigo-100 focus-within:border-indigo-300 pb-2 transition-all duration-300">
 <input
   value={formTitle || ""}
   onChange={(e) => setFormTitle(e.target.value)}
@@ -671,10 +683,10 @@ const Form = () => {
 />
                       <EditIcon
                         size={18}
-                        className="text-gray-300 group-hover:text-violet-400 transition-colors "
+                        className="text-gray-300 group-hover:text-indigo-400 transition-colors "
                       />
                     </div>
-                    <div className="group flex items-center gap-3 border-b-2 border-transparent hover:border-violet-100 focus-within:border-violet-300 pb-2 transition-all duration-300">
+                    <div className="group flex items-center gap-3 border-b-2 border-transparent hover:border-indigo-100 focus-within:border-indigo-300 pb-2 transition-all duration-300">
                       <input
   value={formdescription}
   onChange={(e) => setformdescription(e.target.value)}
@@ -686,7 +698,7 @@ const Form = () => {
 />
                       <EditIcon
                         size={14}
-                        className="text-gray-300 group-hover:text-violet-400 transition-colors "
+                        className="text-gray-300 group-hover:text-indigo-400 transition-colors "
                       />
                     </div>
                   </motion.div>
@@ -703,7 +715,7 @@ const Form = () => {
                       whileTap={{ scale: 0.98 }}
                       className={`flex items-center gap-3 cursor-pointer sm:px-4 px-1 sm:py-2.5 py-1 text-[10px] sm:text-sm rounded-xl border-2 transition-all duration-300 ${
                         isPublic
-                          ? "border-violet-200 bg-violet-300 shadow-md "
+                          ? "border-violet-200 bg-indigo-300 shadow-md "
                           : "border-gray-200 bg-white hover:border-gray-300"
                       }`}
                     >
@@ -716,7 +728,7 @@ const Form = () => {
                       />
                       <div
                         className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
-                          isPublic ? "border-white/60 bg-violet-300" : "border-gray-300"
+                          isPublic ? "border-white/60 bg-indigo-300" : "border-gray-300"
                         }`}
                       >
                         {isPublic && <Check className="w-3 h-3 text-white" />}
@@ -732,7 +744,7 @@ const Form = () => {
                       whileTap={{ scale: 0.98 }}
                       className={`flex items-center gap-3 cursor-pointer sm:px-4 px-1 sm:py-2.5 py-1 text-[10px] sm:text-sm  rounded-xl border-2 transition-all duration-300 ${
                         !isPublic
-                          ? "border-violet-100 bg-violet-300 shadow-md shadow-violet-100"
+                          ? "border-indigo-100 bg-indigo-300 shadow-md shadow-indigo-100"
                           : "border-gray-200 bg-white hover:border-gray-300"
                       }`}
                     >
@@ -769,7 +781,7 @@ const Form = () => {
                           animate={pulseAnimation}
                           className="w-16 h-16 bg-violet-100 rounded-2xl flex items-center justify-center mb-4"
                         >
-                          <Layers className="w-8 h-8 text-violet-800" />
+                          <Layers className="w-8 h-8 text-indigo-800" />
                         </motion.div>
                         <p className="font-medium">Select fields from the left to start building</p>
                         <p className="text-sm text-gray-300 mt-1">Drag and drop to reorder</p>
@@ -853,20 +865,20 @@ const Form = () => {
                                 whileTap={{ scale: 0.98 }}
                                 className={`flex items-center gap-3 px-4 py-2 rounded-full cursor-pointer transition-all duration-300 ${
                                   field.required
-                                    ? "bg-violet-100 border-2 border-violet-200"
+                                    ? "bg-indigo-100 border-2 border-indigo-200"
                                     : "bg-gray-50 border-2 border-gray-100 hover:border-gray-200"
                                 }`}
                                 onClick={() => updateFieldProperty(index, "required", !field.required)}
                               >
                                 <div
                                   className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-all ${
-                                    field.required ? "bg-violet-600 border-violet-600" : "border-gray-300"
+                                    field.required ? "bg-indigo-600 border-indigo-600" : "border-gray-300"
                                   }`}
                                 >
                                   {field.required && <Check className="w-3 h-3 text-white" />}
                                 </div>
                                 <span
-                                  className={`text-[10px] sm:text-sm font-bold uppercase ${field.required ? "text-violet-700" : "text-gray-500"}`}
+                                  className={`text-[10px] sm:text-sm font-bold uppercase ${field.required ? "text-indigo-700" : "text-gray-500"}`}
                                 >
                                   Required
                                 </span>
@@ -883,7 +895,7 @@ const Form = () => {
                                   initial={{ opacity: 0, height: 0 }}
                                   animate={{ opacity: 1, height: "auto" }}
                                   exit={{ opacity: 0, height: 0 }}
-                                  className="space-y-3 mt-4 p-4 bg-gradient-to-br from-violet-50/50 to-white rounded-xl border-2 border-violet-100"
+                                  className="space-y-3 mt-4 p-4 bg-gradient-to-br from-violet-50/50 to-white rounded-xl border-2 border-indigo-100"
                                 >
                                   <p className="sm:text-xs text-[10px] font-bold text-gray-500 uppercase ">
                                     Options Management
@@ -962,7 +974,7 @@ const Form = () => {
                       }}
                       whileTap={{ scale: loading ? 1 : 0.99 }}
                       style={{
-                        backgroundColor: formTheme.buttonColor || "#7c3aed",
+                        backgroundColor: formTheme.buttonColor || "#4B0082",
                         borderRadius: formTheme.borderRadius || "16px",
                       }}
                       className="flex-1 text-white sm:py-3 py-1 font-semibold shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
@@ -1023,7 +1035,7 @@ const Form = () => {
             variants={containerVariants}
             initial="hidden"
             animate="visible"
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-6"
           >
             <AnimatePresence mode="popLayout">
               {forms.map((form, index) => (
@@ -1036,79 +1048,81 @@ const Form = () => {
                   exit={{ opacity: 0, scale: 0.8, y: 20 }}
                   whileHover="hover"
                   className={`
-  group relative backdrop-blur-sm sm:p-6 p-4 rounded-3xl border 
-  flex flex-col justify-between transition-all duration-500 overflow-hidden
+  group relative backdrop-blur-sm  rounded-3xl border 
+  flex flex-col justify-between transition-all duration-500 overflow-hidden  w-full  min-h-60
   ${isDarkMode
       ? "bg-[#0f172a]/80 backdrop-blur-md border-slate-800 shadow-2xl text-gray-100"
-      : "bg-white/80 border-gray-100 text-gray-900"
+      : "bg-white/80 border-[#E5E7EB] rounded-xl text-gray-900"
     }
 `}
                 >
-                  {/* Gradient Overlay on Hover */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-violet-500/5 via-transparent to-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                  {/* Gradient Overlay on Hover
+                 <div className="absolute inset-0 bg-gradient-to-br from-violet-500/5 via-transparent to-indigo-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
                   {/* Top Accent Line */}
-                  <motion.div
+                  {/* <motion.div
                     initial={{ scaleX: 0 }}
                     whileHover={{ scaleX: 1 }}
                     className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-violet-500 to-indigo-500 origin-left"
-                  />
+                  />   */}
 
-                  <div className="relative z-10">
+                  <div className="relative z-10 px-6 pt-6">
                     <div className="flex justify-between items-start mb-4">
                       <motion.span
                         whileHover={{ scale: 1.05 }}
-                        className={`sm:px-3 sm:py-1.5 px-1 py-1 rounded-full text-xs font-bold flex items-center gap-1.5 border
+                        className={`px-2 py-1 rounded-full text-xs  font-normal   tracking-normal  flex items-center gap-1.5
   ${form.isPublic
     ? isDarkMode
       ? "bg-green-900/30 text-green-300 border-green-700"
-      : "bg-green-50 text-green-700 border-green-200"
+      : "text-[#114812] bg-[#CAF1CB]  "
     : isDarkMode
       ? "bg-gray-700 text-gray-300 border-gray-600"
       : "bg-gray-50 text-gray-600 border-gray-200"}
 `}
                       >
-                        {form.isPublic ? <Globe className="w-3 h-3" /> : <Lock className="w-3 h-3" />}
+                       
                         {form.isPublic ? "Public" : "Private"}
                       </motion.span>
-                      <div className="flex gap-1.5">
+                      <div className="flex gap-2">
                         <motion.button
                           whileHover={{ scale: 1.1, backgroundColor: "#f3f4f6" }}
                           whileTap={{ scale: 0.9 }}
                           onClick={() => handleEditClick(form.formId)}
-                          className={`p-2.5 rounded-xl transition-all
+                          className={` p-2 rounded-md    transition-all
   ${isDarkMode
-    ? "text-gray-300 hover:text-violet-400 hover:bg-gray-700"
-    : "text-gray-400 hover:text-violet-600 hover:bg-gray-100"}
+    ? "text-gray-300 hover:text-indigo-400 hover:bg-gray-700"
+    : "text-[#9CA3AF] hover:text-[#2B4BAB] hover:bg-[#F3F4F6]"}
 `}
                          
                     
                         >
-                          <EditIcon  size={15} />
+                          <Pencil size={18} strokeWidth={2} />
                         </motion.button>
                         <motion.button
                           whileHover={{ scale: 1.1, backgroundColor: "#fef2f2" }}
                           whileTap={{ scale: 0.9 }}
                           onClick={() => setIsDeleting(form)}
-                          className={`p-2.5 rounded-xl transition-all
+                          className={`p-2 rounded-md transition-colors 
   ${isDarkMode
-    ? "text-gray-300 hover:text-violet-400 hover:bg-gray-700"
-    : "text-gray-400 hover:text-violet-600 hover:bg-gray-100"}
+    ? "text-gray-300 hover:text-indigo-400 hover:bg-gray-700"
+    : "text-[#9CA3AF] hover:text-[#EF4444] hover:bg-[#FEF2F2]"}
 `} >
-                          <Trash2  size={15}  />
+                          <Trash2  size={18} strokeWidth={2} />
                         </motion.button>
                       </div>
                     </div>
-                    <h3 className={`sm:text-xl font-bold mb-2 transition-colors duration-300
+                    <h3 className={`  mb-2 transition-colors duration-300 text-base font-semibold leading-5
+
   ${isDarkMode 
-    ? "text-gray-100 group-hover:text-violet-400" 
-    : "text-gray-800 group-hover:text-violet-700"}
+    ? "text-gray-100 " 
+    : "text-[#000000] "}
 `}
 >
                       {form.title}
                     </h3>
-                    <p className={`sm:text-sm text-[10px] line-clamp-2 mb-4 leading-relaxed
-  ${isDarkMode ? "text-gray-400" : "text-gray-500"}
+                    <p className={` line-clamp-2 mb-4 text-base font-normal leading-5
+ 
+  ${isDarkMode ? "text-gray-400" : "text-[#6A7181]"}
 `}
 >
 
@@ -1116,31 +1130,31 @@ const Form = () => {
                     </p>
                   </div>
 
-                  <div className={`relative z-10 mt-4 pt-4 border-t flex gap-3
-  ${isDarkMode ? "border-gray-700" : "border-gray-100"}
+                  <div className={`relative z-10  mt-4 px-6 pt-5 mb-3 border-t flex gap-5
+  ${isDarkMode ? "border-gray-700" : "border-[#E5E7EB]"}
 `}>
 
                     <motion.button
                       whileHover={{ scale: 1.02, y: -2 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => navigate(`/responses/${form.formId}`)}
-                     className={`flex-1 font-semibold sm:py-3 py-1 text-[10px] sm:text-sm rounded-xl transition-all duration-300
-  flex items-center justify-center gap-2 border
+                     className={`transition-all duration-300  w-32  rounded-md font-sans font-medium text-sm leading-5 text-center
+   border
   ${isDarkMode
-    ? "bg-gray-700 text-violet-300 border-gray-600 hover:bg-gray-600"
-    : "bg-gradient-to-r from-violet-50 to-indigo-50 text-violet-700 border-violet-100 hover:from-violet-100 hover:to-indigo-100"}
+    ? "bg-[#0f172a]/80- text-indigo-600 border-gray-600 hover:bg-gray-600"
+    : "bg-white text-[#2B4BAB]  border-[#2B4BAB] hover:from-violet-100 hover:to-indigo-100"}
 `}
                     >
-                      <Layers className="w-4 h-4" />
+                     
                       Responses
                     </motion.button>
                     <motion.button
                       whileHover={{ scale: 1.02, y: -2 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => formview(form.formId)}
-                      className={`flex-1 sm:py-3 py-1 text-[10px] sm:text-sm  font-semibold py-3 rounded-xl ${theme.buttonPrimary} transition-all duration-300 flex items-center justify-center gap-2 shadow-lg shadow-gray-900/20`}
+                      className={` sm:py-3  w-24 text-sm font-medium leading-5 text-center align-middle  py-3 rounded-md ${theme.buttonPrimary} transition-all duration-300  `}
                     >
-                      <Eye className="w-4 h-4" />
+                      
                       View
                     </motion.button>
                   </div>
@@ -1149,6 +1163,7 @@ const Form = () => {
             </AnimatePresence>
           </motion.div>
         )}
+
       </div>
 
       {/* Delete Modal */}
@@ -1182,7 +1197,7 @@ const Form = () => {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => setIsDeleting(null)}
-                  className="flex-1 px-6 py-3.5 text-gray-500 bg-gray-100 rounded-2xl font-semibold hover:bg-gray-200 transition-all"
+                  className="flex-1 px-6 py-3.5 text-gray-500 bg-gray-100 rounded-2xl font-semibold hover:shadowbg-gray-200 transition-all"
           
                 >
                   Cancel
@@ -1413,10 +1428,17 @@ const Form = () => {
         )}
       </AnimatePresence>
 
+    
+
 
     
+      
+   
+   
+    
     </div>
-    <Footer/>
+       <UserFooter/>
+      
     </>
   )
 }
