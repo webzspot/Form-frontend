@@ -148,26 +148,36 @@
 
 import React, { useState } from 'react';
 import { FaArrowRight, FaBars, FaTimes } from "react-icons/fa";
-
+import { Link } from 'react-router-dom'; // Add this line
 const Nav = () => {
   const [isOpen, setIsOpen] = useState(false);
-
+  const token = localStorage.getItem("token");
+  const role = localStorage.getItem("role");
   const toggleMenu = () => setIsOpen(!isOpen);
 
   return (
     <nav className=' bg-[#FCFCFCCC]  backdrop-blur-md h-[56.8px] w-full  fixed  top-0 left-0 border-b z-100 border-gray-100'>
-      <div className=' w-full max-w-7xl flex justify-between h-14 mx-auto items-center px-6 md:px-0 '>
+      <div className=' w-full max-w-7xl flex justify-between h-14 mx-auto items-center px-4 md:px-6  '>
         
         {/* Logo Section - Kept exact widths */}
-        <div className='w-[103.53px] h-7 flex justify-around items-center'>
+        {/* <div className='w-[103.53px] h-7 flex justify-around items-center'>
           <div className='bg-[#14181F] flex justify-center items-center w-7 h-7 rounded-md'>
             <p className='text-[#FCFCFC] font-bold text-sm'>F</p>
           </div>
           <p className='text-[#14181F] font-semibold text-[15px] leading-[22.5px] tracking-[-0.38px]'>
             FormCraft
           </p>
-        </div>
+        </div> */}
+   
 
+   <div className='flex justify-start items-center gap-2'> 
+    <div className='bg-[#14181F] flex justify-center items-center w-7 h-7 rounded-md'>
+      <p className='text-[#FCFCFC] font-bold text-sm'>F</p>
+    </div>
+    <p className='text-[#14181F] font-semibold text-[15px]'>
+      FormCraft
+    </p>
+  </div>
         {/* Desktop Navigation - Hidden on mobile */}
         <div className='hidden md:flex text-[#1F1F1F] items-center'>
           <p className='w-[78.57px] font-semibold h-[17.6px] cursor-pointer'>Features</p>
@@ -177,10 +187,21 @@ const Nav = () => {
 
         {/* CTA Buttons - Hidden on mobile to save space, or kept minimal */}
         <div className='hidden md:flex justify-around gap-3 items-center'>
-          <p className='font-semibold cursor-pointer'>Log in</p> 
+          {/* <p className='font-semibold cursor-pointer'>Log in</p> 
           <button className='bg-[#14181F] text-[#FCFCFC] flex items-center gap-1 rounded-md font-semibold px-4 py-2 text-sm'>
             Start free <FaArrowRight size={13} />
-          </button>
+          </button> */}
+
+          <Link to={ !token ? "/login" : role === "ADMIN" ? "/admindashboard" : "/home" }>
+    <p className='font-semibold cursor-pointer'>Log in</p> 
+  </Link>
+
+  {/* Wrap "Start free" button */}
+  <Link to={ !token ? "/register" : role === "ADMIN" ? "/admindashboard" : "/home" }>
+    <button className='bg-[#14181F] text-[#FCFCFC] flex items-center gap-1 rounded-md font-semibold px-4 py-2 text-sm'>
+      Start free <FaArrowRight size={13} />
+    </button>
+  </Link>
         </div>
 
         {/* Mobile Hamburger Icon */}
@@ -203,11 +224,21 @@ const Nav = () => {
             <p onClick={toggleMenu}>Features</p>
             <p onClick={toggleMenu}>About</p>
             <p onClick={toggleMenu}>Testimonials</p>
-            <hr />
-            <p onClick={toggleMenu}>Log in</p>
+            
+            {/* <p onClick={toggleMenu}>Log in</p>
             <button className='bg-[#14181F] text-[#FCFCFC] flex items-center justify-center gap-1 rounded-md font-semibold py-3'>
               Start free <FaArrowRight size={13} />
-            </button>
+            </button> */}
+            <Link onClick={toggleMenu} to={ !token ? "/login" : role === "ADMIN" ? "/admindashboard" : "/home" }>
+    <p>Log in</p>
+  </Link>
+
+  {/* Wrap Mobile Start free */}
+  <Link onClick={toggleMenu} to={ !token ? "/register" : role === "ADMIN" ? "/admindashboard" : "/home" }>
+    <button className='w-full bg-[#14181F] text-[#FCFCFC] flex items-center justify-center gap-1 rounded-md font-semibold py-3'>
+      Start free <FaArrowRight size={13} />
+    </button>
+  </Link>
           </div>
         </div>
       </div>

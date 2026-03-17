@@ -36,8 +36,8 @@ const Testimonials = () => {
     <>
          {/*Testimonials Section*/}
             
-            <section className='py-20 md:py-26 relative  w-full px-6 bg-[#F3F4F680]'>
-              <div className='max-w-7xl mx-auto'>
+            <section className='py-20 md:py-26 relative  w-full  bg-[#F3F4F680]'>
+              <div className='max-w-7xl mx-auto px-4 md:px-6'>
         
                 {/*Paragraph Section */}
                 <div className='flex flex-col items-start'>

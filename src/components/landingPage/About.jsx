@@ -358,10 +358,10 @@ const About = () => {
     }
   ]
   return (
-    <section className='py-20 md:py-26   w-full bg-[#FCFCFC] relative px-6'>
+    <section className='py-20 md:py-26   w-full bg-[#FCFCFC] relative '>
 
 
-    <div className='max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2'>
+    <div className='max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 px-4 md:px-6'>
 
       {/*First Container */}
        <div className=''>

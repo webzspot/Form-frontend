@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Edit3, Trash2, X, AlertCircle, Layers } from "lucide-react";
+import { Edit3, Trash2, X, AlertCircle, Layers, Eye } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 import { useFormContext } from "../dashboard/FormContext"; 
@@ -121,190 +121,121 @@ const Preview = ({ previewFields, refreshFields }) => {
   };
 
   return (
-    <div className="w-full max-w-5xl mx-auto sm:px-2">
-      {/* Header Section */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-4">
-           <div className={` sm:p-3 rounded-2xl ${isDarkMode ? 'bg-[#8b5cf6]/20 text-[#8b5cf6]' : 'bg-white text-purple-600'}`}>
-               <Layers size={24} />
-           </div>
-           <div>
-             <h2 className={`sm:text-xl font-bold ${theme.heading}`}>Form Preview</h2>
-             <p className={`text-[10px] sm:text-sm ${theme.subtext}`}>This is how your form looks to users.</p>
-           </div>
+  <>
+
+
+ 
+      <section className="flex-[5] bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col">
+        {/* Header */}
+        <div className="flex justify-between items-center px-6 py-4 border-b border-gray-100 bg-gray-50/50 shrink-0">
+          <div className="flex items-center gap-2">
+            <Eye size={16} className="text-gray-400" />
+            <h3 className="text-sm font-semibold text-gray-700">Form Preview</h3>
+          </div>
+          <span className="text-[10px] font-bold bg-gray-100 text-gray-500 px-2 py-1 rounded-md">
+            {previewFields.length} Fields
+          </span>
         </div>
+
         
-        <div className={`px-1 py-1 sm:px-3 sm:py-3  rounded-lg text-[10px] sm:text-sm font-bold  border ${theme.input}
-            `}>
-          {previewFields.length}  Fields
-        </div>
-      </div>
-
-      {/* Main List Container */}
-      <div className={`rounded-xl px-2  py-4 sm:py-6  transition-colors duration-500 ${theme.container}`}>
-        <div className="space-y-2 sm:space-y-4">
-          {sortedFields.length === 0 ? (
-            <div className="py-20 flex flex-col items-center justify-center text-center space-y-4">
-              <div className={`w-20 h-20 rounded-full flex items-center justify-center mb-2 ${isDarkMode ? 'bg-[#05070f] text-gray-600' : 'bg-slate-50 text-slate-300'}`}>
-                <AlertCircle size={40} strokeWidth={1.5} />
-              </div>
-              <div>
-                  <p className={`font-semibold text-lg ${theme.heading}`}>No fields found</p>
-                  <p className={`text-sm ${theme.subtext}`}>Add a new field above to get started.</p>
-              </div>
-            </div>
-          ) : (
-            sortedFields.map((field) => (
-              <motion.div 
-                layout
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                key={field.masterFieldId} 
-                className={`group relative px-4 sm:px-6 py-2 sm:py-6 rounded-2xl border transition-all duration-300 ${theme.fieldItem}`}
-              >
-                <div className="flex justify-between items-start mb-4">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                        <span className={`text-[10px] font-bold uppercase px-2 rounded-md ${
-                            isDarkMode ? 'bg-purple-500/20 text-purple-300' : 'bg-purple-100/60 text-violet-800'
-                        }`}>
-                            {field.type}
-                        </span>
+        <div className="p-6 space-y-4 overflow-y-auto flex-grow custom-scrollbar">
+          <AnimatePresence>
+            {previewFields.length > 0 ? (
+              previewFields.map((field, idx) => (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  key={field._id || field.masterFieldId || idx}
+                  className="p-5 border border-gray-100 rounded-xl bg-white shadow-sm hover:border-blue-200 transition-colors relative group"
+                >
+                  <div className="flex justify-between items-start mb-2">
+                    <span className="text-[9px] font-bold bg-blue-50 text-[#2B4BAB] px-2 py-0.5 rounded uppercase tracking-tighter">
+                      {field.type}
+                    </span>
+                    
+                    {/* Action Buttons visible on hover */}
+                    <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button 
+                        onClick={() => openUpdatePopup(field)}
+                        className="p-1 text-blue-600 hover:bg-blue-50 rounded"
+                      >
+                        <Edit3 size={14} />
+                      </button>
+                      <button 
+                        onClick={() => handleDelete(field.masterFieldId || field._id)}
+                        className="p-1 text-red-500 hover:bg-red-50 rounded"
+                      >
+                        <Trash2 size={14} />
+                      </button>
                     </div>
-                    <label className={`block text-sm sm:text font-bold ${theme.heading}`}>{field.label}</label>
                   </div>
+
+                  <label className="block text-sm font-bold text-gray-800 mb-2">
+                    {field.label} {field.required && <span className="text-red-500">*</span>}
+                  </label>
                   
-                  <div className="flex gap-2 ">
-                    <button 
-                      onClick={() => openUpdatePopup(field)}
-                      className={`p-2 rounded-xl border transition-all ${theme.actionBtn}`}
-                      title="Edit Label"
-                    >
-                      <Edit3 size={10} sm:size={16} />
-                    </button>
-                    <button 
-                      onClick={() => handleDelete(field.masterFieldId)}
-                      className={`p-2 rounded-xl border transition-all ${theme.actionBtn} ${theme.deleteBtn}`}
-                      title="Delete Field"
-                    >
-                      <Trash2 size={10} sm:size={16} />
-                    </button>
-                  </div>
-                </div>
-
-                <div className="w-full max-w-xl  opacity-80">
-                  {field.type === "TEXTAREA" && (
-                    <textarea disabled className={`w-full rounded-xl px-4 py-2 h-24 resize-none border ${theme.input}`} placeholder="Long text entry..." />
-                  )}
-
-                  {["TEXT", "EMAIL", "NUMBER", "DATE"].includes(field.type) && (
-                    <input
-                      disabled
-                      type={field.type === "DATE" ? "date" : field.type.toLowerCase()}
-                      className={`w-full text-[13px] sm:text-sm rounded-xl px-4 py-1 sm:py-2 border ${theme.input}`}
-                      placeholder={`Enter ${field.label.toLowerCase()}...`}
+               
+                  {field.type === "TEXTAREA" || field.type === "LIST" ? (
+                    <textarea 
+                      disabled 
+                      className="w-full p-2 border border-gray-200 rounded-md text-sm bg-gray-50/50 h-20" 
+                      placeholder={field.placeholder || "..."}
+                    />
+                  ) : (
+                    <input 
+                      type="text" 
+                      placeholder={field.placeholder || "..."} 
+                      className="w-full p-2 border border-gray-200 rounded-md text-sm bg-gray-50/50" 
+                      disabled 
                     />
                   )}
-
-                  {field.type === "CHECKBOX" && (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                      {field.options?.map((opt, i) => (
-                        <div key={i} className={`flex items-center gap-3 p-3 rounded-xl border ${isDarkMode ? 'bg-[#05070f] border-white/5' : 'bg-white border-slate-100'}`}>
-                          <div className={`w-5 h-5 rounded border flex items-center justify-center ${isDarkMode ? 'border-purple-500/50' : 'border-purple-300'}`}></div>
-                          <span className={`text-sm ${theme.subtext}`}>{opt}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {field.type === "RADIO" && (
-                    <div className="space-y-2">
-                      {field.options?.map((opt, i) => (
-                        <div key={i} className="flex items-center gap-3">
-                          <div className={`w-5 h-5 rounded-full border ${isDarkMode ? 'border-purple-500/50' : 'border-purple-300'}`}></div>
-                          <span className={`text-sm ${theme.subtext}`}>{opt}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {field.type === "DROPDOWN" && (
-                    <div className={`w-full text-[13px] sm:text-sm rounded-xl px-4 py-1 sm:py-2  border flex justify-between items-center ${theme.input}`}>
-                       <span>Select an option</span>
-                       <span className="opacity-50 text-[10px]">▼</span>
-                    </div>
-                  )}
-                </div>
-              </motion.div>
-            ))
-          )}
+                </motion.div>
+              ))
+            ) : (
+              <div className="flex flex-col items-center justify-center h-full text-gray-400 italic">
+                No fields added yet.
+              </div>
+            )}
+          </AnimatePresence>
         </div>
-      </div>
+      </section>
 
-      {/* UPDATE MODAL */}
+     
       <AnimatePresence>
         {updatePop && (
-          <div className="fixed inset-0 z-100 flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
             <motion.div 
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-              onClick={() => setUpdatePop(false)}
-              className="absolute inset-0 bg-black/60 backdrop-blur-md"
-            />
-            <motion.div 
-              initial={{ scale: 0.9, opacity: 0, y: 20 }}
-              animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              className={`relative w-full p-1 max-w-md rounded 2overflow-hidden ${theme.modal}`}
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden border border-gray-100"
             >
-               {/* Decorative Glow */}
-               <div className="absolute -top-20 -right-20 w-40 h-40 bg-purple-500/20  rounded-full blur-[60px] pointer-events-none" />
-
-              <div className="flex px-2 py-2 bg-violet-100 justify-between items-center mb-4 relative z-10">
-                <h3 className={`text-2xl font-bold ${theme.subtext}`}>Rename Field</h3>
-                <button 
-                  onClick={() => setUpdatePop(false)}
-                  className={`p-2 rounded-full transition-colors ${isDarkMode ? 'hover:bg-white/10 text-gray-400' : 'hover:bg-gray-100 text-gray-500'}`}
-                >
+              <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                <h3 className="font-bold text-gray-700">Rename Field</h3>
+                <button onClick={() => setUpdatePop(false)} className="text-gray-400 hover:text-gray-600">
                   <X size={20} />
                 </button>
               </div>
-
-              <div className="space-y-6 relative z-10">
-                <div className="space-y-2 p-2">
-                  <label className={`text-sm px-2 block font-bold ${isDarkMode ? 'text-gray-400' : 'text-gray-500'}`}>
-                      New Label Name
-                  </label>
-                  <input
-                    autoFocus
-                    value={updatedName}
-                    onChange={(e) => setUpdatedName(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleUpdate()}
-                    className={`w-full rounded-xl px-4 text-[14px] py-2 outline-none transition-all font-medium border ${theme.input}`}
-                  />
-                </div>
-
-                <div className="flex gap-3 p-2">
-                  <button
+              <div className="p-6">
+                <label className="text-xs font-bold text-gray-400 uppercase mb-2 block">Field Label</label>
+                <input
+                  autoFocus
+                  value={updatedName}
+                  onChange={(e) => setUpdatedName(e.target.value)}
+                  className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 outline-none"
+                />
+                <div className="flex gap-3 mt-6">
+                  <button 
                     onClick={() => setUpdatePop(false)}
-                    className={`px-6 py-2 font-bold text-sm rounded-xl transition-all border ${
-                      isDarkMode 
-                      ? 'bg-transparent text-gray-400 border-white/10 hover:bg-white/5' 
-                      : 'bg-white text-gray-500 border-slate-200 hover:bg-gray-50'
-                    }`}
+                    className="flex-1 px-4 py-2 text-sm font-bold text-gray-500 bg-gray-100 rounded-lg hover:bg-gray-200"
                   >
                     Cancel
                   </button>
-                  <button
-                    disabled={isUpdating}
+                  <button 
                     onClick={handleUpdate}
-                    className={`flex-1 font-bold py-2 text-sm rounded-xl transition-all flex items-center justify-center gap-2 ${theme.buttonPrimary}`}
+                    disabled={isUpdating}
+                    className="flex-1 px-4 py-2 text-sm font-bold text-white bg-[#2B4BAB] rounded-lg hover:bg-[#1e3a8a] disabled:opacity-50"
                   >
-                    {isUpdating ? "Saving..." : (
-                        <>
-                            <span>Update Label</span>
-                           
-                        </>
-                    )}
+                    {isUpdating ? "Saving..." : "Save Changes"}
                   </button>
                 </div>
               </div>
@@ -312,7 +243,8 @@ const Preview = ({ previewFields, refreshFields }) => {
           </div>
         )}
       </AnimatePresence>
-    </div>
+  
+  </>
   );
 };
 
