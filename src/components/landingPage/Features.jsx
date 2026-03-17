@@ -1,5 +1,6 @@
 import React from 'react'
 import { FaMousePointer,  FaRegChartBar, FaPlug, FaShieldAlt, FaMobileAlt, FaPalette } from 'react-icons/fa';
+import { motion } from 'framer-motion';
 const Features = () => {
 
  
@@ -88,11 +89,17 @@ const Features = () => {
     
     {/*Features Section */}
     
-           <section className='py-20 md:py-26  relative w-full bg-[#FCFCFC] '>
+           <section id="features" className='py-20 md:py-26  relative w-full bg-[#FCFCFC] '>
       <div className='max-w-7xl  mx-auto px-4 md:px-6'>
         
         {/* Paragraph Container */}
-        <div className='flex flex-col items-start'>
+        <motion.div
+        
+  initial={{ opacity: 0, x: -30 }}
+  whileInView={{ opacity: 1, x: 0 }}
+  transition={{ duration: 0.6 }}
+  viewport={{ once: false }}
+        className='flex flex-col items-start'>
           <p className="text-[#10B77F] uppercase font-semibold text-sm leading-5  tracking-widest font-[DM_Sans]">Features</p>
          
           <h2 className="text-[#14181F] font-bold max-w-xl mt-4 text-4xl font-['Space_Grotesk'] leading-11 tracking-tighter align-middle">
@@ -101,12 +108,19 @@ const Features = () => {
           <p className="text-[#737B8C] text-base font-normal leading-6 font-['DM_Sans'] mt-4">
             A complete toolkit for building, deploying, and analyzing forms at any scale.
           </p>
-        </div>
+        </motion.div>
     
         {/* Features Grid */}
        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-16'>
       {features.map((item, index) => (
-        <div 
+        <motion.div 
+
+       
+      
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: index * 0.15 }} 
+      viewport={{ once: false }}
           key={index} 
           className='relative bg-[#FFFFFF] border border-[#E5E7EB] rounded-xl w-full min-h-56 p-10 flex flex-col hover:shadow-lg transition-all group overflow-hidden'
         >
@@ -143,7 +157,7 @@ const Features = () => {
           </p>
     
          
-        </div>
+        </motion.div>
       ))}
     </div>
       </div>

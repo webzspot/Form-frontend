@@ -93,7 +93,7 @@ const [isReadOnly, setIsReadOnly] = useState(false);
   if (loading) return <LoadingScreen isDarkMode={isDarkMode} />;
 
   return (
-    <div className={`min-h-screen flex flex-col ${isDarkMode ? 'bg-[#0a0a0a]' : 'bg-[#F8F9FB]'}`}>
+    <div className={`min-h-screen flex flex-col ${isDarkMode ? 'bg-[#0a0a0a]' : 'bg-[#F5F6F8]'}`}>
       <UserNavbar />
       
     <main className="mt-4 mb-4 grow">

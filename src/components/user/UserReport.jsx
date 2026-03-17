@@ -118,7 +118,7 @@ const UserReport = () => {
   const theme = {
     pageBg: isDarkMode 
       ? "bg-[#05070f] text-white" : 
-      "bg-[#FFFFFF] text-[#4c1d95]",
+      "bg-[#F5F6F8] text-[#4c1d95]",
     formCard: isDarkMode
       ? "bg-[#1212]/80 backdrop-blur-xl shadow-[0_0_20px_rgba(139,92,246,0.05)]"
       : "bg-white  ",

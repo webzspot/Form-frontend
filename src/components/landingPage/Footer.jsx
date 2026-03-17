@@ -13,6 +13,13 @@ const Footer = () => {
   const productLinks = ["Features", "Pricing", "Integrations", "Changelog"];
 const companyLinks = ["About", "Blog", "Careers", "Contact"];
 const resourceLinks = ["Documentation", "API Reference", "Community", "Status"];
+
+ const scrollToSection = (id) => {
+  const section = document.getElementById(id);
+  if (section) {
+    section.scrollIntoView({ behavior: "smooth" });
+  }
+};
   return (
    <footer className='bg-[#0B0D13] w-full min-h-screen '>
 
@@ -109,13 +116,29 @@ const resourceLinks = ["Documentation", "API Reference", "Community", "Status"];
                 Product
               </h3>
               <ul className="flex flex-col gap-4">
-                {productLinks.map((link) => (
+                {/* {productLinks.map((link) => (
                   <li key={link}>
                     <a href="#" className="text-[#6C7993] text-xs font-normal font-sans hover:text-white transition-colors">
                       {link}
                     </a>
                   </li>
-                ))}
+                ))} */}
+                {productLinks.map((link) => (
+  <li key={link}>
+    {link === "Features" ? (
+      <span 
+        onClick={() => scrollToSection("features")} 
+        className="text-[#6C7993] text-xs font-normal font-sans hover:text-white transition-colors cursor-pointer"
+      >
+        {link}
+      </span>
+    ) : (
+      <a href="#" className="text-[#6C7993] text-xs font-normal font-sans hover:text-white transition-colors">
+        {link}
+      </a>
+    )}
+  </li>
+))}
               </ul>
             </div>
 
@@ -125,18 +148,35 @@ const resourceLinks = ["Documentation", "API Reference", "Community", "Status"];
                 Company
               </h3>
               <ul className="flex flex-col gap-4">
-                {companyLinks.map((link) => (
+                {/* {companyLinks.map((link) => (
                   <li key={link}>
                     <a href="#" className="text-[#6C7993] text-xs font-normal font-sans hover:text-white transition-colors">
                       {link}
                     </a>
                   </li>
-                ))}
+                ))} */}
+
+                {companyLinks.map((link) => (
+  <li key={link}>
+    {link === "About" ? (
+      <span 
+        onClick={() => scrollToSection("about")} 
+        className="text-[#6C7993] text-xs font-normal font-sans hover:text-white transition-colors cursor-pointer"
+      >
+        {link}
+      </span>
+    ) : (
+      <a href="#" className="text-[#6C7993] text-xs font-normal font-sans hover:text-white transition-colors">
+        {link}
+      </a>
+    )}
+  </li>
+))}
               </ul>
             </div>
 
             {/* Resources */}
-            <div className="flex flex-col">
+            {/* <div className="flex flex-col">
               <h3 className="text-[#D3D7DE] text-xs font-bold font-['Space_Grotesk'] uppercase tracking-tight mb-4">
                 Resources
               </h3>
@@ -149,7 +189,41 @@ const resourceLinks = ["Documentation", "API Reference", "Community", "Status"];
                   </li>
                 ))}
               </ul>
-            </div>
+            </div> */}
+
+
+
+            {/* Resources */}
+<div className="flex flex-col">
+  <h3 className="text-[#D3D7DE] text-xs font-bold font-['Space_Grotesk'] uppercase tracking-tight mb-4">
+    Resources
+  </h3>
+  <ul className="flex flex-col gap-4">
+    {resourceLinks.map((link) => {
+     
+      const targetPath = link === "Documentation" ? "/apidocumentation" : 
+                         link === "API Reference" ? "/apireference" : null;
+
+      return (
+        <li key={link}>
+          {targetPath ? (
+            <Link 
+             
+              to={!token ? "/login" : targetPath} 
+              className="text-[#6C7993] text-xs font-normal font-sans hover:text-white transition-colors"
+            >
+              {link}
+            </Link>
+          ) : (
+            <a href="#" className="text-[#6C7993] text-xs font-normal font-sans hover:text-white transition-colors">
+              {link}
+            </a>
+          )}
+        </li>
+      );
+    })}
+  </ul>
+</div>
           </div>
         </div>
 

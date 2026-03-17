@@ -337,6 +337,7 @@
 
 import React from 'react'
 import { HiArrowRight } from 'react-icons/hi'
+import { motion } from 'framer-motion';
 const About = () => {
 
 
@@ -358,13 +359,18 @@ const About = () => {
     }
   ]
   return (
-    <section className='py-20 md:py-26   w-full bg-[#FCFCFC] relative '>
+    <section id="about" className='py-20 md:py-26   w-full bg-[#FCFCFC] relative '>
 
 
     <div className='max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 px-4 md:px-6'>
 
       {/*First Container */}
-       <div className=''>
+       <motion.div 
+  initial={{ opacity: 0, x: -50 }}
+  whileInView={{ opacity: 1, x: 0 }}
+  transition={{ duration: 0.8 }}
+  viewport={{ once: false }}
+       className=''>
           
             <p className="text-[#10B77F]  font-['DM_Sans']  font-semibold text-sm leading-5 tracking-widest align-middle uppercase">Why FormCraft</p>
                      
@@ -378,7 +384,7 @@ as the products it powers.</p>
 
 
 <a className="text-[#10B77F] font-semibold font-['DM_Sans'] mt-4 text-sm leading-relaxed  inline-flex items-center cursor-pointer gap-2 hover:gap-3 transition-all">Read our story <HiArrowRight /></a>
-       </div>
+       </motion.div>
 
        {/*Second Container */}
        <div className='border-l-2  mt-4 md:mt-0 border-[#E5E7EB]  '>
@@ -387,7 +393,13 @@ as the products it powers.</p>
           {
             whyData.map((item,index)=>{
               return(
-                <div key={index} className='flex gap-6 pl-5'>
+                <motion.div 
+        key={index} 
+        initial={{ opacity: 0, y: 20 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: index * 0.2 }} 
+        viewport={{ once: false }}
+        className='flex gap-6 pl-5'  >
                   <div className="md:w-8 md:h-8 w-10 h-6 bg-[#10B77F1A] rounded-md flex items-center justify-center border border-white">
                   
                   <span className="text-[#10B77F] font-bold text-xs font-['DM_Sans']">
@@ -407,7 +419,7 @@ as the products it powers.</p>
                   {item.desc}
                 </p>
              </div>
-              </div>
+              </motion.div>
                  
               )
             })

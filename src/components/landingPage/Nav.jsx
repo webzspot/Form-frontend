@@ -155,6 +155,15 @@ const Nav = () => {
   const role = localStorage.getItem("role");
   const toggleMenu = () => setIsOpen(!isOpen);
 
+
+  const scrollToSection = (id) => {
+  const section = document.getElementById(id);
+  if (section) {
+    section.scrollIntoView({ behavior: "smooth" });
+  }
+  setIsOpen(false); 
+};
+
   return (
     <nav className=' bg-[#FCFCFCCC]  backdrop-blur-md h-[56.8px] w-full  fixed  top-0 left-0 border-b z-100 border-gray-100'>
       <div className=' w-full max-w-7xl flex justify-between h-14 mx-auto items-center px-4 md:px-6  '>
@@ -180,9 +189,9 @@ const Nav = () => {
   </div>
         {/* Desktop Navigation - Hidden on mobile */}
         <div className='hidden md:flex text-[#1F1F1F] items-center'>
-          <p className='w-[78.57px] font-semibold h-[17.6px] cursor-pointer'>Features</p>
-          <p className='w-[78.57px] font-semibold h-[17.6px] cursor-pointer'>About</p>
-          <p className='w-[78.57px] font-semibold h-[17.6px] cursor-pointer'>Testimonials</p>
+          <p onClick={() => scrollToSection("features")} className='w-[78.57px] font-semibold h-[17.6px] cursor-pointer'>Features</p>
+          <p onClick={() => scrollToSection("about")} className='w-[78.57px] font-semibold h-[17.6px] cursor-pointer'>About</p>
+          <p onClick={() => scrollToSection("testimonials")} className='w-[78.57px] font-semibold h-[17.6px] cursor-pointer'>Testimonials</p>
         </div>
 
         {/* CTA Buttons - Hidden on mobile to save space, or kept minimal */}
@@ -221,9 +230,9 @@ const Nav = () => {
           </div>
           
           <div className='flex flex-col gap-6 text-[#1F1F1F] font-semibold'>
-            <p onClick={toggleMenu}>Features</p>
-            <p onClick={toggleMenu}>About</p>
-            <p onClick={toggleMenu}>Testimonials</p>
+            <p onClick={() => scrollToSection("features")}>Features</p>
+            <p onClick={() => scrollToSection("about")}>About</p>
+            <p onClick={() => scrollToSection("testimonials")}>Testimonials</p>
             
             {/* <p onClick={toggleMenu}>Log in</p>
             <button className='bg-[#14181F] text-[#FCFCFC] flex items-center justify-center gap-1 rounded-md font-semibold py-3'>

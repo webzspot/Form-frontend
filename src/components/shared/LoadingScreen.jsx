@@ -95,7 +95,7 @@ const LoadingScreen = ({ isDarkMode }) => {
         transition={{ duration: 0.8, ease: "easeOut" }}
         className="absolute top-0 left-0 right-0 z-0"
       >
-        <WaveBackground position="top" height="h-96" color={isDarkMode ? "#1f2937" : "#6d28d9"} opacity={0.25} />
+        {/* <WaveBackground position="top" height="h-96" color={isDarkMode ? "#1f2937" : "#6d28d9"} opacity={0.25} /> */}
       </motion.div>
 
       {/* --- BOTTOM WAVE (Slides Up) --- */}
@@ -105,7 +105,7 @@ const LoadingScreen = ({ isDarkMode }) => {
         transition={{ duration: 0.8, ease: "easeOut" }}
         className="absolute bottom-0 left-0 right-0 z-0"
       >
-        <WaveBackground position="bottom" height="h-96" color={isDarkMode ? "#1f2937" : "#6c2bd9"} opacity={0.25} />
+        {/* <WaveBackground position="bottom" height="h-96" color={isDarkMode ? "#1f2937" : "#6c2bd9"} opacity={0.25} /> */}
       </motion.div>
 
       {/* --- CENTER CONTENT (Fades In) --- */}
@@ -116,12 +116,12 @@ const LoadingScreen = ({ isDarkMode }) => {
         className="flex flex-col items-center z-10"
       >
         <div className="flex items-center gap-3 mb-8">
-          <div className="w-12 h-12 bg-[#6C3BFF] rounded-xl flex items-center justify-center shadow-lg">
+          <div className="w-12 h-12 bg-[#2B4BAB] rounded-xl flex items-center justify-center shadow-lg">
             <span className="text-white text-2xl font-bold">⧉</span>
           </div>
-          <h1 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-[#4c1d95]'}`}>FormCraft</h1>
+          <h1 className={`text-2xl font-bold ${isDarkMode ? 'text-white' : 'text-[#2B4BAB]'}`}>FormCraft</h1>
         </div>
-        <FaSpinner className="text-indigo-600 text-4xl animate-spin" />
+        <FaSpinner className="text-indigo-600 text-2xl animate-spin" />
       </motion.div>
 
     </div>

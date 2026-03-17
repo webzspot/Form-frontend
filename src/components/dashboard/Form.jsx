@@ -86,7 +86,7 @@ const Form = () => {
   const theme = {
     pageBg: isDarkMode 
       ? "bg-[#05070f] text-white selection:bg-indigo-500/30" 
-      : "bg-[#FFFFFF]  selection:bg-indigo-200",
+      : "bg-[#F5F6F8]  selection:bg-indigo-200",
     
     card: isDarkMode
       ? "bg-[#12121a]/80 backdrop-blur-xl border border-purple-500/20 shadow-[0_0_20px_rgba(139,92,246,0.05)]"
@@ -416,10 +416,10 @@ const Form = () => {
                 }}
                 whileHover={{ scale: 1.02, boxShadow: "0 20px 40px -15px rgba(124, 58, 237, 0.4)" }}
                 whileTap={{ scale: 0.98 }}
-                className={`group relative ${theme.buttonPrimary}  text-xs  w-30  md:text-sm px-4 py-2 md:px-6 md:py-2.5  text-center mr-0  lg:mr-4  rounded shadow-lg shadow-violet-500/25 font-semibold flex items-center overflow-hidden`}
+                className={`group relative ${theme.buttonPrimary}    w-54 max-w-fit  px-4 py-2 md:px-6   text-center mr-0  lg:mr-2  rounded shadow-lg shadow-violet-500/25 font-semibold flex items-center overflow-hidden`}
               >
                 <span className="absolute inset  opacity-0 group-hover:opacity-100  transition-opacity duration-300" />
-                <span className="relative  z-10 text-[10px] ">Create New Form</span>
+                <span className="relative  z-10 text-[10px] md:text-sm ">Create New Form</span>
                
               </motion.button>
             </motion.div>
