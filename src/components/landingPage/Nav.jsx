@@ -188,10 +188,15 @@ const Nav = () => {
     </p>
   </div>
         {/* Desktop Navigation - Hidden on mobile */}
-        <div className='hidden md:flex text-[#1F1F1F] items-center'>
-          <p onClick={() => scrollToSection("features")} className='w-[78.57px] font-semibold h-[17.6px] cursor-pointer'>Features</p>
+        <div className='hidden md:flex md:justify-around md:gap-7 text-[#1F1F1F] items-center'>
+          {/* <p onClick={() => scrollToSection("features")} className='w-[78.57px] font-semibold h-[17.6px] cursor-pointer'>Features</p>
           <p onClick={() => scrollToSection("about")} className='w-[78.57px] font-semibold h-[17.6px] cursor-pointer'>About</p>
-          <p onClick={() => scrollToSection("testimonials")} className='w-[78.57px] font-semibold h-[17.6px] cursor-pointer'>Testimonials</p>
+          <p onClick={() => scrollToSection("testimonials")} className='w-[78.57px] font-semibold h-[17.6px] cursor-pointer'>Testimonials</p> */}
+          
+
+             <p onClick={() => scrollToSection("features")} className='font-semibold cursor-pointer'>Features</p>
+          <p onClick={() => scrollToSection("about")} className=' font-semibold  cursor-pointer'>About</p>
+          <p onClick={() => scrollToSection("testimonials")} className=' font-semibold cursor-pointer'>Testimonials</p>
         </div>
 
         {/* CTA Buttons - Hidden on mobile to save space, or kept minimal */}
