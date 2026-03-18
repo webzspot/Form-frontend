@@ -640,19 +640,20 @@ const ProfileSettings = () => {
   const valueClasses = "text-lg font-medium " + (isDarkMode ? "text-slate-200" : "text-gray-800");
 
   return (
+    <>
     <div className={`min-h-screen transition-colors duration-300 font-sans selection:bg-indigo-100 ${isDarkMode ? "bg-[#0f172a]" : "bg-[#f9fafb]"}`}>
       <UserNavbar />
 
-      <main className="max-w-5xl mx-auto pt-12 pb-24 px-4">
+      <main className="max-w-7xl w-full mx-auto pt-12 pb-24 px-4 md:px-6">
         <motion.div 
           initial={{ opacity: 0, y: 10 }} 
           animate={{ opacity: 1, y: 0 }}
-          className={`rounded-[2rem] border overflow-hidden transition-all duration-300 ${
+          className={`rounded-3xl border  transition-all duration-300 ${
             isDarkMode ? "bg-[#1e293b] border-slate-700 shadow-2xl shadow-black/20" : "bg-white border-gray-200 shadow-[0_8px_30px_rgb(0,0,0,0.02)]"
           }`}
         >
           {/* TOP SECTION: Avatar & Upload */}
-          <div className={`p-10 flex items-center gap-8 border-b ${isDarkMode ? "border-slate-700/50" : "border-gray-300"}`}>
+          <div className={`p-10 flex items-center gap-8  ${isDarkMode ? "border-slate-700/50" : "border-gray-300"}`}>
             <div className="relative">
               <img 
                 src="https://i.pinimg.com/736x/9e/c0/f8/9ec0f877571edc437f89c15c08081533.jpg" 
@@ -661,7 +662,7 @@ const ProfileSettings = () => {
               />
             </div>
             
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col gap-3">
               <button className={`w-fit px-4 py-1.5 text-sm font-semibold rounded-lg border transition-all ${
                 isDarkMode 
                 ? "border-slate-600 bg-slate-800 text-slate-200 hover:bg-slate-700" 
@@ -669,13 +670,13 @@ const ProfileSettings = () => {
               }`}>
                 Upload new photo
               </button>
-              <div className="space-y-0.5">
-                <p className="text-xs text-gray-400">At least 800×800 px recommended.</p>
-                <p className="text-xs text-gray-400">JPG or PNG is allowed</p>
+              <div className="space-y-2">
+                <p className="text-sm text-[#6A7181] leading-5">At least 800×800 px recommended.</p>
+                <p className="text-sm text-[#6A7181] leading-5">JPG or PNG is allowed</p>
               </div>
             </div>
 
-            <div className="ml-auto self-start flex gap-3">
+            {/* <div className="ml-auto self-start flex gap-3">
                <button 
                   onClick={toggleTheme} 
                   className={`p-2 rounded-lg transition-all ${isDarkMode ? "bg-slate-700 text-yellow-400" : "bg-gray-100 text-gray-500"}`}
@@ -685,11 +686,11 @@ const ProfileSettings = () => {
                <button onClick={handleLogout} className="p-2 text-gray-400 hover:text-red-500 transition-colors" title="Logout">
                  <LogOut size={20}/>
                </button>
-            </div>
+            </div> */}
           </div>
-
+           <div className="border mb-10 ml-10 mr-10 border-gray-300"></div>
           {/* BOTTOM SECTION: Info Card */}
-          <div className="p-10">
+          <div className="px-10 pb-10">
             <div className={`rounded-2xl border p-8 transition-colors ${
               isDarkMode ? "bg-slate-900/40 border-slate-700" : "bg-white border-gray-300"
             }`}>
@@ -713,7 +714,7 @@ const ProfileSettings = () => {
                     key="display"
                     initial={{ opacity: 0 }} 
                     animate={{ opacity: 1 }}
-                    className="grid grid-cols-1 md:grid-cols-3 gap-10"
+                    className="flex flex-col  md:flex-row justify-between md:items-center gap-6"
                   >
                     <div>
                       <p className={labelClasses}>Full Name</p>
@@ -780,7 +781,7 @@ const ProfileSettings = () => {
             </div>
 
             {/* Plan and Danger Zone */}
-            <div className="mt-12 flex items-center justify-between">
+            {/* <div className="mt-12 flex items-center justify-between">
               <Link to="/plandetail" className="group flex items-center gap-2">
                 <span className={`text-xs font-bold uppercase tracking-widest ${isDarkMode ? "text-indigo-400" : "text-indigo-600"}`}>
                   {user?.plan} Membership
@@ -794,7 +795,7 @@ const ProfileSettings = () => {
               >
                 <FiTrash2 size={14}/> Close Account
               </button>
-            </div>
+            </div> */}
           </div>
         </motion.div>
       </main>
@@ -827,8 +828,10 @@ const ProfileSettings = () => {
           </div>
         )}
       </AnimatePresence>
-      <UserFooter/>
+     
     </div>
+     <UserFooter/>
+     </>
   );
 };
 
