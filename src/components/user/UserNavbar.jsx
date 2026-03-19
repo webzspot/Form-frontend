@@ -13,7 +13,7 @@ const UserNavbar = () => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
   // We keep isDarkMode to ensure the navbar styling stays synced with the rest of the app
-  const { isDarkMode } = useFormContext(); 
+  const { isDarkMode , toggleTheme} = useFormContext(); 
 
   const role = localStorage.getItem("role")?.toLowerCase() || "user";
   const Name = localStorage.getItem("Name") || "Profile";
@@ -56,7 +56,7 @@ const UserNavbar = () => {
         ? "bg-[#0f172a]/80 backdrop-blur-md border-slate-800 shadow-2xl" 
         : "bg-white/90 backdrop-blur-md border-slate-100 "
       } `}>
-        <div className=" max-w-7xl w-full mx-auto  flex  items-center justify-between px-0 md:px-6   h-[56.8px]  ">
+        <div className=" max-w-7xl  w-full mx-auto  flex  items-center justify-between px-0 md:px-6   h-[56.8px]  ">
           {/* <div 
             className={`flex items-center gap-2 font-bold text-lg cursor-pointer transition-colors ${isDarkMode ? "text-white" : "text-slate-900"}`} 
             onClick={() => navigate("/home")}
@@ -86,7 +86,7 @@ const UserNavbar = () => {
               <button
                 key={item.label}
                 onClick={() => handleNavClick(item.label)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all font-medium text-[14px] leading-[21px] ${
+                className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all font-normal text-[14px] leading-[21px] ${
                   isDarkMode 
                   ? "text-slate-300 hover:bg-slate-800 hover:text-indigo-400" 
                   : "text-[#6A7181] hover:bg-[#F3F4F6] hover:text-[#14181F]"
@@ -100,13 +100,45 @@ const UserNavbar = () => {
 
 
 
-         
+
+
+
+
+
+
+        
+<div className="flex items-center gap-4">
+      {/* Theme Toggle Switch */}
+   {/* Theme Toggle Switch */}
+<div className="flex items-center gap-2">
+  <span className={`text-[14px] font-normal leading-[21px] ${isDarkMode ? "text-slate-400" : "text-[#6A7181]"}`}>
+    {isDarkMode ? "Dark Mode" : "Light Mode"}
+  </span>
+  
+  <button 
+    onClick={toggleTheme} 
+    className={`w-[42px] h-[22px] rounded-full relative transition-colors duration-300 ${
+      isDarkMode ? 'bg-slate-700' : 'bg-[#EAEDF7]' 
+    }`}
+  >
+    
+    <motion.div 
+      initial={false}
+      animate={{ x: isDarkMode ? 23 : 3 }} 
+      transition={{ type: "spring", stiffness: 500, damping: 30 }}
+      className={`absolute top-[3px] w-4 h-4 rounded-full shadow-sm ${
+        isDarkMode ? 'bg-[#2B4BAB]' : 'bg-[#2B4BAB]'
+      }`}
+    />
+  </button>
+</div>
+        
          {/* Profile Section */}
 <div 
   className="flex items-center gap-1 cursor-pointer min-w-fit" 
   onClick={() => navigate("/profile")}
 >
-  <div className={`w-8 h-8  rounded-full flex items-center justify-center text-[12px] font-bold  border border-[#E5E7EB] flex-shrink-0 ${
+  <div className={`w-8 h-8  rounded-full flex items-center justify-center text-[12px] font-bold  border border-[#E5E7EB] shrink-0 ${
                   isDarkMode 
                   ? "text-slate-300 bg-slate-700 hover:bg-slate-800 hover:text-indigo-400" 
                   : "text-[#6A7181] bg-[#F3F4F6] hover:bg-[#F3F4F6] hover:text-[#14181F]"
@@ -117,6 +149,10 @@ const UserNavbar = () => {
     {Name}
   </span>
 </div>
+      
+    </div>
+
+     
         </div>
       </div>
 
@@ -186,8 +222,27 @@ const UserNavbar = () => {
                     {item.label}
                   </button>
                 ))}
-                
-                <hr className={`my-2 ${isDarkMode ? "border-slate-800" : "border-slate-100"}`} />
+                <div className={`flex items-center justify-between px-4 py-3 mt-2 rounded-xl ${isDarkMode ? 'bg-slate-800/50' : 'bg-[#F9FAFB]'}`}>
+    <span className={`text-[14px] font-medium ${isDarkMode ? "text-slate-300" : "text-[#4B5563]"}`}>
+      {isDarkMode ? "Dark Mode" : "Light Mode"}
+    </span>
+    <button 
+      onClick={toggleTheme} 
+      className={`w-[42px] h-[22px] rounded-full relative transition-colors duration-300 ${
+        isDarkMode ? 'bg-slate-600' : 'bg-[#EAEDF7]'
+      }`}
+    >
+      <motion.div 
+        animate={{ x: isDarkMode ? 23 : 3 }} 
+        className={`absolute top-[3px] w-4 h-4 rounded-full ${
+          isDarkMode ? 'bg-[#2B4BAB]' : 'bg-[#2B4BAB]'
+        }`}
+      />
+    </button>
+  </div>
+
+  <hr className={`my-2 ${isDarkMode ? "border-slate-800" : "border-slate-100"}`} />
+              
 
                 {/* Mobile Profile Section */}
                 <button 

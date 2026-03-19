@@ -1,5 +1,6 @@
 import React from 'react'
 import { FaStar, FaQuoteLeft } from 'react-icons/fa';
+import { motion } from 'framer-motion';
 const Testimonials = () => {
 
 
@@ -36,14 +37,19 @@ const Testimonials = () => {
     <>
          {/*Testimonials Section*/}
             
-            <section className='py-20 md:py-26 relative  w-full  bg-[#F3F4F680]'>
+            <section id="testimonials" className='py-20 md:py-26 relative  w-full  bg-[#F3F4F680]'>
               <div className='max-w-7xl mx-auto px-4 md:px-6'>
         
                 {/*Paragraph Section */}
-                <div className='flex flex-col items-start'>
+                <motion.div 
+  initial={{ opacity: 0, x: -30 }}
+  whileInView={{ opacity: 1, x: 0 }}
+  transition={{ duration: 0.6 }}
+  viewport={{ once: false, amount: 0.2 }}
+   className='flex flex-col items-start'>
                   <p className="text-[#10B77F]  font-['DM_Sans']  font-semibold text-sm leading-5 tracking-widest align-middle uppercase">Testimonials</p>
                   <h2 className="font-bold font-['Space_Grotesk'] text-4xl max-w-md mt-4 leading-11 tracking-tighter align-middle text-[#14181F]">Loved by teams who care about quality</h2>
-                </div>  
+                </motion.div>  
         
         
         
@@ -53,7 +59,12 @@ const Testimonials = () => {
                   {
                     testimonials.map((item,index)=>{
                       return(
-                        <div key={index}
+                        <motion.div
+                        initial={{ opacity: 0, y: 30, scale: 0.95 }}
+        whileInView={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.5, delay: index * 0.2 }}
+       viewport={{ once: false, amount: 0.1 }}
+                        key={index}
                         style={{ 
                 '--hover-col': `color-mix(in srgb, ${item.textColor}, transparent 80%)` 
               }}
@@ -99,7 +110,7 @@ const Testimonials = () => {
               </div>
         
           </div>
-                          </div>
+                          </motion.div>
                       )
                     })
                   }
