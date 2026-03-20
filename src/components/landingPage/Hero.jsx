@@ -153,9 +153,9 @@ const Hero = () => {
       <div className="relative z-10 max-w-4xl mx-auto text-center mb-16 px-2">
         
         {/* Beta Badge */}
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0F1716] border border-[#10B77F33] backdrop-blur-sm mb-8">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#10B77F]"></span>
-          <span className="text-[#10B77F] text-xs font-medium tracking-wide">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#4F46E5] backdrop-blur-sm mb-8">
+          <span className="w-1.5 h-1.5 rounded-full bg-white"></span>
+          <span className="text-white text-xs font-medium tracking-wide">
             Now in public beta
           </span>
         </div>

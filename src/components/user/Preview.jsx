@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Edit3, Trash2, X, AlertCircle, Layers, Eye } from "lucide-react";
+import { Edit3, Trash2, X,ChevronDown, AlertCircle, Layers, Eye } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import toast from "react-hot-toast";
 import { useFormContext } from "../dashboard/FormContext"; 
@@ -14,7 +14,7 @@ const SparkleIcon = ({ className }) => (
 
 const Preview = ({ previewFields, refreshFields }) => {
   const { isDarkMode } = useFormContext(); 
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
 
   const [updatePop, setUpdatePop] = useState(false);
   const [selectedField, setSelectedField] = useState(null);
@@ -170,25 +170,60 @@ const Preview = ({ previewFields, refreshFields }) => {
                     </div>
                   </div>
 
-                  <label className="block text-sm font-bold text-gray-800 mb-2">
-                    {field.label} {field.required && <span className="text-red-500">*</span>}
-                  </label>
-                  
-               
-                  {field.type === "TEXTAREA" || field.type === "LIST" ? (
-                    <textarea 
-                      disabled 
-                      className="w-full p-2 border border-gray-200 rounded-md text-sm bg-gray-50/50 h-20" 
-                      placeholder={field.placeholder || "..."}
-                    />
-                  ) : (
-                    <input 
-                      type="text" 
-                      placeholder={field.placeholder || "..."} 
-                      className="w-full p-2 border border-gray-200 rounded-md text-sm bg-gray-50/50" 
-                      disabled 
-                    />
-                  )}
+               <label className="block text-sm font-bold text-gray-800 mb-2">
+  {field.label} {field.required && <span className="text-red-500">*</span>}
+</label>
+                <div className="mt-1">
+  {/* 1. CHECKBOX & RADIO */}
+  {["CHECKBOX", "RADIO"].includes(field.type) ? (
+    <div className="space-y-2 py-1">
+      {field.options && field.options.length > 0 ? (
+        field.options.map((opt, i) => (
+          <div key={i} className="flex items-center gap-2">
+            <div className={`w-4 h-4 border border-gray-300 bg-gray-50 shrink-0 ${field.type === "RADIO" ? "rounded-full" : "rounded"}`} />
+            <span className="text-sm text-gray-600">{opt}</span>
+          </div>
+        ))
+      ) : (
+        <p className="text-xs text-gray-400 italic">No options added</p>
+      )}
+    </div>
+  ) : 
+  /* 2. DROPDOWN */
+  field.type === "DROPDOWN" ? (
+    <div className="relative">
+      <select disabled className="w-full p-2 border border-gray-200 rounded-md text-sm bg-gray-50/50 appearance-none cursor-not-allowed">
+        <option>{field.placeholder || "Select an option..."}</option>
+        {field.options?.map((opt, i) => (
+          <option key={i}>{opt}</option>
+        ))}
+      </select>
+      <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+        <ChevronDown size={14} className="text-gray-400" />
+      </div>
+    </div>
+  ) : 
+  /* 3. TEXTAREA / LIST */
+  field.type === "TEXTAREA" || field.type === "LIST" ? (
+    <textarea 
+      disabled 
+      className="w-full p-2 border border-gray-200 rounded-md text-sm bg-gray-50/50 h-20 resize-none cursor-not-allowed" 
+      placeholder={field.placeholder || "Enter text..."}
+    />
+  ) : 
+  /* 4. DEFAULT (TEXT, EMAIL, etc.) */
+  (
+    <input 
+      type="text" 
+      disabled 
+      placeholder={field.placeholder || "..."} 
+      className="w-full p-2 border border-gray-200 rounded-md text-sm bg-gray-50/50 cursor-not-allowed" 
+    />
+  )}
+</div>
+                
+                      
+
                 </motion.div>
               ))
             ) : (

@@ -18,7 +18,7 @@ import UserNavbar from './UserNavbar';
 
 const Subscription = ({ isDarkMode = false }) => {
   const navi=useNavigate()
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
    const API_BASE = "https://formbuilder-saas-backend.onrender.com";
  
 

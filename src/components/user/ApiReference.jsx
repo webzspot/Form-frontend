@@ -263,7 +263,7 @@ const Apidocumentation = () => {
 
   const { isDarkMode } = useFormContext();
   const [keyname,setkeyname]=useState("");
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
   const[copied,setcopied]=useState("");
   const[publicKey,setpublicKey]=useState("");
   const[secretKey,setsecretKey]=useState("");

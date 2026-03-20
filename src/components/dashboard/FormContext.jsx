@@ -12,7 +12,7 @@ export const FormProvider = ({ children }) => {
 
   // --- Theme Logic ---
   useEffect(() => {
-    const savedTheme = localStorage.getItem('theme');
+    const savedTheme = sessionStorage.getItem('theme');
     if (savedTheme === 'dark') {
       setIsDarkMode(true);
       document.documentElement.classList.add('dark');
@@ -26,10 +26,10 @@ export const FormProvider = ({ children }) => {
       const newValue = !prev;
       if (newValue) {
         document.documentElement.classList.add('dark');
-        localStorage.setItem('theme', 'dark');
+        sessionStorage.setItem('theme', 'dark');
       } else {
         document.documentElement.classList.remove('dark');
-        localStorage.setItem('theme', 'light');
+        sessionStorage.setItem('theme', 'light');
       }
       return newValue;
     });

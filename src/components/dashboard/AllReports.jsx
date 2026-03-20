@@ -27,7 +27,7 @@ const AllReports = () => {
     const [searchQuery, setSearchQuery] = useState("");
     const [openStatusId, setOpenStatusId] = useState(null);
 
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     const navigate = useNavigate();
 
     const SparkleIcon = ({ className }) => (

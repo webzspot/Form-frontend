@@ -9,7 +9,9 @@ import {
   List as ListIcon, 
   Settings2, 
   Eye, 
-  Trash2 
+  Trash2, 
+  Radio,
+  TextAlignCenter
 } from 'lucide-react';
 import UserNavbar from './UserNavbar';
 import UserFooter from './userFooter';
@@ -17,6 +19,7 @@ import toast from "react-hot-toast";
 import { useFormContext } from "../dashboard/FormContext"; 
 import LoadingScreen from '../shared/LoadingScreen';
 import Preview from './Preview';
+import { MdEmail, MdNumbers, MdRadioButtonChecked, MdTextFields } from 'react-icons/md';
 const Home = () => {
   const { isDarkMode } = useFormContext(); 
   const [loading, setLoading] = useState(true);
@@ -28,15 +31,20 @@ const Home = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isRequired, setIsRequired] = useState(false);
 const [isReadOnly, setIsReadOnly] = useState(false);
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
 
   // Sidebar Field Config
   const FieldTypes = [
     { id: "TEXT", label: "Text", icon: <Type size={18} /> },
+     {id:"EMAIL",label:"Email", icon:<MdEmail size={18}/>},
     { id: "DROPDOWN", label: "Dropdown", icon: <ChevronDown size={18} /> },
+
     { id: "CHECKBOX", label: "Checkbox", icon: <CheckSquare size={18} /> },
+     {id:"RADIO",label:"Radio", icon:<MdRadioButtonChecked size={18}/>},
     { id: "DATE", label: "Date", icon: <Calendar size={18} /> },
-    { id: "LIST", label: "List", icon: <ListIcon size={18} /> },
+   
+     {id:"NUMBER",label:"Number", icon:<MdNumbers size={18}/>},
+      {id:"TEXTAREA",label:"Textarea", icon:<MdTextFields size={18}/>},
   ];
 
   const fetchField = async () => {
@@ -89,9 +97,26 @@ const [isReadOnly, setIsReadOnly] = useState(false);
       setIsSubmitting(false);
     }
   };
+ 
 
-  if (loading) return <LoadingScreen isDarkMode={isDarkMode} />;
+   const handleoptionchange = (index, value) => {
+    const updateoption = [...options];
+    updateoption[index] = value;
+    setoptions(updateoption);
+  };
 
+  const PreviewSkeleton = () => (
+  <div className="flex-[3] bg-white rounded-xl border border-gray-200 p-6 space-y-6 animate-pulse">
+    <div className="h-6 w-32 bg-gray-200 rounded mb-4" /> {/* Title */}
+    {[...Array(3)].map((_, i) => (
+      <div key={i} className="space-y-3 p-4 border border-gray-100 rounded-xl">
+        <div className="h-4 w-24 bg-gray-200 rounded" /> {/* Label */}
+        <div className="h-10 w-full bg-gray-100 rounded-lg" /> {/* Input */}
+      </div>
+    ))}
+  </div>
+);
+ 
   return (
     <div className={`min-h-screen flex flex-col ${isDarkMode ? 'bg-[#0a0a0a]' : 'bg-[#F5F6F8]'}`}>
       <UserNavbar />
@@ -171,7 +196,44 @@ const [isReadOnly, setIsReadOnly] = useState(false);
                 <span className="font-medium">{selectedType}</span>
               </div>
             </div>
+                
+   {["CHECKBOX", "RADIO", "DROPDOWN"].includes(selectedType) && (
+  <div className="pt-4 border-t border-gray-100 animate-in fade-in slide-in-from-top-4">
+    <div className="flex justify-between items-center mb-4">
+      <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Field Options</h4>
+      <button 
+        onClick={() => setoptions([...options, ""])}
+        className="text-[11px] bg-[#2B4BAB]/10 text-[#2B4BAB] px-3 py-1.5 rounded-lg font-bold hover:bg-[#2B4BAB]/20 transition-all flex items-center gap-1"
+      >
+        <span>+</span> ADD OPTION
+      </button>
+    </div>
 
+    <div className="space-y-3 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
+      {options.map((opt, i) => (
+        <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} key={i} className="flex gap-2">
+          <div className="relative flex-1">
+            <input
+              value={opt}
+              onChange={(e) => handleoptionchange(i, e.target.value)}
+              placeholder={`Option ${i + 1}`}
+              className="w-full px-4 py-2.5 rounded-xl outline-none border border-gray-200 focus:ring-2 focus:ring-[#2B4BAB]/20 transition-all text-sm"
+            />
+          </div>
+          {options.length > 1 && (
+            <button 
+              onClick={() => setoptions(options.filter((_, idx) => idx !== i))}
+              className="p-2 text-gray-400 hover:text-red-500 transition-colors"
+            >
+              <Trash2 size={18} />
+            </button>
+          )}
+        </motion.div>
+      ))}
+    </div>
+  </div>
+)}
+               
             <div className="pt-4 border-t border-gray-100">
               <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Validation</h4>
         
@@ -206,7 +268,7 @@ const [isReadOnly, setIsReadOnly] = useState(false);
 </div>
             </div>
 
-            <div className="pt-4">
+            {/* <div className="pt-4">
               <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Live Preview</h4>
               <div className="p-4 border border-dashed border-gray-300 rounded-lg bg-gray-50">
                 <label className="text-xs font-medium text-gray-500 mb-1 block">
@@ -217,7 +279,72 @@ const [isReadOnly, setIsReadOnly] = useState(false);
                   className="w-full h-10 bg-white border border-gray-200 rounded-md"
                 />
               </div>
+            </div> */}
+
+        <div className="pt-4 border-t border-gray-100">
+  <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Live Preview</h4>
+  <div className={`p-5 border border-dashed rounded-xl ${isDarkMode ? 'border-gray-700 bg-white/5' : 'border-gray-300 bg-gray-50/50'}`}>
+    <label className="text-xs font-semibold text-gray-600 mb-2 block flex items-center gap-1">
+      {labelname || "Field Label"} 
+      {isRequired && <span className="text-red-500">*</span>}
+    </label>
+
+    {/* Input Types */}
+    {["TEXT", "EMAIL", "NUMBER"].includes(selectedType) && (
+      <input 
+        disabled 
+        type={selectedType.toLowerCase()} 
+        placeholder={placeholder} 
+        className="w-full h-11 px-4 bg-white border border-gray-200 rounded-xl text-sm shadow-sm" 
+      />
+    )}
+
+    {/* Textarea */}
+    {selectedType === "TEXTAREA" && (
+      <textarea 
+        disabled 
+        placeholder={placeholder} 
+        className="w-full h-24 p-4 bg-white border border-gray-200 rounded-xl text-sm resize-none shadow-sm" 
+      />
+    )}
+
+    {/* Dropdown Fix */}
+    {selectedType === "DROPDOWN" && (
+      <div className="relative">
+        <select  className="w-full h-11 px-4 bg-white border border-gray-200 rounded-xl text-sm shadow-sm ">
+          <option value="">{placeholder || "Select an option..."}</option>
+          {options.map((opt, i) => (
+            opt.trim() !== "" && <option key={i} value={opt}>{opt}</option>
+          ))}
+        </select>
+      
+      </div>
+    )}
+
+    {/* Checkbox & Radio Fix */}
+    {["CHECKBOX", "RADIO"].includes(selectedType) && (
+      <div className="space-y-3 py-1">
+        {options.map((opt, i) => (
+          <div key={i} className="flex items-center gap-3 group">
+            <div className={`w-5 h-5 border-2 flex items-center justify-center transition-all ${
+              selectedType === "RADIO" ? "rounded-full" : "rounded-md"
+            } border-gray-300 bg-white`}>
+              {/* Fake inner dot/check for visual flair */}
+              <div className={`w-2.5 h-2.5 ${selectedType === "RADIO" ? "rounded-full" : "rounded-sm"} bg-gray-200`} />
             </div>
+            <span className="text-sm text-gray-500 font-medium">{opt || `Option ${i + 1}`}</span>
+          </div>
+        ))}
+      </div>
+    )}
+    
+    {selectedType === "DATE" && (
+      <div className="relative">
+        <input disabled type="date" className="w-full h-11 px-4 bg-white border border-gray-200 rounded-xl text-sm shadow-sm cursor-not-allowed" />
+      </div>
+    )}
+  </div>
+</div>
           </div>
 
          
@@ -232,13 +359,23 @@ const [isReadOnly, setIsReadOnly] = useState(false);
           </div>
         </section>
       </div>
-
+{/* 
      <Preview 
         previewFields={previewFields} 
         refreshFields={fetchField} 
         token={token} 
-      />
+      /> */}
 
+
+{loading ? (
+  <PreviewSkeleton />
+) : (
+  <Preview 
+    previewFields={previewFields} 
+    refreshFields={fetchField} 
+    token={token} 
+  />
+)}
     </div>
   </div>
 </main>

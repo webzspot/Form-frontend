@@ -42,7 +42,7 @@ const Plandetail = () => {
   const [subscription, setSubscription] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
   const API_BASE = "https://formbuilder-saas-backend.onrender.com";
 
   useEffect(() => {

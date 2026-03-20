@@ -47,9 +47,12 @@ const Login = () => {
       const { token, user } = response.data;
       
       // Save to Local Storage
-      localStorage.setItem("token", token);
-      localStorage.setItem("role", user.role);
-      localStorage.setItem("Name", user.name);
+      // localStorage.setItem("token", token);
+      // localStorage.setItem("role", user.role);
+      // localStorage.setItem("Name", user.name);
+      sessionStorage.setItem("token", token);
+      sessionStorage.setItem("role", user.role);
+       sessionStorage.setItem("Name", user.name);
 
       showToast("Login Successful!", "success");
 

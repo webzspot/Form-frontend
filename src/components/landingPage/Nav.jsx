@@ -149,20 +149,73 @@
 import React, { useState } from 'react';
 import { FaArrowRight, FaBars, FaTimes } from "react-icons/fa";
 import { Link } from 'react-router-dom'; // Add this line
+import { useRef,useEffect } from 'react';
+import { motion, AnimatePresence } from "framer-motion"
 const Nav = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const token = localStorage.getItem("token");
-  const role = localStorage.getItem("role");
+  const [activeSection, setActiveSection] = useState("home"); // Track active link
+  const isManualScroll = useRef(false); // Prevent jitter during clicks
+  // const token = localStorage.getItem("token");
+  // const role = localStorage.getItem("role");
+
+   const token = sessionStorage.getItem("token");
+  const role = sessionStorage.getItem("role");
   const toggleMenu = () => setIsOpen(!isOpen);
 
+  const navLinks = [
+    { name: "About", id: "about" },
+    { name: "Features", id: "features" },
+    { name: "Testimonials", id: "testimonials" },
+  ];
 
-  const scrollToSection = (id) => {
-  const section = document.getElementById(id);
-  if (section) {
-    section.scrollIntoView({ behavior: "smooth" });
-  }
-  setIsOpen(false); 
-};
+
+ // ✅ Scroll Spy Logic
+  useEffect(() => {
+    const handleScroll = () => {
+      if (isManualScroll.current) return;
+
+      let current = "";
+      navLinks.forEach((link) => {
+        const section = document.getElementById(link.id);
+        if (section) {
+          // 120px offset accounts for the navbar height + some breathing room
+          const offsetTop = section.offsetTop - 120;
+          if (window.scrollY >= offsetTop) {
+            current = link.id;
+          }
+        }
+      });
+      setActiveSection(current);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+
+//   const scrollToSection = (id) => {
+//   const section = document.getElementById(id);
+//   if (section) {
+//     section.scrollIntoView({ behavior: "smooth" });
+//   }
+//   setIsOpen(false); 
+// };
+
+const scrollToSection = (id) => {
+    const section = document.getElementById(id);
+    if (section) {
+      setActiveSection(id);
+      isManualScroll.current = true;
+      
+      section.scrollIntoView({ behavior: "smooth" });
+
+      // Re-enable scroll spy after animation finishes
+      setTimeout(() => {
+        isManualScroll.current = false;
+      }, 800);
+    }
+    setIsOpen(false);
+  };
 
   return (
     <nav className=' bg-[#FCFCFCCC]  backdrop-blur-md h-[56.8px] w-full  fixed  top-0 left-0 border-b z-100 border-gray-100'>
@@ -193,11 +246,29 @@ const Nav = () => {
           <p onClick={() => scrollToSection("about")} className='w-[78.57px] font-semibold h-[17.6px] cursor-pointer'>About</p>
           <p onClick={() => scrollToSection("testimonials")} className='w-[78.57px] font-semibold h-[17.6px] cursor-pointer'>Testimonials</p> */}
           
+          {navLinks.map((link) => (
+            <div key={link.id} className="relative py-1">
+              <p 
+                onClick={() => scrollToSection(link.id)} 
+                className={`font-semibold cursor-pointer transition-colors px-2 ${
+                  activeSection === link.id ? "text-[#14181F]" : "text-gray-500 hover:text-[#14181F]"
+                }`}
+              >
+                {link.name}
+              </p>
+              
+              {/* ✅ This is the animated bar */}
+              {activeSection === link.id && (
+                <motion.div 
+                  layoutId="activeUnderline"
+                  className="absolute bottom-[-4px] left-0 h-[2px] w-full bg-[#14181F]"
+                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                />
+              )}
+            </div>
+          ))}
+          </div>
 
-             <p onClick={() => scrollToSection("features")} className='font-semibold cursor-pointer'>Features</p>
-          <p onClick={() => scrollToSection("about")} className=' font-semibold  cursor-pointer'>About</p>
-          <p onClick={() => scrollToSection("testimonials")} className=' font-semibold cursor-pointer'>Testimonials</p>
-        </div>
 
         {/* CTA Buttons - Hidden on mobile to save space, or kept minimal */}
         <div className='hidden md:flex justify-around gap-3 items-center'>
@@ -235,8 +306,9 @@ const Nav = () => {
           </div>
           
           <div className='flex flex-col gap-6 text-[#1F1F1F] font-semibold'>
+             <p onClick={() => scrollToSection("about")}>About</p>
             <p onClick={() => scrollToSection("features")}>Features</p>
-            <p onClick={() => scrollToSection("about")}>About</p>
+           
             <p onClick={() => scrollToSection("testimonials")}>Testimonials</p>
             
             {/* <p onClick={toggleMenu}>Log in</p>

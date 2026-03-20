@@ -18,7 +18,7 @@ const Design = ({ editingFormId, token, formTheme, setFormTheme, isDarkMode }) =
   const [activeTab, setActiveTab] = useState('presets'); // 'presets', 'button', 'background', 'typography'
 
   const palettes = [
-    { name: "Default", bg: "#ffffff", btn: "#7c3aed", input: "#f3f4f6", text: "#111827" },
+    { name: "Default", bg: "#ffffff", btn: "#4F46E5", input: "#f3f4f6", text: "#111827" },
     { name: "Midnight", bg: "#0f172a", btn: "#3b82f6", input: "#1e293b", text: "#ffffff" },
     { name: "Forest", bg: "#f0fdf4", btn: "#166534", input: "#ffffff", text: "#14532d" },
     { name: "Sunset", bg: "#fff7ed", btn: "#ea580c", input: "#ffedd5", text: "#7c2d12" },
@@ -90,7 +90,7 @@ const Design = ({ editingFormId, token, formTheme, setFormTheme, isDarkMode }) =
     <div className="w-full mb-4">
       <button
         onClick={() => setIsDesigning(!isDesigning)}
-        className="bg-gray-900 text-white px-4 sm:py-3 py-1 text-[13px] sm:text-[16px] rounded-2xl font-semibold flex items-center gap-3 w-full justify-center transition-all shadow-lg"
+        className="bg-[#2B4BAB] text-white px-4 sm:py-2.5 py-1 text-[13px] sm:text-[16px] rounded font-semibold flex items-center gap-3 w-full justify-center transition-all shadow-lg"
       >
         <MdOutlineDesignServices size={20} /> 
         {isDesigning ? "Close Designer" : "Customize Form"}

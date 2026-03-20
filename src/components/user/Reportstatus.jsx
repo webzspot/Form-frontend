@@ -20,7 +20,7 @@ const SparkleIcon = ({ className }) => (
 
 const Reportstatus = () => {
   const { isDarkMode } = useFormContext(); 
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
   const [userReportStatus, setUserReportStatus] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -107,9 +107,7 @@ const Reportstatus = () => {
     divider: isDarkMode ? "bg-purple-500/20" : "bg-purple-200"
   };
 
-  if (loading) {
-    return <LoadingScreen isDarkMode={isDarkMode} />;
-  }
+  
   
   return (
     <>

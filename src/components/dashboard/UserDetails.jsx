@@ -28,7 +28,7 @@ const UserDetails= () => {
     const [showConfirmModal, setShowConfirmModal] = useState(false);
     const [loading, setLoading] = useState(false);
     const { isDarkMode } = useFormContext();
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     const navigate = useNavigate();
     const menuRef = useRef(null);
     const API_BASE_URL = 'https://formbuilder-saas-backend.onrender.com/api/admin/users';

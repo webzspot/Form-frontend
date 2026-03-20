@@ -571,7 +571,8 @@ const ProfileSettings = () => {
   const [passcode, setpasscode] = useState("");
 
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
+ // const token = localStorage.getItem("token");
+ const token = sessionStorage.getItem("token");
   const API_BASE = "https://formbuilder-saas-backend.onrender.com/api/users/profile";
 
   const getUser = useCallback(async () => {
@@ -628,12 +629,13 @@ const ProfileSettings = () => {
   };
 
   const handleLogout = () => {
-    localStorage.clear();
+    //localStorage.clear();
+       localStorage.clear();
     toast.success("Logged out successfully");
     navigate("/login");
   };
 
-  if (loading) return <LoadingScreen isDarkMode={isDarkMode} />;
+
 
   // Theme-aware Tailwind classes
   const labelClasses = "text-[11px] font-semibold uppercase tracking-wider mb-1 " + (isDarkMode ? "text-slate-500" : "text-gray-400");
@@ -676,7 +678,7 @@ const ProfileSettings = () => {
               </div>
             </div>
 
-            {/* <div className="ml-auto self-start flex gap-3">
+            <div className="ml-auto self-start flex gap-3">
                <button 
                   onClick={toggleTheme} 
                   className={`p-2 rounded-lg transition-all ${isDarkMode ? "bg-slate-700 text-yellow-400" : "bg-gray-100 text-gray-500"}`}
@@ -686,7 +688,7 @@ const ProfileSettings = () => {
                <button onClick={handleLogout} className="p-2 text-gray-400 hover:text-red-500 transition-colors" title="Logout">
                  <LogOut size={20}/>
                </button>
-            </div> */}
+            </div>
           </div>
            <div className="border mb-10 ml-10 mr-10 border-gray-300"></div>
           {/* BOTTOM SECTION: Info Card */}
@@ -781,7 +783,7 @@ const ProfileSettings = () => {
             </div>
 
             {/* Plan and Danger Zone */}
-            {/* <div className="mt-12 flex items-center justify-between">
+            <div className="mt-12 flex items-center justify-between">
               <Link to="/plandetail" className="group flex items-center gap-2">
                 <span className={`text-xs font-bold uppercase tracking-widest ${isDarkMode ? "text-indigo-400" : "text-indigo-600"}`}>
                   {user?.plan} Membership
@@ -795,7 +797,7 @@ const ProfileSettings = () => {
               >
                 <FiTrash2 size={14}/> Close Account
               </button>
-            </div> */}
+            </div>
           </div>
         </motion.div>
       </main>
