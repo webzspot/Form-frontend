@@ -35,8 +35,7 @@ import axios from 'axios';
 import { Calendar, CreditCard, CheckCircle2, AlertCircle, RefreshCw, Zap, ArrowLeft, ShieldCheck, Download, Copy } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import WaveBackground from "../dashboard/WaveBackground";
-import Footer from "../landingPage/Footer";
+import UserFooter from './userFooter';
 
 const Plandetail = () => {
   const [subscription, setSubscription] = useState(null);
@@ -102,12 +101,9 @@ const cancelplandetail = async () => {
       <div className="relative min-h-screen bg-[#FDFCFE] text-slate-900 transition-colors duration-500">
         <UserNavbar />
         
-        {/* Soft Violet Waves */}
-        <div className="absolute top-0 w-full overflow-hidden leading-[0] z-0 opacity-60">
-           <WaveBackground position="top" height="h-160" color="#DDD6FE" />
-        </div>
+       
 
-        <main className="max-w-5xl relative z-10 pt-16 mx-auto pb-20 px-6">
+        <main className="max-w-7xl w-full mx-auto relative z-10 pt-16 mx-auto pb-20 px-6">
           {/* Back Button */}
           <Link to="/profile" className="inline-flex items-center gap-2 text-violet-400 hover:text-violet-700 mb-6 transition-all font-semibold group">
             <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" /> 
@@ -217,7 +213,7 @@ const cancelplandetail = async () => {
           </motion.div>
         </main>
       </div>
-      <Footer/>
+      <UserFooter/>
     </>
   );
 };

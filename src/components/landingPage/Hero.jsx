@@ -129,8 +129,8 @@ import React from 'react'
 import { FaArrowRight, FaCheck } from "react-icons/fa";
 import { Link } from 'react-router-dom';
 const Hero = () => {
-  const token = localStorage.getItem("token");
-  const role = localStorage.getItem("role");
+  const token = sessionStorage.getItem("token");
+  const role = sessionStorage.getItem("role");
   return (
     <div className="relative bg-[#0B0F17] w-full min-h-screen flex flex-col items-center px-4 md:px-0 pt-24 md:pt-32 overflow-x-hidden">
       
