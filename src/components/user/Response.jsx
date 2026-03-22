@@ -46,10 +46,10 @@ const Response = () => {
       ? "bg-[#12121a]/80 backdrop-blur-xl border border-purple-500/20 "
       : "bg-[#FFFFFF] border border-[#E5E7EB] ",
     input: isDarkMode
-      ? "bg-[#05070f] border-purple-500/20 text-white placeholder-gray-600 focus:border-[#8b5cf6] focus:ring-[#8b5cf6]"
+      ? "bg-[#05070f] border-[#2B4BAB] text-white placeholder-gray-600 focus:border-[#8b5cf6] focus:ring-[#2B4BAB]"
       : "bg-white/50 border-white/60 text-indigo-800 placeholder-indigo-800 focus:border-[#8b5cf6] focus:ring-[#8b5cf6] focus:bg-white/80",
     buttonPrimary: isDarkMode
-      ? "bg-[#8b5cf6] hover:bg-[#7c3aed] text-white shadow-[0_0_20px_rgba(139,92,246,0.4)]"
+      ? "bg-[#2B4BAB] hover:bg-[#2B4BAB] text-white shadow-[0_0_20px_rgba(139,92,246,0.4)]"
       : "bg-indigo-800 text-white hover:shadow-lg hover:shadow-purple-500/30",
     tableHeader: isDarkMode ? "bg-[#1e1b4b]/60 text-purple-300" : "bg-[#FFFFFF] text-[#535862]",
     textSub: isDarkMode ? "text-gray-400" : "text-[#6A7181]",
@@ -317,11 +317,11 @@ const filteredData = fullData.filter(resp => {
         {/* Controls */}
         <div className={`${theme.card} p-3 rounded-2xl mb-8 flex flex-col sm:flex-row gap-4 items-center justify-between`}>
           <div className="relative w-full md:w-96">
-            <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-indigo-800" />
+            <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-[#2B4BAB]" />
             <input
               type="text"
               placeholder="Search across all responses..."
-              className={`w-full flex-1 px-12 sm:py-3 py-1 rounded-2xl border-none outline-none text-sm font-semibold transition-all ${theme.input}`}
+              className={`w-full flex-1 px-12 sm:py-3 py-1 rounded-2xl border-none outline-none text-sm font-semibold transition-all text-[#2B4BAB]`}
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
@@ -329,7 +329,7 @@ const filteredData = fullData.filter(resp => {
 
 
             <div className="flex flex-wrap gap-3 w-full sm:w-auto">
-          <select
+          {/* <select
   value={selectedField}
   onChange={(e) => setSelectedField(e.target.value)}
   className={`sm:px-6 py-1 sm:py-2 rounded-2xl sm:text-sm text-[10px] font-bold ${theme.input}`}
@@ -340,12 +340,12 @@ const filteredData = fullData.filter(resp => {
       {f.label}
     </option>
   ))}
-</select>
+</select> */}
 
           <motion.button
             whileHover={{ scale: 1.02 }}
             onClick={exportToCSV}
-            className={`flex items-center sm:px-6 py-0.5 px-2 sm:py-2 rounded-xl sm:text-sm text-[10px] font-semibold transition-all ${theme.buttonPrimary}`}
+            className={`flex items-center sm:px-6 py-0.5 px-2 sm:py-2 rounded-xl sm:text-sm text-[10px] font-semibold transition-all bg-[#2B4BAB] text-white`}
           >
             Export
           </motion.button>

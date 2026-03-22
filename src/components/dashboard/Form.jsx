@@ -362,9 +362,9 @@ const Form = () => {
       </div>
     </div>
   )
-   if (loading) {
-    return <LoadingScreen isDarkMode={isDarkMode} />;
-  }
+  //  if (loading) {
+  //   return <LoadingScreen isDarkMode={isDarkMode} />;
+  // }
   return (
     <>
       <UserNavbar/>
@@ -465,7 +465,7 @@ const Form = () => {
                       whileTap={{ scale: 0.98 }}
                        className={`group flex items-center gap-3 sm:py-3 sm:px-4 px-2 py-2 text-[11px] sm:text-[14px] rounded-2xl cursor-pointer transition-all duration-300 border-2 ${
     selectedFields.some((f) => f.masterFieldId === field.masterFieldId)
-      ? "bg-violet-50 border-violet-300 shadow-md shadow-violet-100"
+      ? "bg-[#2B4BAB]/10 border-[#2B4BAB]/20 shadow-md shadow-violet-100"
       : "bg-white/70 border-transparent hover:border-gray-200 hover:bg-white shadow-sm hover:shadow-md"
   }`}
                     >
@@ -473,7 +473,7 @@ const Form = () => {
                        className={`relative w-5 h-5  rounded-lg border-2 flex items-center justify-center transition-all duration-300
   ${
     selectedFields.some((f) => f.masterFieldId === field.masterFieldId)
-      ? "bg-indigo-600 border-indigo-600"
+      ? "bg-[#2B4BAB] border-[#2B4BAB]"
       : isDarkMode
         ? "border-gray-900"
         : "border-gray-300"
@@ -510,7 +510,7 @@ const Form = () => {
                     onClick={() => setIsAddingMaster(!isAddingMaster)}
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.99 }}
-                    className={`w-full sm:py-3 px-4 py-1 text-[13px] sm:text-[16px] rounded-2xl font-semibold flex items-center justify-center gap-3 transition-all duration-300 ${
+                    className={`w-full sm:py-3 px-4 py-1 text-[13px] sm:text-[16px] rounded-lg font-semibold flex items-center justify-center gap-3 transition-all duration-300 ${
                       isAddingMaster
                         ? `${theme.buttonsecondary}`
                         : `${theme.buttonPrimary}`
@@ -698,7 +698,7 @@ const Form = () => {
 />
                       <EditIcon
                         size={14}
-                        className="text-gray-300 group-hover:text-indigo-400 transition-colors "
+                        className="text-gray-300 group-hover:text-[#2B4BAB] transition-colors "
                       />
                     </div>
                   </motion.div>
@@ -713,9 +713,9 @@ const Form = () => {
                     <motion.label
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className={`flex items-center gap-3 cursor-pointer sm:px-4 px-1 sm:py-2.5 py-1 text-[10px] sm:text-sm rounded-xl border-2 transition-all duration-300 ${
+                      className={`flex items-center gap-3  cursor-pointer px-4 sm:px-4  sm:py-2.5 py-1 text-[10px] sm:text-sm rounded-xl border-2 transition-all duration-300 ${
                         isPublic
-                          ? "border-violet-200 bg-indigo-300 shadow-md "
+                          ? "border-violet-200 bg-[#2B4BAB] shadow-md "
                           : "border-gray-200 bg-white hover:border-gray-300"
                       }`}
                     >
@@ -742,10 +742,10 @@ const Form = () => {
                     <motion.label
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className={`flex items-center gap-3 cursor-pointer sm:px-4 px-1 sm:py-2.5 py-1 text-[10px] sm:text-sm  rounded-xl border-2 transition-all duration-300 ${
+                      className={`flex items-center px-4 gap-3 cursor-pointer sm:px-4  sm:py-2.5 py-1 text-[10px] sm:text-sm  rounded-xl border-2 transition-all duration-300 ${
                         !isPublic
                           ? "border-indigo-100 bg-indigo-300 shadow-md shadow-indigo-100"
-                          : "border-gray-200 bg-white hover:border-gray-300"
+                          : "border-gray-200 bg-white  hover:border-gray-300"
                       }`}
                     >
                       <input
@@ -753,17 +753,17 @@ const Form = () => {
                         name="visibility"
                         checked={isPublic === false}
                         onChange={() => setIsPublic(false)}
-                        className="sr-only"
+                        className="sr-only "
                       />
                       <div
-                        className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
+                        className={`w-5 h-5  rounded-full border-2 flex items-center justify-center transition-all ${
                           !isPublic ? "border-white" : "border-gray-300"
                         }`}
                       >
                         {!isPublic && <Check className="w-3 h-3 text-white" />}
                       </div>
                       <Lock className={`w-4 h-4 ${!isPublic ? "text-white" : "text-gray-400"}`} />
-                      <span className={`font-semibold text-sm ${!isPublic ? "text-white" : "text-gray-500"}`}>
+                      <span className={`font-semibold  text-sm ${!isPublic ? "text-white" : "text-gray-500"}`}>
                         Private
                       </span>
                     </motion.label>
@@ -779,9 +779,9 @@ const Form = () => {
                       >
                         <motion.div
                           animate={pulseAnimation}
-                          className="w-16 h-16 bg-violet-100 rounded-2xl flex items-center justify-center mb-4"
+                          className="w-16 h-16 bg-gray-400/30 rounded-2xl flex items-center justify-center mb-4"
                         >
-                          <Layers className="w-8 h-8 text-indigo-800" />
+                          <Layers className="w-8 h-8 text-[#2B4BAB]" />
                         </motion.div>
                         <p className="font-medium">Select fields from the left to start building</p>
                         <p className="text-sm text-gray-300 mt-1">Drag and drop to reorder</p>
@@ -822,9 +822,10 @@ const Form = () => {
                                   style={{
   backgroundColor: formTheme.inputBgColor || "#f9fafb",
   borderRadius: `calc(${formTheme.borderRadius || 16}px / 2)`,
-  color: formTheme.labelColor
-    ? formTheme.labelColor
-    : "#111827", 
+  // color: formTheme.labelColor
+  //   ? formTheme.labelColor
+  //   : "#111827", 
+    color: "#2B4BAB" , 
 }}
  className={`w-full border-2 sm:px-3 sm:py-3 px-2 py-1 rounded-lg text-sm font-semibold outline-none transition-all
   ${theme.input}
@@ -837,8 +838,8 @@ const Form = () => {
                                 <select
                                   value={field.type}
                                   onChange={(e) => updateFieldProperty(index, "type", e.target.value)}
-                                  className={`w-full border-2 sm:px-3 sm:py-3 px-3 py-1 rounded-xl text-sm font-semibold outline-none cursor-pointer appearance-none
-  ${theme.input}
+                                  className={`w-full border-2 sm:px-3 sm:py-3 px-3 py-1 rounded-lg text-sm font-semibold outline-none cursor-pointer appearance-none
+text-[#2B4BAB]
 `}
                                   style={{
                                     backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%239ca3af'%3E%3Cpath strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`,
@@ -872,13 +873,13 @@ const Form = () => {
                               >
                                 <div
                                   className={`w-4 h-4 rounded border-2 flex items-center justify-center transition-all ${
-                                    field.required ? "bg-indigo-600 border-indigo-600" : "border-gray-300"
+                                    field.required ? "bg-[#2B4BAB] border-[#2B4BAB]" : "border-gray-300"
                                   }`}
                                 >
                                   {field.required && <Check className="w-3 h-3 text-white" />}
                                 </div>
                                 <span
-                                  className={`text-[10px] sm:text-sm font-bold uppercase ${field.required ? "text-indigo-700" : "text-gray-500"}`}
+                                  className={`text-[10px] sm:text-sm font-bold uppercase ${field.required ? "text-[#2B4BAB]" : "text-gray-500"}`}
                                 >
                                   Required
                                 </span>
@@ -915,8 +916,7 @@ const Form = () => {
                                           updatedFields[index].options[optIndex] = e.target.value
                                           setSelectedFields(updatedFields)
                                         }}
-                                        className={`sm:text-sm text-[10px] border-2 rounded-lg sm:px-3 sm:py-2 px-1 py-1 outline-none transition-all
-  ${theme.input}
+                                        className={`sm:text-sm text-[10px] border-2 rounded-sm sm:px-3 sm:py-2 px-1 py-1 outline-none transition-all text-[#2B4BAB] border-black/20
 `}
 
                                       />
@@ -974,8 +974,10 @@ const Form = () => {
                       }}
                       whileTap={{ scale: loading ? 1 : 0.99 }}
                       style={{
-                        backgroundColor: formTheme.buttonColor || "#4B0082",
-                        borderRadius: formTheme.borderRadius || "16px",
+                        // backgroundColor: formTheme.buttonColor || "#4B0082",
+                        backgroundColor:"#2B4BAB",
+                        borderRadius: "6px",
+                        // borderRadius: formTheme.borderRadius || "16px",
                       }}
                       className="flex-1 text-white sm:py-3 py-1 font-semibold shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
@@ -1004,7 +1006,7 @@ const Form = () => {
                       }}
                       whileHover={{ scale: 1.01 }}
                       whileTap={{ scale: 0.99 }}
-                      className="px-8 sm:py-3 py-1 bg-gray-200 text-gray-600 rounded-2xl font-bold hover:bg-gray-200 transition-all duration-300"
+                      className="px-8 sm:py-3 py-1 bg-gray-200 text-gray-600 rounded-lg font-bold hover:bg-gray-200 transition-all duration-300"
                     >
                       Cancel
                     </motion.button>
@@ -1323,7 +1325,7 @@ const Form = () => {
                         }}
                       >
                         <span className="flex items-center gap-2">
-                          <span className="w-2 h-2 rounded-full bg-violet-400 animate-pulse" />
+                          <span className="w-2 h-2 rounded-full bg-[#2B4BAB] animate-pulse" />
                           Preview for {field.type}
                         </span>
                         <ChevronRight className="w-4 h-4" />
