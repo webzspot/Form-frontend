@@ -845,22 +845,21 @@
 
 
 
-
 import React, { useState, useEffect, useCallback } from "react";
 import axios from "axios";
-import { FiEdit, FiTrash2, FiMoon, FiSun } from "react-icons/fi";
+import { FiEdit, FiTrash2, FiUser, FiMail, FiPhone } from "react-icons/fi";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
-import { LogOut,Loader2 } from "lucide-react";
+import { LogOut, Loader2, CheckCircle } from "lucide-react";
 import UserNavbar from "./UserNavbar";
 import { useNavigate, Link } from "react-router-dom";
 import { useFormContext } from "../dashboard/FormContext";
-import LoadingScreen from "../shared/LoadingScreen";
 import UserFooter from "./userFooter";
 
 const ProfileSettings = () => {
-  const { isDarkMode, toggleTheme } = useFormContext();
-   const [user, setUser] = useState(null);
+  // Keeping context for compatibility, but fixing to light mode branding
+  const { isDarkMode } = useFormContext(); 
+  const [user, setUser] = useState(null);
   const [editingUser, setEditingUser] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -868,19 +867,19 @@ const ProfileSettings = () => {
   const [passcode, setpasscode] = useState("");
 
   const navigate = useNavigate();
- // const token = localStorage.getItem("token");
- const token = sessionStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
   const API_BASE = "https://formbuilder-saas-backend.onrender.com/api/users/profile";
 
   const getUser = useCallback(async () => {
     if (!token) return;
     try {
       const res = await axios.get(API_BASE, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { Authorization:`Bearer ${token}` },
       });
+     
       setUser(res.data.data);
     } catch (err) {
-      toast.error("Session expired. Please login again." ,err);
+      toast.error("Session expired. Please login again.");
     } finally {
       setLoading(false);
     }
@@ -926,215 +925,215 @@ const ProfileSettings = () => {
   };
 
   const handleLogout = () => {
-    //localStorage.clear();
-       sessionStorage.clear();
+    sessionStorage.clear();
     toast.success("Logged out successfully");
     navigate("/login");
   };
 
-  const labelClasses = "text-[11px] font-semibold uppercase tracking-wider mb-1 text-gray-400";
-  const valueClasses = "text-lg font-medium text-gray-800";
+  const labelClasses = "text-[11px] font-bold uppercase tracking-[0.1em] mb-1 text-[#2B4BAB]/60";
+  const valueClasses = "text-lg font-semibold text-slate-800";
 
   return (
     <>
-    <div className={`min-h-screen transition-colors duration-300 font-sans selection:bg-indigo-100 ${isDarkMode ? "bg-[#0f172a]" : "bg-[#f9fafb]"}`}>
-      <UserNavbar />
+      <div className="min-h-screen bg-[#FDFDFD] font-sans selection:bg-blue-100">
+        <UserNavbar />
 
-      <main className="max-w-7xl w-full mx-auto pt-12 pb-24 px-4 md:px-6">
-        <motion.div 
-          initial={{ opacity: 0, y: 10 }} 
-          animate={{ opacity: 1, y: 0 }}
-          className={`rounded-3xl border  transition-all duration-300 ${
-            isDarkMode ? "bg-[#1e293b] border-slate-700 shadow-2xl shadow-black/20" : "bg-white border-gray-200 shadow-[0_8px_30px_rgb(0,0,0,0.02)]"
-          }`}
-        >
-     {loading ? (              <div className="h-[500px] flex flex-col items-center justify-center gap-4">
-                <Loader2 className="w-8 h-8 text-[#2B4BAB] animate-spin" />
-               <p className="text-gray-500 font-medium">Loading your profile...</p>
-            </div>
-         ) : ( 
-          <>
-          {/* TOP SECTION: Avatar & Upload */}
-          <div className={`p-10 flex items-center gap-8  ${isDarkMode ? "border-slate-700/50" : "border-gray-300"}`}>
-            <div className="relative">
-              <img 
-                src="https://i.pinimg.com/736x/9e/c0/f8/9ec0f877571edc437f89c15c08081533.jpg" 
-                alt="Profile" 
-                className={`w-24 h-24 rounded-full object-cover border-4 shadow-sm transition-colors ${isDarkMode ? "border-slate-800" : "border-white"}`}
-              />
-            </div>
-            
-            <div className="flex flex-col gap-3">
-              <button className={`w-fit px-4 py-1.5 text-sm font-semibold rounded-lg border transition-all ${
-                isDarkMode 
-                ? "border-slate-600 bg-slate-800 text-slate-200 hover:bg-slate-700" 
-                : "border-gray-200 bg-white text-gray-700 hover:bg-gray-50 shadow-sm"
-              }`}>
-                Upload new photo
-              </button>
-              <div className="space-y-2">
-                <p className="text-sm text-[#6A7181] leading-5">At least 800×800 px recommended.</p>
-                <p className="text-sm text-[#6A7181] leading-5">JPG or PNG is allowed</p>
+        <main className="max-w-7xl w-full mx-auto pt-12 pb-24 px-4 md:px-6">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }} 
+            animate={{ opacity: 1, y: 0 }}
+            className="rounded-[2.5rem] border border-slate-100 bg-white shadow-[0_15px_40px_rgba(43,75,171,0.06)] overflow-hidden"
+          >
+            {loading ? (
+              <div className="h-[500px] flex flex-col items-center justify-center gap-4">
+                <Loader2 className="w-10 h-10 text-[#2B4BAB] animate-spin" />
+                <p className="text-slate-400 font-medium">Loading your profile details...</p>
               </div>
-            </div>
+            ) : (
+              <>
+                {/* TOP SECTION: Avatar & Welcome */}
+                <div className="p-10 flex flex-col md:flex-row items-center gap-8 bg-white">
+                  <div className="relative group">
+               
+  <div className="w-28 h-28 rounded-3xl flex items-center justify-center text-white text-3xl font-bold bg-[#2B4BAB]  shadow-xl shadow-[#2B4BAB]/20">
+    {user?.name?.charAt(0)?.toUpperCase()}
+  </div>
+                    <div className="absolute -bottom-2 -right-2 bg-gray-400 text-white p-1.5 rounded-lg border-2 border-white">
+                        <CheckCircle size={14} />
+                    </div>
+                  </div>
+                  
+                  <div className="flex flex-col text-center md:text-left">
+                    <h1 className="text-2xl font-bold text-slate-900">
+                      Welcome back, <span className="text-[#2B4BAB]">{user?.name?.split(' ')[0]}!</span>
+                    </h1>
+                    <p className="text-slate-400 font-medium mt-1">
+                      Manage your personal info, security, and membership.
+                    </p>
+                  </div>
 
-             <div className="ml-auto self-start flex gap-3">
-               <button 
-                  onClick={toggleTheme} 
-                  className={`p-2 rounded-lg transition-all ${isDarkMode ? "bg-slate-700 text-yellow-400" : "bg-gray-100 text-gray-500"}`}
-                >
-                  {isDarkMode ? <FiSun size={20}/> : <FiMoon size={20}/>}
-               </button>
-               <button onClick={handleLogout} className="p-2 text-gray-400 hover:text-red-500 transition-colors" title="Logout">
-                 <LogOut size={20}/>
-               </button>
-            </div> 
-          </div>
-           <div className="border mb-10 ml-10 mr-10 border-gray-300"></div>
-          {/* BOTTOM SECTION: Info Card */}
-          <div className="px-10 pb-10">
-            <div className={`rounded-2xl border p-8 transition-colors ${
-              isDarkMode ? "bg-slate-900/40 border-slate-700" : "bg-white border-gray-300"
-            }`}>
-              <div className="flex justify-between items-center mb-10">
-                <h2 className={`font-bold text-xl ${isDarkMode ? "text-white" : "text-gray-900"}`}>Profile Info</h2>
-                <button 
-                  onClick={() => setEditingUser({ name: user.name, email: user.email })}
-                  className={`px-5 py-1.5 text-sm font-semibold rounded-lg border transition-all ${
-                    isDarkMode 
-                    ? "border-slate-600 text-slate-300 hover:bg-slate-800" 
-                    : "border-gray-200 text-gray-600 hover:bg-gray-50 shadow-sm"
-                  }`}
-                >
-                  Edit
-                </button>
-              </div>
+                  <div className="md:ml-auto flex gap-3">
+                    <button 
+                      onClick={handleLogout} 
+                      className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-slate-500 font-bold hover:bg-red-50 hover:text-red-600 transition-all active:scale-95"
+                    >
+                      <LogOut size={18}/> Logout
+                    </button>
+                  </div>
+                </div>
 
-              <AnimatePresence mode="wait">
-                {!editingUser ? (
-                  <motion.div 
-                    key="display"
-                    initial={{ opacity: 0 }} 
-                    animate={{ opacity: 1 }}
-                    className="flex flex-col  md:flex-row justify-between md:items-center gap-6"
-                  >
-                    <div>
-                      <p className={labelClasses}>Full Name</p>
-                      <p className={valueClasses}>{user?.name}</p>
-                    </div>
-                    <div>
-                      <p className={labelClasses}>Email</p>
-                      <p className={valueClasses}>{user?.email}</p>
-                    </div>
-                    <div>
-                      <p className={labelClasses}>Phone Number</p>
-                      <p className={valueClasses}>9016765427</p> 
-                    </div>
-                  </motion.div>
-                ) : (
-                  <motion.div 
-                    key="edit"
-                    initial={{ opacity: 0, scale: 0.98 }} 
-                    animate={{ opacity: 1, scale: 1 }}
-                    className="grid grid-cols-1 md:grid-cols-2 gap-6"
-                  >
-                    <div className="space-y-2">
-                      <label className={labelClasses}>Full Name</label>
-                      <input 
-                        value={editingUser.name} 
-                        onChange={(e) => setEditingUser({...editingUser, name: e.target.value})} 
-                        className={`w-full px-4 py-2.5 rounded-xl border outline-none transition-all ${
-                          isDarkMode 
-                          ? "bg-slate-800 border-slate-600 text-white focus:border-indigo-500" 
-                          : "bg-gray-50 border-gray-200 focus:border-indigo-500"
-                        }`} 
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <label className={labelClasses}>Email Address</label>
-                      <input 
-                        value={editingUser.email} 
-                        onChange={(e) => setEditingUser({...editingUser, email: e.target.value})} 
-                        className={`w-full px-4 py-2.5 rounded-xl border outline-none transition-all ${
-                          isDarkMode 
-                          ? "bg-slate-800 border-slate-600 text-white focus:border-indigo-500" 
-                          : "bg-gray-50 border-gray-200 focus:border-indigo-500"
-                        }`} 
-                      />
-                    </div>
-                    <div className="flex gap-3 mt-4 md:col-span-2">
-                      <button 
-                        onClick={handleUpdate} 
-                        disabled={actionLoading} 
-                        className="px-8 py-2.5 bg-indigo-600 text-white rounded-xl font-bold hover:bg-indigo-700 shadow-lg shadow-indigo-500/20 disabled:opacity-50"
-                      >
-                        {actionLoading ? "Saving..." : "Save Changes"}
-                      </button>
-                      <button 
-                        onClick={() => setEditingUser(null)} 
-                        className={`px-8 py-2.5 font-bold hover:underline ${isDarkMode ? "text-slate-400" : "text-gray-500"}`}
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+                <div className="mx-10 border-t border-slate-50"></div>
 
-            {/* Plan and Danger Zone */}
-             <div className="mt-12 flex items-center justify-between">
-              <Link to="/plandetail" className="group flex items-center gap-2">
-                <span className={`text-xs font-bold uppercase tracking-widest ${isDarkMode ? "text-indigo-400" : "text-indigo-600"}`}>
-                  {user?.plan} Membership
-                </span>
-                <div className={`h-px w-8 transition-all group-hover:w-12 ${isDarkMode ? "bg-slate-700" : "bg-indigo-100"}`}></div>
-              </Link>
+                {/* BOTTOM SECTION: Info Card */}
+                <div className="p-10">
+                  <div className="rounded-[2rem] border border-slate-100 p-8 md:p-10 bg-[#FBFDFF]">
+                    <div className="flex justify-between items-center mb-10">
+                      <div className="flex items-center gap-3">
+                        <div className="w-1.5 h-6 bg-[#2B4BAB] rounded-full"></div>
+                        <h2 className="font-bold text-lg text-slate-900 uppercase tracking-tight">Profile Information</h2>
+                      </div>
+                      
+                      {!editingUser && (
+                        <button 
+                          onClick={() => setEditingUser({ name: user.name, email: user.email })}
+                          className="px-6 py-2.5 text-sm font-bold rounded-xl bg-[#2B4BAB] text-white hover:bg-[#1e3a8a] shadow-lg shadow-[#2B4BAB]/20 transition-all active:scale-95"
+                        >
+                          Edit Profile
+                        </button>
+                      )}
+                    </div>
 
-              <button 
-                onClick={() => setShowDeleteModal(true)} 
-                className={`text-xs font-semibold transition-colors flex items-center gap-2 ${isDarkMode ? "text-slate-500 hover:text-red-400" : "text-gray-300 hover:text-red-500"}`}
+                    <AnimatePresence mode="wait">
+                      {!editingUser ? (
+                        <motion.div 
+                          key="display"
+                          initial={{ opacity: 0, x: 10 }} 
+                          animate={{ opacity: 1, x: 0 }}
+                          exit={{ opacity: 0, x: -10 }}
+                          className="grid grid-cols-1 md:grid-cols-3 gap-8"
+                        >
+                          <div className="space-y-1">
+                            <p className={labelClasses}>Full Name</p>
+                            <p className={valueClasses}>{user?.name}</p>
+                          </div>
+                          <div className="space-y-1">
+                            <p className={labelClasses}>Email Address</p>
+                            <p className={valueClasses}>{user?.email}</p>
+                          </div>
+                          <div className="space-y-1">
+                            <p className={labelClasses}>Role</p>
+                            <p className={valueClasses} >{user?.role}</p> 
+                          </div>
+                        </motion.div>
+                      ) : (
+                        <motion.div 
+                          key="edit"
+                          initial={{ opacity: 0, scale: 0.99 }} 
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0, scale: 0.99 }}
+                          className="grid grid-cols-1 md:grid-cols-2 gap-6"
+                        >
+                          <div className="space-y-2">
+                            <label className={labelClasses}>Full Name</label>
+                            <input 
+                              value={editingUser.name} 
+                              onChange={(e) => setEditingUser({...editingUser, name: e.target.value})} 
+                              className="w-full px-5 py-3.5 rounded-2xl border border-slate-200 outline-none focus:border-[#2B4BAB] focus:ring-4 focus:ring-[#2B4BAB]/5 transition-all font-medium"
+                            />
+                          </div>
+                          <div className="space-y-2">
+                            <label className={labelClasses}>Email Address</label>
+                            <input 
+                              value={editingUser.email} 
+                              onChange={(e) => setEditingUser({...editingUser, email: e.target.value})} 
+                              className="w-full px-5 py-3.5 rounded-2xl border border-slate-200 outline-none focus:border-[#2B4BAB] focus:ring-4 focus:ring-[#2B4BAB]/5 transition-all font-medium"
+                            />
+                          </div>
+                          <div className="flex gap-4 mt-4 md:col-span-2">
+                            <button 
+                              onClick={handleUpdate} 
+                              disabled={actionLoading} 
+                              className="px-8 py-3 bg-[#2B4BAB] text-white rounded-2xl font-bold hover:bg-[#1e3a8a] shadow-xl shadow-blue-500/20 disabled:opacity-50 transition-all active:scale-95"
+                            >
+                              {actionLoading ? "Updating..." : "Save Changes"}
+                            </button>
+                            <button 
+                              onClick={() => setEditingUser(null)} 
+                              className="px-8 py-3 text-slate-500 font-bold hover:text-slate-800 transition-all"
+                            >
+                              Cancel
+                            </button>
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+
+                  {/* Plan and Danger Zone */}
+                  <div className="mt-12 flex flex-col md:flex-row items-center justify-between gap-6 px-4">
+                    <Link to="/plandetail" className="group flex items-center gap-3">
+                      <div className="px-3 py-1 bg-[#2B4BAB]/5 text-[#2B4BAB] rounded-lg text-xs font-black uppercase tracking-widest">
+                        {user?.plan} Membership
+                      </div>
+                      <div className="h-px w-8 bg-slate-200 transition-all group-hover:w-16 group-hover:bg-[#2B4BAB]"></div>
+                    </Link>
+
+                    <button 
+                      onClick={() => setShowDeleteModal(true)} 
+                      className="text-sm font-bold text-slate-300 hover:text-red-500 transition-all flex items-center gap-2"
+                    >
+                      <FiTrash2 size={16}/> Deactivate Account
+                    </button>
+                  </div> 
+                </div>
+              </>
+            )}
+          </motion.div>
+        </main>
+
+        {/* Delete Modal */}
+        <AnimatePresence>
+          {showDeleteModal && (
+            <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
+              <motion.div 
+                initial={{ scale: 0.9, opacity: 0 }} 
+                animate={{ scale: 1, opacity: 1 }} 
+                exit={{ scale: 0.9, opacity: 0 }}
+                className="bg-white rounded-[2.5rem] p-10 max-w-sm w-full text-center shadow-2xl border border-slate-100"
               >
-                <FiTrash2 size={14}/> Close Account
-              </button>
-            </div> 
-          </div>
-          </> )}
-        </motion.div>
-      </main>
-
-      {/* Delete Modal */}
-      <AnimatePresence>
-        {showDeleteModal && (
-          <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-[100] p-4">
-            <motion.div 
-              initial={{ scale: 0.95, opacity: 0 }} 
-              animate={{ scale: 1, opacity: 1 }} 
-              className={`rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl transition-colors ${isDarkMode ? "bg-slate-800 text-white" : "bg-white text-gray-900"}`}
-            >
-              <h2 className="text-xl font-bold mb-2">Delete Account?</h2>
-              <p className={`text-sm mb-6 ${isDarkMode ? "text-slate-400" : "text-gray-400"}`}>Enter your passcode to confirm.</p>
-              <input 
-                type="password" 
-                value={passcode} 
-                onChange={(e)=>setpasscode(e.target.value)} 
-                placeholder="••••" 
-                className={`w-full text-center py-3 rounded-xl mb-4 border outline-none transition-all ${
-                  isDarkMode ? "bg-slate-900 border-slate-700 text-white" : "bg-gray-50 border-gray-100"
-                }`} 
-              />
-              <div className="flex flex-col gap-2">
-                <button onClick={handleDelete} className="w-full bg-red-600 text-white py-3 rounded-xl font-bold hover:bg-red-700 transition-colors">Confirm Deletion</button>
-                <button onClick={() => setShowDeleteModal(false)} className={`w-full py-3 font-bold hover:underline ${isDarkMode ? "text-slate-400" : "text-gray-400"}`}>Cancel</button>
-              </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
-     
-    </div>
-     <UserFooter/>
-     </>
+                <div className="w-16 h-16 bg-red-50 text-red-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <FiTrash2 size={30} />
+                </div>
+                <h2 className="text-2xl font-black text-slate-900 mb-2">Are you sure?</h2>
+                <p className="text-slate-500 text-sm mb-8 font-medium">Please enter your passcode to permanently delete your account.</p>
+                <input 
+                  type="password" 
+                  value={passcode} 
+                  onChange={(e)=>setpasscode(e.target.value)} 
+                  placeholder="••••" 
+                  className="w-full text-center py-4 rounded-2xl mb-6 border border-slate-200 outline-none focus:border-red-500 transition-all text-xl tracking-[0.5em] font-bold bg-slate-50" 
+                />
+                <div className="flex flex-col gap-3">
+                  <button 
+                    onClick={handleDelete} 
+                    className="w-full bg-red-600 text-white py-4 rounded-2xl font-black hover:bg-red-700 transition-colors shadow-lg shadow-red-100 active:scale-95"
+                  >
+                    Confirm Deletion
+                  </button>
+                  <button 
+                    onClick={() => setShowDeleteModal(false)} 
+                    className="w-full py-2 font-bold text-slate-400 hover:text-slate-600 transition-all"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
+      </div>
+      <UserFooter />
+    </>
   );
 };
 

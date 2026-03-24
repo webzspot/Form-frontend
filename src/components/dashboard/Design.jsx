@@ -18,7 +18,7 @@ const Design = ({ editingFormId, token, formTheme, setFormTheme, isDarkMode }) =
   const [activeTab, setActiveTab] = useState('presets'); // 'presets', 'button', 'background', 'typography'
 
   const palettes = [
-    { name: "Default", bg: "#ffffff", btn: "#4F46E5", input: "#f3f4f6", text: "#111827" },
+    { name: "Default", bg: "#ffffff", btn: "#2B4BAB", input: "#f3f4f6", text: "#111827" },
     { name: "Midnight", bg: "#0f172a", btn: "#3b82f6", input: "#1e293b", text: "#ffffff" },
     { name: "Forest", bg: "#f0fdf4", btn: "#166534", input: "#ffffff", text: "#14532d" },
     { name: "Sunset", bg: "#fff7ed", btn: "#ea580c", input: "#ffedd5", text: "#7c2d12" },
@@ -34,7 +34,7 @@ const Design = ({ editingFormId, token, formTheme, setFormTheme, isDarkMode }) =
     setFormTheme(prev => ({
       ...prev,
       bgColor: p.bg,
-      buttonColor: p.btn,
+      buttonColor: p.btn || "#2B4BAB",
       inputBgColor: p.input,
       labelColor: p.text || "#374151" 
     }));
@@ -72,8 +72,8 @@ const Design = ({ editingFormId, token, formTheme, setFormTheme, isDarkMode }) =
         : "bg-white/50 border-white/60 text-[#4c1d95] placeholder-[#4c1d95]/50 focus:border-[#8b5cf6] focus:ring-[#8b5cf6] focus:bg-white/80",
   
       buttonPrimary: isDarkMode
-        ? "bg-[#8b5cf6] hover:bg-[#7c3aed] text-white shadow-[0_0_20px_rgba(139,92,246,0.4)]"
-        : "bg-gradient-to-r from-[#8b5cf6] to-[#6d28d9] text-white hover:shadow-lg hover:shadow-purple-500/30",
+        ? "bg-[#2B4BAB] hover:bg-[#2B4BAB] text-white shadow-[0_0_20px_rgba(139,92,246,0.4)]"
+        : "bg-[#2B4BAB] text-white hover:shadow-lg hover:shadow-purple-500/30",
   
       textSub: isDarkMode ? "text-gray-400" : "text-[#4c1d95]/70",
       label: isDarkMode ? "text-gray-300" : "text-[#4c1d95]",
@@ -90,7 +90,7 @@ const Design = ({ editingFormId, token, formTheme, setFormTheme, isDarkMode }) =
     <div className="w-full mb-4">
       <button
         onClick={() => setIsDesigning(!isDesigning)}
-        className="bg-[#2B4BAB] text-white px-4 sm:py-2.5 py-1 text-[13px] sm:text-[16px] rounded font-semibold flex items-center gap-3 w-full justify-center transition-all shadow-lg"
+        className="bg-[#2B4BAB] text-white px-4 sm:py-2.5 py-1 text-[13px] sm:text-[16px] rounded-2xl font-semibold flex items-center gap-3 w-full justify-center transition-all shadow-lg"
       >
         <MdOutlineDesignServices size={20} /> 
         {isDesigning ? "Close Designer" : "Customize Form"}

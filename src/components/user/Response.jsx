@@ -39,20 +39,12 @@ const Response = () => {
 
   // --- Theme Logic (Matching Admin UI) ---
   const theme = {
-    pageBg: isDarkMode 
-      ? "bg-[#121212] text-white selection:bg-indigo-500/30" 
-      : "bg-[#F5F6F8] text-[#4c1d95] selection:bg-indigo-200",
-    card: isDarkMode
-      ? "bg-[#12121a]/80 backdrop-blur-xl border border-purple-500/20 "
-      : "bg-[#FFFFFF] border border-[#E5E7EB] ",
-    input: isDarkMode
-      ? "bg-[#05070f] border-purple-500/20 text-white placeholder-gray-600 focus:border-[#8b5cf6] focus:ring-[#8b5cf6]"
-      : "bg-white/50 border-white/60 text-indigo-800 placeholder-indigo-800 focus:border-[#8b5cf6] focus:ring-[#8b5cf6] focus:bg-white/80",
-    buttonPrimary: isDarkMode
-      ? "bg-[#8b5cf6] hover:bg-[#7c3aed] text-white shadow-[0_0_20px_rgba(139,92,246,0.4)]"
-      : "bg-indigo-800 text-white hover:shadow-lg hover:shadow-purple-500/30",
-    tableHeader: isDarkMode ? "bg-[#1e1b4b]/60 text-purple-300" : "bg-[#FFFFFF] text-[#535862]",
-    textSub: isDarkMode ? "text-gray-400" : "text-[#6A7181]",
+    pageBg: "bg-[#F5F6F8] text-[#4c1d95] selection:bg-indigo-200",
+    card:  "bg-[#FFFFFF] border border-[#E5E7EB] ",
+    input:  "bg-white/50 border-white/60 text-black placeholder-gray-400 focus:border-[#8b5cf6] focus:ring-[#8b5cf6] focus:bg-white/80",
+    buttonPrimary:  "bg-indigo-800 text-white hover:shadow-lg hover:shadow-purple-500/30",
+    tableHeader: "bg-[#FFFFFF] text-[#535862]",
+    textSub:  "text-[#6A7181]",
   };
 
   // ... (Keep your existing fetchData and getResponseValue logic here) ...
@@ -265,9 +257,8 @@ const filteredData = fullData.filter(resp => {
         <motion.button
           onClick={() => navigate("/form")}
           whileHover={{ x: -5 }}
-          className={`flex items-center gap-2 sm:mb-8 mb-4  font-sans font-normal   leading-none tracking-normal align-middle transition-all  ${
-            isDarkMode ? ' text-indigo-400' : 'text-[#6A7181]'
-          }`}
+          className={`flex items-center gap-2 sm:mb-8 mb-4  font-sans font-normal   leading-none tracking-normal align-middle transition-all   text-[#6A7181]
+          `}
         >
           <FaArrowLeft size={14} className=''/> <span className='hidden sm:block text-sm '>Back to Dashboard</span>
         </motion.button>
@@ -276,15 +267,13 @@ const filteredData = fullData.filter(resp => {
         <motion.div 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className={`  mb-8  relative overflow-hidden ${
-            isDarkMode ? ' ' : ''
-          }`}
+          className={`  mb-8  relative overflow-hidden`}
         >
           <div className="relative z-10">
-            <span className={`px-4 py-1 rounded-md  text-xs tracking-normal leading-4 align-middle font-medium ${isDarkMode ? 'bg-indigo-500/20 text-indigo-300' : 'bg-[#2B4BAB1A] text-[#2B4BAB]'}`}>
+            <span className={`px-4 py-1 rounded-md  text-xs tracking-normal leading-4 align-middle font-medium  bg-[#2B4BAB1A] text-[#2B4BAB]`}>
               Data Analytics
             </span>
-            <h1 className={`text-xl md:text-3xl leading-tight tracking-tight align-middle  mt-2 font-bold mb-1 ${isDarkMode ? 'text-white' : 'text-[#14181F]'}`}>
+            <h1 className={`text-xl md:text-3xl leading-tight tracking-tight align-middle  mt-2 font-bold mb-1 text-[#14181F]`}>
               Form Submissions
             </h1>
           <p className={`font-normal text-sm leading-snug tracking-normal align-middle ${theme.textSub}`}>
@@ -307,8 +296,8 @@ const filteredData = fullData.filter(resp => {
         <stat.icon size={18} className={stat.iconColor} />
       </div>
               <div className='font-semibold  text-sm md:text-base leading-[21px] tracking-normal align-middle'>
-                <p className={`${isDarkMode ? 'text-white' : 'text-[#000000]'}`}>{stat.label}</p>
-                <p className={`${isDarkMode ? 'text-white' : 'text-[#000000]'}`}>{stat.count}</p>
+                <p className={`text-[#000000]`}>{stat.label}</p>
+                <p className={`text-[#000000]`}>{stat.count}</p>
               </div>
             </motion.div>
           ))}
@@ -317,7 +306,7 @@ const filteredData = fullData.filter(resp => {
         {/* Controls */}
         <div className={`${theme.card} p-3 rounded-2xl mb-8 flex flex-col sm:flex-row gap-4 items-center justify-between`}>
           <div className="relative w-full md:w-96">
-            <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-indigo-800" />
+            <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
             <input
               type="text"
               placeholder="Search across all responses..."
@@ -345,7 +334,7 @@ const filteredData = fullData.filter(resp => {
           <motion.button
             whileHover={{ scale: 1.02 }}
             onClick={exportToCSV}
-            className={`flex items-center sm:px-6 py-0.5 px-2 sm:py-2 rounded-xl sm:text-sm text-[10px] font-semibold transition-all ${theme.buttonPrimary}`}
+            className={`flex items-center sm:px-6 py-0.5 px-2 sm:py-2 rounded-md sm:text-sm text-[10px] font-semibold transition-all ${theme.buttonPrimary}`}
           >
             Export
           </motion.button>
@@ -356,11 +345,7 @@ const filteredData = fullData.filter(resp => {
          initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
         
-       className={`rounded-2xl overflow-hidden mt-8 transition-all duration-300 ${
-    isDarkMode 
-      ? "bg-[#12121a]/80 backdrop-blur-xl border border-white/10 shadow-2xl" 
-      : "bg-[#FFFFFF] border border-[#E5E7EB] shadow-[0_4px_20px_-5px_rgba(0,0,0,0.05)]"
-  }`}>
+       className={`rounded-2xl overflow-hidden mt-8 transition-all duration-300  bg-[#FFFFFF] border border-[#E5E7EB] shadow-[0_4px_20px_-5px_rgba(0,0,0,0.05)]`}>
           <div className="overflow-x-auto custom-scrollbar">
             <table className="w-full text-left border-collapse">
               {/* <thead className={` border-b ${
@@ -377,17 +362,14 @@ const filteredData = fullData.filter(resp => {
                 </tr>
               </thead> */}
 
-              <thead className={`border-b ${isDarkMode ? "border-white/10" : "border-[#E5E7EB]"}`}>
+              <thead className={`border-b  border-[#E5E7EB]`}>
   <tr className={theme.tableHeader}>
     {/* Column: No. with Checkbox and Icon */}
     <th className="px-6 py-4 text-[12px] font-semibold text-[#535862]">
       <div className="flex items-center gap-3">
         {/* The Small Checkbox Box */}
-        <div className={`w-5 h-5 rounded-md border shadow-sm shrink-0 ${
-          isDarkMode 
-            ? "bg-[#1e1b4b] border-white/20" 
-            : "bg-white border-[#D0D5DD]"
-        }`} />
+        <div className={`w-5 h-5 rounded-md border shadow-sm shrink-0 bg-white border-[#D0D5DD]
+        `} />
         
         <div className="flex items-center gap-2 group cursor-pointer">
           <span>No.</span>
@@ -431,9 +413,9 @@ const filteredData = fullData.filter(resp => {
   </tr>
 </thead>
 
-              <tbody className={`divide-y ${isDarkMode ? 'divide-purple-500/10' : 'divide-purple-100'}`}>
+              <tbody className={`divide-y divide-purple-100`}>
                 {loading ? (
-                  <tr><td colSpan={100}><TableSkeleton rows={5} columns={4} isDarkMode={isDarkMode} /></td></tr>
+                  <tr><td colSpan={100}><TableSkeleton rows={5} columns={4} /></td></tr>
                 ) : currentData.length === 0 ? (
                                     <tr>
                                       <td colSpan={100} className="py-32 text-center">
@@ -448,16 +430,15 @@ const filteredData = fullData.filter(resp => {
   initial={{ opacity: 0 }}
   animate={{ opacity: 1 }}
   transition={{ delay: idx * 0.05 }}
-  className={`group transition-colors ${
-    isDarkMode ? 'hover:bg-purple-500/5' : 'hover:bg-purple-50/50'
-  }`}
+  className={`group transition-colors
+  hover:bg-purple-50/50
+  `}
                   
                   >
                     <td className="px-6 py-4 text-sm font-bold opacity-70">{(currentPage - 1) * 10 + idx + 1}</td>
                    <td className="px-6 py-4">
-  <span className={`font-mono text-[10px] px-2 py-1 rounded-lg ${
-    isDarkMode ? 'bg-purple-500/10 text-indigo-300' : 'bg-purple-100'
-  }`}>
+  <span className={`font-mono text-[10px] px-2 py-1 rounded-lg bg-purple-100
+  `}>
     {resp.formResponseId.slice(-8).toUpperCase()}
   </span>
 </td>
@@ -489,11 +470,10 @@ const filteredData = fullData.filter(resp => {
 
   </span> */} 
   <span
-  className={`text-sm font-medium ${
-    getResponseValue(resp.values, f.key) === "—" ? "opacity-30" 
-    : isDarkMode 
-            ? "text-indigo-400"  
-            : "text-indigo-800"  
+  className={`text-sm font-medium text-indigo-800   ${
+    getResponseValue(resp.values, f.key) === "—" ? "opacity-30" :""
+    
+        
   }`}
 >
   {getResponseValue(resp.values, f.key)}
@@ -510,18 +490,16 @@ const filteredData = fullData.filter(resp => {
           </div>
           {/* Pagination UI Location */}
 {!loading && filteredData.length > 0 && (
-  <div className={`p-6 flex items-center justify-between border-t ${isDarkMode ? 'border-purple-500/10' : 'border-gray-100'}`}>
+  <div className={`p-6 flex items-center justify-between border-t border-gray-100`}>
 
     
     <div className="flex gap-3">
       <button
         onClick={prevPage}
         disabled={currentPage === 1}
-className={`px-4 py-2 rounded-lg text-[14px] font-semibold border transition-all disabled:opacity-50 ${
-          isDarkMode 
-            ? 'bg-transparent border-white/20 text-white' 
-            : 'bg-white border-[#E7EAEC] text-[#344054] shadow-sm'
-        }`}
+className={`px-4 py-2 rounded-lg text-[14px] font-semibold border transition-all disabled:opacity-50 
+         bg-white border-[#E7EAEC] text-[#344054] shadow-sm
+        `}
       
       >
         Previous
@@ -530,18 +508,14 @@ className={`px-4 py-2 rounded-lg text-[14px] font-semibold border transition-all
       <button
         onClick={nextPage}
         disabled={currentPage === totalPages}
-       className={`px-4 py-2 rounded-lg text-[14px] font-semibold border transition-all disabled:opacity-50 ${
-          isDarkMode 
-            ? 'bg-transparent border-white/20 text-white' 
-            : 'bg-white border-[#E7EAEC] text-[#344054] shadow-sm'
-        }`}>
+       className={`px-4 py-2 rounded-lg text-[14px] font-semibold border transition-all disabled:opacity-50 bg-white border-[#E7EAEC] text-[#344054] shadow-sm
+        `}>
       
         Next
       </button>
     </div>
-   <p className={`text-[14px] font-medium ${
-      isDarkMode ? 'text-gray-400' : 'text-[#344054]'
-    }`}>
+   <p className={`text-[14px] font-medium text-[#344054]
+    `}>
       Page {currentPage} of {totalPages}
     </p>
 

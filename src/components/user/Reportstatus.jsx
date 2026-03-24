@@ -265,7 +265,7 @@ import UserNavbar from './UserNavbar';
 import TableSkeleton from '../dashboard/TableSkeleton';
 import UserFooter from './userFooter';
 import usePagination from "../../hooks/usePagination";
-
+import toast from 'react-hot-toast';
 const Reportstatus = () => {
   const token = sessionStorage.getItem("token");
   const [userReportStatus, setUserReportStatus] = useState([]);
@@ -283,7 +283,7 @@ const Reportstatus = () => {
         );
         setUserReportStatus(response.data.data || []);
       } catch (err) {
-        console.error("Failed to load reports", err);
+        toast.error("Failed to load reports", err);
       } finally {
         setLoading(false);
       }
@@ -327,7 +327,7 @@ const Reportstatus = () => {
 
   const theme = {
     pageBg: "bg-[#F5F6F8]",
-    card: "bg-[#FFFFFF] border border-[#E5E7EB] shadow-sm",
+    card: "",
     input: "bg-white border-gray-200 text-[#14181F] focus:ring-indigo-500",
     textSub: "text-[#6A7181]"
   };
