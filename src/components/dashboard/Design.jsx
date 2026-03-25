@@ -286,7 +286,7 @@ const Design = ({ editingFormId, token, formTheme, setFormTheme, isDarkMode }) =
     setFormTheme(prev => ({
       ...prev,
       bgColor: p.bg,
-      buttonColor: p.btn,
+      buttonColor: p.btn || "#2B4BAB",
       inputBgColor: p.input,
       labelColor: p.text || "#374151" 
     }));
@@ -310,38 +310,39 @@ const Design = ({ editingFormId, token, formTheme, setFormTheme, isDarkMode }) =
     }
   };
 
-  const theme = {
-    pageBg: isDarkMode 
-      ? "bg-[#05070f] text-white selection:bg-[#2B4BAB]/30" 
-      : "bg-gradient-to-br from-[#E9EFFF] via-[#ffffff] to-[#C7D2FE] text-[#2B4BAB] selection:bg-blue-100",
-    
-    card: isDarkMode
-      ? "bg-[#12121a]/80 backdrop-blur-xl border border-[#2B4BAB]/20 shadow-[0_0_20px_rgba(43,75,171,0.05)]"
-      : "bg-white/60 backdrop-blur-xl border border-white/60 shadow-[0_8px_32px_0_rgba(43,75,171,0.15)]",
-
-    input: isDarkMode
-      ? "bg-[#05070f] border border-[#2B4BAB]/30 hover:border-[#2B4BAB]/50 text-white placeholder-gray-600 focus:border-[#2B4BAB] focus:ring-[#2B4BAB]"
-      : "bg-white/50 border-white/60 text-[#2B4BAB] placeholder-[#2B4BAB]/50 focus:border-[#2B4BAB] focus:ring-[#2B4BAB] focus:bg-white/80",
-
-    buttonPrimary: isDarkMode
-      ? "bg-[#2B4BAB] hover:bg-[#1f3a8a] text-white shadow-[0_0_20px_rgba(43,75,171,0.4)]"
-      : "bg-gradient-to-r from-[#2B4BAB] to-[#1e3a8a] text-white hover:shadow-lg hover:shadow-blue-500/30",
-
-    textSub: isDarkMode ? "text-gray-400" : "text-[#2B4BAB]/70",
-    label: isDarkMode ? "text-gray-300" : "text-[#2B4BAB]",
-    texttwo: isDarkMode ? "text-gray-400" : "text-black",
-    previewBox: isDarkMode 
-      ? "bg-[#1e1b4b]/40 border-[#2B4BAB]/10" 
-      : "bg-blue-50/50 border-blue-200/50",
-    
-    buttonsecondary: isDarkMode ? "bg-gray-900 text-white" : "bg-gray-600 text-white",
-  };
+      const theme = {
+      pageBg: isDarkMode 
+        ? "bg-[#05070f] text-white selection:bg-purple-500/30" 
+        : "bg-gradient-to-br from-[#F3E8FF] via-[#ffffff] to-[#D8B4FE] text-[#4c1d95] selection:bg-purple-200",
+      
+      card: isDarkMode
+        ? "bg-[#12121a]/80 backdrop-blur-xl border border-purple-500/20 shadow-[0_0_20px_rgba(139,92,246,0.05)]"
+        : "bg-white/60 backdrop-blur-xl border border-white/60 shadow-[0_8px_32px_0_rgba(31,38,135,0.15)]",
+  
+      input: isDarkMode
+        ? "bg-[#05070f] border border-purple-800/30 hover:border-purple-800/50 text-white placeholder-gray-600 focus:border-[#8b5cf6] focus:ring-[#8b5cf6]"
+        : "bg-white/50 border-white/60 text-[#4c1d95] placeholder-[#4c1d95]/50 focus:border-[#8b5cf6] focus:ring-[#8b5cf6] focus:bg-white/80",
+  
+      buttonPrimary: isDarkMode
+        ? "bg-[#2B4BAB] hover:bg-[#2B4BAB] text-white shadow-[0_0_20px_rgba(139,92,246,0.4)]"
+        : "bg-[#2B4BAB] text-white hover:shadow-lg hover:shadow-purple-500/30",
+  
+      textSub: isDarkMode ? "text-gray-400" : "text-[#4c1d95]/70",
+      label: isDarkMode ? "text-gray-300" : "text-[#4c1d95]",
+      texttwo: isDarkMode ? "text-gray-400" : "text-black",
+      previewBox: isDarkMode 
+        ? "bg-[#1e1b4b]/40 border-purple-500/10" 
+        : "bg-purple-50/50 border-purple-200/50",
+      
+      buttonsecondary: isDarkMode?
+      "bg-gray-900 text-white":"bg-gray-600 text-white",
+    };
 
   return (
     <div className="w-full mb-4">
       <button
         onClick={() => setIsDesigning(!isDesigning)}
-        className="bg-gray-300/50 text-[#2B4BAB] px-4 sm:py-3 py-2 text-[13px] sm:text-[16px] rounded-sm font-semibold flex items-center gap-3 w-full justify-center transition-all shadow-lg hover:bg-[#1e3a8a]"
+        className="bg-[#2B4BAB] text-white px-4 sm:py-2.5 py-1 text-[13px] sm:text-[16px] rounded-2xl font-semibold flex items-center gap-3 w-full justify-center transition-all shadow-lg"
       >
         <MdOutlineDesignServices size={20} /> 
         {isDesigning ? "Close Designer" : "Customize Form"}

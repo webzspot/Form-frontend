@@ -13,7 +13,7 @@ const SparkleIcon = ({ className }) => (
 );
 
 const Preview = ({ previewFields, refreshFields }) => {
-  const { isDarkMode } = useFormContext(); 
+  //const { isDarkMode } = useFormContext(); 
   const token = sessionStorage.getItem("token");
 
   const [updatePop, setUpdatePop] = useState(false);
@@ -78,47 +78,7 @@ const Preview = ({ previewFields, refreshFields }) => {
     }
   };
 
-  // --- THEME CONFIGURATION ---
-  const theme = {
-    // Container Background
-    container: isDarkMode
-      ? "bg-[#12121a]/60 backdrop-blur-xl border border-purple-500/20 shadow-[0_0_20px_rgba(139,92,246,0.05)]"
-      : "bg-white border border-slate-100 shadow-xl",
-      
-    // Text Colors
-    heading: isDarkMode ? "text-white" : "text-[#4c1d95]",
-    subtext: isDarkMode ? "text-gray-400" : "text-[#4c1d95]/50",
-    
-    // Field Item Style
-    fieldItem: isDarkMode
-      ? "bg-[#05070f]/60 border-purple-500/10 hover:border-purple-500/40 hover:bg-[#05070f]"
-      : "bg-slate-50 border-transparent hover:border-purple-200 hover:bg-white",
-    
-    // Inputs
-    input: isDarkMode
-      ? "bg-[#1e1b4b]/40 border-purple-500/20 text-white placeholder-gray-600 focus:border-[#8b5cf6]"
-      : "bg-white border-slate-200 text-[#4c1d95] placeholder-[#4c1d95]/40 focus:border-[#8b5cf6]",
-
-    // Action Buttons
-    actionBtn: isDarkMode
-      ? "bg-[#1e1b4b] text-gray-400 hover:text-white border-purple-500/10 hover:border-purple-500/50"
-      : "bg-white text-gray-400 hover:text-[#4c1d95] border-slate-200 hover:border-purple-200",
-      
-    // Delete Button Specific
-    deleteBtn: isDarkMode
-      ? "hover:text-red-400 hover:border-red-500/50"
-      : "hover:text-red-500 hover:border-red-200",
-
-    // Modal
-    modal: isDarkMode 
-       ? "bg-[#1e1b4b] border border-purple-500/30 shadow-[0_0_40px_rgba(139,92,246,0.2)]" 
-       : "bg-white shadow-2xl",
-    
-    // Primary Button
-    buttonPrimary: isDarkMode
-      ? "bg-[#8b5cf6] hover:bg-[#7c3aed] text-white shadow-[0_0_15px_rgba(139,92,246,0.4)]"
-      : "bg-violet-800 text-white shadow-lg shadow-purple-200",
-  };
+  
 
   return (
   <>

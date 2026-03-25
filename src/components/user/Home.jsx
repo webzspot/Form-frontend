@@ -273,7 +273,7 @@ import LoadingScreen from '../shared/LoadingScreen';
 import Preview from './Preview';
 import { MdEmail, MdNumbers, MdRadioButtonChecked, MdTextFields } from 'react-icons/md';
 const Home = () => {
-  const { isDarkMode } = useFormContext(); 
+ // const { isDarkMode } = useFormContext(); 
   const [loading, setLoading] = useState(true);
   const [selectedType, setSelectedType] = useState("TEXT");
   const [labelname, setlabelname] = useState("");
@@ -306,7 +306,25 @@ const [isReadOnly, setIsReadOnly] = useState(false);
       });
       setPreviewFields(res.data.data);
     } catch (error) {
-      console.error("Fetch error", error);
+    //  toast.error("Fetch error", error);
+    const status = error.response?.status;
+    const message = error.response?.data?.message;
+
+    
+    if (status === 404 && message?.toLowerCase().includes("no")) {
+      setPreviewFields([]);
+    }
+
+   
+    else if (status === 401) {
+      toast.error("Session expired. Please login again.");
+      
+    }
+
+    else {
+      toast.error("Failed to load data");
+      console.error("REAL ERROR:", error);
+    }
     } finally {
       setLoading(false); 
     }
@@ -370,7 +388,7 @@ const [isReadOnly, setIsReadOnly] = useState(false);
 );
  
   return (
-    <div className={`min-h-screen flex flex-col ${isDarkMode ? 'bg-[#0a0a0a]' : 'bg-[#F5F6F8]'}`}>
+    <div className={`min-h-screen flex flex-col bg-[#F5F6F8]`}>
       <UserNavbar />
       
     <main className="mt-4 mb-4 grow">
@@ -535,7 +553,7 @@ const [isReadOnly, setIsReadOnly] = useState(false);
 
         <div className="pt-4 border-t border-gray-100">
   <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Live Preview</h4>
-  <div className={`p-5 border border-dashed rounded-xl ${isDarkMode ? 'border-gray-700 bg-white/5' : 'border-gray-300 bg-gray-50/50'}`}>
+  <div className={`p-5 border border-dashed rounded-xl border-gray-300 bg-gray-50/50`}>
     <label className="text-xs font-semibold text-gray-600 mb-2 block flex items-center gap-1">
       {labelname || "Field Label"} 
       {isRequired && <span className="text-red-500">*</span>}

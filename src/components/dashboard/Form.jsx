@@ -1,3 +1,11 @@
+
+
+
+
+
+
+
+
  import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import axios from "axios"
@@ -121,11 +129,30 @@ const Form = () => {
           headers: { Authorization: `Bearer ${token}` },
         })
         setMasterFields(res.data.data)
-      } catch (err) {
-        toast.error("Error loading master fields")
+      } catch (error) {
+        //toast.error("Error loading master fields")
+        const status = error.response?.status;
+    const message = error.response?.data?.message;
+
+ 
+    if (status === 404 && message?.toLowerCase().includes("no")) {
+      setMasterFields([]); // safe empty state
+    }
+
+   
+    else if (status === 401) {
+      toast.error("Session expired. Please login again.");
+      
+    }
+
+
+    
+   else {
+    toast.error("Error loading master fields")
+  }
       }
       finally {
-        setintroLoading(false);
+        setLoading(false);
       }
     }
     getMasterFields()
@@ -222,7 +249,12 @@ const Form = () => {
         })
         setForms(res.data.data)
       } catch (err) {
-        toast.error("Failed to load forms")
+        //toast.error("Failed to load forms")
+         if (err.response?.status === 401) {
+    toast.error("Session expired. Please login again")
+  } else {
+    toast.error("Failed to load forms")
+  }
       } finally {
         setLoading(false)
       }

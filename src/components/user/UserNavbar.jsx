@@ -14,7 +14,7 @@ const UserNavbar = () => {
   const location = useLocation(); // 2. Initialize location
   const [open, setOpen] = useState(false);
   // We keep isDarkMode to ensure the navbar styling stays synced with the rest of the app
-  const { isDarkMode , toggleTheme} = useFormContext(); 
+ // const { isDarkMode , toggleTheme} = useFormContext(); 
 
   // const role = localStorage.getItem("role")?.toLowerCase() || "user";
   // const Name = localStorage.getItem("Name") || "Profile";
@@ -81,11 +81,8 @@ React.useEffect(() => {
   return (
     <>
       {/* Desktop Navbar */}
-      <div className={`hidden lg:flex sticky top-0 z-50  transition-colors duration-300 border-b ${
-        isDarkMode 
-        ? "bg-[#0f172a]/80 backdrop-blur-md border-slate-800 shadow-2xl" 
-        : "bg-white/90 backdrop-blur-md border-slate-100 "
-      } `}>
+      <div className={`hidden lg:flex sticky top-0 z-50  transition-colors duration-300 border-b bg-white/90 backdrop-blur-md border-slate-100 
+      `}>
         <div className=" max-w-7xl  w-full mx-auto  flex  items-center justify-between px-0 md:px-6   h-[56.8px]  ">
           {/* <div 
             className={`flex items-center gap-2 font-bold text-lg cursor-pointer transition-colors ${isDarkMode ? "text-white" : "text-slate-900"}`} 
@@ -104,7 +101,7 @@ React.useEffect(() => {
             <div className="w-8 h-8 bg-[#2B4BAB] rounded-lg flex items-center justify-center shadow-sm">
               {/* This is the blue box from your Figma */}
             </div>
-            <span className={`font-semibold text-lg tracking-normal leading-[25.2px] align-middle ${isDarkMode ? "text-white" : "text-[#14181F]"}`}>
+            <span className={`font-semibold text-lg tracking-normal leading-[25.2px] align-middle text-[#14181F]`}>
               FormCraft
             </span>
           </div>
@@ -121,8 +118,8 @@ React.useEffect(() => {
                   onClick={() => navigate(item.path)}
                   className={`relative flex items-center gap-2 px-4 h-[56.8px] transition-all font-normal text-[14px] ${
                     isActive 
-                    ? (isDarkMode ? "text-indigo-400" : "text-[#14181F]") 
-                    : (isDarkMode ? "text-slate-300 hover:text-indigo-400" : "text-[#6A7181] hover:text-[#14181F]")
+                    ? (`text-[#14181F`) 
+                    : (`text-[#6A7181] hover:text-[#14181F `)
                   }`}
                 >
                   {item.icon}
@@ -159,14 +156,11 @@ React.useEffect(() => {
   className="flex items-center gap-1 cursor-pointer min-w-fit" 
   onClick={() => navigate("/profile")}
 >
-  <div className={`w-8 h-8  rounded-full flex items-center justify-center text-[12px] font-bold  border border-[#E5E7EB] shrink-0 ${
-                  isDarkMode 
-                  ? "text-slate-300 bg-slate-700 hover:bg-slate-800 hover:text-indigo-400" 
-                  : "text-[#6A7181] bg-[#F3F4F6] hover:bg-[#F3F4F6] hover:text-[#14181F]"
-                }`}>
+  <div className={`w-8 h-8  rounded-full flex items-center justify-center text-[12px] font-bold  border border-[#E5E7EB] shrink-0text-[#6A7181] bg-[#F3F4F6] hover:bg-[#F3F4F6] hover:text-[#14181F]
+                `}>
     {Name.charAt(0).toUpperCase()}
   </div>
-  <span className={`text-[14px] font-medium  whitespace-nowrap ${isDarkMode?"text-slate-300":"text-[#4B5563]"}`}>
+  <span className={`text-[14px] font-medium  whitespace-nowrap text-[#4B5563]`}>
     {Name}
   </span>
 </div>
@@ -174,7 +168,7 @@ React.useEffect(() => {
    {/*Logout  */}
        <button 
               onClick={handleLogout}
-              className={`p-2 flex items-center gap-1  transition-colors ${isDarkMode ? "text-slate-300 hover:text-[#14181F]" : "text-[#4B5563] hover:text-[#14181F]"}`}
+              className={`p-2 flex items-center gap-1  transition-colors text-[#4B5563] hover:text-[#14181F]`}
               title="Logout"
             >
               <LogOut size={16} /> Logout
@@ -186,14 +180,10 @@ React.useEffect(() => {
         </div>
       </div>
 
-     <div className={`lg:hidden sticky top-0 z-50 px-4 py-3  flex justify-between items-center transition-colors border-b ${
-        isDarkMode 
-        ? "bg-[#0f172a] border-slate-800 text-white" 
-        : "bg-white border-black/10 text-slate-900"
-      }`}>
+     <div className={`lg:hidden sticky top-0 z-50 px-4 py-3  flex justify-between items-center transition-colors border-b bg-white border-black/10 text-slate-900`}>
         <div className="flex items-center gap-3 font-bold text-lg" onClick={() => navigate("/home")}>
           <div className="w-7 h-7 bg-[#2B4BAB] rounded-md shadow-sm" />
-          <span className={isDarkMode ? "text-white" : "text-[#14181F]"}>FormCraft</span>
+          <span className={`text-[#14181F]`}>FormCraft</span>
         </div>
         <button onClick={() => setOpen(true)}>
           <Menu size={26} />
@@ -216,19 +206,18 @@ React.useEffect(() => {
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "spring", stiffness: 260, damping: 30 }}
-              className={`fixed top-0 left-0 h-full w-64 z-70 shadow-xl p-6 rounded-r-2xl border-r transition-colors ${
-                isDarkMode ? "bg-slate-900 border-slate-800" : "bg-white border-slate-100"
-              }`}
+              className={`fixed top-0 left-0 h-full w-64 z-70 shadow-xl p-6 rounded-r-2xl border-r transition-colors bg-white border-slate-100"
+              `}
             >
               {/* Drawer Header with Logo & Close button */}
               <div className="flex justify-between items-center mb-8">
                 <div className="flex items-center gap-2">
                   <div className="w-6 h-6 bg-[#2B4BAB] rounded-md" />
-                  <span className={`font-bold text-lg ${isDarkMode ? "text-white" : "text-[#14181F]"}`}>
+                  <span className={`font-bold text-lgtext-[#14181F]`}>
                     FormCraft
                   </span>
                 </div>
-                <button onClick={() => setOpen(false)} className={isDarkMode ? "text-slate-400" : "text-slate-600"}>
+                <button onClick={() => setOpen(false)} className="text-slate-600">
                   <X />
                 </button>
               </div>
@@ -244,7 +233,7 @@ React.useEffect(() => {
                       className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
                         isActive 
                         ? "bg-[#2B4BAB]/10 text-[#2B4BAB] font-bold" 
-                        : (isDarkMode ? "text-slate-400" : "text-gray-600")
+                        : ""
                       }`}
                     >
                       {item.icon}
@@ -254,7 +243,7 @@ React.useEffect(() => {
                 })}
            
 
-  <hr className={`my-2 ${isDarkMode ? "border-slate-800" : "border-slate-100"}`} />
+  <hr className={`my-2 border-slate-100`} />
               
 
                 {/* Mobile Profile Section */}
@@ -265,13 +254,13 @@ React.useEffect(() => {
                   <div className="w-8 h-8 bg-[#F3F4F6] rounded-full flex items-center justify-center text-[12px] font-bold text-[#6B7280] border border-[#E5E7EB]">
                     {Name.charAt(0).toUpperCase()}
                   </div>
-                  <span className={`font-medium ${isDarkMode ? "text-slate-300" : "text-[#4B5563]"}`}>{Name}</span>
+                  <span className={`font-medium text-[#4B5563]`}>{Name}</span>
                 </button>
               </div>
 
               <button 
                   onClick={handleLogout}
-                  className={`flex items-center font-medium ${isDarkMode ? "text-slate-300" : "text-[#4B5563]"} gap-3 px-5 py-3   pt-4`}
+                  className={`flex items-center font-medium text-[#4B5563] gap-3 px-5 py-3   pt-4`}
                 >
                   <LogOut size={18} /> Logout
                 </button>
