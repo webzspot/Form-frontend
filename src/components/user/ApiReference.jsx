@@ -261,9 +261,9 @@ import { MdDeleteSweep } from 'react-icons/md';
 
 const Apidocumentation = () => {
 
-  const { isDarkMode } = useFormContext();
+  //const { isDarkMode } = useFormContext();
   const [keyname,setkeyname]=useState("");
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
   const[copied,setcopied]=useState("");
   const[publicKey,setpublicKey]=useState("");
   const[secretKey,setsecretKey]=useState("");
@@ -370,50 +370,40 @@ setTimeout(() => {
 
 
     const theme = {
-    pageBg: isDarkMode 
-      ? "bg-[#05070f] text-white" : 
+    pageBg: 
       "bg-gradient-to-br from-[#F3E8FF] via-[#ffffff] to-[#D8B4FE] text-[#4c1d95]",
-    formCard: isDarkMode
-      ? "bg-[#12121a]/80 backdrop-blur-xl border border-purple-500/20 shadow-[0_0_20px_rgba(139,92,246,0.05)]"
-      : "bg-white backdrop-blur-xl border border-white/60 shadow-[0_8px_32px_0_rgba(31,38,135,0.15)]",
-    tableHeader: isDarkMode ? "bg-[#1e1b4b]/60 text-purple-300" : "bg-purple-100 text-[#4c1d95]",
+    formCard:   "bg-white backdrop-blur-xl border border-white/60 shadow-[0_8px_32px_0_rgba(31,38,135,0.15)]",
+    tableHeader:  "bg-purple-100 text-[#4c1d95]",
     // input: isDarkMode
     //   ? "bg-[#05070f] border-purple-500/20 text-white placeholder-gray-600 focus:border-[#8b5cf6] focus:ring-[#8b5cf6]"
     //   : "bg-white/90 border-white/60 text-[#4c1d95] placeholder-[#4c1d95]/50 focus:border-[#8b5cf6] focus:ring-[#8b5cf6] focus:bg-white/80",
 
-    input: isDarkMode
-  ? "bg-[#05070f] text-white placeholder-gray-600 focus:ring-[#8b5cf6]"
-  : "bg-white/90 text-[#4c1d95] placeholder-[#4c1d95]/50 focus:ring-[#8b5cf6] focus:bg-white/80",
+    input: "bg-white/90 text-[#4c1d95] placeholder-[#4c1d95]/50 focus:ring-[#8b5cf6] focus:bg-white/80",
 
-    leftPanel: isDarkMode
-      ? "bg-gradient-to-b from-[#1e1b4b] to-[#0f0c29] border-r border-purple-500/10" 
-      : "bg-[#8b5cf6] text-white", 
-    button: isDarkMode
-      ? "bg-[#8b5cf6] hover:bg-[#7c3aed] text-white shadow-[0_0_20px_rgba(139,92,246,0.4)]"
-      : "bg-gradient-to-r from-[#8b5cf6] to-[#6d28d9] text-white hover:shadow-lg hover:shadow-purple-500/30",
-    textSub: isDarkMode ? "text-gray-400" : "text-[#4c1d95]/90",
-    text:isDarkMode ? "text-white" : "text-black/80",
+    leftPanel:  "bg-[#8b5cf6] text-white", 
+    button:"bg-gradient-to-r from-[#8b5cf6] to-[#6d28d9] text-white hover:shadow-lg hover:shadow-purple-500/30",
+    textSub: "text-[#4c1d95]/90",
+    text:"text-black/80",
   };
 
   return (
     <>   
     <UserNavbar/>
      <div
-    className={`relative min-h-screen transition-colors duration-300 ${
-      isDarkMode ? "bg-gray-950 text-white" : "bg-white text-black"
-    }`}
+    className={`relative min-h-screen max-w-7xl mx-auto  transition-colors duration-300 bg-white text-black
+    `}
   >
- <div className="absolute inset-0 z-0 pointer-events-none">
+ {/* <div className="absolute inset-0 z-0 pointer-events-none">
              <WaveBackground position="top" height="h-100" color={isDarkMode ? "#1e1b4b" : "#a78bfa"} />
-             <WaveBackground position="bottom" height="h-100" color={isDarkMode ? "#1e1b4b" : "#a78bfa"} />
+             <WaveBackground position="bottom" height="h-100" color={isDarkMode ? "#1e1b4b" : "#a78bfa"} /> 
              
-             {/* Floating Particles */}
+            
              <motion.div 
                animate={{ y: [-10, 10, -10], opacity: [0.5, 1, 0.5] }} 
                transition={{ duration: 4, repeat: Infinity }}
                className="absolute top-1/4 left-10 text-white/40 text-4xl"
              ><SparkleIcon className="w-8 h-8" /></motion.div>
-        </div>
+        </div>  */}
 
         <div className="flex justify-end ">
             <button 

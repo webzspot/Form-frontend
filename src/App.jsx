@@ -13,6 +13,7 @@ import Login from './components/user/Login.jsx';
 import Home from './components/user/Home.jsx';
 import UserReport from './components/user/UserReport.jsx';
 import Form from './components/dashboard/Form.jsx';
+
 import { Toaster } from "react-hot-toast";
 import PublicForm from './components/public/PublicForm.jsx';
 import UserDetails from "./components/dashboard/UserDetails.jsx"
@@ -85,6 +86,8 @@ const App = () => {
       <Form/>
       </ProtectedRoute>
      }/>    
+
+    
     
     <Route path="/reportstatus" element={
       <ProtectedRoute allowedRoles={["USER"]}>

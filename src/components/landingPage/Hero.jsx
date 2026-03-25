@@ -129,8 +129,8 @@ import React from 'react'
 import { FaArrowRight, FaCheck } from "react-icons/fa";
 import { Link } from 'react-router-dom';
 const Hero = () => {
-  const token = localStorage.getItem("token");
-  const role = localStorage.getItem("role");
+  const token = sessionStorage.getItem("token");
+  const role = sessionStorage.getItem("role");
   return (
     <div className="relative bg-[#0B0F17] w-full min-h-screen flex flex-col items-center px-4 md:px-0 pt-24 md:pt-32 overflow-x-hidden">
       
@@ -153,9 +153,9 @@ const Hero = () => {
       <div className="relative z-10 max-w-4xl mx-auto text-center mb-16 px-2">
         
         {/* Beta Badge */}
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0F1716] border border-[#10B77F33] backdrop-blur-sm mb-8">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#10B77F]"></span>
-          <span className="text-[#10B77F] text-xs font-medium tracking-wide">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#4F46E5] backdrop-blur-sm mb-8">
+          <span className="w-1.5 h-1.5 rounded-full bg-white"></span>
+          <span className="text-white text-xs font-medium tracking-wide">
             Now in public beta
           </span>
         </div>

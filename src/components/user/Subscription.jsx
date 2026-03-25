@@ -16,9 +16,9 @@ import {
 } from 'lucide-react';
 import UserNavbar from './UserNavbar';
 
-const Subscription = ({ isDarkMode = false }) => {
+const Subscription = () => {
   const navi=useNavigate()
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
    const API_BASE = "https://formbuilder-saas-backend.onrender.com";
  
 
@@ -70,19 +70,13 @@ const Subscription = ({ isDarkMode = false }) => {
 
 
   const theme = {
-    pageBg: isDarkMode 
-      ? "bg-[#05070f] text-slate-100" 
-      : "bg-[#F8FAFC] text-slate-800",
+    pageBg:  "bg-[#F8FAFC] text-slate-800",
     
-    card: isDarkMode
-      ? "bg-[#11111a] border border-slate-800 shadow-xl"
-      : "bg-white border border-slate-200 shadow-sm",
+    card:  "bg-white border border-slate-200 shadow-sm",
 
-    buttonPrimary: isDarkMode
-      ? "bg-purple-600 hover:bg-purple-700 text-white shadow-lg shadow-purple-900/20"
-      : "bg-slate-900 hover:bg-slate-800 text-white shadow-md shadow-slate-200",
+    buttonPrimary: "bg-slate-900 hover:bg-slate-800 text-white shadow-md shadow-slate-200",
 
-    textSub: isDarkMode ? "text-slate-400" : "text-slate-500",
+    textSub: "text-slate-500",
   };
 
   const plans = [
@@ -182,7 +176,7 @@ const Subscription = ({ isDarkMode = false }) => {
               )}
 
               <div className="flex items-center gap-3 mb-6">
-                <div className={`${isDarkMode ? 'bg-slate-800' : 'bg-slate-50'} p-3 rounded-2xl`}>
+                <div className={`bg-slate-50 p-3 rounded-2xl`}>
                   {plan.icon}
                 </div>
                 <h3 className="text-lg font-bold">{plan.name}</h3>
@@ -223,10 +217,8 @@ const Subscription = ({ isDarkMode = false }) => {
   
 {plan.id === "FREE" ? (
   <div className={`w-full py-4 rounded-xl font-bold text-sm flex items-center justify-center gap-2 border-2 
-    ${isDarkMode 
-      ? 'border-slate-800 text-slate-500 bg-slate-900/50' 
-      : 'border-slate-200 text-slate-400 bg-slate-100'
-    }`}>
+    border-slate-200 text-slate-400 bg-slate-100
+    `}>
     <Check size={18} />
     Free Plan
   </div>

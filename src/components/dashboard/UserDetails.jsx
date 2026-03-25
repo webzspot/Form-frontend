@@ -3,8 +3,10 @@ import axios from 'axios';
 import { 
     FaUser,FaFileAlt,  FaPlus, FaSearch, FaFilter, FaSortAmountDown, 
     FaTrash, FaEdit, FaTimes, FaCheckCircle, FaTimesCircle, 
-    FaUserCheck, FaUserTimes,FaArrowRight
+    FaUserCheck, FaUserTimes,FaArrowDown,FaCopy
 } from 'react-icons/fa';
+import { MoreVertical } from 'lucide-react';
+
 
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -14,7 +16,7 @@ import usePagination from '../../hooks/usePagination';
 import TableSkeleton from './TableSkeleton';
 import WaveBackground from "./WaveBackground";
 import { useFormContext } from "../dashboard/FormContext";
-
+import UserFooter from '../user/userFooter';
 
 const UserDetails= () => { 
   const [userData, setUserData] = useState([]);
@@ -28,7 +30,7 @@ const UserDetails= () => {
     const [showConfirmModal, setShowConfirmModal] = useState(false);
     const [loading, setLoading] = useState(false);
     const { isDarkMode } = useFormContext();
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     const navigate = useNavigate();
     const menuRef = useRef(null);
     const API_BASE_URL = 'https://formbuilder-saas-backend.onrender.com/api/admin/users';
@@ -132,10 +134,7 @@ const UserDetails= () => {
     const { currentData, currentPage, totalPages, nextPage, prevPage } = usePagination(processedUsers, 10);
     const activeUsersCount = userData.filter((user) => user.status === "Active").length;
     const inactiveUsersCount = userData.filter((user) => user.status !== "Active").length;  
-    const userChartData = [
-  { name: "Active Users", value: activeUsersCount },
-  { name: "Inactive Users", value: inactiveUsersCount }
-];
+   
 const COLORS = ["#7c3aed", "#c4b5fd"];
  // Helper function to get user avatar initials
     const getInitials = (name) => {
@@ -150,23 +149,12 @@ const COLORS = ["#7c3aed", "#c4b5fd"];
     if (role === "ADMIN") return "bg-violet-600";
     return "bg-blue-600"; // USER
 };
-const ChartSkeleton = () => (
-  <div className="h-[300px] flex items-center justify-center">
-    <div className="w-40 h-40 rounded-full border-4 border-slate-200 border-t-violet-500 animate-spin"></div>
-  </div>
-);
 
-const SparkleIcon = ({ className }) => (
-  <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
-    <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z" />
-  </svg>
-);
+
 
   // Theme Logic from AllReports
   const theme = {
-    pageBg: isDarkMode 
-      ? "bg-[#05070f] text-white selection:bg-purple-500/30" 
-      : "bg-gradient-to-br from-[#F3E8FF] via-[#ffffff] to-[#D8B4FE] text-[#4c1d95] selection:bg-purple-200",
+   
     
     card: isDarkMode
       ? "bg-[#12121a]/80 backdrop-blur-xl border border-purple-500/20 shadow-[0_0_20px_rgba(139,92,246,0.05)]"
@@ -181,139 +169,173 @@ const SparkleIcon = ({ className }) => (
       : "bg-gradient-to-r from-[#8b5cf6] to-[#6d28d9] text-white hover:shadow-lg hover:shadow-purple-500/30",
 
     textSub: isDarkMode ? "text-gray-400" : "text-[#4c1d95]/70",
-    tableHeader: isDarkMode ? "bg-[#1e1b4b]/60 text-purple-300" : "bg-purple-200/50 text-[#4c1d95]",
+    
     text:isDarkMode ? "text-white" : "text-violet-800",
   };
 
     return (
         <>
             <UserNavbar />
-            <div className={`relative ${theme.pageBg} font-sans  min-h-screen w-full overflow-hidden ${isDarkMode ? 'bg-[#8b5cf6]/50 text-white shadow-purple-500/40' : 'bg-white text-[#6C63FF] shadow-indigo-200'}`}> 
-   <div className="absolute inset-0 z-0 pointer-events-none">
-                    <WaveBackground position="top" height="h-100" color={isDarkMode ? "#1e1b4b" : "#a78bfa"} />
-                    <WaveBackground position="bottom" height="h-100" color={isDarkMode ? "#1e1b4b" : "#a78bfa"} />
-                    
-                    <motion.div 
-                        animate={{ y: [-10, 10, -10], opacity: [0.5, 1, 0.5] }} 
-                        transition={{ duration: 4, repeat: Infinity }}
-                        className="absolute top-1/4 left-10 text-white/40 text-4xl"
-                    >
-                        <SparkleIcon className="w-8 h-8" />
-                    </motion.div>
-                </div>
-                <div className="relative z-10 p-4 md:p-8 font-sans text-slate-900">
+            <div className={`relative  font-sans bg-[#F5F6F8]  min-h-screen w-full overflow-hidden `}> 
+  
+                <div className="relative z-10  max-w-7xl mx-auto px-4 md:px-6 text-slate-900">
                   
             
               {/* New Modern Header Section */}
 <motion.div 
     initial={{ opacity: 0, y: -20 }}
     animate={{ opacity: 1, y: 0 }}
-    className={`p-8 rounded-3xl mb-8 shadow-2xl mt-5 relative overflow-hidden max-w-7xl mx-auto ${isDarkMode ? 'bg-[#8b5cf6]/50 text-white shadow-purple-500/40' : 'bg-white shadow-indigo-200'}`}
+    className={` mb-8 relative mt-8 overflow-hidden flex flex-col md:flex-row md:justify-between `}
 >
-    <div className="relative z-10">
-       
-        <h1 className={`text-3xl font-bold mb-2  ${isDarkMode ? 'text-white' : 'text-[#4c1d95]'}`}>
+   
+     <div className='max-w-md '>
+        <h1 className={`text-3xl font-bold  leading-tight tracking-tight align-middle mb-2 text-[#14181F]`}>
             User Management
         </h1>
-        <p className={`font-semibold/70 text-sm ${theme.textSub}`}>
+        <p className={` text-sm font-normal leading-5 align-middle text-[#6A7181]`}>
             View and manage user accounts, roles, and access permissions while maintaining secure and organized control over your platform.
         </p>
-    </div>
+    </div>  
     
-    {/* Optional: Add a subtle glow effect for dark mode */}
-    <div className="absolute -top-24 -right-24 w-48 h-48 bg-purple-500/10 blur-[100px] rounded-full"></div>
-</motion.div>
-
-            {/* Filters and Table */}
-                    {/* <div className={max-w-7xl mx-auto ${theme.pageBg} rounded-2xl  shadow-md overflow-hidden}>    */}
-                     <div className={`rounded-xl max-w-7xl mx-auto ${isDarkMode ? 'border-white/10 bg-white/5' : 'border-slate-100 bg-violet-300/50'}`}>
-
-                        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 px-6 py-6 ">
+                        <div className="flex flex-col mt-4 lg:flex-row lg:items-center lg:justify-between gap-4  ">
    
 
-    <div className="flex gap-3">
+    <div className="flex  gap-3">
+    
+
       <motion.button
+        onClick={() => navigate("/admin/forms")}
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+       className={`px-4 md:px-6 py-2.5  font-medium leading-5 text-center align-middle rounded-md text-[#2B4BAB] text-sm transition-all border border-[#2B4BAB] flex items-center gap-1 sm:gap-2
+               
+                disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed`}
+        >
+        
+        Go To Forms
+      </motion.button>
+
+
+        <motion.button
         onClick={() => {
           setIsAddMode(true);
           setEditingUser({ name: "", email: "", password: "", role: "USER" });
         }}
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
-       className={`px-4 py-2 rounded-xl text-[10px] sm:text-sm font-semibold transition-all shadow-md flex items-center gap-1 sm:gap-2
-                ${theme.buttonPrimary} 
+       className={`px-4 md:px-6 py-2.5  font-medium leading-5 text-center align-middle rounded-md bg-[#2B4BAB] text-white text-sm transition-all border border-[#2B4BAB] flex items-center gap-1 sm:gap-2
                 disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed`}
         
       >
-        <FaPlus size={14} />
+      
         Add New User
-      </motion.button>
-
-      <motion.button
-        onClick={() => navigate("/admin/forms")}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-       className={`px-4 py-2 rounded-xl font-semibold text-[10px] sm:text-sm transition-all shadow-md flex items-center gap-1 sm:gap-2
-                ${theme.buttonPrimary} 
-                disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed`}
-        >
-        <FaArrowRight size={16} />
-        Go To Forms
       </motion.button>
     </div>
   </div>
-<div className="px-4 py-2  border-slate-100 flex flg:flex-col gap-1 items-center">
-                            <div className="relative flex-1">
-                                <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-                                <input
-                                    className={`w-full px-10 py-2 text-[10px] sm:text-sm font-semibold ${theme.input} border border-white/10  rounded-xl outline-none transition-all`}
-                                    type="text" outline-none
-                                    placeholder="Search name or email..."
-                                    value={searchedUser}
-                                    onChange={(e) => setSearchedUser(e.target.value)}
-                                />
-                            </div>
-                   
-
-<div className="flex items-center gap-2">
- 
-  {/* Sort By Styled Select Container */}
-  <div >
-    <select 
-      value={sortBy} 
-      onChange={(e) => setSortBy(e.target.value)} 
-       className={`px-2 py-2 cursor-pointer  text-[10px] sm:text-sm font-bold rounded-xl border border-black/30 outline-none transition-all ${
-        isDarkMode 
-          ? "bg-[#12121a] border-purple-500/20 text-white hover:border-purple-500/50 " 
-          : "bg-white  border-purple-100 text-[#4c1d95] hover:border-purple-300  "
-      }`}
-    >
-      <option value="">Sort By</option>
-      <option value="name-asc">A-Z (Name)</option>
-      <option value="name-desc">Z-A (Name)</option>
-      <option value="date-new">Newest First</option>
-    </select>
     
    
-    
-  </div>
-</div>
-                        </div>
+</motion.div>
 
-                        <div className='overflow-x-auto ' >
-                            <table className={`w-full text-left ${theme.pageBg}`}>
-                                <thead className={`${theme.tableHeader}`}>
+
+
+
+                        <div className="px-4 py-2 p-3 rounded-xl mb-8 flex flex-col md:flex-row gap-4 justify-between bg-[#FFFFFF] border border-[#E5E7EB] shadow-sm items-center">
+    
+    {/* Search Input: Removed w-fit so it can expand, added w-full for mobile */}
+    <div className="relative  w-full md:flex-1">
+        <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+        <input
+            className="w-full px-10 py-2 text-[10px] sm:text-sm font-semibold placeholder:text-gray-400 border border-white/10 rounded-xl outline-none transition-all"
+            type="text"
+            placeholder="Search name or email..."
+            value={searchedUser}
+            onChange={(e) => setSearchedUser(e.target.value)}
+        />
+    </div>
+
+    {/* Sort Container: Added w-full so the select fills the row on mobile */}
+    <div className="flex items-center gap-2 w-full md:w-auto">
+        <div className="w-full">
+            <select 
+                value={sortBy} 
+                onChange={(e) => setSortBy(e.target.value)} 
+                className={`w-full md:w-auto px-2 py-2 cursor-pointer text-[10px] sm:text-sm font-bold rounded-xl border border-black/30 outline-none transition-all bg-white text-black`}
+            >
+                <option value="">Sort By</option>
+                <option value="name-asc">A-Z (Name)</option>
+                <option value="name-desc">Z-A (Name)</option>
+                <option value="date-new">Newest First</option>
+            </select>
+        </div>
+    </div>
+</div>
+            {/* Filters and Table */}
+                    {/* <div className={max-w-7xl mx-auto ${theme.pageBg} rounded-2xl  shadow-md overflow-hidden}>    */}
+                     <div className={` ` }>
+
+
+                        <div className='overflow-x-auto rounded-xl border bg-[#FFFFFF] border-[#E9EAEB] mb-4 ' >
+                            <table className={`w-full text-left `}>
+                                <thead className={`bg-white  text-[#535862] border-b border-[#E9EAEB]`}>
                                     <tr>
-                                        <th className="px-6 py-4 text-xs font-semibold  uppercase ">User Info</th>
-                                        <th className="px-6 py-4 text-xs font-semibold uppercase ">Role</th>
-                                        <th className="px-6 py-4 text-xs font-semibold uppercase ">Joined Date</th>
-                                        <th className="px-6 py-4 text-center text-xs font-semibold  uppercase">Activity</th>
-                                        <th className="px-6 py-4 text-xs font-semibold  uppercase ">Status</th>
-                                        <th className="px-6 py-4 text-center text-xs font-semibold  uppercase ">Actions</th>
+                                         <th className="px-6 py-4 text-xs font-semibold ">
+                                           <div className="flex items-center gap-2 group cursor-pointer">
+                                             <div className={`w-5 h-5 rounded-md border  shrink-0 bg-white border-[#D0D5DD]
+        `} />
+        
+                                             <span>User Info</span>
+                                            
+                                                <FaArrowDown className="" />
+                                             
+                                           </div>
+                                           </th>
+                                      
+                                     <th className="px-6 py-4 text-xs font-semibold ">
+                                           <div className="flex items-center gap-2 group cursor-pointer">
+                                             <span>Role</span>
+                                            
+                                                <FaArrowDown className="" />
+                                             
+                                           </div>
+                                         </th>
+                                     
+                                         <th className="px-6 py-4 text-xs font-semibold ">
+                                           <div className="flex items-center gap-2 group cursor-pointer">
+                                             <span>Joined Date</span>
+                                            
+                                                <FaArrowDown className="" />
+                                             
+                                           </div></th>
+                                           <th className="px-6 py-4 text-xs font-semibold ">
+                                           <div className="flex items-center gap-2 group cursor-pointer">
+                                             <span>Activity</span>
+                                            
+                                                <FaArrowDown className="" />
+                                             
+                                           </div></th>
+                                         <th className="px-6 py-4 text-xs font-semibold ">
+                                           <div className="flex items-center gap-2 group cursor-pointer">
+                                             <span>Status</span>
+                                            
+                                                <FaArrowDown className="" />
+                                             
+                                           </div></th>
+                                              <th className="px-6 py-4 text-xs font-semibold ">
+                                           <div className="flex items-center gap-2 group cursor-pointer">
+                                             <span>Action</span>
+                                            
+                                                <FaArrowDown className="" />
+                                             
+                                           </div></th>
+                                
                                     </tr>
                                 </thead>
+
+
+                                
                                 <tbody >
                                     {loading ? (
-                                          <TableSkeleton rows={5} columns={6} isDarkMode={isDarkMode} />
+                                          <TableSkeleton rows={5} columns={6}  />
                                     ) : currentData.length === 0 ? (
                                         <tr>
                                              <td colSpan="6" className="px-6 py-20 text-center">
@@ -329,51 +351,49 @@ const SparkleIcon = ({ className }) => (
                                                 initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.3, delay: index * 0.05 }}
-                                            className="hover:bg-indigo-100/30 transition-colors group">
+                                            className="hover:bg-[#F5F6F8] border-b border-[#E9EAEB] transition-colors group">
                                                 <td className="px-6 py-4">
                                                     <div className="flex items-center gap-3">
-                                                        {/* Avatar with initials */}
-                                                       <div className={`sm:w-10 sm:h-10 w-7 h-7 ${getAvatarColor(user.role)} rounded-full 
-    ${isDarkMode ? 'bg-violet-500' : `${theme.buttonPrimary}`} 
-    flex items-center justify-center text-white font-semibold text-sm shadow-md`}>
-    {getInitials(user.name)}
-</div>
+                                                         <div className={`w-5 h-5 rounded-md border shrink-0 bg-white border-[#D0D5DD]
+        `} />
+        
                                                         <div >
-                                                            <div className="text-[13px] sm:text-sm font-semibold">{user.name}</div>
-                                                            <div className={` text-[10px] sm:text-sm ${theme.textSub}`}>{user.email}</div>
+                                                            
+                                                            <div className="text-sm font-medium leading-5 tracking-normal text-[#181D27] ">{user.name}</div>
+                                                            {/* <div className={` text-[10px] sm:text-sm ${theme.textSub}`}>{user.email}</div> */}
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    <span className={`px-3 py-1 rounded-full text-[10px] sm:text-xs font-semibold ${user.role === 'ADMIN' ? 'bg-purple-100 text-purple-700  border-purple-200' : 'bg-purple-100 text-violet-800 '}`}>
+                                                    <span className={   ` text-sm font-medium leading-5 tracking-normal text-[#181D27]  `}>
                                                         {user.role}
                                                     </span>
                                                 </td>
-                                                <td className="px-6 py-4 text-[10px] sm:text-sm font-medium">
+                                                <td className="px-6 py-4 text-sm font-medium leading-5 tracking-normal text-[#181D27] ">
                                                     <div>{new Date(user.createdAt).toLocaleDateString()}</div>
                                                 </td>
-                                                <td className="px-6 py-4 text-center">
+                                                <td className=" px-6 py-4 cursor-pointer text-sm font-medium leading-5 tracking-normal text-[#181D27]">
                                                     <button 
                                                         onClick={() => navigate(`/admin/users/${user.userId}/activity`)}
-                                                      className={`px-2 text-[10px] sm:text-sm py-1 rounded-xl font-semibold transition-all text-sm shadow-md flex items-center
-                                                      ${theme.buttonPrimary} 
+                                                      className={`
+                                                      
                                                     disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed`}
                                                       >
                                                         View
                                                     </button>
                                                 </td>
                                                 <td className="px-6 py-4">
-                                                    <span className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold ${user.status === "Active" ? " text-gray-600 border border-gray-200" : " border-gray-200"}`}>
-                                                        {user.status === "Active" ? <FaCheckCircle size={10} /> : <FaTimesCircle size={10} />}
+                                                    <span className={`inline-flex items-center  text-sm font-medium leading-5 tracking-normal    ${user.status === "Active" ? " text-gray-600 " : " text-[#00B712]"}`}>
+                                                        
                                                         {user.status || "Inactive"}
                                                     </span>
                                                 </td>
-                                                <td className="px-6 py-4 text-center relative">
+                                                <td className="px-6 py-4 text-start relative">
                                                     <button 
                                                         onClick={() => setOpenMenuIndex(openMenuIndex === user.userId ? null : user.userId)}
-                                                        className="w-8 h-8 flex items-center justify-center hover:bg-slate-200 rounded-full  hover:text-slate-600 transition-all"
+                                                        className="w-8 h-8 flex items-center justify-center hover:bg-slate-200 rounded-full   transition-all"
                                                     >
-                                                        •••
+                                                          <MoreVertical size={20}  className='text-[#535862]'/> 
                                                     </button>
                                                     {openMenuIndex === user.userId && (
                                                         <div className={`absolute right-12 top-0 ${theme.card}  rounded-xl shadow-2xl z-50 min-w-[140px] py-2`}>
@@ -395,131 +415,181 @@ const SparkleIcon = ({ className }) => (
                                     )}
                                 </tbody>
                             </table>
-                        </div>
-
+                            
                         {/* Pagination */}
-                        <div className="flex justify-between items-center px-6 py-4 ">
-                            <span className="text-sm text-slate-600 font-medium">Page {currentPage} of {totalPages}</span>
+                        {/* <div className="flex    justify-between items-center px-6 py-2 ">
                             <div className="flex gap-2">
                                 <button 
                                     onClick={prevPage} 
                                     disabled={currentPage === 1} 
-                                    className={`px-5 py-2 rounded-xl disabled:opacity-30 ${theme.text} font-semibold hover:bg-slate-100 transition-all disabled:hover:bg-transparent`}
+                                    className={`px-5 py-2 rounded-md font-semibold text-sm disabled:opacity-30 border border-[#D5D7DA]  text-[#414651] hover:bg-slate-100 transition-all disabled:hover:bg-transparent`}
                                 >
-                                    Prev
+                                    Previous
                                 </button>
                                 <button 
                                     onClick={nextPage} 
                                     disabled={currentPage === totalPages} 
-                                   className={`px-4 py-2 rounded-xl font-semibold transition-all shadow-md flex items-center gap-2
-                ${theme.buttonPrimary} 
+                                   className={`px-4 py-2 rounded-md font-semibold border border-[#D5D7DA]  text-[#414651] transition-all shadow-md flex items-center gap-2
+               
                 disabled:opacity-40 disabled:grayscale disabled:cursor-not-allowed`}
         >
                                     Next
                                 </button>
                             </div>
+                            <span className="text-sm text-[#414651] font-medium">Page {currentPage} of {totalPages}</span>
+                            
+                        </div> */}
+                        {/* Change justify-between to flex-col on mobile, and flex-row on md+ screens */}
+<div className="flex flex-col md:flex-row justify-between items-center gap-4 px-6 py-4 border-t border-[#E9EAEB]">
+    
+    {/* Page Counter: Move this to the top on mobile for better hierarchy */}
+    <span className="text-sm text-[#414651] font-medium order-1 md:order-2">
+        Page {currentPage} of {totalPages}
+    </span>
+
+    {/* Buttons: Make them fill the width on mobile */}
+    <div className="flex gap-3 w-full md:w-auto order-2 md:order-1">
+        <button 
+            onClick={prevPage} 
+            disabled={currentPage === 1} 
+            className="flex-1 md:flex-none px-5 py-2 rounded-md font-semibold text-sm border border-[#D5D7DA] text-[#414651] disabled:opacity-30 hover:bg-slate-50 transition-all"
+        >
+            Previous
+        </button>
+        <button 
+            onClick={nextPage} 
+            disabled={currentPage === totalPages} 
+            className="flex-1 md:flex-none px-5 py-2 rounded-md font-semibold text-sm border border-[#D5D7DA] text-[#414651] disabled:opacity-40 transition-all shadow-sm"
+        >
+            Next
+        </button>
+    </div>
+</div>
                         </div>
+
                     </div>
                 </div>
             </div>
 
             {/* Sidebar Slide-over for Add/Edit */}
-            <AnimatePresence>
-                {editingUser && (
-                    <>
-                        <motion.div 
-                            initial={{ opacity: 0 }} 
-                            animate={{ opacity: 1 }} 
-                            exit={{ opacity: 0 }} 
-                            onClick={handleDismiss} 
-                            className="fixed inset-0 bg-slate-900/50 backdrop-blur-sm z-40" 
-                        />
-                        <motion.div 
-                            initial={{ x: "100%" }} 
-                            animate={{ x: 0 }} 
-                            exit={{ x: "100%" }} 
-                            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-                            className={`fixed top-0 right-0 h-full w-full max-w-md  shadow-2xl z-50 ${theme.card}   overflow-y-auto `}
+     <AnimatePresence>
+    {editingUser && (
+        <>
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={handleDismiss}
+                className="fixed inset-0 bg-slate-900/50 z-40"
+            />
+            <motion.div
+                initial={{ opacity: 0, scale: 0.9, x: "-50%", y: "-50%" }}
+                animate={{ opacity: 1, scale: 1, x: "-50%", y: "-50%" }}
+                exit={{ opacity: 0, scale: 0.9, x: "-50%", y: "-50%" }}
+                /* FIX: Added 'max-h-[95vh]' to keep it off the screen edges 
+                   Added 'flex flex-col' and 'overflow-y-auto' to enable internal scrolling
+                */
+                className="fixed left-1/2 top-1/2 z-50 flex flex-col h-full md:max-h-[95vh]  w-full  md:max-w-[500px] lg:max-w-[847px] bg-white md:rounded-[10px] shadow-2xl overflow-y-auto"
+            >
+                <div className="p-6">
+                    <div className="flex justify-between items-center mb-4">
+                        <h2 className={`font-semibold text-base leading-6 tracking-normal text-[#000000] `}>{isAddMode ? "Add New User" : "Edit User Profile"}</h2>
+                        <button
+                            onClick={handleDismiss}
+                            className="p-2 cursor-pointer"
                         >
-                            <div className="p-6">
-                                <div className="flex justify-between items-center mb-8">
-                                    <h2 className={`text-2xl font-bold ${theme.text} `}>{isAddMode ? "Create New User" : "Edit User Profile"}</h2>
-                                    <button 
-                                        onClick={handleDismiss} 
-                                        className="p-2 hover:bg-slate-100 rounded-full transition-colors"
-                                    >
-                                        <FaTimes size={20} className="text-slate-400" />
-                                    </button>
-                                </div>
+                            <FaTimes className="text-[#181D27] w-[12px] h-[12px] " />
+                        </button>
+                    </div>
 
-                                {/* User Icon*/}
-                                <div className={`mb-6 rounded-2xl overflow-hidden h-32 ${theme.buttonPrimary} flex items-center justify-center`}>
-                                    <FaUser size={48} className="text-white/30" />
-                                </div>
+                    <div className='border border-[#E9EAEB] rounded-md px-6 pt-4'>
+                        <p className='font-medium text-base leading-6 tracking-normal text-[#1D2026]'>Basic Info</p>
 
-                                <form className="space-y-5" onSubmit={(e) => { e.preventDefault(); isAddMode ? handleAddUser() : handleUpdate(); }}>
-                                    <div>
-                                        <label className={`block text-sm font-semibold ${theme.text} mb-2`}>Full Name</label>
-                                        <input 
-                                            type="text" 
-                                            name="name" 
-                                            value={editingUser.name} 
-                                            onChange={handleEditChange} 
-                                            required 
-                                            // className="w-full px-4 py-3 rounded-xl border-2 border-slate-200 outline-none focus:ring-2 focus:ring-violet-500 focus:border-transparent transition-all" 
-                                            className={`${theme.input} w-full px-4 py-3 rounded-xl text-semibold outline-none` }
-                                            placeholder="Enter full name"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className={`${theme.text} block text-sm font-semibold text-slate-700 mb-2`}>Email Address</label>
-                                        <input 
-                                            type="email" 
-                                            name="email" 
-                                            value={editingUser.email} 
-                                            onChange={handleEditChange} 
-                                            required 
-                                           className={`${theme.input} w-full px-4 py-3 rounded-xl text-semibold outline-none` }
-                                            placeholder="user@example.com"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className={`block text-sm font-semibold  ${theme.text} mb-2`}>
-                                            {isAddMode ? "Password" : "New Password (Optional)"}
-                                        </label>
-                                        <input 
-                                            type="password" 
-                                            name="password" 
-                                            value={editingUser.password || ""} 
-                                            onChange={handleEditChange} 
-                                            required={isAddMode} 
-                                            className={`${theme.input} w-full px-4 py-3 rounded-xl text-semibold outline-none` }
-                                            placeholder={isAddMode ? "Enter password" : "Leave blank to keep current"}
-                                        />
-                                    </div>
-                                    
-                                    <div className="pt-6 flex gap-3">
-                                        <button 
-                                            type="submit" 
-                                            className={`flex-1 text-white py-3 rounded-xl font-bold ${theme.buttonPrimary} transition-all shadow-lg hover:shadow-xl`}
-                                        >
-                                            {isAddMode ? "Create User" : "Update Profile"}
-                                        </button>
-                                        <button 
-                                            type="button" 
-                                            onClick={handleDismiss} 
-                                            // className="flex-1 bg-slate-100 text-slate-600 py-3 rounded-xl font-bold hover:bg-slate-200 transition-all"
-                                            className={`${theme.input} flex-1 rounded-xl py-3 px-4 font-bold`}
-                                        >
-                                            Cancel
-                                        </button>
-                                    </div>
-                                </form>
+                        <div className="flex items-center gap-4 mb-8 border-b pb-4 border-[#E9EAEB] ">
+                            <div className="w-[100px] h-[98px] bg-[#F5F7FA] mt-4 rounded-lg flex items-center justify-center border border-slate-200">
+                                {editingUser.name ? (
+                                    <span className="text-2xl font-bold text-slate-400">
+                                        {editingUser.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                                    </span>
+                                ) : (
+                                    <FaUser size={40} className="text-slate-300" />
+                                )}
                             </div>
-                        </motion.div>
-                    </>
-                )}
-            </AnimatePresence>
+                        </div>
+
+                        <form className="space-y-5" onSubmit={(e) => { e.preventDefault(); isAddMode ? handleAddUser() : handleUpdate(); }}>
+                            <div className='flex flex-col md:flex-row justify-between gap-3'>
+                                <div>
+                                    <label className={`font-medium text-sm text-[#414651] mb-2`}>Full Name</label>
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        value={editingUser.name}
+                                        onChange={handleEditChange}
+                                        required
+                                        className={`w-full px-4 py-3 mt-4 rounded-md text-semibold outline-none border border-[#E9EAEB]`}
+                                        placeholder="Enter full name"
+                                    />
+                                </div>
+                                <div>
+                                    <label className={`font-medium text-sm text-[#414651] mb-2`}>Email Address</label>
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        value={editingUser.email}
+                                        onChange={handleEditChange}
+                                        required
+                                        className={`w-full px-4 py-3 rounded-md mt-4 text-semibold outline-none border border-[#E9EAEB] `}
+                                        placeholder="user@example.com"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="relative border mb-4 border-[#E9EAEB] p-6 rounded-xl">
+                                <label className="font-medium text-base text-[#1D2026] ">Create Password</label>
+                                <div className="relative flex gap-2 justify-between items-center">
+                                    <input
+                                        type="password"
+                                        name="password"
+                                        value={editingUser.password || ""}
+                                        onChange={handleEditChange}
+                                        className="w-full px-4 py-3 pr-12 mt-4 rounded-xl border border-slate-200 outline-none"
+                                        placeholder="••••••••"
+                                    />
+                                    <div className='border p-2 mt-4 rounded-xl border-[#E9EAEB]'>
+                                        <button
+                                            type="button"
+                                            onClick={() => navigator.clipboard.writeText(editingUser.password)}
+                                            className="p-2 text-[#252B37] hover:text-indigo-600"
+                                        >
+                                            <FaCopy size={18} />
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="pt-6 flex mb-4 justify-end gap-3">
+                                <button
+                                    type="button"
+                                    onClick={handleDismiss}
+                                    className={`text-[#252B37] border border-[#D5D7DA] px-8 rounded-md py-3 font-semibold text-base`}
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="submit"
+                                    className={`text-white bg-[#2B4BAB] border px-8 border-[#D5D7DA] py-3 rounded-md font-semibold text-base transition-all shadow-lg `}
+                                >
+                                    {isAddMode ? "Save" : "Edit"}
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </motion.div>
+        </>
+    )}
+</AnimatePresence>
 
             {/* Delete Modal */}
             <AnimatePresence>
@@ -530,21 +600,20 @@ const SparkleIcon = ({ className }) => (
                             animate={{ opacity: 1 }} 
                             exit={{ opacity: 0 }} 
                             onClick={handleDismiss} 
-                            className={`fixed inset-0${
-        isDarkMode ? "bg-slate-900/80" : "bg-slate-900/40 backdrop-blur-sm"
+                            className={`fixed inset-0 bg-slate-900/40 backdrop-blur-sm
     }`}
                         />
                         <motion.div 
                             initial={{ scale: 0.9, opacity: 0 }} 
                             animate={{ scale: 1, opacity: 1 }} 
                             exit={{ scale: 0.9, opacity: 0 }} 
-                           className={`rounded-2xl p-8 w-[300px] shadow-2xl ${theme.card}`}
+                           className={`rounded-md p-8 w-[300px] shadow-2xl bg-white/80 backdrop-blur-xl border border-white/60 shadow-[0_8px_32px_0_rgba(31,38,135,0.15)]`}
                         >
                             <div className="sm:w-20 sm:h-20 w-10 h-10 bg-linear-to-br from-red-100 to-red-200 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
                                 <FaTrash size={25} />
                             </div>
-                            <h2 className={`sm:text-2xl font-bold ${theme.text} mb-2`}>Confirm Delete</h2>
-                            <p className={`${theme.text} text-[10px] sm:text-sm mb-8`}>
+                            <h2 className={`text-xl font-bold text-gray-500 mb-2`}>Confirm Delete</h2>
+                            <p className={`text-gray-500 text-[10px] sm:text-sm mb-8`}>
                                 Are you sure you want to remove <span className="font-bold text-slate-700">{pendingAction?.payload?.name}</span>? This action cannot be undone.
                             </p>
                             <div className="flex gap-3">
@@ -566,7 +635,7 @@ const SparkleIcon = ({ className }) => (
                     </div>
                 )}
             </AnimatePresence>
-
+    <UserFooter/>
         </>
     );
 };

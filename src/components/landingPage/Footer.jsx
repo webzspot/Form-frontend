@@ -7,8 +7,8 @@ import { HiArrowRight } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
 const Footer = () => {
    
-  const token = localStorage.getItem("token");
-  const role = localStorage.getItem("role");
+  const token = sessionStorage.getItem("token");
+  const role = sessionStorage.getItem("role");
 
   const productLinks = ["Features", "Pricing", "Integrations", "Changelog"];
 const companyLinks = ["About", "Blog", "Careers", "Contact"];
@@ -47,7 +47,7 @@ const resourceLinks = ["Documentation", "API Reference", "Community", "Status"];
 <button className="
   flex items-center justify-center 
   w-56 h-12 rounded-lg 
-  bg-linear-to-r from-[#10B77F] to-[#1AA2E6] 
+  bg-[#4F46E5]
   shadow-lg hover:opacity-90 transition-all
 ">
   
