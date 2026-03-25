@@ -446,7 +446,7 @@ const Form = () => {
                     Available Fields
                   </h2>
                   <span 
-                  className={`text-xs ${theme.buttonPrimary} font-medium px-2.5 py-1 rounded-full`}>
+                  className={`text-xs ${theme.buttonPrimary} font-medium px-2.5 py-1 rounded-sm`}>
                     {masterFields.length} fields
                   </span>
                 </div>
@@ -463,7 +463,7 @@ const Form = () => {
                       variants={itemVariants}
                       whileHover={{ x: 4 }}
                       whileTap={{ scale: 0.98 }}
-                       className={`group flex items-center gap-3 sm:py-3 sm:px-4 px-2 py-2 text-[11px] sm:text-[14px] rounded-2xl cursor-pointer transition-all duration-300 border-2 ${
+                       className={`group flex items-center gap-3 sm:py-3 sm:px-4 px-2 py-2 text-[11px] sm:text-[14px] rounded-sm cursor-pointer transition-all duration-300 border-2 ${
     selectedFields.some((f) => f.masterFieldId === field.masterFieldId)
       ? "bg-[#2B4BAB]/10 border-[#2B4BAB]/20 shadow-md shadow-violet-100"
       : "bg-white/70 border-transparent hover:border-gray-200 hover:bg-white shadow-sm hover:shadow-md"
@@ -510,7 +510,7 @@ const Form = () => {
                     onClick={() => setIsAddingMaster(!isAddingMaster)}
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.99 }}
-                    className={`w-full sm:py-3 px-4 py-1 text-[13px] sm:text-[16px] rounded-lg font-semibold flex items-center justify-center gap-3 transition-all duration-300 ${
+                    className={`w-full sm:py-3 px-4  text-[13px] sm:text-[16px] rounded-sm py-2 font-semibold flex items-center justify-center gap-3 transition-all duration-300 ${
                       isAddingMaster
                         ? `${theme.buttonsecondary}`
                         : `${theme.buttonPrimary}`
@@ -713,7 +713,7 @@ const Form = () => {
                     <motion.label
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className={`flex items-center gap-3  cursor-pointer px-4 sm:px-4  sm:py-2.5 py-1 text-[10px] sm:text-sm rounded-xl border-2 transition-all duration-300 ${
+                      className={`flex items-center gap-3  cursor-pointer px-4 sm:px-4  sm:py-2.5 py-1 text-[10px] sm:text-sm rounded-sm border-2 transition-all duration-300 ${
                         isPublic
                           ? "border-violet-200 bg-[#2B4BAB] shadow-md "
                           : "border-gray-200 bg-white hover:border-gray-300"
@@ -742,7 +742,7 @@ const Form = () => {
                     <motion.label
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className={`flex items-center px-4 gap-3 cursor-pointer sm:px-4  sm:py-2.5 py-1 text-[10px] sm:text-sm  rounded-xl border-2 transition-all duration-300 ${
+                      className={`flex items-center px-4 gap-3 cursor-pointer sm:px-4  sm:py-2.5 py-1 text-[10px] sm:text-sm  rounded-sm border-2 transition-all duration-300 ${
                         !isPublic
                           ? "border-indigo-100 bg-indigo-300 shadow-md shadow-indigo-100"
                           : "border-gray-200 bg-white  hover:border-gray-300"
@@ -879,7 +879,7 @@ text-[#2B4BAB]
                                   {field.required && <Check className="w-3 h-3 text-white" />}
                                 </div>
                                 <span
-                                  className={`text-[10px] sm:text-sm font-bold uppercase ${field.required ? "text-[#2B4BAB]" : "text-gray-500"}`}
+                                  className={`text-[10px] sm:text-sm  font-bold uppercase ${field.required ? "text-[#2B4BAB]" : "text-gray-500"}`}
                                 >
                                   Required
                                 </span>

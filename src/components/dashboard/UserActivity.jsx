@@ -13,7 +13,7 @@ import { useFormContext } from './FormContext';
 const UserActivity = () => {
 
   const { id } = useParams();
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
   const API_URL = `https://formbuilder-saas-backend.onrender.com/api/admin/users/${id}`;
   const navigate = useNavigate();
 

@@ -33,7 +33,7 @@ const Response = () => {
   const [formFields, setFormFields] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
  const [selectedField, setSelectedField] = useState("ALL");
 
 

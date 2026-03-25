@@ -424,7 +424,7 @@ import {
 } from "react-icons/fi";
 
 const UserReport = () => {
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
   const [issuetype, setIssuetype] = useState("");
   const [description, setDescription] = useState("");
   const [priority, setPriority] = useState("");

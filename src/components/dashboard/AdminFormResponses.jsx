@@ -22,7 +22,7 @@ const SparkleIcon = ({ className }) => (
 
 const AdminFormResponses = () => {
   const { formId } = useParams();
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
   const navigate = useNavigate();
   const { isDarkMode } = useFormContext();
 

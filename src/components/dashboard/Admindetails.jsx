@@ -25,7 +25,7 @@ const Admindetails = () => {
     const [adminConfirmPassword, setAdminConfirmPassword] = useState(""); 
     
     const { isDarkMode } = useFormContext();
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     const navigate = useNavigate();
 
     const API_BASE_URL = 'https://formbuilder-saas-backend.onrender.com/api/admin/admins';

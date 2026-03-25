@@ -267,7 +267,7 @@ import UserFooter from './userFooter';
 import usePagination from "../../hooks/usePagination";
 
 const Reportstatus = () => {
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
   const [userReportStatus, setUserReportStatus] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");

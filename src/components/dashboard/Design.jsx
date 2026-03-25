@@ -341,7 +341,7 @@ const Design = ({ editingFormId, token, formTheme, setFormTheme, isDarkMode }) =
     <div className="w-full mb-4">
       <button
         onClick={() => setIsDesigning(!isDesigning)}
-        className="bg-gray-300/50 text-[#2B4BAB] px-4 sm:py-3 py-1 text-[13px] sm:text-[16px] rounded-lg font-semibold flex items-center gap-3 w-full justify-center transition-all shadow-lg hover:bg-[#1e3a8a]"
+        className="bg-gray-300/50 text-[#2B4BAB] px-4 sm:py-3 py-2 text-[13px] sm:text-[16px] rounded-sm font-semibold flex items-center gap-3 w-full justify-center transition-all shadow-lg hover:bg-[#1e3a8a]"
       >
         <MdOutlineDesignServices size={20} /> 
         {isDesigning ? "Close Designer" : "Customize Form"}

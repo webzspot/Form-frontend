@@ -19,7 +19,7 @@ const AllForms = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterPublic, setFilterPublic] = useState("ALL");
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
+  const token = sessionStorage.getItem("token");
 
   useEffect(() => {
     const fetchForms = async () => {

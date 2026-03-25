@@ -1,33 +1,63 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
   Menu, X, Bug, FileText, Home, Sparkles, 
   FileChartColumn, User2Icon, User2, BarChart3,Activity,
-  DockIcon
+  DockIcon,LayoutDashboard,LogOut
 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useLocation } from "react-router-dom";
 import { useFormContext } from "../dashboard/FormContext"; 
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
-
+import toast from "react-hot-toast";
 const UserNavbar = () => {
   const navigate = useNavigate();
+  const location = useLocation(); // 2. Initialize location
   const [open, setOpen] = useState(false);
   // We keep isDarkMode to ensure the navbar styling stays synced with the rest of the app
   const { isDarkMode , toggleTheme} = useFormContext(); 
 
-  const role = localStorage.getItem("role")?.toLowerCase() || "user";
-  const Name = localStorage.getItem("Name") || "Profile";
+  // const role = localStorage.getItem("role")?.toLowerCase() || "user";
+  // const Name = localStorage.getItem("Name") || "Profile";
+
+  const role = sessionStorage.getItem("role")?.toLowerCase() || "user";
+  const Name = sessionStorage.getItem("Name") || "Profile";
+
+
+  const handleLogout = () => {
+    //localStorage.clear();
+    sessionStorage.clear();
+    toast.success("Logged out successfully");
+    navigate("/login");
+  };
+ 
+  // ✅ Add this useEffect to close the mobile menu when resizing to desktop
+React.useEffect(() => {
+  const handleResize = () => {
+    if (window.innerWidth >= 1024) { // 1024px is the 'lg' breakpoint
+      setOpen(false);
+    }
+  };
+
+  window.addEventListener("resize", handleResize);
+  return () => window.removeEventListener("resize", handleResize);
+}, []);
+
 
   const navItems = [
-    { label: "Home", icon: <Home size={16} strokeWidth={2} />, allowedRoles: ["user"] },
-    { label: "Forms", icon: <FileText size={16} strokeWidth={2} />, allowedRoles: ["user"] },
-    { label: "Report", icon: <BarChart3 size={16} strokeWidth={2} />, allowedRoles: ["user"] },
-    { label: "Status", icon: <Activity size={16} strokeWidth={2}/> , allowedRoles: ["user"] },
+    { label: "Home", path: "/home", icon: <Home size={16} strokeWidth={2} />, allowedRoles: ["user"] },
+    { label: "Forms", path: "/form", icon: <FileText size={16} strokeWidth={2} />, allowedRoles: ["user"] },
+    { label: "Report", path: "/userreport", icon: <BarChart3 size={16} strokeWidth={2} />, allowedRoles: ["user"] },
+    { label: "Status", path: "/reportstatus", icon: <Activity size={16} strokeWidth={2}/> , allowedRoles: ["user"] },
+
     // { label: "Documentation", icon: <DockIcon size={18}/> , allowedRoles: ["user"] },
     //  { label: "Reference", icon: <DockIcon size={18}/> , allowedRoles: ["user"] },
     // { label: "UserDetail", icon: <User2Icon size={18} />, allowedRoles: ["admin"] },
     // { label: "UserReport", icon: <BarChart size={18} />, allowedRoles: ["admin"] },
     //  { label: "AdminDetail", icon: <MdOutlineAdminPanelSettings size={18} />, allowedRoles: ["admin"] },
+    // Admin Only Links (Now Uncommented)
+    { label: "User Details", path: "/admindashboard", icon: <LayoutDashboard size={16} />, allowedRoles: ["admin"] },
+    { label: "User Reports", path: "/adminreport", icon: <BarChart3 size={16} />, allowedRoles: ["admin"] },
+    { label: "Admin Details", path: "/admindetails", icon: <MdOutlineAdminPanelSettings size={18} />, allowedRoles: ["admin"] },
    // { label: Name, icon: <User2 size={18} />, allowedRoles: ["user", "admin"] },
   ];
 
@@ -81,21 +111,35 @@ const UserNavbar = () => {
 
 
           {/*Icons Sections*/}
-          <div className="flex gap-1 items-center ">
-            {visibleItems.map((item) => (
-              <button
-                key={item.label}
-                onClick={() => handleNavClick(item.label)}
-                className={`flex items-center gap-2 px-4 py-2 rounded-md transition-all font-normal text-[14px] leading-[21px] ${
-                  isDarkMode 
-                  ? "text-slate-300 hover:bg-slate-800 hover:text-indigo-400" 
-                  : "text-[#6A7181] hover:bg-[#F3F4F6] hover:text-[#14181F]"
-                }`}
-              >
-                {item.icon}
-                <span>{item.label}</span>
-              </button>
-            ))}
+          <div className="flex gap-1 items-center h-full">
+           {visibleItems.map((item) => {
+              const isActive = location.pathname === item.path; // 4. Check if active
+
+              return (
+                <button
+                  key={item.label}
+                  onClick={() => navigate(item.path)}
+                  className={`relative flex items-center gap-2 px-4 h-[56.8px] transition-all font-normal text-[14px] ${
+                    isActive 
+                    ? (isDarkMode ? "text-indigo-400" : "text-[#14181F]") 
+                    : (isDarkMode ? "text-slate-300 hover:text-indigo-400" : "text-[#6A7181] hover:text-[#14181F]")
+                  }`}
+                >
+                  {item.icon}
+                  <span>{item.label}</span>
+
+                  {/* ✅ 5. The Animated Active Bar */}
+                  {isActive && (
+                    <motion.div
+                      layoutId="userNavUnderline"
+                      className="absolute bottom-2  left-0 right-0 h-[1.5px] bg-[#2B4BAB]"
+                      initial={false}
+                      transition={{ type: "spring", stiffness: 500, damping: 35 }}
+                    />
+                  )}
+                </button>
+              );
+            })}
           </div>
 
 
@@ -108,30 +152,7 @@ const UserNavbar = () => {
 
         
 <div className="flex items-center gap-4">
-      {/* Theme Toggle Switch */}
-   {/* Theme Toggle Switch */}
-<div className="flex items-center gap-2">
-  <span className={`text-[14px] font-normal leading-[21px] ${isDarkMode ? "text-slate-400" : "text-[#6A7181]"}`}>
-    {isDarkMode ? "Dark Mode" : "Light Mode"}
-  </span>
-  
-  <button 
-    onClick={toggleTheme} 
-    className={`w-[42px] h-[22px] rounded-full relative transition-colors duration-300 ${
-      isDarkMode ? 'bg-slate-700' : 'bg-[#EAEDF7]' 
-    }`}
-  >
-    
-    <motion.div 
-      initial={false}
-      animate={{ x: isDarkMode ? 23 : 3 }} 
-      transition={{ type: "spring", stiffness: 500, damping: 30 }}
-      className={`absolute top-[3px] w-4 h-4 rounded-full shadow-sm ${
-        isDarkMode ? 'bg-[#2B4BAB]' : 'bg-[#2B4BAB]'
-      }`}
-    />
-  </button>
-</div>
+     
         
          {/* Profile Section */}
 <div 
@@ -149,7 +170,16 @@ const UserNavbar = () => {
     {Name}
   </span>
 </div>
-      
+
+   {/*Logout  */}
+       <button 
+              onClick={handleLogout}
+              className={`p-2 flex items-center gap-1  transition-colors ${isDarkMode ? "text-slate-300 hover:text-[#14181F]" : "text-[#4B5563] hover:text-[#14181F]"}`}
+              title="Logout"
+            >
+              <LogOut size={16} /> Logout
+            </button>
+       
     </div>
 
      
@@ -205,41 +235,24 @@ const UserNavbar = () => {
 
               {/* Drawer Navigation */}
               <div className="flex flex-col gap-2">
-                {visibleItems.map((item) => (
-                  <button
-                    key={item.label}
-                    onClick={() => {
-                      handleNavClick(item.label);
-                      setOpen(false);
-                    }}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-semibold ${
-                      isDarkMode 
-                      ? "text-slate-400 hover:bg-slate-800 hover:text-indigo-400" 
-                      : "text-gray-600 hover:bg-[#EEF2FF] hover:text-[#2a0891]"
-                    }`}
-                  >
-                    {item.icon}
-                    {item.label}
-                  </button>
-                ))}
-                <div className={`flex items-center justify-between px-4 py-3 mt-2 rounded-xl ${isDarkMode ? 'bg-slate-800/50' : 'bg-[#F9FAFB]'}`}>
-    <span className={`text-[14px] font-medium ${isDarkMode ? "text-slate-300" : "text-[#4B5563]"}`}>
-      {isDarkMode ? "Dark Mode" : "Light Mode"}
-    </span>
-    <button 
-      onClick={toggleTheme} 
-      className={`w-[42px] h-[22px] rounded-full relative transition-colors duration-300 ${
-        isDarkMode ? 'bg-slate-600' : 'bg-[#EAEDF7]'
-      }`}
-    >
-      <motion.div 
-        animate={{ x: isDarkMode ? 23 : 3 }} 
-        className={`absolute top-[3px] w-4 h-4 rounded-full ${
-          isDarkMode ? 'bg-[#2B4BAB]' : 'bg-[#2B4BAB]'
-        }`}
-      />
-    </button>
-  </div>
+              {visibleItems.map((item) => {
+                  const isActive = location.pathname === item.path;
+                  return (
+                    <button
+                      key={item.label}
+                      onClick={() => { navigate(item.path); setOpen(false); }}
+                      className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+                        isActive 
+                        ? "bg-[#2B4BAB]/10 text-[#2B4BAB] font-bold" 
+                        : (isDarkMode ? "text-slate-400" : "text-gray-600")
+                      }`}
+                    >
+                      {item.icon}
+                      {item.label}
+                    </button>
+                  );
+                })}
+           
 
   <hr className={`my-2 ${isDarkMode ? "border-slate-800" : "border-slate-100"}`} />
               
@@ -255,6 +268,13 @@ const UserNavbar = () => {
                   <span className={`font-medium ${isDarkMode ? "text-slate-300" : "text-[#4B5563]"}`}>{Name}</span>
                 </button>
               </div>
+
+              <button 
+                  onClick={handleLogout}
+                  className={`flex items-center font-medium ${isDarkMode ? "text-slate-300" : "text-[#4B5563]"} gap-3 px-5 py-3   pt-4`}
+                >
+                  <LogOut size={18} /> Logout
+                </button>
             </motion.div>
           </>
         )}
