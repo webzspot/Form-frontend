@@ -46,8 +46,8 @@ const resourceLinks = ["Documentation", "API Reference", "Community", "Status"];
             >
 <button className="
   flex items-center justify-center 
-  w-56 h-12 rounded-lg 
-  bg-[#4F46E5]
+  w-56 h-12 rounded-md
+  bg-[linear-gradient(90.41deg,#10B77F_0%,#1AA2E6_100%)]
   shadow-lg hover:opacity-90 transition-all
 ">
   

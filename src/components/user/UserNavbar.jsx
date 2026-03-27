@@ -13,11 +13,7 @@ const UserNavbar = () => {
   const navigate = useNavigate();
   const location = useLocation(); // 2. Initialize location
   const [open, setOpen] = useState(false);
-  // We keep isDarkMode to ensure the navbar styling stays synced with the rest of the app
- // const { isDarkMode , toggleTheme} = useFormContext(); 
-
-  // const role = localStorage.getItem("role")?.toLowerCase() || "user";
-  // const Name = localStorage.getItem("Name") || "Profile";
+  
 
   const role = sessionStorage.getItem("role")?.toLowerCase() || "user";
   const Name = sessionStorage.getItem("Name") || "Profile";
@@ -30,7 +26,7 @@ const UserNavbar = () => {
     navigate("/login");
   };
  
-  // ✅ Add this useEffect to close the mobile menu when resizing to desktop
+ 
 React.useEffect(() => {
   const handleResize = () => {
     if (window.innerWidth >= 1024) { // 1024px is the 'lg' breakpoint
@@ -49,16 +45,11 @@ React.useEffect(() => {
     { label: "Report", path: "/userreport", icon: <BarChart3 size={16} strokeWidth={2} />, allowedRoles: ["user"] },
     { label: "Status", path: "/reportstatus", icon: <Activity size={16} strokeWidth={2}/> , allowedRoles: ["user"] },
 
-    // { label: "Documentation", icon: <DockIcon size={18}/> , allowedRoles: ["user"] },
-    //  { label: "Reference", icon: <DockIcon size={18}/> , allowedRoles: ["user"] },
-    // { label: "UserDetail", icon: <User2Icon size={18} />, allowedRoles: ["admin"] },
-    // { label: "UserReport", icon: <BarChart size={18} />, allowedRoles: ["admin"] },
-    //  { label: "AdminDetail", icon: <MdOutlineAdminPanelSettings size={18} />, allowedRoles: ["admin"] },
-    // Admin Only Links (Now Uncommented)
+    
     { label: "User Details", path: "/admindashboard", icon: <LayoutDashboard size={16} />, allowedRoles: ["admin"] },
     { label: "User Reports", path: "/adminreport", icon: <BarChart3 size={16} />, allowedRoles: ["admin"] },
     { label: "Admin Details", path: "/admindetails", icon: <MdOutlineAdminPanelSettings size={18} />, allowedRoles: ["admin"] },
-   // { label: Name, icon: <User2 size={18} />, allowedRoles: ["user", "admin"] },
+   
   ];
 
   const visibleItems = navItems.filter((item) =>
@@ -70,11 +61,9 @@ React.useEffect(() => {
     else if (label === "Home") navigate("/home");
     else if (label === "Forms") navigate("/form");
     else if (label === "Status") navigate("/reportstatus");
-   // else if(label=== "Documentation") navigate("/apidocumentation");
-   // else if (label === "UserDetail") navigate("/admindashboard");
+   
     else if (label === "UserReport") navigate("/adminreport");
-   // else if(label==="AdminDetail") navigate("/admindetails");
-   // else if(label==="Reference") navigate("/apireference");
+  
     else if (label === Name) navigate("/profile");
   };
 
@@ -84,13 +73,7 @@ React.useEffect(() => {
       <div className={`hidden lg:flex sticky top-0 z-50  transition-colors duration-300 border-b bg-white/90 backdrop-blur-md border-slate-100 
       `}>
         <div className=" max-w-7xl  w-full mx-auto  flex  items-center justify-between px-0 md:px-6   h-[56.8px]  ">
-          {/* <div 
-            className={`flex items-center gap-2 font-bold text-lg cursor-pointer transition-colors ${isDarkMode ? "text-white" : "text-slate-900"}`} 
-            onClick={() => navigate("/home")}
-          >
-            <Sparkles className="text-[#6C3BFF]" />
-               FormCraft
-          </div> */}
+          
   
               {/*Logo Section*/}
 
@@ -99,7 +82,7 @@ React.useEffect(() => {
             onClick={() => navigate("/home")}
           >
             <div className="w-8 h-8 bg-[#2B4BAB] rounded-lg flex items-center justify-center shadow-sm">
-              {/* This is the blue box from your Figma */}
+           
             </div>
             <span className={`font-semibold text-lg tracking-normal leading-[25.2px] align-middle text-[#14181F]`}>
               FormCraft
@@ -111,21 +94,21 @@ React.useEffect(() => {
           <div className="flex gap-1 items-center h-full">
            {visibleItems.map((item) => {
               const isActive = location.pathname === item.path; // 4. Check if active
-
+         
               return (
                 <button
                   key={item.label}
                   onClick={() => navigate(item.path)}
                   className={`relative flex items-center gap-2 px-4 h-[56.8px] transition-all font-normal text-[14px] ${
                     isActive 
-                    ? (`text-[#14181F`) 
-                    : (`text-[#6A7181] hover:text-[#14181F `)
+                    ? (`text-[#14181F]`) 
+                    : (`text-[#6A7181] hover:text-[#14181F] `)
                   }`}
                 >
                   {item.icon}
                   <span>{item.label}</span>
 
-                  {/* ✅ 5. The Animated Active Bar */}
+                  {/* The Animated Active Bar */}
                   {isActive && (
                     <motion.div
                       layoutId="userNavUnderline"
@@ -156,7 +139,7 @@ React.useEffect(() => {
   className="flex items-center gap-1 cursor-pointer min-w-fit" 
   onClick={() => navigate("/profile")}
 >
-  <div className={`w-8 h-8  rounded-full flex items-center justify-center text-[12px] font-bold  border border-[#E5E7EB] shrink-0text-[#6A7181] bg-[#F3F4F6] hover:bg-[#F3F4F6] hover:text-[#14181F]
+  <div className={`w-8 h-8  rounded-full flex items-center justify-center text-[12px] font-bold  border border-[#E5E7EB] shrink-0 text-[#6A7181] bg-[#F3F4F6] hover:bg-[#F3F4F6] hover:text-[#14181F]
                 `}>
     {Name.charAt(0).toUpperCase()}
   </div>
@@ -225,7 +208,8 @@ React.useEffect(() => {
               {/* Drawer Navigation */}
               <div className="flex flex-col gap-2">
               {visibleItems.map((item) => {
-                  const isActive = location.pathname === item.path;
+                 const isActive = location.pathname === item.path;
+               
                   return (
                     <button
                       key={item.label}
@@ -233,7 +217,7 @@ React.useEffect(() => {
                       className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
                         isActive 
                         ? "bg-[#2B4BAB]/10 text-[#2B4BAB] font-bold" 
-                        : ""
+                        : "text-[#6A7181]"
                       }`}
                     >
                       {item.icon}

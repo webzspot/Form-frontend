@@ -4,11 +4,10 @@ import axios from "axios";
 import UserNavbar from "../user/UserNavbar";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
-import LoadingScreen from "../shared/LoadingScreen";
+
 import { X, FileText, Calendar, Eye,CheckCircle, MessageSquare, ArrowLeft} from "lucide-react";
 import { FaCheckCircle, FaSpinner, FaSearch, FaArrowLeft } from "react-icons/fa";
-import WaveBackground from "./WaveBackground";
-import { useFormContext } from './FormContext';
+
 import UserFooter from "../user/userFooter";
 
 const UserActivity = () => {
@@ -23,15 +22,15 @@ const UserActivity = () => {
   const [user, setUser] = useState(null);
   const [forms, setForms] = useState([]);
   const [formsLoading, setFormsLoading] = useState(true);
-  const [pageLoading, setPageLoading] = useState(true); // Full-page loader
+  const [pageLoading, setPageLoading] = useState(true); 
 
   // Modal state
   const [selectedForm, setSelectedForm] = useState(null);
   const [loadingForm, setLoadingForm] = useState(false);
 
-  const [visibleCount, setVisibleCount] = useState(6); // Show 6 cards initially
-const [searchTerm, setSearchTerm] = useState(""); // For filtering
-  // Fetch user activity on mount
+  const [visibleCount, setVisibleCount] = useState(6); 
+const [searchTerm, setSearchTerm] = useState(""); 
+ 
 
  
 
@@ -164,9 +163,7 @@ const displayedForms = filteredForms.slice(0, visibleCount);
   
    
 
-// if (pageLoading) {
-//   return <LoadingScreen isDarkMode={isDarkMode} />;
-// }
+
 
   return (
     <>
@@ -192,7 +189,7 @@ const displayedForms = filteredForms.slice(0, visibleCount);
   transition={{ duration: 0.5 }}
   className={` rounded-md overflow-hidden border border-[#E7EAEC] shadow-xl  `}
 >
-  {/* Header Banner - Smaller Height */}
+  {/* Header Banner  */}
   <div className={`h-20   relative`}>
     <div className="absolute -bottom-10 left-6">
       <div className={`w-20 h-20 rounded-xl flex items-center justify-center text-white text-xl font-bold border bg-[#2B4BAB] shadow-lg`}>
@@ -239,7 +236,7 @@ const displayedForms = filteredForms.slice(0, visibleCount);
         <div className={` px-4 py-2 rounded-xl shadow-lg border border-gray-200 flex flex-col items-center min-w-[100px]`}>
           <p className={`text-base font-semibold text-[#181D27]`}>Joined</p>
           <p className="text-sm text-gray-500 font-bold ">
-            {/* {new Date(user.createdAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })} */}
+           
             {user?.createdAt 
               ? new Date(user.createdAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })
               : "..."}
@@ -275,31 +272,39 @@ const displayedForms = filteredForms.slice(0, visibleCount);
 
  {/* Search Bar */}
 
-  <div className="relative border border-gray-200 mb-4 rounded-xl  w-full md:flex-1">
-        <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-        <input
-            className="w-full px-10 py-2 text-[10px] sm:text-sm font-semibold placeholder:text-gray-400  outline-none transition-all"
-            type="text"
-            placeholder="Search name or email..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-        />
-    </div>
+                          
+                                                  <div className="pr-2 py-2 p-3 rounded-md mb-8 flex flex-col md:flex-row gap-4 justify-between bg-[#FFFFFF] border border-[#E5E7EB] shadow-sm items-center">
+                              
+                         
+                              <div className="relative  w-full md:flex-1">
+                                  <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                                  <input
+                                      className="w-full px-10 py-2 text-[10px] sm:text-sm font-semibold placeholder:text-gray-400 border border-white/10 rounded-xl outline-none transition-all"
+                                      type="text"
+                                      placeholder="Search name or email..."
+                                     value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}
+                                  />
+                              </div>
+                          
+                         
+                          </div>
+
+    
         
           {/* Forms Grid */}
 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
   {formsLoading
-    ? // --- SKELETON LOADING STATE (Theme Aware) ---
-      Array.from({ length: 3 }).map((_, i) => (
-        <div key={i} className={`animate-pulse  rounded-2xl h-64 flex flex-col justify-between p-6`}>
-          <div className={`w-12 h-12  bg-slate-200 rounded-xl mb-4`}></div>
+    ? 
+      Array.from({ length: 6 }).map((_, i) => (
+        <div key={i} className={`animate-pulse border border-gray-200 rounded-md h-64 flex flex-col justify-between p-6 `}>
+          <div className={`w-12 h-12  bg-slate-200 rounded-xl mb-4 `}></div>
           <div className={`h-6 bg-slate-200 rounded w-3/4 mb-2`}></div>
           <div className={`h-4 bg-slate-200 rounded w-full mb-2`}></div>
           <div className={`h-10 mt-4  bg-slate-200 rounded-xl`}></div>
         </div>
       ))
     : displayedForms.length === 0
-    ? // --- EMPTY STATE (Theme Aware) ---
+    ? 
       <div className={` rounded-2xl border-2  border-dashed border-slate-300 p-16 mb-8 text-center col-span-full`}>
         <div className={`w-20 h-20 text-gray-600 rounded-full flex items-center justify-center mx-auto mb-4`}>
           <FileText className="text-gray-400" size={36} />
@@ -307,7 +312,7 @@ const displayedForms = filteredForms.slice(0, visibleCount);
         <p className={`font-semibold text-lg mb-1 text-gray-500`}>No Forms Yet</p>
         <p className="text-gray-400">{user.name} has not created any forms yet.</p>
       </div>
-    : // --- ACTUAL FORMS LIST ---
+    : 
       displayedForms.map((form, index) => (
         <motion.div
           key={form.formId}
@@ -349,14 +354,9 @@ const displayedForms = filteredForms.slice(0, visibleCount);
               Responses
             </motion.button>
             
-            {/* <motion.button
-              onClick={() => openFormModal(form.formId)}
-              className={`flex-1 py-2.5 rounded-lg font-medium text-sm text-white bg-[#2B4BAB] transition-all`}
-            >
-              View
-            </motion.button> */}
+           
 <motion.button
-  // Disable if any form is loading to prevent multiple requests
+  
   disabled={pageLoading !== false} 
   onClick={() => openFormModal(form.formId)}
   className={`flex-1 py-2.5 rounded-lg font-medium text-sm text-white bg-[#2B4BAB] transition-all flex items-center justify-center gap-2 ${

@@ -1,7 +1,7 @@
 import React from 'react'
 import { useFormContext } from "../dashboard/FormContext";
 const UserFooter = () => {
-//const { isDarkMode } = useFormContext();
+
   return (
     <footer className={`w-full  border-t   py-4 bg-white border-[#E5E7EB]`}>
       <div className="max-w-7xl mx-auto  px-4 md:px-6 flex flex-col md:flex-row justify-between items-center gap-4">

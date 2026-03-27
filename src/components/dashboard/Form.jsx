@@ -88,7 +88,7 @@ const Form = () => {
     borderRadius: "8px",
   })
 
-  const token = localStorage.getItem("token")
+  const token = sessionStorage.getItem("token")
   const navigate = useNavigate() 
 
   const theme = {
@@ -1325,10 +1325,9 @@ text-[#2B4BAB]
                   </p>
                 </div>
                 <motion.button
-                  whileHover={{ scale: 1.1, rotate: 90 }}
-                  whileTap={{ scale: 0.9 }}
+                
                   onClick={() => setviewform(false)}
-                  className=" text-black hover:bg-red-100 hover:text-red-500  rounded-xl transition-all ml-2"
+                  className=" text-black hover:text-gray-800   ml-2"
                 >
                   <X size={20} />
                 </motion.button>

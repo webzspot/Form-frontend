@@ -521,7 +521,7 @@ const ProfileSettings = () => {
                   <div className="mt-12 flex flex-col md:flex-row items-center justify-between gap-6 px-4">
                     <Link to="/plandetail" className="group flex items-center gap-3">
                       <div className="px-3 py-1 bg-[#2B4BAB]/5 text-[#2B4BAB] rounded-lg text-xs font-black uppercase tracking-widest">
-                        {user?.plan} Membership
+                        {user?.plan} Plan
                       </div>
                       <div className="h-px w-8 bg-slate-200 transition-all group-hover:w-16 group-hover:bg-[#2B4BAB]"></div>
                     </Link>
