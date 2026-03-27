@@ -128,6 +128,7 @@
 import React from 'react'
 import { FaArrowRight, FaCheck } from "react-icons/fa";
 import { Link } from 'react-router-dom';
+import home from "../../assets/home.png"
 const Hero = () => {
   const token = sessionStorage.getItem("token");
   const role = sessionStorage.getItem("role");
@@ -153,9 +154,9 @@ const Hero = () => {
       <div className="relative z-10 max-w-4xl mx-auto text-center mb-16 px-2">
         
         {/* Beta Badge */}
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#4F46E5] backdrop-blur-sm mb-8">
-          <span className="w-1.5 h-1.5 rounded-full bg-white"></span>
-          <span className="text-white text-xs font-medium tracking-wide">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#10B77F33]  opacity-60 border border-[#10B77F] backdrop-blur-sm mb-8">
+          <span className="w-1.5 h-1.5 rounded-full opacity-100 bg-[#10B77F]"></span>
+          <span className="text-[#10B77F] opacity-100 text-xs font-medium tracking-wide">
             Now in public beta
           </span>
         </div>
@@ -186,7 +187,7 @@ const Hero = () => {
           <Link 
               to={ !token ? "/register" : role === "ADMIN" ? "/admindashboard" : "/home" }
             >
-          <button className="w-full sm:w-auto bg-[#4F46E5] hover:bg-[#4338CA] text-white px-8 py-3 rounded-lg font-medium shadow-[0_0_20px_rgba(79,70,229,0.4)] flex items-center justify-center gap-2 transition-all">
+          <button className="w-full sm:w-auto bg-[linear-gradient(90.41deg,#10B77F_0%,#1AA2E6_100%)] text-white px-8 py-3 rounded-lg font-medium shadow-sm flex items-center justify-center gap-2 transition-all">
             Start building — it's free <FaArrowRight size={14} />
           </button>
           </Link>
@@ -232,9 +233,15 @@ const Hero = () => {
           </div>
           {/* Browser Content Area */}
           <div className="h-[250px] sm:h-[400px] md:h-[600px] bg-[#0B0F17] relative">
-             <div className="absolute inset-0 flex items-center justify-center">
-                <p className="text-gray-800 font-mono text-xs text-center px-4">Dashboard Preview Content</p>
-             </div>
+
+         
+   {/* When you get the screenshot, replace the 'src' below with your local path */}
+   <img 
+     src={home}
+     alt="FormCraft Dashboard Preview"
+     className="w-full h-auto object-cover block" 
+   />
+            
           </div>
         </div>
         <div className="absolute -inset-4 bg-blue-500/5 blur-3xl -z-10 rounded-full"></div>

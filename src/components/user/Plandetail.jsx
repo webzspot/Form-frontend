@@ -103,10 +103,10 @@ const cancelplandetail = async () => {
         
        
 
-        <main className="max-w-7xl w-full mx-auto relative z-10 pt-16 mx-auto pb-20 px-6">
+        <main className="max-w-7xl w-full  relative z-10 pt-16 mx-auto pb-20 px-6">
           {/* Back Button */}
-          <Link to="/profile" className="inline-flex items-center gap-2 text-violet-400 hover:text-violet-700 mb-6 transition-all font-semibold group">
-            <ArrowLeft size={18} className="group-hover:-translate-x-1 transition-transform" /> 
+          <Link to="/profile" className="inline-flex items-center gap-2 text-gray-500 text-sm  mb-6 transition-all font-semibold group">
+            <ArrowLeft size={14} className="group-hover:-translate-x-1 transition-transform" /> 
             Back to Profile
           </Link>
 

@@ -1,297 +1,20 @@
-// import React, { useEffect, useState, useMemo } from "react";
-// import axios from "axios";
-// import UserNavbar from "../user/UserNavbar";
-// import { FiLayers, FiUnlock, FiLock, FiFileText } from "react-icons/fi";
-// import { FaFileAlt, FaLock, FaUnlock, FaArrowLeft, FaSearch, FaSpinner } from "react-icons/fa";
-// import { useNavigate } from "react-router-dom";
-// import { motion, AnimatePresence } from "framer-motion";
-// import usePagination from "../../hooks/usePagination";
-// import WaveBackground from "./WaveBackground"; 
-// import TableSkeleton from "./TableSkeleton";
-// import { useFormContext } from "../dashboard/FormContext";
-// import LoadingScreen from "../shared/LoadingScreen";
 
-// const AllForms = () => {
-//   const { isDarkMode } = useFormContext();
-//   const [forms, setForms] = useState([]);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState("");
-//   const [searchQuery, setSearchQuery] = useState("");
-//   const [filterPublic, setFilterPublic] = useState("ALL");
-//   const navigate = useNavigate();
-//   const token = sessionStorage.getItem("token");
-
-//   useEffect(() => {
-//     const fetchForms = async () => {
-//       setLoading(true);
-//       try {
-//         const res = await axios.get(
-//           "https://formbuilder-saas-backend.onrender.com/api/admin/forms",
-//           { headers: { Authorization: `Bearer ${token}` } }
-//         );
-//         if (res.data.success) {
-//           setForms(res.data.data);
-//         } else {
-//           setError(res.data.message);
-//         }
-//       } catch (err) {
-//         setError(err.response?.data?.message || "Internal server error");
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-//     fetchForms();
-//   }, [token]);
-
-//   const filteredForms = useMemo(() => {
-//     return forms
-//       .filter((f) =>
-//         filterPublic === "ALL"
-//           ? true
-//           : filterPublic === "PUBLIC"
-//           ? f.isPublic
-//           : !f.isPublic
-//       )
-//       .filter((f) =>
-//         f.title.toLowerCase().includes(searchQuery.toLowerCase())
-//       );
-//   }, [forms, filterPublic, searchQuery]);
-
-//   const {
-//     currentData,
-//     currentPage,
-//     totalPages,
-//     nextPage,
-//     prevPage
-//   } = usePagination(filteredForms, 10);
-
-//   const totalForms = forms.length;
-//   const totalPublic = forms.filter(f => f.isPublic).length;
-//   const totalPrivate = forms.filter(f => !f.isPublic).length;
-
-//   // --- THEME CONFIGURATION (Aligned with UserActivity) ---
-//   const theme = {
-//     pageBg: isDarkMode 
-//       ? "bg-[#05070f] text-white selection:bg-purple-500/30" 
-//       : "bg-gradient-to-br from-[#F3E8FF] via-[#ffffff] to-[#D8B4FE] text-[#4c1d95]",
-    
-//     card: isDarkMode
-//       ? "bg-[#12121a]/80 backdrop-blur-xl border border-purple-500/20 shadow-xl"
-//       : "bg-white/60 backdrop-blur-xl border border-white/60 shadow-lg",
-    
-//     statBox: isDarkMode
-//       ? "bg-[#1e1b4b]/40 border-purple-500/10"
-//       : "bg-purple-50/50 border-purple-200/50",
-
-//     input: isDarkMode
-//       ? "bg-[#05070f] border-purple-500/20 text-white placeholder-gray-600 focus:border-[#8b5cf6]"
-//       : "bg-white/50 border-white/60 text-[#4c1d95] placeholder-[#4c1d95]/50 focus:bg-white/80",
-
-//     textMain: isDarkMode ? "text-white" : "text-slate-800",
-//     textSub: isDarkMode ? "text-gray-400" : "text-[#4c1d95]/70",
-    
-//     buttonPrimary: isDarkMode
-//       ? "bg-[#8b5cf6] hover:bg-[#7c3aed] text-white shadow-lg shadow-purple-500/20"
-//       : "bg-gradient-to-r from-[#8b5cf6] to-[#6d28d9] text-white shadow-md",
-
-//     tableHeader: isDarkMode
-//         ? "bg-[#1e1b4b]/60 text-gray-300 border-b border-purple-500/10"
-//         : "bg-purple-50/80 text-purple-900 border-b border-purple-100",
-//   };
-
-// if (loading) {
-//   return <LoadingScreen isDarkMode={isDarkMode} />;
-// }
-
-//   return (
-//     <>
-//       <UserNavbar />
-
-//       <div className={`min-h-screen relative font-sans transition-colors duration-500 px-4 py-8 overflow-hidden ${theme.pageBg}`}>
-        
-//         {/* Background Waves */}
-//         <div className="absolute inset-0 z-0 pointer-events-none">
-//             <WaveBackground position="top" height="h-100" color={isDarkMode ? "#1e1b4b" : "#a78bfa"} opacity={isDarkMode ? 0.5 : 0.3} />
-//             <WaveBackground position="bottom" height="h-100" color={isDarkMode ? "#1e1b4b" : "#a78bfa"} opacity={isDarkMode ? 0.5 : 0.3} />
-//         </div>
-        
-//         <div className="max-w-7xl relative z-10 mx-auto space-y-6">
-          
-//           {/* Back Button */}
-//           <motion.button
-//             onClick={() => navigate("/admindashboard")}
-//             whileHover={{ x: -5 }}
-//             whileTap={{ scale: 0.95 }}
-//             className={`inline-flex items-center gap-2 px-5 py-2 rounded-xl border transition-all font-semibold ${theme.card}`}
-//           >
-//             <FaArrowLeft size={14} />
-//             <span className="hidden sm:block">Back to Dashboard</span>
-//           </motion.button>
-
-//           {/* Header Card */}
-//           <div className={`${theme.card} rounded-2xl p-8 relative overflow-hidden`}>
-//             <div className="flex flex-col md:flex-row justify-between items-center gap-6">
-//               <div className="text-center md:text-left">
-//                 <h1 className="text-3xl font-bold mb-2">Forms Overview</h1>
-//                 <p className={`${theme.textSub} text-sm max-w-xl`}>
-//                   Manage and monitor all forms across the platform. You can filter by visibility or search for specific titles.
-//                 </p>
-//               </div>
-
-//               {/* Stats Summary */}
-//               <div className="flex sm:gap-3 gap-1">
-//                 {[
-//                   { label: "Total", val: totalForms },
-//                   { label: "Public", val: totalPublic },
-//                   { label: "Private", val: totalPrivate }
-//                 ].map((stat, i) => (
-//                   <div key={i} className={`${theme.statBox} px-5 py-3 rounded-2xl border flex flex-col items-center min-w-[90px]`}>
-//                     <p className={`text-[11px] font-bold ${theme.textSub}`}>{stat.label}</p>
-//                     <p className={`text-xl font-bold ${stat.color}`}>{stat.val}</p>
-//                   </div>
-//                 ))}
-//               </div>
-//             </div>
-//           </div>
-
-//           {/* Search & Filter Bar */}
-//           <div className="flex flex-col md:flex-row gap-4">
-//             <div className="relative flex-1">
-//               <FaSearch className={`absolute left-4 top-1/2 -translate-y-1/2 ${theme.textSub}`} />
-//               <input
-//                 type="text"
-//                 placeholder="Search by form title..."
-//                 value={searchQuery}
-//                 onChange={(e) => setSearchQuery(e.target.value)}
-//                 className={`w-full pl-12 pr-4 py-3 rounded-xl border outline-none transition-all text-sm font-medium ${theme.input}`}
-//               />
-//             </div>
-//             <select
-//               value={filterPublic}
-//               onChange={(e) => setFilterPublic(e.target.value)}
-//               className={`px-4 py-3 rounded-xl border font-bold text-sm outline-none cursor-pointer ${theme.input}`}
-//             >
-//               <option value="ALL">All Visibility</option>
-//               <option value="PUBLIC">Public Only</option>
-//               <option value="PRIVATE">Private Only</option>
-//             </select>
-//           </div>
-
-//           {/* Table Container */}
-//           <motion.div 
-//             className={`${theme.card} rounded-2xl overflow-hidden shadow-xl`}
-//             initial={{ opacity: 0, y: 20 }}
-//             animate={{ opacity: 1, y: 0 }}
-//           >
-//             <div className="overflow-x-auto">
-//               <table className="w-full text-left border-collapse">
-//                 <thead className={theme.tableHeader}>
-//                   <tr>
-//                     {['Form Details', 'Created By', 'Role', 'Status'].map((h) => (
-//                       <th key={h} className="px-6 py-4 text-[12px] font-bold uppercase opacity-70">
-//                         {h}
-//                       </th>
-//                     ))}
-//                   </tr>
-//                 </thead>
-//                 <tbody className={`divide-y ${isDarkMode ? 'divide-purple-500/10' : 'divide-purple-100'}`}>
-//                   {currentData.length === 0 ? (
-//                     <tr>
-//                       <td colSpan="4" className="px-6 py-20 text-center">
-//                         <p className={`text-lg font-bold ${theme.textSub}`}>No forms found matching your criteria</p>
-//                       </td>
-//                     </tr>
-//                   ) : (
-//                     currentData.map((form, index) => (
-//                       <tr key={form.formId} className={`transition-colors ${isDarkMode ? 'hover:bg-purple-500/5' : 'hover:bg-purple-50/30'}`}>
-//                         <td className="px-6 py-4">
-//                           <div className="flex items-center gap-4">
-//                             <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-white ${isDarkMode ? 'bg-purple-600' : 'bg-indigo-500 shadow-md'}`}>
-//                               <FiFileText size={18} />
-//                             </div>
-//                             <div>
-//                               <p className="font-bold text-sm leading-tight">{form.title}</p>
-//                               <p className={`${theme.textSub} text-[11px] mt-0.5`}>ID: {form.formId.slice(0,8)}...</p>
-//                             </div>
-//                           </div>
-//                         </td>
-
-//                         <td className="px-6 py-4">
-//                           <p className="text-sm font-bold">{form.user.name}</p>
-//                           <p className={`${theme.textSub} text-[12px]`}>{form.user.email}</p>
-//                         </td>
-
-//                         <td className="px-6 py-4">
-//                           <span className={`px-3 py-1 rounded-full text-[10px] font-bold border ${
-//                             form.user.role === "ADMIN"
-//                               ? "bg-purple-500/10 text-purple-500 border-purple-500/20"
-//                               : "bg-indigo-500/10 text-indigo-500 border-indigo-500/20"
-//                           }`}>
-//                             {form.user.role}
-//                           </span>
-//                         </td>
-
-//                         <td className="px-6 py-4">
-//                           {form.isPublic ? (
-//                             <span className="flex items-center gap-1.5 text-emerald-500 text-[12px] font-bold">
-//                               <FiUnlock size={14} /> Public
-//                             </span>
-//                           ) : (
-//                             <span className={`flex items-center gap-1.5 ${theme.textSub} text-[12px] font-bold`}>
-//                               <FiLock size={14} /> Private
-//                             </span>
-//                           )}
-//                         </td>
-//                       </tr>
-//                     ))
-//                   )}
-//                 </tbody>
-//               </table>
-//             </div>
-
-//             {/* Pagination Aligned with UserActivity Buttons */}
-//             <div className={`flex justify-between items-center px-6 py-4 border-t ${isDarkMode ? 'border-purple-500/10' : 'border-purple-100'}`}>
-//               <p className={`text-sm font-bold ${theme.textSub}`}>
-//                 Page {currentPage} of {totalPages}
-//               </p>
-//               <div className="flex gap-2">
-//                 <button
-//                   onClick={prevPage}
-//                   disabled={currentPage === 1}
-//                   className={`px-5 py-2 rounded-xl border font-bold text-sm transition-all disabled:opacity-30 ${theme.card}`}
-//                 >
-//                   Prev
-//                 </button>
-//                 <button
-//                   onClick={nextPage}
-//                   disabled={currentPage === totalPages}
-//                   className={`px-5 py-2 rounded-xl font-bold text-sm transition-all disabled:opacity-30 ${theme.buttonPrimary}`}
-//                 >
-//                   Next
-//                 </button>
-//               </div>
-//             </div>
-//           </motion.div>
-//         </div> 
-//       </div>
-//     </>
-//   );
-// };
-
-// export default AllForms;
 
 
 import React, { useEffect, useState, useMemo } from "react";
 import axios from "axios";
 import UserNavbar from "../user/UserNavbar";
 import { FiLayers, FiUnlock, FiLock, FiMoreVertical } from "react-icons/fi";
-import { FaArrowLeft, FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { FaArrowLeft, FaArrowDown, FaSearch, FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import usePagination from "../../hooks/usePagination";
-
+import TableSkeleton from "./TableSkeleton";
+import UserFooter from "../user/userFooter";
+import CardSkeleton from "./CardSkeleton";
 const AllForms = () => {
   const [forms, setForms] = useState([]);
+  const [loading, setLoading] = useState(true); 
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [filterPublic, setFilterPublic] = useState("ALL");
@@ -300,6 +23,7 @@ const AllForms = () => {
 
   useEffect(() => {
     const fetchForms = async () => {
+      setLoading(true)
       try {
         const res = await axios.get(
           "https://formbuilder-saas-backend.onrender.com/api/admin/forms",
@@ -312,6 +36,8 @@ const AllForms = () => {
         }
       } catch (err) {
         setError(err.response?.data?.message || "Internal server error");
+      } finally {
+        setLoading(false); 
       }
     };
     fetchForms();
@@ -323,8 +49,8 @@ const AllForms = () => {
         filterPublic === "ALL"
           ? true
           : filterPublic === "PUBLIC"
-          ? f.isPublic
-          : !f.isPublic
+            ? f.isPublic
+            : !f.isPublic
       )
       .filter((f) =>
         f.title.toLowerCase().includes(searchQuery.toLowerCase())
@@ -344,10 +70,11 @@ const AllForms = () => {
   const totalPrivate = forms.filter(f => !f.isPublic).length;
 
   return (
+    <>
     <div className="min-h-screen bg-[#F8F9FA] font-sans text-slate-800">
       <UserNavbar />
 
-      <div className="max-w-6xl mx-auto px-6 py-8">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-8">
         {/* Back Button */}
         <button
           onClick={() => navigate("/admindashboard")}
@@ -367,7 +94,7 @@ const AllForms = () => {
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-          <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
+          <div className="bg-white p-6 rounded-md border border-slate-100 shadow-sm flex items-center gap-4">
             <div className="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center text-indigo-600">
               <FiLayers size={22} />
             </div>
@@ -377,7 +104,7 @@ const AllForms = () => {
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
+          <div className="bg-white p-6 rounded-md border border-slate-100 shadow-sm flex items-center gap-4">
             <div className="w-12 h-12 bg-yellow-50 rounded-xl flex items-center justify-center text-yellow-600">
               <FiUnlock size={22} />
             </div>
@@ -387,7 +114,7 @@ const AllForms = () => {
             </div>
           </div>
 
-          <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex items-center gap-4">
+          <div className="bg-white p-6 rounded-md border border-slate-100 shadow-sm flex items-center gap-4">
             <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center text-green-600">
               <FiLock size={22} />
             </div>
@@ -398,61 +125,132 @@ const AllForms = () => {
           </div>
         </div>
 
+
+
+
+
+
+
+        <div className=" pr-2 py-2  rounded-md mb-8 flex flex-col md:flex-row gap-4 justify-between md:bg-[#FFFFFF] md:border md:border-[#E5E7EB] md:shadow-sm items-center">
+
+         
+          <div className="relative  w-full md:flex-1">
+            <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+             
+                          className="w-full px-10 py-2 text-[10px] sm:border  border-black/30 sm:text-sm font-semibold placeholder:text-gray-400 border md:border-white/10 rounded-md outline-none transition-all"
+            type="text"
+              placeholder="Search by form title..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+
+         
+          <div className="flex items-center gap-2 w-full md:w-auto">
+            <div className="w-full">
+              <select
+                value={filterPublic}
+                onChange={(e) => setFilterPublic(e.target.value)}
+                className={`w-full md:w-auto px-2 py-2 cursor-pointer text-[10px] sm:text-sm font-bold rounded-md border border-black/30 outline-none transition-all bg-white text-black`}
+              >
+                <option value="ALL">All Visibility</option>
+                <option value="PUBLIC">Active Only</option>
+                <option value="PRIVATE">Inactive Only</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+
         {/* Table Container */}
-        <div className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+        <div className="hidden md:block bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left">
               <thead>
                 <tr className="border-b border-slate-50 text-slate-400 text-[11px] font-bold uppercase tracking-widest">
-                  <th className="px-8 py-5">
-                    <div className="flex items-center gap-2">
-                      <input type="checkbox" className="rounded border-slate-300" />
-                      Form Details ↓
+
+                  <th className="px-6 py-4 text-xs font-semibold ">
+                    <div className="flex items-center gap-2 group cursor-pointer">
+
+
+                      <span>Form Details</span>
+
+                      <FaArrowDown className="" />
+
                     </div>
                   </th>
-                  <th className="px-6 py-5">Created By ↓</th>
-                  <th className="px-6 py-5">Role ↓</th>
-                  <th className="px-6 py-5">Status ↓</th>
-                  <th className="px-8 py-5 text-right">Action ↓</th>
+                  <th className="px-6 py-4 text-xs font-semibold ">
+                    <div className="flex items-center gap-2 group cursor-pointer">
+
+
+                      <span>Created By</span>
+
+                      <FaArrowDown className="" />
+
+                    </div>
+                  </th>
+                  <th className="px-6 py-4 text-xs font-semibold ">
+                    <div className="flex items-center gap-2 group cursor-pointer">
+
+
+                      <span>Role</span>
+
+                      <FaArrowDown className="" />
+
+                    </div>
+                  </th>
+                  <th className="px-6 py-4 text-xs font-semibold ">
+                    <div className="flex items-center gap-2 group cursor-pointer">
+
+
+                      <span>Status</span>
+
+                      <FaArrowDown className="" />
+
+                    </div>
+                  </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-50">
-                {currentData.length === 0 ? (
-                  <tr>
-                    <td colSpan="5" className="px-8 py-12 text-center text-slate-400">
-                      No forms found.
-                    </td>
-                  </tr>
-                ) : (
-                  currentData.map((form) => (
-                    <tr key={form.formId} className="hover:bg-slate-50/50 transition-colors">
-                      <td className="px-8 py-4">
-                        <div className="flex items-center gap-3">
-                          <input type="checkbox" className="rounded border-slate-300" />
-                          <span className="text-sm font-medium text-slate-700">{form.title}</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 text-sm text-slate-600">{form.user?.name || "Macd"}</td>
-                      <td className="px-6 py-4 text-sm text-slate-600">{form.user?.role || "User"}</td>
-                      <td className="px-6 py-4">
-                        <span className={`text-[13px] font-medium ${form.isPublic ? 'text-emerald-500' : 'text-slate-400'}`}>
-                          {form.isPublic ? "Active" : "Inactive"}
-                        </span>
-                      </td>
-                      <td className="px-8 py-4 text-right text-slate-400">
-                        <button className="p-2 hover:bg-white rounded-lg transition-colors">
-                          <FiMoreVertical />
-                        </button>
+              <tbody >
+                {loading ? (
+                  <TableSkeleton rows={5} columns={4} />
+                ) :
+                  currentData.length === 0 ? (
+                    <tr>
+                      <td colSpan="5" className="px-8 py-12 text-center text-slate-400">
+                        No forms found.
                       </td>
                     </tr>
-                  ))
-                )}
+                  ) : (
+                    currentData.map((form, index) => (
+                      <motion.tr key={form.formId} initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.3, delay: index * 0.05 }}
+                        className="hover:bg-[#F5F6F8] border-b border-[#E9EAEB] transition-colors group">
+                        <td className="px-8 py-4">
+                          <div className="flex items-center gap-3">
+
+                            <span className="text-sm font-medium text-slate-700">{form.title}</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 text-sm text-slate-600">{form.user?.name || "Macd"}</td>
+                        <td className="px-6 py-4 text-sm text-slate-600">{form.user?.role || "User"}</td>
+                        <td className="px-6 py-4">
+                          <span className={`text-[13px] font-medium ${form.isPublic ? 'text-emerald-500' : 'text-slate-400'}`}>
+                            {form.isPublic ? "Active" : "Inactive"}
+                          </span>
+                        </td>
+                     
+                      </motion.tr>
+                    ))
+                  )}
               </tbody>
             </table>
           </div>
 
           {/* Pagination */}
-          <div className="px-8 py-5 border-t border-slate-50 flex justify-between items-center">
+          <div className="hidden md:flex px-8 py-5 border-t border-slate-50 justify-between items-center">
             <div className="flex gap-3">
               <button
                 onClick={prevPage}
@@ -474,8 +272,89 @@ const AllForms = () => {
             </p>
           </div>
         </div>
-      </div>
+      
+  
+  {/* --- MOBILE CARDS --- */}
+<div className="grid grid-cols-1 max-w-md w-full  mb-4 gap-4 md:hidden">
+  {loading ? (
+    <div className="flex flex-col gap-4">
+      <CardSkeleton />
+      <CardSkeleton />
+      <CardSkeleton />
     </div>
+  ) : currentData.length === 0 ? (
+    <div className="bg-white p-10 text-center rounded-xl border border-[#E9EAEB]">
+       <FaFileAlt className="text-slate-400 mx-auto mb-4" size={36} />
+       <p className="font-semibold text-lg text-slate-900">No forms found</p>
+    </div>
+  ) : (
+    currentData.map((form, index) => (
+      <motion.div 
+        key={form.formId}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: index * 0.05 }}
+        className="bg-white  p-5 rounded-md border border-[#E9EAEB] shadow-sm relative"
+      >
+       
+        <div className="flex justify-between items-start mb-3">
+          <div>
+            <h3 className="text-sm font-bold text-[#181D27] leading-tight">{form.title}</h3>
+            <p className="text-[11px] text-[#6A7181] mt-1">Ref Id: {form.formId.slice(-6)}</p>
+          </div>
+          <span className={`px-2 py-1 rounded-full text-[10px] font-bold ${
+            form.isPublic ? "bg-green-50 text-[#00B712]" : "bg-gray-100 text-gray-500"
+          }`}>
+            {form.isPublic ? "Active" : "Inactive"}
+          </span>
+        </div>
+
+     
+        <div className="grid grid-cols-2 gap-2 pt-1 border-t border-slate-50">
+          <div>
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Created By</p>
+            <p className="text-xs font-semibold text-[#181D27]">{form.user?.name || "Macd"}</p>
+          </div>
+          <div className="text-right">
+            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">Role</p>
+            <p className="text-xs font-semibold text-[#181D27]">{form.user?.role || "User"}</p>
+          </div>
+        </div>
+      </motion.div>
+    ))
+  )}
+</div>
+                
+<div className=" md:hidden flex flex-col md:flex-row justify-between items-center gap-4 px-6 py-4 border-t border-[#E9EAEB]">
+    
+    
+    <span className="text-sm text-[#414651] font-medium order-1 md:order-2">
+        Page {currentPage} of {totalPages}
+    </span>
+
+ 
+    <div className="flex gap-3 w-full md:w-auto order-2 md:order-1">
+        <button 
+            onClick={prevPage} 
+            disabled={currentPage === 1} 
+            className="flex-1 md:flex-none px-5 py-2 rounded-md font-semibold text-sm border border-[#D5D7DA] text-[#414651] disabled:opacity-30 hover:bg-slate-50 transition-all"
+        >
+            Previous
+        </button>
+        <button 
+            onClick={nextPage} 
+            disabled={currentPage === totalPages} 
+            className="flex-1 md:flex-none px-5 py-2 rounded-md font-semibold text-sm border border-[#D5D7DA] text-[#414651] disabled:opacity-40 transition-all shadow-sm"
+        >
+            Next
+        </button>
+    </div>
+</div> 
+      </div>
+      
+    </div>
+    <UserFooter/>
+    </>
   );
 };
 
