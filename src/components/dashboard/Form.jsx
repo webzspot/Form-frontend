@@ -467,7 +467,7 @@ const Form = () => {
             >
               {/* Left Side: Master Fields */}
       
-              <div  className={`w-full lg:w-[380px] py-6 px-5 border-r
+              {/* <div  className={`w-full lg:w-[380px] py-6 px-5 border-r
     ${isDarkMode
       ? "bg-[#0b0e17] border-white/10"
       : "bg-gradient-to-b from-gray-50/80 to-white/50 border-gray-100"}
@@ -564,7 +564,7 @@ const Form = () => {
                         className="overflow-hidden"
                       >
                         <div className={`p-5 ${theme.card} rounded-2xl shadow-inner space-y-4`}>
-                          {/* Label Input */}
+                         
                           <div className="space-y-2">
                             <label className={`block text-[12px] font-bold ${theme.text}`}>
                               New Label
@@ -577,7 +577,7 @@ const Form = () => {
                             />
                           </div>
 
-                          {/* Type Selection */}
+                         
                           <div className="space-y-2">
                             <label className={`block text-[12px] font-bold ${theme.text}`}>
                               Type
@@ -608,7 +608,7 @@ const Form = () => {
                             </select>
                           </div>
 
-                          {/* Dynamic Options Section */}
+                          
                           <AnimatePresence>
                             {["DROPDOWN", "RADIO", "CHECKBOX"].includes(newField.type) && (
                               <motion.div
@@ -661,7 +661,7 @@ const Form = () => {
                             )}
                           </AnimatePresence>
 
-                          {/* Save Button */}
+                         
                           <motion.button
                             onClick={handleInlineCreate}
                             whileHover={{ scale: 1.01 }}
@@ -674,7 +674,7 @@ const Form = () => {
                     )}
                   </AnimatePresence>
 
-                  {/* DESIGN COMPONENT INTEGRATION */}
+                 
                   <div className="mt-4">
                     <Design
                       editingFormId={editingFormId}
@@ -686,7 +686,14 @@ const Form = () => {
                     />
                   </div>
                 </div>
-              </div>
+              </div> */}
+
+
+              
+
+      
+
+
 
               {/* Right Side: Preview & Edit */}
               <div
