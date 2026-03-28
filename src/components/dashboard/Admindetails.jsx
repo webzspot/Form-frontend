@@ -9,15 +9,16 @@ import toast from "react-hot-toast";
 import UserNavbar from '../user/UserNavbar';
 import usePagination from '../../hooks/usePagination';
 import TableSkeleton from './TableSkeleton';
-
+import UserFooter from '../user/userFooter';
 import { useFormContext } from "../dashboard/FormContext";
 import { MoreVertical } from 'lucide-react';
+import CardSkeleton from './CardSkeleton';
 const Admindetails = () => {
     const [userData, setUserData] = useState([]);
     const [openMenuIndex, setOpenMenuIndex] = useState(null);
     const [editingUser, setEditingUser] = useState(null);
     const [searchedUser, setSearchedUser] = useState("");
-    const [sortBy, setSortBy] = useState('');
+   
     const [isAddMode, setIsAddMode] = useState(false);
     const [pendingAction, setPendingAction] = useState(null);
     const [showConfirmModal, setShowConfirmModal] = useState(false);
@@ -32,21 +33,13 @@ const Admindetails = () => {
 
     // Unified Theme Object
     const theme = {
-        pageBg: isDarkMode 
-            ? "bg-[#05070f] text-white selection:bg-purple-500/30" 
-            : "bg-gradient-to-br from-[#F3E8FF] via-[#ffffff] to-[#D8B4FE] text-[#4c1d95] selection:bg-purple-200",
-        card: isDarkMode
-            ? "bg-[#12121a]/80 backdrop-blur-xl border border-purple-500/20 shadow-xl"
-            : "bg-white backdrop-blur-xl border border-white/60 shadow-lg",
-        input: isDarkMode
-            ? "bg-[#05070f] border-purple-500/20 text-white placeholder-gray-600 focus:border-[#8b5cf6] focus:ring-[#8b5cf6]"
-            : "bg-white border border-purple-100 text-[#4c1d95] placeholder-[#4c1d95]/40 focus:border-[#8b5cf6] focus:ring-[#8b5cf6]",
-        buttonPrimary: isDarkMode
-            ? "bg-[#8b5cf6] hover:bg-[#7c3aed] text-white shadow-[0_0_20px_rgba(139,92,246,0.4)]"
-            : "bg-gradient-to-r from-[#8b5cf6] to-[#6d28d9] text-white hover:shadow-lg hover:shadow-purple-500/30",
-        textSub: isDarkMode ? "text-gray-400" : "text-[#4c1d95]/50",
-        tableHeader: isDarkMode ? "bg-[#1e1b4b]/60 text-purple-300" : "bg-purple-100 text-[#4c1d95]",
-        divider: isDarkMode ? "border-purple-500/10" : "border-purple-100"
+        pageBg: "bg-gradient-to-br from-[#F3E8FF] via-[#ffffff] to-[#D8B4FE] text-[#4c1d95] selection:bg-purple-200",
+        card:  "bg-white backdrop-blur-xl border border-white/60 shadow-lg",
+        input: "bg-white border border-purple-100 text-[#4c1d95] placeholder-[#4c1d95]/40 focus:border-[#8b5cf6] focus:ring-[#8b5cf6]",
+        buttonPrimary: "bg-gradient-to-r from-[#8b5cf6] to-[#6d28d9] text-white hover:shadow-lg hover:shadow-purple-500/30",
+        textSub: "text-[#4c1d95]/50",
+        tableHeader:  "bg-purple-100 text-[#4c1d95]",
+        divider:  "border-purple-100"
     };
 
     useEffect(() => {
@@ -59,7 +52,7 @@ const Admindetails = () => {
             const res = await axios.get(API_BASE_URL, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            // The data arrives with .userId as per your console log
+           
             setUserData(res.data.data); 
         } catch (err) {
             toast.error("Failed to fetch admin details");
@@ -140,7 +133,7 @@ const Admindetails = () => {
 
       const { currentData, currentPage, totalPages, nextPage, prevPage } = usePagination(processedUsers, 10);
 
-    const getInitials = (name) => name?.split(' ').map(word => word[0]).join('').toUpperCase().slice(0, 2) || "AD";
+   
 
     return (
         <>
@@ -197,9 +190,9 @@ const Admindetails = () => {
 
                   
                         
-                                                <div className="px-4 py-2 p-3 rounded-xl mb-8 flex flex-col md:flex-row gap-4 justify-between bg-[#FFFFFF] border border-[#E5E7EB] shadow-sm items-center">
+                                                <div className="pr-2 py-2 p-3 rounded-md mb-8 flex flex-col md:flex-row gap-4 justify-between bg-[#FFFFFF] border border-[#E5E7EB] shadow-sm items-center">
                             
-                            {/* Search Input: Removed w-fit so it can expand, added w-full for mobile */}
+                            
                             <div className="relative  w-full md:flex-1">
                                 <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                                 <input
@@ -217,14 +210,13 @@ const Admindetails = () => {
                     <div className={` `}>
                        
 
-                        <div className='overflow-x-auto rounded-xl border bg-[#FFFFFF] border-[#E9EAEB] mb-4 ' >
+                        <div className='hidden md:block overflow-x-auto rounded-xl border bg-[#FFFFFF] border-[#E9EAEB] mb-4 ' >
                             <table className="w-full text-left">
                                 <thead className={`bg-white  text-[#535862] border-b border-[#E9EAEB]`}>
                                     <tr>
                                        <th className="px-6 py-4 text-xs font-semibold ">
                                                                                  <div className="flex items-center gap-2 group cursor-pointer">
-                                                                                   <div className={`w-5 h-5 rounded-md border  shrink-0 bg-white border-[#D0D5DD]
-                                              `} />
+                                                                                 
                                               
                                                                                    <span>Administrator</span>
                                                                                   
@@ -261,7 +253,7 @@ const Admindetails = () => {
                                     </tr>
                                 </thead>
                                 <tbody >
-                                    {loading ? ( <TableSkeleton rows={5} columns={6}  />
+                                    {loading ? ( <TableSkeleton rows={5} columns={4}  />
                                                                         ):
                                                                          currentData.length === 0 ? (
                                                                                                                 <tr>
@@ -273,11 +265,13 @@ const Admindetails = () => {
                                                                           </td>
                                                                                                                 </tr>
                                                                                                             ):
-                                  currentData.map((user) => (
-                                        <tr key={user.userId}  className="hover:bg-[#F5F6F8] border-b border-[#E9EAEB] transition-colors group">
+                                  currentData.map((user,index) => (
+                                        <motion.tr key={user.userId}   initial={{ opacity: 0, x: -20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 0.3, delay: index * 0.05 }} className="hover:bg-[#F5F6F8] border-b border-[#E9EAEB] transition-colors group">
                                             <td className="px-6 py-4">
                                                 <div className="flex items-center gap-3">
-                                                                                                             <div className={`w-5 h-5 rounded-md border shrink-0 bg-white border-[#D0D5DD] `} />
+                                                                                                          
                                     
                                                   
                                                     <div>
@@ -317,19 +311,19 @@ const Admindetails = () => {
                                                     )}
                                                 </AnimatePresence>
                                             </td>
-                                        </tr>
+                                        </motion.tr>
                                     ))}
                                 </tbody>
                             </table>
-                                                  {/* Change justify-between to flex-col on mobile, and flex-row on md+ screens */}
-<div className="flex flex-col md:flex-row justify-between items-center gap-4 px-6 py-4 border-t border-[#E9EAEB]">
+                                                 
+<div className=" hidden  md:flex justify-between items-center gap-4 px-6 py-4 border-t border-[#E9EAEB]">
     
-    {/* Page Counter: Move this to the top on mobile for better hierarchy */}
+   
     <span className="text-sm text-[#414651] font-medium order-1 md:order-2">
         Page {currentPage} of {totalPages}
     </span>
 
-    {/* Buttons: Make them fill the width on mobile */}
+  
     <div className="flex gap-3 w-full md:w-auto order-2 md:order-1">
         <button 
             onClick={prevPage} 
@@ -349,7 +343,113 @@ const Admindetails = () => {
 </div>
                         </div>
                     </div>
+
+
+
+                      {/* MOBILE CARDS */}
+    <div className="block md:hidden space-y-4 mb-4">
+        {loading ?(
+          <div className="flex flex-col gap-4">
+            <CardSkeleton />
+            <CardSkeleton />
+            <CardSkeleton />
+          </div>
+        ): currentData.length > 0 ? (
+            currentData.map((user, index) => (
+                <motion.div 
+                    key={user.userId}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="bg-white p-5 rounded-md border border-[#E9EAEB] shadow-sm relative"
+                >
+                    {/* Action Button for Mobile */}
+                    <div className="absolute top-4 right-4">
+                        <button onClick={() => setOpenMenuIndex(openMenuIndex === user.userId ? null : user.userId)} className="p-1">
+                            <MoreVertical size={18} className='text-[#535862]'/>
+                        </button>
+
+                        <AnimatePresence>
+        {openMenuIndex === user.userId && (
+            <motion.div 
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="absolute right-0 top-8 bg-white border border-[#E9EAEB] rounded-xl shadow-2xl z-50 min-w-[140px] py-2"
+            >
+                <div className="flex justify-between items-center px-3 pb-2 mb-1 border-b border-gray-50">
+                    <span className="text-[10px] font-bold uppercase text-gray-400">Options</span>
+                    <button onClick={() => setOpenMenuIndex(null)} className="text-slate-300"><FaTimes size={10}/></button>
                 </div>
+                <button onClick={() => { setEditingUser(user); setIsAddMode(false); setOpenMenuIndex(null); }} className="w-full flex items-center gap-3 px-4 py-2 text-sm hover:bg-violet-50 hover:text-violet-600 transition-colors">
+                    <FaEdit size={12}/> Edit
+                </button>
+                <button onClick={() => { setPendingAction({ type: "delete", payload: user }); setShowConfirmModal(true); setOpenMenuIndex(null); }} className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">
+                    <FaTrash size={12}/> Delete
+                </button>
+            </motion.div>
+        )}
+    </AnimatePresence>
+                    </div>
+
+                    <div className="space-y-3">
+                        <div>
+                            <p className="text-[10px] uppercase tracking-wider text-[#6A7181] font-bold">Administrator</p>
+                            <p className="text-sm font-semibold text-[#181D27]">{user.name}</p>
+                        </div>
+                        <div className="flex justify-between border-t pt-3 border-[#F5F6F8]">
+                            <div>
+                                <p className="text-[10px] uppercase text-[#6A7181] font-bold">Role</p>
+                                <p className="text-xs text-[#181D27]">{user.role}</p>
+                            </div>
+                            <div className="text-right">
+                                <p className="text-[10px] uppercase text-[#6A7181] font-bold">Joined</p>
+                                <p className="text-xs text-[#181D27]">{new Date(user.createdAt).toLocaleDateString()}</p>
+                            </div>
+                        </div>
+                    </div>
+                </motion.div>
+            ))
+        ) : (
+             <div className="bg-white py-10 rounded-xl border text-center">
+                <FaFileAlt className="text-slate-300 mx-auto mb-2" size={30} />
+                <p className="text-sm font-medium">No details found</p>
+             </div>
+        )}
+
+
+                              
+    </div>
+
+                               
+<div className=" md:hidden flex flex-col md:flex-row justify-between items-center gap-4 px-6 py-4 border-t border-[#E9EAEB]">
+    
+   
+    <span className="text-sm text-[#414651] font-medium order-1 md:order-2">
+        Page {currentPage} of {totalPages}
+    </span>
+
+  
+    <div className="flex gap-3 w-full md:w-auto order-2 md:order-1">
+        <button 
+            onClick={prevPage} 
+            disabled={currentPage === 1} 
+            className="flex-1 md:flex-none px-5 py-2 rounded-md font-semibold text-sm border border-[#D5D7DA] text-[#414651] disabled:opacity-30 hover:bg-slate-50 transition-all"
+        >
+            Previous
+        </button>
+        <button 
+            onClick={nextPage} 
+            disabled={currentPage === totalPages} 
+            className="flex-1 md:flex-none px-5 py-2 rounded-md font-semibold text-sm border border-[#D5D7DA] text-[#414651] disabled:opacity-40 transition-all shadow-sm"
+        >
+            Next
+        </button>
+    </div>
+</div> 
+                </div>
+
+
+              
 
                 {/* Sidebar Drawer */}
                 <AnimatePresence>
@@ -396,14 +496,14 @@ const Admindetails = () => {
                                     {isAddMode ? (
                                            <div >
                                             <label  className="font-medium text-base text-[#1D2026] ">Create Password</label>
-                                            <input  className="w-full px-4 py-3 pr-12 mt-4 rounded-xl border border-slate-200 outline-none" placeholder='••••••••' type="password" name="password" onChange={handleEditChange} required minLength={6} />
+                                            <input  className="w-full px-4 py-3 pr-12 mt-4 rounded-md border border-slate-200 outline-none" placeholder='••••••••' type="password" name="password" onChange={handleEditChange} required minLength={6} />
                                         </div>
                                         
                                         
                                     ) : (
                                         <div className="space-y-2">
                                             <label className="text-sm sm:text-lg block font-bold opacity-60">Account Access</label>
-                                            <select className={`w-full p-4 rounded-2xl outline-none appearance-none ${theme.input}`} name="role" value={editingUser.role} onChange={handleEditChange}>
+                                            <select className={`w-full p-4 rounded-md  border border-slate-200 outline-none appearance-none text-gray-400`} name="role" value={editingUser.role} onChange={handleEditChange}>
                                                 <option value="ADMIN">ADMIN</option>
                                                 <option value="USER">USER (Demote)</option>
                                             </select>
@@ -446,18 +546,18 @@ const Admindetails = () => {
                             <p className={`text-gray-500 text-[10px] sm:text-sm mb-8`}>
                                Enter your password to delete permanently <br/><span className="font-bold text-gray-700">{pendingAction?.payload?.name}</span></p>
                                 <input type="password" placeholder="Confirm Admin Password" 
-                                    className={`w-full p-4 rounded-2xl mb-6 outline-none text-center ${theme.input}`}
+                                    className={`w-full p-4 rounded-md mb-6 border border-gray-200 outline-none text-center text-gray-500`}
                                     value={adminConfirmPassword} onChange={(e) => setAdminConfirmPassword(e.target.value)} />
     <div className="flex gap-3">
                                 <button 
                                     onClick={handleDeleteConfirm} 
-                                    className="flex-1 bg-linear-to-r from-red-600 to-red-700 text-white sm:py-3 py-1 text-[10px] sm:text-sm rounded-xl font-semibold hover:from-red-700 hover:to-red-800 transition-all shadow-lg"
+                                    className="flex-1 bg-linear-to-r from-red-600 to-red-700 text-white sm:py-3 py-1 text-[10px] sm:text-sm rounded-md font-semibold hover:from-red-700 hover:to-red-800 transition-all shadow-lg"
                                 >
                                     Delete
                                 </button>
                                 <button 
                                     onClick={handleDismiss} 
-                                    className="flex-1 bg-slate-100 text-slate-600 sm:py-3 py-1 text-[10px] sm:text-sm rounded-xl font-semibold hover:bg-slate-200 transition-all"
+                                    className="flex-1 bg-slate-100 text-slate-600 sm:py-3 py-1 text-[10px] sm:text-sm rounded-md font-semibold hover:bg-slate-200 transition-all"
                                 >
                                     Cancel
                                 </button>
@@ -466,7 +566,9 @@ const Admindetails = () => {
                         </div>
                     )}
                 </AnimatePresence>
+                
             </div>
+            <UserFooter/>
         </>
     );
 };

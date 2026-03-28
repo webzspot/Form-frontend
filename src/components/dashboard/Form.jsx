@@ -1,12 +1,4 @@
-
-
-
-
-
-
-
-
- import { useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import axios from "axios"
 import toast from "react-hot-toast"
@@ -88,7 +80,8 @@ const Form = () => {
     borderRadius: "8px",
   })
 
-  const token = localStorage.getItem("token")
+  // const token = localStorage.getItem("token")
+  const token = sessionStorage.getItem("token")
   const navigate = useNavigate() 
 
   const theme = {
@@ -129,30 +122,11 @@ const Form = () => {
           headers: { Authorization: `Bearer ${token}` },
         })
         setMasterFields(res.data.data)
-      } catch (error) {
-        //toast.error("Error loading master fields")
-        const status = error.response?.status;
-    const message = error.response?.data?.message;
-
- 
-    if (status === 404 && message?.toLowerCase().includes("no")) {
-      setMasterFields([]); // safe empty state
-    }
-
-   
-    else if (status === 401) {
-      toast.error("Session expired. Please login again.");
-      
-    }
-
-
-    
-   else {
-    toast.error("Error loading master fields")
-  }
+      } catch (err) {
+        toast.error("Error loading master fields")
       }
       finally {
-        setLoading(false);
+        setintroLoading(false);
       }
     }
     getMasterFields()
@@ -249,12 +223,7 @@ const Form = () => {
         })
         setForms(res.data.data)
       } catch (err) {
-        //toast.error("Failed to load forms")
-         if (err.response?.status === 401) {
-    toast.error("Session expired. Please login again")
-  } else {
-    toast.error("Failed to load forms")
-  }
+        toast.error("Failed to load forms")
       } finally {
         setLoading(false)
       }
@@ -478,7 +447,7 @@ const Form = () => {
                     Available Fields
                   </h2>
                   <span 
-                  className={`text-xs ${theme.buttonPrimary} font-medium px-2.5 py-1 rounded-sm`}>
+                  className={`text-xs ${theme.buttonPrimary} font-medium px-2.5 py-1 rounded-xs`}>
                     {masterFields.length} fields
                   </span>
                 </div>
@@ -495,9 +464,9 @@ const Form = () => {
                       variants={itemVariants}
                       whileHover={{ x: 4 }}
                       whileTap={{ scale: 0.98 }}
-                       className={`group flex items-center gap-3 sm:py-3 sm:px-4 px-2 py-2 text-[11px] sm:text-[14px] rounded-sm cursor-pointer transition-all duration-300 border-2 ${
+                       className={`group flex items-center gap-3 sm:py-3 sm:px-4 px-2 py-2 text-[11px] sm:text-[14px] rounded-2xl cursor-pointer transition-all duration-300 border-2 ${
     selectedFields.some((f) => f.masterFieldId === field.masterFieldId)
-      ? "bg-[#2B4BAB]/10 border-[#2B4BAB]/20 shadow-md shadow-violet-100"
+      ? "bg-[#2B4BAB]  border-[#2B4BAB]/20 shadow-md shadow-violet-100"
       : "bg-white/70 border-transparent hover:border-gray-200 hover:bg-white shadow-sm hover:shadow-md"
   }`}
                     >
@@ -519,7 +488,7 @@ const Form = () => {
                           className="sr-only"
                         />
                         <Check
-                          className={`w-3.5 h-3.5 text-white transition-all duration-200 ${
+                          className={`w-3.5 h-3.5  transition-all duration-200 ${
                             selectedFields.some((f) => f.masterFieldId === field.masterFieldId)
                               ? "scale-100 opacity-100"
                               : "scale-0 opacity-0"
@@ -528,9 +497,9 @@ const Form = () => {
                       </div>
                       <div className="flex-1 min-w-0">
                         <span className={`font-semibold block  ${
-    isDarkMode ? "text-gray-600" : "text-gray-800"
+    isDarkMode ? "text-gray-600" : "text-black/80"
   }`}>{field.label}</span>
-                        <span className="text-xs text-gray-600">{field.type}</span>
+                        <span className="text-xs text-white">{field.type}</span>
                       </div>
                       <GripVertical className="w-4 h-4 text-gray-300 opacity-0 group-hover:opacity-100 transition-opacity" />
                     </motion.label>
@@ -542,7 +511,7 @@ const Form = () => {
                     onClick={() => setIsAddingMaster(!isAddingMaster)}
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.99 }}
-                    className={`w-full sm:py-3 px-4  text-[13px] sm:text-[16px] rounded-sm py-2 font-semibold flex items-center justify-center gap-3 transition-all duration-300 ${
+                    className={`w-full sm:py-3 px-4 py-1 text-[13px] sm:text-[16px] rounded-lg font-semibold flex items-center justify-center gap-3 transition-all duration-300 ${
                       isAddingMaster
                         ? `${theme.buttonsecondary}`
                         : `${theme.buttonPrimary}`
@@ -745,7 +714,7 @@ const Form = () => {
                     <motion.label
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className={`flex items-center gap-3  cursor-pointer px-4 sm:px-4  sm:py-2.5 py-1 text-[10px] sm:text-sm rounded-sm border-2 transition-all duration-300 ${
+                      className={`flex items-center gap-3  cursor-pointer px-4 sm:px-4  sm:py-2.5 py-1 text-[10px] sm:text-sm rounded-xl border-2 transition-all duration-300 ${
                         isPublic
                           ? "border-violet-200 bg-[#2B4BAB] shadow-md "
                           : "border-gray-200 bg-white hover:border-gray-300"
@@ -774,7 +743,7 @@ const Form = () => {
                     <motion.label
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className={`flex items-center px-4 gap-3 cursor-pointer sm:px-4  sm:py-2.5 py-1 text-[10px] sm:text-sm  rounded-sm border-2 transition-all duration-300 ${
+                      className={`flex items-center px-4 gap-3 cursor-pointer sm:px-4  sm:py-2.5 py-1 text-[10px] sm:text-sm  rounded-xl border-2 transition-all duration-300 ${
                         !isPublic
                           ? "border-indigo-100 bg-indigo-300 shadow-md shadow-indigo-100"
                           : "border-gray-200 bg-white  hover:border-gray-300"
@@ -911,7 +880,7 @@ text-[#2B4BAB]
                                   {field.required && <Check className="w-3 h-3 text-white" />}
                                 </div>
                                 <span
-                                  className={`text-[10px] sm:text-sm  font-bold uppercase ${field.required ? "text-[#2B4BAB]" : "text-gray-500"}`}
+                                  className={`text-[10px] sm:text-sm font-bold uppercase ${field.required ? "text-[#2B4BAB]" : "text-gray-500"}`}
                                 >
                                   Required
                                 </span>
