@@ -54,6 +54,8 @@ const Login = () => {
       sessionStorage.setItem("role", user.role);
        sessionStorage.setItem("Name", user.name);
 
+       console.log(token)
+
       showToast("Login Successful!", "success");
 
       // Redirect Logic
