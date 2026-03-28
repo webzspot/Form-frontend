@@ -5,6 +5,7 @@ import toast from "react-hot-toast"
 import UserNavbar from "../user/UserNavbar"
 import UserFooter from "../user/UserFooter"
 import { useFormContext } from "./FormContext"
+import CardSkeleton from "./CardSkeleton"
 import {
   Pencil,
   EditIcon,
@@ -66,7 +67,7 @@ const Form = () => {
   const [introloading, setintroLoading] = useState(true);
   // formfield
   const { forms, setForms, updateFormLocally, deleteFormLocally } = useFormContext()
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [isDeleting, setIsDeleting] = useState(null)
   const [isPublic, setIsPublic] = useState(true)
   const { isDarkMode } = useFormContext(); 
@@ -346,7 +347,7 @@ const Form = () => {
 
   // Skeleton Loader Component
   const SkeletonCard = () => (
-    <div className="bg-white/80 backdrop-blur-sm p-6 rounded-3xl border border-gray-100 animate-pulse">
+    <div className="bg-white/80 backdrop-blur-sm p-6 rounded-md border border-gray-100 animate-pulse">
       <div className="flex justify-between items-start mb-4">
         <div className="h-6 w-20 bg-gradient-to-r from-gray-200 to-gray-100 rounded-full" />
         <div className="flex gap-2">
