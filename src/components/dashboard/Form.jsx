@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import axios from "axios"
 import toast from "react-hot-toast"
 import UserNavbar from "../user/UserNavbar"
-import UserFooter from "../user/userFooter"
+import UserFooter from "../user/UserFooter"
 import { useFormContext } from "./FormContext"
 import {
   Pencil,
@@ -464,10 +464,10 @@ const Form = () => {
                       variants={itemVariants}
                       whileHover={{ x: 4 }}
                       whileTap={{ scale: 0.98 }}
-                       className={`group flex items-center gap-3 sm:py-3 sm:px-4 px-2 py-2 text-[11px] sm:text-[14px] rounded-2xl cursor-pointer transition-all duration-300 border-2 ${
+                       className={`group flex items-center gap-3 sm:py-3 sm:px-4 px-2 py-2 text-[11px] sm:text-[14px] rounded-md cursor-pointer transition-all duration-300  ${
     selectedFields.some((f) => f.masterFieldId === field.masterFieldId)
       ? "bg-[#2B4BAB]  border-[#2B4BAB]/20 shadow-md shadow-violet-100"
-      : "bg-white/70 border-transparent hover:border-gray-200 hover:bg-white shadow-sm hover:shadow-md"
+      : "bg-white/70 border-transparent hover:border-gray-200 hover:bg-white shadow-sm "
   }`}
                     >
                       <div

@@ -44,7 +44,7 @@ React.useEffect(() => {
     { label: "Forms", path: "/form", icon: <FileText size={16} strokeWidth={2} />, allowedRoles: ["user"] },
     { label: "Report", path: "/userreport", icon: <BarChart3 size={16} strokeWidth={2} />, allowedRoles: ["user"] },
     { label: "Status", path: "/reportstatus", icon: <Activity size={16} strokeWidth={2}/> , allowedRoles: ["user"] },
-
+   { label: "Plan & Pricing", path: "/subscription", icon: <Sparkles size={16} strokeWidth={2} />, allowedRoles: ["user"] },
     
     { label: "User Details", path: "/admindashboard", icon: <LayoutDashboard size={16} />, allowedRoles: ["admin"] },
     { label: "User Reports", path: "/adminreport", icon: <BarChart3 size={16} />, allowedRoles: ["admin"] },

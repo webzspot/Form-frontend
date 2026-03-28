@@ -302,7 +302,7 @@ import { LogOut, Loader2, CheckCircle } from "lucide-react";
 import UserNavbar from "./UserNavbar";
 import { useNavigate, Link } from "react-router-dom";
 import { useFormContext } from "../dashboard/FormContext";
-import UserFooter from "./userFooter";
+import UserFooter from "./UserFooter";
 
 const ProfileSettings = () => {
   // Keeping context for compatibility, but fixing to light mode branding

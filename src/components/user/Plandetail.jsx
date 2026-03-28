@@ -246,7 +246,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import UserFooter from './userFooter';
+import UserFooter from './UserFooter';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
 const Plandetail = () => {
@@ -342,13 +342,13 @@ const Plandetail = () => {
               </div>
 
               <div className="md:ml-auto flex gap-3">
-                <Link to={"/"} state={{scrollTo:"subscription"}}>
-                  <button className="px-8 py-3 bg-[#2B4BAB] text-white rounded-2xl font-bold hover:bg-[#1e3a8a] shadow-xl shadow-[#2B4BAB]/20 transition-all active:scale-95 text-sm"
+               
+                  <button className="px-8 py-3 bg-[#2B4BAB] text-white rounded-md font-bold hover:bg-[#1e3a8a] shadow-xl shadow-[#2B4BAB]/20 transition-all active:scale-95 text-sm"
                   onClick={()=>{navigate("/subscription")}}
                   >
                     Upgrade Now
                   </button>
-                </Link>
+               
                 <button className="p-3 rounded-2xl border border-slate-100 text-slate-400 hover:bg-slate-50 transition-all">
                   <Download size={20}/>
                 </button>

@@ -16,7 +16,7 @@ import {
   FaLayerGroup, FaFilter, FaArrowLeft, FaClock,FaRegFileAlt,
  FaArrowDown
 } from "react-icons/fa";
-import UserFooter from './userFooter'; 
+import UserFooter from './UserFooter';
 import CardSkeleton from '../dashboard/CardSkeleton';
    // --- Custom Sparkle Icon for consistency ---
 const SparkleIcon = ({ className }) => (
