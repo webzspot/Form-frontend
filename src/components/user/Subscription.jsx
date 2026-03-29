@@ -522,6 +522,7 @@ import {
 } from 'lucide-react';
 import UserFooter from './UserFooter';
 import UserNavbar from './UserNavbar';
+import toast from 'react-hot-toast';
 const Subscription = ({ standalone = true }) => {
   const navi = useNavigate();
   const token = sessionStorage.getItem("token");
@@ -554,7 +555,7 @@ const Subscription = ({ standalone = true }) => {
         name: "FormCraft",
         description: `${plan} Plan Upgrade`,
         handler: function (response) {
-          alert("Payment Successful! Upgrading your account...");
+          toast.success("Payment Successful! Upgrading your account...");
           navi("/home");
         },
         prefill: {
@@ -569,16 +570,16 @@ const Subscription = ({ standalone = true }) => {
 
       const rzp1 = new window.Razorpay(options);
       rzp1.on("payment.failed", (response) => {
-        alert("Payment Failed: " + response.error.description);
+        toast.error("Payment Failed: " + response.error.description);
       });
       rzp1.open();
     } catch (error) {
       console.error("Payment Error:", error);
       if (error.response?.status === 401) {
-        alert("Session invalid. Please login again.");
+        toast.error("Session invalid. Please login again.");
         navi("/login");
       } else {
-        alert("Something went wrong initializing payment.");
+        toast.error("Something went wrong initializing payment.");
       }
     }
   };

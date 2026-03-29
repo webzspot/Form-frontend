@@ -6,6 +6,7 @@ import UserNavbar from "../user/UserNavbar"
 import UserFooter from "../user/UserFooter"
 import { useFormContext } from "./FormContext"
 import CardSkeleton from "./CardSkeleton"
+import { Type, ChevronDown, CheckSquare, Calendar, } from 'lucide-react';
 import {
   Pencil,
   EditIcon,
@@ -23,6 +24,7 @@ import {
   Lock,
 } from "lucide-react"
 import { useNavigate } from "react-router-dom"
+import { MdEmail, MdNumbers, MdRadioButtonChecked, MdTextFields } from 'react-icons/md';
 import Footer from "../landingPage/Footer"
 import Design from "./Design"
 import WaveBackground from "../dashboard/WaveBackground"
@@ -57,6 +59,17 @@ const pulseAnimation = {
   
 
 const Form = () => { 
+
+  const FieldTypes = [
+  { id: "TEXT", label: "Text", icon: <Type size={18} /> },
+  { id: "EMAIL", label: "Email", icon: <MdEmail size={18} /> },
+  { id: "DROPDOWN", label: "Dropdown", icon: <ChevronDown size={18} /> },
+  { id: "CHECKBOX", label: "Checkbox", icon: <CheckSquare size={18} /> },
+  { id: "RADIO", label: "Radio", icon: <MdRadioButtonChecked size={18} /> },
+  { id: "DATE", label: "Date", icon: <Calendar size={18} /> },
+  { id: "NUMBER", label: "Number", icon: <MdNumbers size={18} /> },
+  { id: "TEXTAREA", label: "Textarea", icon: <MdTextFields size={18} /> },
+];
 // masterfield
   const [masterFields, setMasterFields] = useState([])
   const [selectedFields, setSelectedFields] = useState([])
@@ -91,12 +104,12 @@ const Form = () => {
       : "bg-[#F5F6F8]  selection:bg-indigo-200",
     
     card: isDarkMode
-      ? "bg-[#12121a]/80 backdrop-blur-xl border border-purple-500/20 shadow-[0_0_20px_rgba(139,92,246,0.05)]"
+      ? "bg-[#12121a]/80 backdrop-blur-xl border  shadow-[0_0_20px_rgba(139,92,246,0.05)]"
       : "bg-white backdrop-blur-xl border border-white/60 shadow-[0_8px_32px_0_rgba(31,38,135,0.15)]",
 
     input: isDarkMode
-      ? "bg-[#05070f] border-purple-500/20 text-white placeholder-gray-600 focus:border-[#8b5cf6] focus:ring-[#8b5cf6]"
-      : "bg-white/50 border-white/60 text-[#4c1d95] placeholder-[#4c1d95]/50 focus:border-[#8b5cf6] focus:ring-[#8b5cf6] focus:bg-white/80",
+      ? "bg-[#05070f] border-[#2B4BAB]/20 text-white placeholder-gray-600 "
+      : "bg-white/50 border-white/60 text-[#4c1d95] placeholder-[#4c1d95]/50 ",
 
     buttonPrimary: isDarkMode
       ? "bg-indigo-500 hover:bg-indigo-700 text-white shadow-[0_0_20px_rgba(139,92,246,0.4)]"
@@ -106,10 +119,10 @@ const Form = () => {
     label: isDarkMode ? "text-gray-300" : "text-[#4c1d95]",
     
     previewBox: isDarkMode 
-      ? "bg-[#1e1b4b]/40 border-purple-500/10" 
-      : "bg-purple-50/50 border-purple-200/50",
+      ? "bg-[#1e1b4b]/40 border-[#2B4BAB]/10" 
+      : "bg-[#2B4BAB]/50 border-[#2B4BAB]/50",
     
-    divider: isDarkMode ? "bg-purple-500/20" : "bg-purple-200"
+    divider: isDarkMode ? "bg-[#2B4BAB]/20" : "bg-[#2B4BAB]"
   };
 
   const URL = import.meta.env.VITE_URL
@@ -436,7 +449,7 @@ const Form = () => {
  
             >
               {/* Left Side: Master Fields */}
-      
+{/*       
               <div  className={`w-full lg:w-[380px] py-6 px-5 border-r
     ${isDarkMode
       ? "bg-[#0b0e17] border-white/10"
@@ -534,7 +547,7 @@ const Form = () => {
                         className="overflow-hidden"
                       >
                         <div className={`p-5 ${theme.card} rounded-2xl shadow-inner space-y-4`}>
-                          {/* Label Input */}
+                        
                           <div className="space-y-2">
                             <label className={`block text-[12px] font-bold ${theme.text}`}>
                               New Label
@@ -547,7 +560,7 @@ const Form = () => {
                             />
                           </div>
 
-                          {/* Type Selection */}
+                        
                           <div className="space-y-2">
                             <label className={`block text-[12px] font-bold ${theme.text}`}>
                               Type
@@ -578,7 +591,7 @@ const Form = () => {
                             </select>
                           </div>
 
-                          {/* Dynamic Options Section */}
+                         
                           <AnimatePresence>
                             {["DROPDOWN", "RADIO", "CHECKBOX"].includes(newField.type) && (
                               <motion.div
@@ -631,7 +644,7 @@ const Form = () => {
                             )}
                           </AnimatePresence>
 
-                          {/* Save Button */}
+                         
                           <motion.button
                             onClick={handleInlineCreate}
                             whileHover={{ scale: 1.01 }}
@@ -644,7 +657,7 @@ const Form = () => {
                     )}
                   </AnimatePresence>
 
-                  {/* DESIGN COMPONENT INTEGRATION */}
+                 
                   <div className="mt-4">
                     <Design
                       editingFormId={editingFormId}
@@ -656,7 +669,249 @@ const Form = () => {
                     />
                   </div>
                 </div>
+              </div> */}
+
+    
+                     {/* Left Side: Available Fields */}
+<div className="w-full lg:w-[380px] py-6 px-5 border-r bg-white border-gray-100">
+  <div className="flex items-center justify-between mb-6">
+    <h2 className="text-sm sm:text-lg text-gray-900 font-bold flex items-center gap-2">
+      <div className="flex flex-col gap-[2px]">
+        <div className="w-4 h-[2px] bg-gray-900"></div>
+        <div className="w-4 h-[2px] bg-gray-900"></div>
+        <div className="w-4 h-[2px] bg-gray-900"></div>
+      </div>
+      Available Fields
+    </h2>
+    <span className="text-[11px] bg-[#2B4BAB] text-white font-bold px-2.5 py-1 rounded-sm">
+      {masterFields.length} fields
+    </span>
+  </div>
+
+  <motion.div
+    variants={containerVariants}
+    initial="hidden"
+    animate="visible"
+    className="space-y-2.5 overflow-y-auto max-h-[40vh] lg:max-h-[50vh] pr-2 custom-scrollbar"
+  >
+    {masterFields.map((field, index) => {
+      // Find the correct icon based on field type
+      const fieldConfig = FieldTypes.find(f => f.id === field.type) || FieldTypes[0];
+      const isSelected = selectedFields.some((f) => f.masterFieldId === field.masterFieldId);
+      return (
+        <motion.label
+          key={field.masterFieldId}
+          variants={itemVariants}
+          whileHover={{ x: 4 }}
+          whileTap={{ scale: 0.98 }}
+          className={`group flex items-center gap-3 py-3 px-4 text-[13px] border transition-all duration-300 rounded-sm cursor-pointer ${
+            selectedFields.some((f) => f.masterFieldId === field.masterFieldId)
+              ? "bg-[#2B4BAB] border-[#2B4BAB] shadow-sm"
+              : "bg-white border-gray-100 hover:border-gray-200 shadow-sm"
+          }`}
+        >
+
+          <input
+        type="checkbox"
+        checked={isSelected}
+        onChange={() => toggleField(field)}
+        className="sr-only"
+      />
+
+<div className={`transition-colors duration-300 ${isSelected ? "text-white" : "text-gray-400"}`}>
+        {fieldConfig.icon}
+      </div>
+
+
+      <div className="flex-1 min-w-0">
+        <span
+          className={`font-semibold block truncate transition-colors duration-300 ${
+            isSelected ? "text-white" : "text-gray-700"
+          }`}
+        >
+          {field.label}
+        </span>
+      </div>
+      
+      {/* 3. Drag Handle - Now matches the text color when selected */}
+      <GripVertical className={`w-4 h-4 transition-all duration-300 ${
+        isSelected
+          ? "text-white/40"
+          : "text-gray-300 opacity-0 group-hover:opacity-100"
+      }`} />
+
+
+
+
+
+          {/* <div
+            className={`relative w-5 h-5 rounded-sm border-2 flex items-center justify-center transition-all duration-300 ${
+              selectedFields.some((f) => f.masterFieldId === field.masterFieldId)
+                ? "bg-white border-white"
+                : "border-white"
+            }`}
+          > */}
+            {/* <input
+              type="checkbox"
+              checked={selectedFields.some((f) => f.masterFieldId === field.masterFieldId)}
+              onChange={() => toggleField(field)}
+              className="sr-only"
+            />
+            {selectedFields.some((f) => f.masterFieldId === field.masterFieldId) ? (
+              <Check className="w-3.5 h-3.5 text-[#2B4BAB]" />
+            ) : (
+              <div className="text-gray-400">
+                {fieldConfig.icon}
               </div>
+            )}
+          </div> */}
+
+          {/* <div className="flex-1 min-w-0">
+            <span
+              className={`font-semibold block truncate ${
+                selectedFields.some((f) => f.masterFieldId === field.masterFieldId)
+                  ? "text-white"
+                  : "text-gray-700"
+              }`}
+            >
+              {field.label}
+            </span>
+          </div> */}
+          
+          {/* <GripVertical className={`w-4 h-4 transition-opacity ${
+            selectedFields.some((f) => f.masterFieldId === field.masterFieldId)
+              ? "text-white/50"
+              : "text-gray-300 opacity-0 group-hover:opacity-100"
+          }`} /> */}
+        </motion.label>
+      );
+    })}
+  </motion.div>
+
+  <div className="mt-4 space-y-4">
+    {/* Add Input Field Toggle Button */}
+    <motion.button
+      onClick={() => setIsAddingMaster(!isAddingMaster)}
+      whileHover={{ scale: 1.01 }}
+      whileTap={{ scale: 0.99 }}
+      className={`w-full py-2 rounded-sm font-semibold flex items-center justify-center gap-3 transition-all duration-300 border-2 ${
+        isAddingMaster
+          ? "bg-white border-gray-200 text-gray-600"
+          : "bg-[#2B4BAB] border-[#2B4BAB] text-white shadow-lg shadow-blue-900/10"
+      }`}
+    >
+      <motion.div animate={{ rotate: isAddingMaster ? 45 : 0 }} transition={{ duration: 0.2 }}>
+        {isAddingMaster ? <Trash2 size={19} /> : <Plus size={20} />}
+      </motion.div>
+      {isAddingMaster ? "Close Panel" : "Add Input Field"}
+    </motion.button>
+
+    <AnimatePresence>
+      {isAddingMaster && (
+        <motion.div
+          initial={{ height: 0, opacity: 0 }}
+          animate={{ height: "auto", opacity: 1 }}
+          exit={{ height: 0, opacity: 0 }}
+          className="overflow-hidden"
+        >
+          <div className="p-5 bg-gray-50 border border-gray-100 rounded-sm space-y-4 shadow-inner">
+            <div className="space-y-2">
+              <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                New Label
+              </label>
+              <input
+                className="w-full border border-gray-200 rounded-sm text-sm px-4 py-2.5 outline-none font-medium focus:ring-2 focus:ring-[#2B4BAB]/10 transition-all bg-white"
+                value={newField.label}
+                onChange={(e) => setNewField({ ...newField, label: e.target.value })}
+                placeholder="e.g. Phone Number"
+              />
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                Field Type
+              </label>
+              <select
+                className="w-full border border-gray-200 rounded-sm text-sm px-4 py-2.5 outline-none font-medium cursor-pointer appearance-none bg-white"
+                value={newField.type}
+                onChange={(e) => {
+                  const isSelectionType = ["DROPDOWN", "RADIO", "CHECKBOX"].includes(e.target.value);
+                  setNewField({
+                    ...newField,
+                    type: e.target.value,
+                    options: isSelectionType ? [""] : [],
+                  });
+                }}
+              >
+                {FieldTypes.map((t) => (
+                  <option key={t.id} value={t.id}>
+                    {t.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {["DROPDOWN", "RADIO", "CHECKBOX"].includes(newField.type) && (
+              <div className="space-y-3 pt-2">
+                <div className="flex justify-between items-center">
+                   <label className="text-[10px] font-bold text-gray-400 uppercase">Options</label>
+                   <button 
+                    onClick={() => setNewField({ ...newField, options: [...newField.options, ""] })}
+                    className="text-[10px] text-[#2B4BAB] font-bold"
+                   >+ ADD</button>
+                </div>
+                {newField.options.map((opt, i) => (
+                  <div key={i} className="flex gap-2">
+                    <input
+                      className="flex-1 border border-gray-200 rounded-sm px-3 py-1.5 text-xs outline-none bg-white"
+                      placeholder={`Option ${i + 1}`}
+                      value={opt}
+                      onChange={(e) => {
+                        const newOpts = [...newField.options];
+                        newOpts[i] = e.target.value;
+                        setNewField({ ...newField, options: newOpts });
+                      }}
+                    />
+                    {newField.options.length > 1 && (
+                      <button
+                        onClick={() => {
+                          const newOpts = newField.options.filter((_, idx) => idx !== i);
+                          setNewField({ ...newField, options: newOpts });
+                        }}
+                        className="text-gray-400 hover:text-red-500"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <button
+              onClick={handleInlineCreate}
+              className="w-full py-3 rounded-sm bg-[#2B4BAB] text-white text-xs font-semibold hover:bg-black transition-all"
+            >
+              Save New Field
+            </button>
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
+
+    <div className="  border-t border-gray-100">
+      <Design
+        editingFormId={editingFormId}
+        token={token}
+        formTheme={formTheme}
+        setFormTheme={setFormTheme}
+        isDarkMode={false} 
+      />
+    </div>
+  </div>
+</div>
+    
+
 
               {/* Right Side: Preview & Edit */}
               <div
@@ -715,7 +970,7 @@ const Form = () => {
                     <motion.label
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className={`flex items-center gap-3  cursor-pointer px-4 sm:px-4  sm:py-2.5 py-1 text-[10px] sm:text-sm rounded-xl border-2 transition-all duration-300 ${
+                      className={`flex items-center gap-3  cursor-pointer px-4 sm:px-4  sm:py-2.5 py-1 text-[10px] sm:text-sm rounded-sm border-2 transition-all duration-300 ${
                         isPublic
                           ? "border-violet-200 bg-[#2B4BAB] shadow-md "
                           : "border-gray-200 bg-white hover:border-gray-300"
@@ -730,7 +985,7 @@ const Form = () => {
                       />
                       <div
                         className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
-                          isPublic ? "border-white/60 bg-indigo-300" : "border-gray-300"
+                          isPublic ? "border-white/60" : "border-gray-300"
                         }`}
                       >
                         {isPublic && <Check className="w-3 h-3 text-white" />}
@@ -744,9 +999,9 @@ const Form = () => {
                     <motion.label
                       whileHover={{ scale: 1.02 }}
                       whileTap={{ scale: 0.98 }}
-                      className={`flex items-center px-4 gap-3 cursor-pointer sm:px-4  sm:py-2.5 py-1 text-[10px] sm:text-sm  rounded-xl border-2 transition-all duration-300 ${
+                      className={`flex items-center px-4 gap-3 cursor-pointer sm:px-4  sm:py-2.5 py-1 text-[10px] sm:text-sm  rounded-sm border-2 transition-all duration-300 ${
                         !isPublic
-                          ? "border-indigo-100 bg-indigo-300 shadow-md shadow-indigo-100"
+                          ? "border-indigo-100 bg-[#2B4BAB] shadow-md shadow-indigo-100"
                           : "border-gray-200 bg-white  hover:border-gray-300"
                       }`}
                     >
@@ -981,7 +1236,7 @@ text-[#2B4BAB]
                         borderRadius: "6px",
                         // borderRadius: formTheme.borderRadius || "16px",
                       }}
-                      className="flex-1 text-white sm:py-3 py-1 font-semibold shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      className="flex-1 text-white sm:py-3 py-1 rounded-sm font-semibold shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
                       {loading ? (
                         <>
@@ -1008,7 +1263,7 @@ text-[#2B4BAB]
                       }}
                       whileHover={{ scale: 1.01 }}
                       whileTap={{ scale: 0.99 }}
-                      className="px-8 sm:py-3 py-1 bg-gray-200 text-gray-600 rounded-lg font-bold hover:bg-gray-200 transition-all duration-300"
+                      className="px-8 sm:py-3 py-1 bg-gray-200 text-gray-600 rounded-sm font-bold hover:bg-gray-200 transition-all duration-300"
                     >
                       Cancel
                     </motion.button>
@@ -1264,7 +1519,7 @@ text-[#2B4BAB]
               <div
                 className="h-2 w-full"
                 style={{
-                  background: `linear-gradient(90deg, ${viewData.theme?.buttonColor || "#6C3BFF"}, ${viewData.theme?.buttonColor || "#6C3BFF"}88)`,
+                  background: "#2B4BAB"
                 }}
               />
 
@@ -1309,7 +1564,7 @@ text-[#2B4BAB]
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.05 }}
-                      className="bg-white py-1  px-2 shadow-sm border border-gray-100 hover:shadow-md hover:border-violet-100 transition-all duration-300"
+                      className="bg-white py-1 px-2 shadow-sm border border-gray-100 hover:shadow-md hover:border-violet-100 transition-all duration-300"
                       style={{ borderRadius: viewData.theme?.borderRadius || "12px" }}
                     >
                       <label
@@ -1320,7 +1575,7 @@ text-[#2B4BAB]
                       </label>
 
                       <div
-                        className="w-full px-2 py-1 mb-1 border-2 border-dashed border-gray-200 text-gray-400 text-sm flex items-center justify-between"
+                        className="w-full px-2 py-1 mb-1 border-2 border-gray-200 text-gray-400 text-sm flex items-center justify-between"
                         style={{
                           backgroundColor: viewData.theme?.inputBgColor || "#ffffff",
                           borderRadius: `calc(${viewData.theme?.borderRadius || "12px"} / 2)`,
@@ -1343,7 +1598,7 @@ text-[#2B4BAB]
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => setviewform(false)}
-                  className=" px-2 py-1 md:px-3 md:py-2 bg-gray-100 flex-1 text-gray-600 text-xs rounded-xl font-bold hover:bg-gray-200 transition-all"
+                  className=" px-2 py-1 md:px-3 md:py-2 bg-gray-100 flex-1 text-gray-600 text-xs rounded-sm font-bold hover:bg-gray-200 transition-all"
                 >
                   Close
                 </motion.button>
@@ -1364,11 +1619,11 @@ text-[#2B4BAB]
 
                   style={{
     background: viewData.isPublic
-      ? `linear-gradient(135deg, ${viewData.theme?.buttonColor || "#7C3AED"}, ${viewData.theme?.buttonColor || "#7C3AED"}dd)`
+      ? `linear-gradient(135deg, #2B4BAB`
       : "#E5E7EB",
     color: viewData.isPublic ? "white" : "#9CA3AF",
   }}
-  className={`flex flex-1 items-center justify-around text-xs gap-2 px-2 py-1 md:px-3 md:py-2 rounded-xl font-bold transition-all ${
+  className={`flex flex-1 items-center justify-around text-xs gap-2 px-2 py-1 md:px-3 md:py-2 rounded-sm font-bold transition-all ${
     viewData.isPublic
       ? "shadow-lg hover:brightness-110 active:scale-95"
       : "cursor-not-allowed"
@@ -1391,11 +1646,11 @@ text-[#2B4BAB]
                   }}
                   style={{
                     background: viewData.isPublic
-                      ? `linear-gradient(135deg, ${viewData.theme?.buttonColor || "#7C3AED"}, ${viewData.theme?.buttonColor || "#7C3AED"}dd)`
+                      ? `linear-gradient(135deg, #2B4BAB`
                       : "#E5E7EB",
-                    color: viewData.isPublic ? "white" : "#9CA3AF",
+                    color: viewData.isPublic ? "white" : "#2B4BAB",
                   }}
-                  className={`flex-1 text-xs px-2 py-1 md:px-3 md:py-2 rounded-xl font-bold transition-all ${viewData.isPublic ? "shadow-lg hover:brightness-110 active:scale-95" : "cursor-not-allowed"}`}
+                  className={`flex-1 text-xs px-2 py-1 md:px-3 md:py-2 rounded-sm font-bold transition-all ${viewData.isPublic ? "shadow-lg hover:brightness-110 active:scale-95" : "cursor-not-allowed"}`}
                 >
                   iframe
                 </motion.button> 
@@ -1427,12 +1682,10 @@ text-[#2B4BAB]
       toast.success("Script code copied!")
     }}
     style={{
-      background: viewData.isPublic
-        ? `linear-gradient(135deg, ${viewData.theme?.buttonColor || "#7C3AED"}, ${viewData.theme?.buttonColor || "#7C3AED"}dd)`
-        : "#E5E7EB",
+      background: "#2B4BAB",
       color: viewData.isPublic ? "white" : "#9CA3AF",
     }}
-    className={`flex-1 text-xs px-2 py-1 md:px-3 md:py:2 rounded-xl font-bold transition-all ${
+    className={`flex-1 text-xs px-2 py-1 md:px-3 md:py:2 rounded-sm font-bold transition-all ${
       viewData.isPublic ? "shadow-lg hover:brightness-110 active:scale-95" : "cursor-not-allowed"
     }`}
   >

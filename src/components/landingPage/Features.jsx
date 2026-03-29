@@ -164,7 +164,7 @@ const Features = () => {
       </div>
     </section> 
 
-   <Subscription standalone={false} />
+   {/* <Subscription standalone={false} /> */}
     </>
   )
 }
