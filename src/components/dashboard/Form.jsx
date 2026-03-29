@@ -123,9 +123,30 @@ const Form = () => {
           headers: { Authorization: `Bearer ${token}` },
         })
         setMasterFields(res.data.data)
-      } catch (err) {
-        toast.error("Error loading master fields")
-      }
+      } catch (error) {
+          //  toast.error("Fetch error", error);
+          const status = error.response?.status;
+          const message = error.response?.data?.message;
+      
+          
+          if (status === 404 && message?.toLowerCase().includes("no")) {
+            setMasterFields([]);
+          }
+          
+          else if(status===429){
+            toast.error("Too many requests. Please try again later.")
+          }
+         
+          else if (status === 401) {
+            toast.error("Session expired. Please login again.");
+            
+          }
+      
+          else {
+            toast.error("Failed to load data");
+            console.error("REAL ERROR:", error);
+          }
+          }
       finally {
         setintroLoading(false);
       }
@@ -1033,7 +1054,16 @@ text-[#2B4BAB]
               </motion.div>
             ))}
           </motion.div>
-        ) : (
+        ) : forms.length === 0 ? (
+  // 2. Empty State: Show "No forms created" message
+  <motion.div
+   
+    className="text-center py-30 max-w-7xl border rounded-md mt-10  border-dashed w-full mx-auto  text-gray-500"
+  >
+    <h3 className="text-xl font-semibold">No forms created</h3>
+    <p>Click "Create Form" to get started.</p>
+  </motion.div>
+) : (
           <motion.div
             layout
             variants={containerVariants}

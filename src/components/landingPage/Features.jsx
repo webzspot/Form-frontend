@@ -1,7 +1,7 @@
 import React from 'react'
 import { FaMousePointer,  FaRegChartBar, FaPlug, FaShieldAlt, FaMobileAlt, FaPalette } from 'react-icons/fa';
 import { motion } from 'framer-motion';
-import Subscription from '../user/Subscription';
+
 const Features = () => {
 
  
@@ -164,7 +164,7 @@ const Features = () => {
       </div>
     </section> 
 
-   <Subscription standalone={false} />
+  
     </>
   )
 }

@@ -15,6 +15,7 @@ import usePagination from "../../hooks/usePagination";
 import TableSkeleton from "./TableSkeleton";
 import {motion } from "framer-motion"
 import CardSkeleton from "./CardSkeleton";
+import UserFooter from "../user/UserFooter";
 const AdminFormResponses = () => {
   const { formId } = useParams();
   const token = sessionStorage.getItem("token");
@@ -119,6 +120,7 @@ const AdminFormResponses = () => {
   const { currentData, currentPage, totalPages, nextPage, prevPage } = usePagination(filteredResponses, 10);
 
   return (
+    <>
     <div className={`min-h-screen ${theme.pageBg} font-sans pb-20`}>
       <UserNavbar />
 
@@ -450,6 +452,8 @@ const AdminFormResponses = () => {
 </div> 
       </main>
     </div>
+    <UserFooter/>
+    </>
   );
 };
 

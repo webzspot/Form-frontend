@@ -508,6 +508,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+
 import { 
   Check, 
   X, 
@@ -524,7 +525,12 @@ import UserFooter from './UserFooter';
 import UserNavbar from './UserNavbar';
 const Subscription = ({ standalone = true }) => {
   const navi = useNavigate();
+
+  
+ 
   const token = sessionStorage.getItem("token");
+
+   
   const API_BASE = "https://formbuilder-saas-backend.onrender.com";
 
   const planApi = async (plan) => {
@@ -536,7 +542,7 @@ const Subscription = ({ standalone = true }) => {
       navi("/login");
       return;
     }
-
+       console.log("SENDING DATA:", { planType: plan, token: currentToken });
     try {
       const res = await axios.post(
         `${API_BASE}/subscription/create`,
@@ -554,15 +560,17 @@ const Subscription = ({ standalone = true }) => {
         name: "FormCraft",
         description: `${plan} Plan Upgrade`,
         handler: function (response) {
+          
+          
           alert("Payment Successful! Upgrading your account...");
           navi("/home");
         },
-        prefill: {
+       prefill: {
         //  name: "User", // You can pull this from sessionStorage too if available
 
         // Try using a more realistic name or pulling from sessionStorage if you have it
-      name: sessionStorage.getItem("userName") || "Customer", 
-      email: sessionStorage.getItem("userEmail") || "test@example.com"
+     name: sessionStorage.getItem("Name") || "Customer", 
+   //   email: sessionStorage.getItem("Email") || "test@example.com"
         },
         theme: { color: "#2B4BAB" }, // Consistent Brand Color
       };
@@ -578,7 +586,8 @@ const Subscription = ({ standalone = true }) => {
         alert("Session invalid. Please login again.");
         navi("/login");
       } else {
-        alert("Something went wrong initializing payment.");
+        alert("Something went wrong initializing payment.",error);
+        
       }
     }
   };
@@ -710,7 +719,7 @@ const Subscription = ({ standalone = true }) => {
                 ))}
               </div>
 
-              {plan.id === "FREE" ? (
+              {plan.id === "FREE"? (
                 <div className="w-full py-4 rounded-sm font-bold text-sm flex items-center justify-center gap-2 border border-gray-200 text-gray-400 bg-gray-50">
                   <Check size={18} />
                   Active Plan

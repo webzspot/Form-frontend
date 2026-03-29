@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import usePagination from "../../hooks/usePagination";
 import TableSkeleton from "./TableSkeleton";
-import UserFooter from "../user/userFooter";
+import UserFooter from "../user/UserFooter";
 import CardSkeleton from "./CardSkeleton";
 const AllForms = () => {
   const [forms, setForms] = useState([]);
@@ -164,7 +164,7 @@ const AllForms = () => {
 
 
         {/* Table Container */}
-        <div className="hidden md:block bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+        <div className="hidden md:block bg-white rounded-md border border-slate-100 shadow-sm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left">
               <thead>

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import { 
-    FaUser, FaPlus, FaSearch, FaTrash, FaEdit, FaTimes, FaArrowDown,FaFileAlt
+    FaUser, FaPlus, FaSearch, FaCopy,FaTrash, FaEdit, FaTimes, FaArrowDown,FaFileAlt
 } from 'react-icons/fa';
 import { useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
@@ -9,7 +9,7 @@ import toast from "react-hot-toast";
 import UserNavbar from '../user/UserNavbar';
 import usePagination from '../../hooks/usePagination';
 import TableSkeleton from './TableSkeleton';
-import UserFooter from '../user/userFooter';
+import UserFooter from '../user/UserFooter';
 import { useFormContext } from "../dashboard/FormContext";
 import { MoreVertical } from 'lucide-react';
 import CardSkeleton from './CardSkeleton';
@@ -72,7 +72,7 @@ const Admindetails = () => {
                 name: editingUser.name,
                 email: editingUser.email,
                 password: editingUser.password,
-                role: "ADMIN"
+                role: editingUser.role
             }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -210,7 +210,7 @@ const Admindetails = () => {
                     <div className={` `}>
                        
 
-                        <div className='hidden md:block overflow-x-auto rounded-xl border bg-[#FFFFFF] border-[#E9EAEB] mb-4 ' >
+                        <div className='hidden md:block overflow-x-auto rounded-md border bg-[#FFFFFF] border-[#E9EAEB] mb-4 ' >
                             <table className="w-full text-left">
                                 <thead className={`bg-white  text-[#535862] border-b border-[#E9EAEB]`}>
                                     <tr>
@@ -459,7 +459,7 @@ const Admindetails = () => {
                             <motion.div   initial={{ opacity: 0, scale: 0.9, x: "-50%", y: "-50%" }}
                 animate={{ opacity: 1, scale: 1, x: "-50%", y: "-50%" }}
                 exit={{ opacity: 0, scale: 0.9, x: "-50%", y: "-50%" }}
-                               className="fixed left-1/2 top-1/2 z-50 flex flex-col h-full md:max-h-[95vh]  w-full  md:max-w-[500px] lg:max-w-[847px] bg-white md:rounded-[10px] shadow-2xl overflow-y-auto">
+                               className="fixed left-1/2 top-1/2 z-50 flex flex-col h-full md:max-h-[90vh]  w-full  md:max-w-[500px] lg:max-w-[600px] bg-white md:rounded-[10px] shadow-2xl overflow-y-auto">
                               
                               <div className='p-8'>
                                 <div className="flex justify-between items-center mb-4">
@@ -485,27 +485,38 @@ const Admindetails = () => {
                                      <div className='flex flex-col md:flex-row justify-between gap-3'>
                                     <div >
                                         <label className={`font-medium text-sm text-[#414651] mb-2`}>Full Name</label>
-                                        <input  className={`w-full px-4 py-3 mt-4 rounded-md text-semibold outline-none border border-[#E9EAEB]`} name="name" value={editingUser.name} onChange={handleEditChange} required disabled={!isAddMode} />
+                                        <input  className={`w-full px-4 py-3 mt-4  rounded-md text-semibold outline-none border border-[#E9EAEB]`} name="name" value={editingUser.name} onChange={handleEditChange} required disabled={!isAddMode}    placeholder="Enter full name"/>
                                     </div>
                                     <div >
                                         <label className={`font-medium text-sm text-[#414651] mb-2`}>Email</label>
-                                        <input  className={`w-full px-4 py-3 mt-4 rounded-md text-semibold outline-none border border-[#E9EAEB]`} name="email" value={editingUser.email} onChange={handleEditChange} required disabled={!isAddMode} />
+                                        <input  className={`w-full px-4 py-3 mt-4 rounded-md text-semibold outline-none border border-[#E9EAEB]`} name="email" value={editingUser.email} onChange={handleEditChange} required disabled={!isAddMode}   placeholder="admin@gmail.com"/>
                                     </div>
                                     </div>
                                         <div className="relative border mb-4 border-[#E9EAEB] p-6 rounded-xl">
                                     {isAddMode ? (
-                                           <div >
+                                        <>
                                             <label  className="font-medium text-base text-[#1D2026] ">Create Password</label>
-                                            <input  className="w-full px-4 py-3 pr-12 mt-4 rounded-md border border-slate-200 outline-none" placeholder='••••••••' type="password" name="password" onChange={handleEditChange} required minLength={6} />
-                                        </div>
+                                           <div  className="relative flex gap-2 justify-between items-center">
                                         
+                                            <input  className="w-full px-4 py-3 pr-12 mt-4 rounded-md border border-slate-200 outline-none" placeholder='••••••••' type="password" name="password" onChange={handleEditChange} required minLength={6} />
+                                         <div className='border p-2 mt-4 rounded-md border-[#E9EAEB]'>
+                                                                                <button
+                                                                                    type="button"
+                                                                                    onClick={() => navigator.clipboard.writeText(editingUser.password)}
+                                                                                    className="p-2 text-[#252B37] hover:text-indigo-600"
+                                                                                >
+                                                                                    <FaCopy size={18} />
+                                                                                </button>
+                                                                            </div>
+                                        </div>
+                                        </>
                                         
                                     ) : (
                                         <div className="space-y-2">
-                                            <label className="text-sm sm:text-lg block font-bold opacity-60">Account Access</label>
-                                            <select className={`w-full p-4 rounded-md  border border-slate-200 outline-none appearance-none text-gray-400`} name="role" value={editingUser.role} onChange={handleEditChange}>
+                                            <label  className="font-medium text-sm text-[#414651] mb-2">Role</label>
+                                            <select    className="w-full px-4 py-3 rounded-md border border-[#E9EAEB] outline-none bg-white font-semibold" name="role" value={editingUser.role} onChange={handleEditChange}>
                                                 <option value="ADMIN">ADMIN</option>
-                                                <option value="USER">USER (Demote)</option>
+                                                <option value="USER">USER </option>
                                             </select>
                                         </div>
                                     )}

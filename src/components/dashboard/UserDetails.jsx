@@ -16,7 +16,7 @@ import usePagination from '../../hooks/usePagination';
 import TableSkeleton from './TableSkeleton';
 
 import { useFormContext } from "../dashboard/FormContext";
-import UserFooter from '../user/userFooter';
+import UserFooter from '../user/UserFooter';
 
 const UserDetails= () => { 
   const [userData, setUserData] = useState([]);
@@ -81,7 +81,7 @@ const UserDetails= () => {
 
     const handleAddUser = async () => {
         try {
-            const res = await axios.post(API_BASE_URL, { ...editingUser, role: "USER" }, {
+            const res = await axios.post(API_BASE_URL, { ...editingUser }, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             setUserData([...userData, res.data.user]);
@@ -100,11 +100,14 @@ const UserDetails= () => {
                 name: editingUser.name,
                 email: editingUser.email,
                 role: editingUser.role,
-                ...(editingUser.password && { password: editingUser.password })
+               ...(editingUser.password && { password: editingUser.password })
             }, 
+           
+       
             {
                 headers: { Authorization: `Bearer ${token}` }
             });
+             
 
             setUserData(userData.map(user => user.userId === editingUser.userId ? res.data.user : user));
             toast.success("User updated successfully!");
@@ -273,7 +276,7 @@ const UserDetails= () => {
                      <div className={` ` }>
 
 
-                        <div className='hidden md:block overflow-x-auto rounded-xl border bg-[#FFFFFF] border-[#E9EAEB] mb-4 ' >
+                        <div className='hidden md:block overflow-x-auto rounded-md border bg-[#FFFFFF] border-[#E9EAEB] mb-4 ' >
                             <table className={`w-full text-left `}>
                                 <thead className={`bg-white  text-[#535862] border-b border-[#E9EAEB]`}>
                                     <tr>
@@ -564,7 +567,7 @@ const UserDetails= () => {
                 animate={{ opacity: 1, scale: 1, x: "-50%", y: "-50%" }}
                 exit={{ opacity: 0, scale: 0.9, x: "-50%", y: "-50%" }}
                
-                className="fixed left-1/2 top-1/2 z-50 flex flex-col h-full md:max-h-[95vh]  w-full  md:max-w-[500px] lg:max-w-[847px] bg-white md:rounded-[10px] shadow-2xl overflow-y-auto"
+                className="fixed left-1/2 top-1/2 z-50 flex flex-col h-full md:max-h-[90vh]  w-full  md:max-w-[500px] lg:max-w-[600px] bg-white md:rounded-[10px] shadow-2xl overflow-y-auto"
             >
                 <div className="p-6">
                     <div className="flex justify-between items-center mb-4">
@@ -642,6 +645,19 @@ const UserDetails= () => {
                                     </div>
                                 </div>
                             </div>
+                            <div className="flex flex-col mt-4">
+    <label className="font-medium text-sm text-[#414651] mb-2">User Role</label>
+    <select
+        name="role"
+        value={editingUser.role}
+        onChange={handleEditChange}
+        className="w-full px-4 py-3 rounded-md border border-[#E9EAEB] outline-none bg-white font-semibold"
+    >
+        <option value="USER">User</option>
+        <option value="ADMIN">Admin</option>
+    </select>
+   
+</div>
 
                             <div className="pt-6 flex mb-4 justify-end gap-3">
                                 <button
