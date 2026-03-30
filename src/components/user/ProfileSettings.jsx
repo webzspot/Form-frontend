@@ -634,6 +634,7 @@ const ProfileSettings = () => {
   useEffect(() => {
     getUser();
   }, [getUser]);
+  
 
   const handleUpdate = async () => {
     if (!editingUser.name || !editingUser.email) return toast.error("Fields cannot be empty");
@@ -658,9 +659,10 @@ const ProfileSettings = () => {
           return;
         }
 
-        await axios.post(`${API_BASE}/change-password`, passwords, {
+       const res= await axios.post(`${API_BASE}/change-password`, passwords, {
           headers: { Authorization: `Bearer ${token}` },
         });
+          console.log(res)
       }
 
       toast.success("Profile updated successfully");
