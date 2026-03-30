@@ -16,7 +16,7 @@ import {
   TextAlignCenter
 } from 'lucide-react';
 import UserNavbar from './UserNavbar';
-import UserFooter from './userFooter';
+import UserFooter from './UserFooter';
 import toast from "react-hot-toast";
 import { useFormContext } from "../dashboard/FormContext"; 
 import LoadingScreen from '../shared/LoadingScreen';

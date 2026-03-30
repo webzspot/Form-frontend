@@ -7,8 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import { X, FileText, Calendar, Eye,CheckCircle, MessageSquare, ArrowLeft} from "lucide-react";
 import { FaCheckCircle, FaSpinner, FaSearch, FaArrowLeft } from "react-icons/fa";
-
-import UserFooter from "../user/userFooter";
+import UserFooter from "../user/UserFooter";
 
 const UserActivity = () => {
 
@@ -305,7 +304,7 @@ const displayedForms = filteredForms.slice(0, visibleCount);
       ))
     : displayedForms.length === 0
     ? 
-      <div className={` rounded-2xl border-2  border-dashed border-slate-300 p-16 mb-8 text-center col-span-full`}>
+      <div className={` rounded-md border-2  border-dashed border-slate-300 p-16 mb-8 text-center col-span-full`}>
         <div className={`w-20 h-20 text-gray-600 rounded-full flex items-center justify-center mx-auto mb-4`}>
           <FileText className="text-gray-400" size={36} />
         </div>
@@ -319,7 +318,7 @@ const displayedForms = filteredForms.slice(0, visibleCount);
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: index * 0.1 }}
-          className={`p-6 rounded-md border transition-all flex flex-col justify-between  border-gray-200 hover:border-gray-300`}
+          className={`p-6 rounded-md border transition-all flex flex-col bg-white justify-between  border-gray-200 hover:border-gray-300`}
         >
         
 

@@ -622,7 +622,10 @@ const ProfileSettings = () => {
       const res = await axios.get(`${API_BASE}/profile`, {
         headers: { Authorization: `Bearer ${token}` },
       });
+      //console.log(res)
       setUser(res.data.data);
+      // Add this where you receive the 'res' from your API
+
     } catch (err) {
       toast.error("Session expired. Please login again.");
       navigate("/login");
@@ -702,7 +705,7 @@ const ProfileSettings = () => {
 
   const labelClasses = "text-[11px] font-bold uppercase tracking-[0.1em] mb-1 text-[#2B4BAB]/60";
   const valueClasses = "text-lg font-semibold text-slate-800";
-  const inputClasses = "w-full px-5 py-3.5 rounded-2xl border border-slate-200 outline-none focus:border-[#2B4BAB] focus:ring-4 focus:ring-[#2B4BAB]/5 transition-all font-medium bg-white";
+  const inputClasses = "w-full px-5 py-3.5 rounded-md border border-slate-200 outline-none focus:border-[#2B4BAB] focus:ring-4 focus:ring-[#2B4BAB]/5 transition-all font-medium bg-white";
 
   return (
     <>
@@ -713,7 +716,7 @@ const ProfileSettings = () => {
           <motion.div 
             initial={{ opacity: 0, y: 20 }} 
             animate={{ opacity: 1, y: 0 }}
-            className="rounded-[2.5rem] border border-slate-100 bg-white shadow-[0_15px_40px_rgba(43,75,171,0.06)] overflow-hidden"
+            className="rounded-md  border border-slate-100 bg-white shadow-[0_15px_40px_rgba(43,75,171,0.06)] overflow-hidden"
           >
             {loading ? (
               <div className="h-[500px] flex flex-col items-center justify-center gap-4">
@@ -766,7 +769,7 @@ const ProfileSettings = () => {
                       {!editingUser && (
                         <button 
                           onClick={() => setEditingUser({ name: user.name, email: user.email })}
-                          className="px-6 py-2.5 text-sm font-bold rounded-xl bg-[#2B4BAB] text-white hover:bg-[#1e3a8a] shadow-lg shadow-[#2B4BAB]/20 transition-all active:scale-95"
+                          className="px-6 py-2.5 text-sm font-bold rounded-md bg-[#2B4BAB] text-white hover:bg-[#1e3a8a] shadow-lg shadow-[#2B4BAB]/20 transition-all active:scale-95"
                         >
                           Edit Profile
                         </button>
@@ -784,7 +787,7 @@ const ProfileSettings = () => {
                         >
                           <div className="space-y-1">
                             <p className={labelClasses}>Full Name</p>
-                            <p className={valueClasses}>{user?.name}</p>
+                            <p className={`text-lg font-medium rounded-md ${valueClasses}`}>{user?.name}</p>
                           </div>
                           <div className="space-y-1">
                             <p className={labelClasses}>Email Address</p>
@@ -871,7 +874,7 @@ const ProfileSettings = () => {
                             <button 
                               onClick={handleUpdate} 
                               disabled={actionLoading} 
-                              className="px-8 py-3 bg-[#2B4BAB] text-white rounded-2xl font-bold hover:bg-[#1e3a8a] shadow-xl shadow-blue-500/20 disabled:opacity-50 transition-all active:scale-95"
+                              className="px-8 py-3 bg-[#2B4BAB] text-white rounded-md font-bold hover:bg-[#1e3a8a] shadow-xl shadow-blue-500/20 disabled:opacity-50 transition-all active:scale-95"
                             >
                               {actionLoading ? "Processing..." : "Save All Changes"}
                             </button>
@@ -892,12 +895,23 @@ const ProfileSettings = () => {
 
                   {/* Plan and Danger Zone */}
                   <div className="mt-12 flex flex-col md:flex-row items-center justify-between gap-6 px-4">
-                    <Link to="/plandetail" className="group flex items-center gap-3">
+                    {/* <Link to="/plandetail" className="group flex items-center gap-3">
                       <div className="px-3 py-1 bg-[#2B4BAB]/5 text-[#2B4BAB] rounded-lg text-xs font-black uppercase tracking-widest">
                         {user?.plan} Plan
                       </div>
                       <div className="h-px w-8 bg-slate-200 transition-all group-hover:w-16 group-hover:bg-[#2B4BAB]"></div>
-                    </Link>
+                    </Link> */}
+
+                    {user?.role !== "ADMIN" ? (
+    <Link to="/plandetail" className="group flex items-center gap-3">
+      <div className="px-3 py-1 bg-[#2B4BAB]/5 text-[#2B4BAB] rounded-lg text-xs font-black uppercase tracking-widest">
+        {user?.plan} Plan
+      </div>
+      <div className="h-px w-8 bg-slate-200 transition-all group-hover:w-16 group-hover:bg-[#2B4BAB]"></div>
+    </Link>
+  ) : (
+    <div /> /* Keeps the layout balanced for admins */
+  )}
 
                     <button 
                       onClick={() => setShowDeleteModal(true)} 
@@ -920,7 +934,7 @@ const ProfileSettings = () => {
                 initial={{ scale: 0.9, opacity: 0 }} 
                 animate={{ scale: 1, opacity: 1 }} 
                 exit={{ scale: 0.9, opacity: 0 }}
-                className="bg-white rounded-[2.5rem] p-10 max-w-sm w-full text-center shadow-2xl border border-slate-100"
+                className="bg-white rounded-md p-10 max-w-sm w-full text-center shadow-2xl border border-slate-100"
               >
                 <div className="w-16 h-16 bg-red-50 text-red-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
                   <FiTrash2 size={30} />
@@ -932,12 +946,12 @@ const ProfileSettings = () => {
                   value={passcode} 
                   onChange={(e)=>setpasscode(e.target.value)} 
                   placeholder="••••" 
-                  className="w-full text-center py-4 rounded-2xl mb-6 border border-slate-200 outline-none focus:border-red-500 transition-all text-xl tracking-[0.5em] font-bold bg-slate-50" 
+                  className="w-full text-center py-4 rounded-md mb-6 border border-slate-200 outline-none focus:border-red-500 transition-all text-xl tracking-[0.5em] font-bold bg-slate-50" 
                 />
                 <div className="flex flex-col gap-3">
                   <button 
                     onClick={handleDelete} 
-                    className="w-full bg-red-600 text-white py-4 rounded-2xl font-black hover:bg-red-700 transition-colors shadow-lg shadow-red-100 active:scale-95"
+                    className="w-full bg-red-600 text-white py-4 rounded-md font-black hover:bg-red-700 transition-colors shadow-lg shadow-red-100 active:scale-95"
                   >
                     Confirm Deletion
                   </button>

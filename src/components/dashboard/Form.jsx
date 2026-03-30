@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useState ,useCallback} from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import axios from "axios"
 import toast from "react-hot-toast"
@@ -358,6 +358,66 @@ const Form = () => {
     }
   }
 
+
+  const [userData, setUserData] = useState("PRO");
+
+
+const getUser = useCallback(async () => {
+    if (!token) return;
+    try {
+      const res = await axios.get("https://formbuilder-saas-backend.onrender.com/api/users/profile", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      //console.log(res.data?.data?.plan)
+      setUserData(res.data?.data?.plan);
+
+    } catch (err) {
+    }
+  }, [token, navigate]);
+
+  useEffect(() => {
+    getUser();
+  }, [getUser]);
+
+  const FeatureGuard = ({ userPlan, children }) => {
+  // Logic: Only allow 'PRO' or 'BUSINESS'
+  const isLocked = userPlan !== "PRO" && userPlan !== "BUSINESS";
+
+  if (!isLocked) return children;
+
+  return (
+    <div className="relative group">
+      {/* 1. The "Dimmed" UI */}
+      <div className="opacity-40 grayscale pointer-events-none select-none blur-[1px] transition-all">
+        {children}
+      </div>
+
+      {/* 2. The Lock Overlay */}
+      <div className="absolute inset-0 z-20 flex items-center justify-center bg-white/30 backdrop-blur-[2px] rounded-xl border border-gray-200/50">
+        <div className="bg-white p-5 rounded-2xl shadow-xl border border-gray-100 flex flex-col items-center text-center max-w-[280px] animate-in fade-in zoom-in duration-300">
+          <div className="w-12 h-12 bg-indigo-50 rounded-full flex items-center justify-center mb-3">
+            <Lock className="w-6 h-6 text-indigo-600" />
+          </div>
+          <h3 className="text-sm font-bold text-gray-900 tracking-tight">Premium Themes</h3>
+          <p className="text-[11px] text-gray-500 mt-1 leading-relaxed">
+            Custom colors and branding are available for Pro members.
+          </p>
+          <button 
+            onClick={() => window.location.href = '/pricing'}
+            className="mt-4 w-full py-2 bg-[#2B4BAB] text-white text-[11px] font-bold rounded-lg hover:shadow-lg transition-all"
+          >
+            UPGRADE NOW
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+ const currentPlan = userData;
+// const currentPlan = "PRO"
+//  console.log(currentPlan)
+  
   // Skeleton Loader Component
   const SkeletonCard = () => (
     <div className="bg-white/80 backdrop-blur-sm p-6 rounded-md border border-gray-100 animate-pulse">
@@ -704,10 +764,10 @@ const Form = () => {
           variants={itemVariants}
           whileHover={{ x: 4 }}
           whileTap={{ scale: 0.98 }}
-          className={`group flex items-center gap-3 py-3 px-4 text-[13px] border transition-all duration-300 rounded-sm cursor-pointer ${
+          className={`group flex items-center gap-3 py-3 px-4  transition-all duration-300 rounded-sm cursor-pointer ${
             selectedFields.some((f) => f.masterFieldId === field.masterFieldId)
-              ? "bg-[#2B4BAB] border-[#2B4BAB] shadow-sm"
-              : "bg-white border-gray-100 hover:border-gray-200 shadow-sm"
+              ? "bg-[#2B4BAB] border-[#2B4BAB] "
+              : "bg-white border-gray-100 hover:border-gray-200 "
           }`}
         >
 
@@ -900,13 +960,23 @@ const Form = () => {
     </AnimatePresence>
 
     <div className="  border-t border-gray-100">
-      <Design
+      {/* <Design
         editingFormId={editingFormId}
         token={token}
         formTheme={formTheme}
         setFormTheme={setFormTheme}
         isDarkMode={false} 
-      />
+      /> */}
+
+      <FeatureGuard userPlan={currentPlan}>
+          <Design
+            editingFormId={editingFormId}
+            token={token}
+            formTheme={formTheme}
+            setFormTheme={setFormTheme}
+            isDarkMode={isDarkMode}
+          />
+       </FeatureGuard>
     </div>
   </div>
 </div>
@@ -1032,11 +1102,11 @@ const Form = () => {
                       <motion.div
                         initial={{ opacity: 0, scale: 0.95 }}
                         animate={{ opacity: 1, scale: 1 }}
-                        className="h-64 border-2 border-dashed border-gray-200 text-center rounded-3xl flex flex-col items-center justify-center text-gray-400 bg-gradient-to-br from-gray-50/50 to-white"
+                        className="h-64 border-2 border-dashed border-gray-200 text-center rounded-md flex flex-col items-center justify-center text-gray-400 bg-gradient-to-br from-gray-50/50 to-white"
                       >
                         <motion.div
                           animate={pulseAnimation}
-                          className="w-16 h-16 bg-gray-400/30 rounded-2xl flex items-center justify-center mb-4"
+                          className="w-16 h-16 bg-gray-400/30 rounded-md flex items-center justify-center mb-4"
                         >
                           <Layers className="w-8 h-8 text-[#2B4BAB]" />
                         </motion.div>
@@ -1236,7 +1306,7 @@ text-[#2B4BAB]
                         borderRadius: "6px",
                         // borderRadius: formTheme.borderRadius || "16px",
                       }}
-                      className="flex-1 text-white sm:py-3 py-1 rounded-sm font-semibold shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                      className="flex-1 text-white  py-3 rounded-md font-semibold shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                     >
                       {loading ? (
                         <>
@@ -1263,7 +1333,7 @@ text-[#2B4BAB]
                       }}
                       whileHover={{ scale: 1.01 }}
                       whileTap={{ scale: 0.99 }}
-                      className="px-8 sm:py-3 py-1 bg-gray-200 text-gray-600 rounded-sm font-bold hover:bg-gray-200 transition-all duration-300"
+                      className="px-8 py-3 bg-gray-200 text-gray-600 rounded-md font-bold hover:bg-gray-200 transition-all duration-300"
                     >
                       Cancel
                     </motion.button>
@@ -1311,7 +1381,7 @@ text-[#2B4BAB]
   flex flex-col justify-between transition-all duration-500 overflow-hidden  w-full  min-h-60
   ${isDarkMode
       ? "bg-[#0f172a]/80 backdrop-blur-md border-slate-800 shadow-2xl text-gray-100"
-      : "bg-white/80 border-[#E5E7EB] rounded-xl text-gray-900"
+      : "bg-white/80 border-[#E5E7EB] rounded-md text-gray-900"
     }
 `}
                 >

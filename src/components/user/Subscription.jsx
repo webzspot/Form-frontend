@@ -508,6 +508,7 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+
 import { 
   Check, 
   X, 
@@ -525,7 +526,12 @@ import UserNavbar from './UserNavbar';
 import toast from 'react-hot-toast';
 const Subscription = ({ standalone = true }) => {
   const navi = useNavigate();
+
+  
+ 
   const token = sessionStorage.getItem("token");
+
+   
   const API_BASE = "https://formbuilder-saas-backend.onrender.com";
 
   const planApi = async (plan) => {
@@ -537,7 +543,7 @@ const Subscription = ({ standalone = true }) => {
       navi("/login");
       return;
     }
-
+       console.log("SENDING DATA:", { planType: plan, token: currentToken });
     try {
       const res = await axios.post(
         `${API_BASE}/subscription/create`,
@@ -558,12 +564,12 @@ const Subscription = ({ standalone = true }) => {
           toast.success("Payment Successful! Upgrading your account...");
           navi("/home");
         },
-        prefill: {
+       prefill: {
         //  name: "User", // You can pull this from sessionStorage too if available
 
         // Try using a more realistic name or pulling from sessionStorage if you have it
-      name: sessionStorage.getItem("userName") || "Customer", 
-      email: sessionStorage.getItem("userEmail") || "test@example.com"
+     name: sessionStorage.getItem("Name") || "Customer", 
+   //   email: sessionStorage.getItem("Email") || "test@example.com"
         },
         theme: { color: "#2B4BAB" }, // Consistent Brand Color
       };
@@ -711,7 +717,7 @@ const Subscription = ({ standalone = true }) => {
                 ))}
               </div>
 
-              {plan.id === "FREE" ? (
+              {plan.id === "FREE"? (
                 <div className="w-full py-4 rounded-sm font-bold text-sm flex items-center justify-center gap-2 border border-gray-200 text-gray-400 bg-gray-50">
                   <Check size={18} />
                   Active Plan
@@ -720,8 +726,8 @@ const Subscription = ({ standalone = true }) => {
                 <button 
                   onClick={() => planApi(plan.id)}
                   // Updated to rounded-sm and strictly #2B4BAB
-                  className="w-full py-4 rounded-sm font-bold text-sm flex items-center justify-center gap-2 transition-all  text-white hover:brightness-110 shadow-md shadow-[#2B4BAB]/20"
-                  style={{ background: 'linear-gradient(90.41deg, #10B77F 0%, #1AA2E6 100%)' }}
+                  className="w-full py-4 rounded-sm font-bold text-sm flex items-center bg-[#2B4BAB] justify-center gap-2 transition-all  text-white hover:brightness-110 shadow-md shadow-[#2B4BAB]/20"
+                  // style={{ background: 'linear-gradient(90.41deg, #10B77F 0%, #1AA2E6 100%)' }}
                 >
                   {plan.cta} <ArrowRight size={16} />
                 </button>
