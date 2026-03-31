@@ -11,7 +11,7 @@ import UserNavbar from "../user/UserNavbar";
 import TableSkeleton from './TableSkeleton';
 import usePagination from "../../hooks/usePagination";
 import toast from 'react-hot-toast';
-import UserFooter from '../user/userFooter';
+import UserFooter from '../user/UserFooter';
 import CardSkeleton from './CardSkeleton';
 const AllReports = () => {
   const token = sessionStorage.getItem("token");
