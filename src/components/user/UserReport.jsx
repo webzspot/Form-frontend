@@ -22,7 +22,7 @@ import {
   FiMinus,
   FiActivity
 } from "react-icons/fi";
-
+import UserFooter from "./UserFooter";
 
 const UserReport = () => {
   const token = sessionStorage.getItem("token");
@@ -241,7 +241,7 @@ const UserReport = () => {
           </div>
         </motion.div>
       </div>
-     
+      < UserFooter />
     </>
   );
 };

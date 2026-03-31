@@ -11,7 +11,7 @@ import {
 import { FaRegFileAlt,FaSearch } from "react-icons/fa";
 import UserNavbar from './UserNavbar';
 import TableSkeleton from '../dashboard/TableSkeleton';
-import UserFooter from './userFooter';
+import UserFooter from './UserFooter';
 import usePagination from "../../hooks/usePagination";
 import toast from 'react-hot-toast';
 import CardSkeleton from '../dashboard/CardSkeleton';
