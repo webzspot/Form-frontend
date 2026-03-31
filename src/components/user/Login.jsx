@@ -53,8 +53,7 @@ const Login = () => {
       sessionStorage.setItem("token", token);
       sessionStorage.setItem("role", user.role);
        sessionStorage.setItem("Name", user.name);
-
-       console.log(token)
+      
 
       showToast("Login Successful!", "success");
 
@@ -240,7 +239,7 @@ const Login = () => {
                 <input
                   value={email}
                   onChange={(e) => setemail(e.target.value)}
-                  className="w-full px-12 py-2 mt-1 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-600 transition-all text-gray-900 shadow-sm"
+                  className="w-full px-12 py-2 mt-1 bg-white border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-600 transition-all text-gray-900 shadow-sm"
                   type="email"
                   placeholder="you@example.com"
                 />
@@ -257,20 +256,27 @@ const Login = () => {
                 <input
                   value={password}
                   onChange={(e) => setpassword(e.target.value)}
-                  className="w-full px-12 py-2 mt-1 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-violet-600 transition-all text-gray-900 shadow-sm"
+                  className="w-full px-12 py-2 mt-1 bg-white border border-gray-200 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-600 transition-all text-gray-900 shadow-sm"
                   type="password"
                   placeholder="••••••••"
                 />
               </div>
+
+              <Link 
+      to="/forgot-password" 
+      className="text-xs font-semibold text-indigo-600 hover:text-indigo-500 hover:underline transition-colors"
+    >
+      Forgot password?
+    </Link>
             </div>
 
             <button
               disabled={isLoading}
               type="submit"
-              className={`w-full py-3.5 rounded-xl text-white font-semibold flex items-center justify-center gap-2 transition-all shadow-lg 
+              className={`w-full py-3.5 rounded-md text-white font-semibold flex items-center justify-center gap-2 transition-all shadow-lg 
                 ${isLoading 
-                  ? "bg-violet-400 cursor-not-allowed" 
-                  : "bg-violet-600 hover:bg-violet-700 hover:scale-[1.01] shadow-violet-500/20"
+                  ? "bg-indigo-400 cursor-not-allowed" 
+                  : "bg-indigo-600 hover:bg-indigo-700 hover:scale-[1.01] shadow-indigo-500/20"
                 }`}
             >
               {isLoading ? (
@@ -295,7 +301,7 @@ const Login = () => {
 
           <p className="text-center text-gray-600 mb-4">
             Don't have an account?{" "}
-            <Link to="/register" className="text-violet-600 font-bold hover:underline">
+            <Link to="/register" className="text-indigo-600 font-bold hover:underline">
               Sign up
             </Link>
           </p>

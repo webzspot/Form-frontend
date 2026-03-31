@@ -15,6 +15,7 @@ import usePagination from "../../hooks/usePagination";
 import TableSkeleton from "./TableSkeleton";
 import {motion } from "framer-motion"
 import CardSkeleton from "./CardSkeleton";
+import UserFooter from "../user/UserFooter";
 const AdminFormResponses = () => {
   const { formId } = useParams();
   const token = sessionStorage.getItem("token");
@@ -26,7 +27,7 @@ const AdminFormResponses = () => {
   const [filterQuestion, setFilterQuestion] = useState("ALL");
   const [searchQuery, setSearchQuery] = useState("");
   const [formTitle, setFormTitle] = useState("");
-
+ const [expandedId, setExpandedId] = useState(null);
   const theme = {
     pageBg: "bg-[#F9FAFB]",
     card: "bg-white border border-[#EAECF0] rounded-md shadow-sm",
@@ -119,6 +120,7 @@ const AdminFormResponses = () => {
   const { currentData, currentPage, totalPages, nextPage, prevPage } = usePagination(filteredResponses, 10);
 
   return (
+    <>
     <div className={`min-h-screen ${theme.pageBg} font-sans pb-20`}>
       <UserNavbar />
 
@@ -369,11 +371,11 @@ const AdminFormResponses = () => {
         >
           {/* Header: Entry No & Ref ID */}
           <div className="flex justify-between items-center mb-2">
-            <span className="text-[10px] font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded">
+            <span className="text-[10px] font-bold text-gray-600">
               Entry {idx + 1 + (currentPage - 1) * 10}
             </span>
             <span className="text-[10px] font-mono text-gray-400">
-              ID: {res.formResponseId.slice(-6).toUpperCase()}
+              Ref Id: {res.formResponseId.slice(-6).toUpperCase()}
             </span>
           </div>
 
@@ -387,7 +389,7 @@ const AdminFormResponses = () => {
           {displayedQuestions.length > 1 && (
             <button 
               onClick={() => setExpandedId(expandedId === res.formResponseId ? null : res.formResponseId)}
-              className="w-full py-1.5 bg-gray-50 text-[#344054] text-[11px] font-bold rounded border border-gray-200"
+              className="w-full py-1.5 bg-slate-50 text-[#2B4BAB] text-xs  font-bold rounded border border-gray-200"
             >
               {expandedId === res.formResponseId ? "↑ Show Less" : `+ View ${otherQs.length} more fields`}
             </button>
@@ -450,6 +452,8 @@ const AdminFormResponses = () => {
 </div> 
       </main>
     </div>
+    <UserFooter/>
+    </>
   );
 };
 

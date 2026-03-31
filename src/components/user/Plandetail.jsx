@@ -246,8 +246,9 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import UserFooter from './userFooter';
+import UserFooter from './UserFooter';
 import toast from 'react-hot-toast';
+import { Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 const Plandetail = () => {
   const [subscription, setSubscription] = useState(null);
@@ -267,6 +268,7 @@ const Plandetail = () => {
         headers: { Authorization: `Bearer ${token}` },
       });
       setSubscription(res.data.data);
+      console.log(res.data.data)
     } catch (err) {
       console.error(err);
       toast.error("Failed to fetch billing details");
@@ -313,9 +315,15 @@ const Plandetail = () => {
           <motion.div 
             initial={{ opacity: 0, y: 20 }} 
             animate={{ opacity: 1, y: 0 }}
-            className="rounded-[2.5rem] border border-slate-100 bg-white shadow-[0_15px_40px_rgba(43,75,171,0.06)] overflow-hidden"
+            className="rounded-md border border-slate-100 bg-white shadow-[0_15px_40px_rgba(43,75,171,0.06)] overflow-hidden"
           >
             {/* Header / Brand Section */}
+         {loading? (
+              <div className="h-[500px] flex flex-col items-center justify-center gap-4">
+                <Loader2 className="w-10 h-10 text-[#2B4BAB] animate-spin" />
+                <p className="text-slate-400 font-medium">Loading your plan details...</p>
+              </div>
+            ) : ( <>
             <div className="p-10 flex flex-col md:flex-row items-center gap-8 bg-white border-b border-slate-50">
               <div className="relative">
                 <div className="w-24 h-24 rounded-3xl flex items-center justify-center bg-blue-50 text-[#2B4BAB] shadow-inner">
@@ -342,14 +350,14 @@ const Plandetail = () => {
               </div>
 
               <div className="md:ml-auto flex gap-3">
-                <Link to={"/"} state={{scrollTo:"subscription"}}>
-                  <button className="px-8 py-3 bg-[#2B4BAB] text-white rounded-2xl font-bold hover:bg-[#1e3a8a] shadow-xl shadow-[#2B4BAB]/20 transition-all active:scale-95 text-sm"
+               
+                  <button className="px-8 py-3 bg-[#2B4BAB] text-white rounded-md font-bold hover:bg-[#1e3a8a] shadow-xl shadow-[#2B4BAB]/20 transition-all active:scale-95 text-sm"
                   onClick={()=>{navigate("/subscription")}}
                   >
                     Upgrade Now
                   </button>
-                </Link>
-                <button className="p-3 rounded-2xl border border-slate-100 text-slate-400 hover:bg-slate-50 transition-all">
+               
+                <button className="p-3 rounded-md border border-slate-100 text-slate-400 hover:bg-slate-50 transition-all">
                   <Download size={20}/>
                 </button>
               </div>
@@ -378,7 +386,7 @@ const Plandetail = () => {
               </div>
 
               {/* Usage Stats Section */}
-              <div className="rounded-[2rem] border border-slate-100 p-8 bg-white shadow-sm">
+              <div className="rounded-md border border-slate-100 p-8 bg-white shadow-sm">
                 <div className="flex items-center gap-3 mb-8">
                   <div className="w-1.5 h-6 bg-[#2B4BAB] rounded-full"></div>
                   <h2 className="font-bold text-lg text-slate-900 uppercase tracking-tight">Usage & Quota</h2>
@@ -419,12 +427,13 @@ const Plandetail = () => {
                 
                 <button 
                   onClick={cancelplandetail}
-                  className="px-8 py-3 rounded-2xl border border-red-100 text-red-600 font-bold hover:bg-red-600 hover:text-white transition-all active:scale-95 text-sm"
+                  className="px-8 py-3 rounded-md border border-red-100 text-red-600 font-bold hover:bg-red-600 hover:text-white transition-all active:scale-95 text-sm"
                 >
                   End Subscription
                 </button>
               </div>
             </div>
+            </>)}
           </motion.div>
         </main>
       </div>
@@ -442,7 +451,7 @@ const DetailCard = ({ icon, label, value, isBadge, isCopyable }) => {
   };
 
   return (
-    <div className="p-6 rounded-[2rem] border border-slate-100 bg-white shadow-sm hover:shadow-md transition-all group relative">
+    <div className="p-6 rounded-md border border-slate-100 bg-white shadow-sm hover:shadow-md transition-all group relative">
       <div className="flex justify-between items-start mb-4">
         <div className="p-2.5 rounded-xl bg-slate-50 group-hover:bg-blue-50 transition-colors">
           {icon}
