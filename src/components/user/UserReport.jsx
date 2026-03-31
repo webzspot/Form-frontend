@@ -12,7 +12,7 @@ import {
   ResponsiveContainer 
 } from "recharts";
 import UserNavbar from "./UserNavbar";
-import UserFooter from "./userFooter";
+
 import toast from "react-hot-toast";
 import { 
   FiAlertCircle, 
@@ -22,6 +22,7 @@ import {
   FiMinus,
   FiActivity
 } from "react-icons/fi";
+
 
 const UserReport = () => {
   const token = sessionStorage.getItem("token");
@@ -240,7 +241,7 @@ const UserReport = () => {
           </div>
         </motion.div>
       </div>
-      <UserFooter />
+     
     </>
   );
 };
