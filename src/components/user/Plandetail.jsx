@@ -252,6 +252,7 @@ import { Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 const Plandetail = () => {
   const [subscription, setSubscription] = useState(null);
+  const [userStats, setUserStats] = useState(null);
   const [loading, setLoading] = useState(true);
   const navigate=useNavigate()
 
@@ -264,14 +265,19 @@ const Plandetail = () => {
 
   const getplandetail = async () => {
     try {
-      const res = await axios.get(`${API_BASE}/subscription`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setSubscription(res.data.data);
-      console.log(res.data.data)
+      // const res = await axios.get(`${API_BASE}/subscription`, {
+      //   headers: { Authorization: `Bearer ${token}` },
+      // });
+      const [subRes, profileRes] = await Promise.all([
+      axios.get(`${API_BASE}/subscription`, { headers: { Authorization: `Bearer ${token}` } }),
+      axios.get(`${API_BASE}/api/users/profile`, { headers: { Authorization: `Bearer ${token}` } })
+    ]);
+      setSubscription(subRes.data.data);
+      setUserStats(profileRes.data.data);
+     
     } catch (err) {
-      console.error(err);
-      toast.error("Failed to fetch billing details");
+    
+      toast.error("Failed to fetch billing details",err);
     } finally {
       setLoading(false);
     }
@@ -385,31 +391,73 @@ const Plandetail = () => {
                 />
               </div>
 
-              {/* Usage Stats Section */}
-              <div className="rounded-md border border-slate-100 p-8 bg-white shadow-sm">
-                <div className="flex items-center gap-3 mb-8">
-                  <div className="w-1.5 h-6 bg-[#2B4BAB] rounded-full"></div>
-                  <h2 className="font-bold text-lg text-slate-900 uppercase tracking-tight">Usage & Quota</h2>
-                </div>
+          <div className="rounded-md border border-slate-100 p-8 bg-white shadow-sm">
+  <div className="flex items-center gap-3 mb-8">
+    <div className="w-1.5 h-6 bg-[#2B4BAB] rounded-full"></div>
+    <h2 className="font-bold text-lg text-slate-900 uppercase tracking-tight">Usage & Quota</h2>
+  </div>
 
-                <div className="space-y-6">
-                  <div className="flex justify-between items-end">
-                    <div>
-                      <p className="font-bold text-slate-800">Current Period Progress</p>
-                      <p className="text-xs text-slate-400 font-medium">Updates in real-time based on API hits</p>
-                    </div>
-                    <p className="text-2xl font-black text-[#2B4BAB]">65%</p>
-                  </div>
-                  
-                  <div className="h-3 w-full bg-slate-100 rounded-full overflow-hidden">
-                    <motion.div 
-                      initial={{ width: 0 }}
-                      animate={{ width: "65%" }}
-                      className="h-full bg-gradient-to-r from-[#2B4BAB] to-blue-400 rounded-full"
-                    />
-                  </div>
-                </div>
-              </div>
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+    {/* Card 1: Forms Created */}
+    <div className="p-5 rounded-md bg-white shadow-sm border border-slate-100">
+      <div className="flex justify-between items-start mb-4">
+        <p className="text-sm font-bold text-slate-600">Forms Created</p>
+        <span className="px-2 py-1 bg-white rounded-md text-[10px] font-bold text-[#2B4BAB] shadow-sm uppercase">
+          {subscription?.plan === "FREE" ? "Limit: 3" : "Unlimited"}
+        </span>
+      </div>
+      <div className="flex items-baseline gap-2">
+        <h4 className="text-3xl font-black text-slate-900">{userStats?.formCount || 0}</h4>
+        <p className="text-slate-400 text-xs">Active forms</p>
+      </div>
+      
+
+      <p className="text-slate-400 mt-4 text-xs">
+  {subscription?.plan === "FREE" 
+    ? `${3 - (userStats?.formCount || 0)} forms remaining` 
+    : "Unlimited forms available"}
+</p>
+      {/* Show progress bar ONLY for Free users */}
+      {subscription?.plan === "FREE" && (
+        <div className="mt-4 h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
+          <div 
+            className="h-full bg-[#2B4BAB] rounded-full" 
+            style={{ width: `${((userStats?.formCount || 0) / 3) * 100}%` }}
+          />
+        </div>
+      )}
+    </div>
+
+    {/* Card 2: Responses */}
+  {/* Card 2: Responses */}
+<div className="p-5 rounded-md bg-white border border-slate-100 shadow-sm">
+  <div className="flex justify-between items-start mb-4">
+    <p className="text-sm font-bold text-slate-600">Responses</p>
+    {/* This span now shows 100, 2000, or 50,000 depending on the plan */}
+    <span className="px-2 py-1 bg-white rounded-md text-[10px] font-bold text-[#2B4BAB] shadow-sm uppercase">
+      {subscription?.plan === "FREE" ? "Limit: 100" : 
+       subscription?.plan === "PRO" ? "Limit: 2,000" : "Limit: 50,000"}
+    </span>
+  </div>
+  <div className="flex items-baseline gap-2">
+    <h4 className="text-3xl font-black text-slate-900">{userStats?.monthlyResponseCount || 0}</h4>
+    <p className="text-slate-400 text-xs">Monthly responses</p>
+  </div>
+  
+  {/* The progress bar now calculates based on the plan limit */}
+  <div className="mt-4 h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+    <div 
+      className="h-full bg-emerald-500 rounded-full transition-all duration-500" 
+      style={{ 
+        width: `${Math.min(((userStats?.monthlyResponseCount || 0) / 
+          (subscription?.plan === "FREE" ? 100 : 
+           subscription?.plan === "PRO" ? 2000 : 50000)) * 100, 100)}%` 
+      }}
+    />
+  </div>
+</div>
+  </div>
+</div>
 
               {/* Danger Zone */}
               <div className="mt-12 pt-10 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-6">

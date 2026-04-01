@@ -136,8 +136,29 @@ const Form = () => {
           headers: { Authorization: `Bearer ${token}` },
         })
         setMasterFields(res.data.data)
-      } catch (err) {
-        toast.error("Error loading master fields")
+      } catch (error) {
+       // toast.error("Error loading master fields")
+       const status = error.response?.status;
+           const message = error.response?.data?.message;
+       
+           
+           if (status === 404 && message?.toLowerCase().includes("no")) {
+             setMasterFields([]);
+           }
+           
+           else if(status===429){
+             toast.error("Too many requests. Please try again later.")
+           }
+          
+           else if (status === 401) {
+             toast.error("Session expired. Please login again.");
+             
+           }
+       
+           else {
+             toast.error("Failed to load data");
+             console.error("REAL ERROR:", error);
+           }
       }
       finally {
         setintroLoading(false);

@@ -213,7 +213,7 @@ const AdminFormResponses = () => {
             <table className="w-full text-left border-collapse">
               <thead>
                 <tr className={`${theme.tableHeader} border-b border-[#EAECF0]`}>
-                 <th className="px-6 py-4 text-[12px] font-semibold text-[#535862]">
+                 <th className="px-6 py-4 text-[12px] border-r border-[#E9EAEB] font-semibold text-[#535862]">
                       <div className="flex items-center gap-3">
                      
                         
@@ -227,7 +227,7 @@ const AdminFormResponses = () => {
                         </div>
                       </div>
                     </th>
-                 <th className="px-6 py-4 text-[12px] font-semibold text-[#535862]">
+                 <th className="px-6 py-4 border-r border-[#E9EAEB] text-[12px] font-semibold text-[#535862]">
                       <div className="flex items-center gap-3">
                      
                         
@@ -243,7 +243,7 @@ const AdminFormResponses = () => {
                         </div>
                       </div>
                     </th>
-                  <th className="px-6 py-4 text-[12px] font-semibold text-[#535862]">
+                  <th className="px-6 py-4 border-r border-[#E9EAEB] text-[12px] font-semibold text-[#535862]">
                        <div className="flex items-center gap-3">
                       
                          
@@ -257,8 +257,12 @@ const AdminFormResponses = () => {
                          </div>
                        </div>
                      </th>
-                  {displayedQuestions.map((q) => (
-                    <th key={q.id} className="px-6 py-4 text-[12px] font-semibold text-[#535862]">
+                  {/* {displayedQuestions.map((q,qIndex) => {
+                    const isLast = qIndex === displayedQuestions.length - 1;
+                    return(
+                    
+                    
+                    <th key={q.id} className="px-6 py-4 text-[12px] border-r border-[#E9EAEB] font-semibold text-[#535862]">
                          <div className="flex items-center gap-3">
                         
                            
@@ -272,7 +276,23 @@ const AdminFormResponses = () => {
                            </div>
                          </div>
                        </th>
-                  ))}
+                  ))} */}
+                  {displayedQuestions.map((q, qIndex) => {
+  const isLast = qIndex === displayedQuestions.length - 1;
+  return (
+    <th 
+      key={q.id} 
+      className={`px-6 py-4 text-[12px] font-semibold text-[#535862] ${!isLast ? 'border-r border-[#E9EAEB]' : ''}`}
+    >
+      <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 group cursor-pointer">
+          <span>{q.label}</span>
+          <FaArrowDown />
+        </div>
+      </div>
+    </th>
+  );
+})}
                 </tr>
               </thead>
               <tbody className="">
@@ -294,21 +314,22 @@ const AdminFormResponses = () => {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.3, delay: index * 0.05 }}
                     className="hover:bg-[#F5F6F8] border-b border-[#E9EAEB] transition-colors group" >
-                      <td className="px-6 py-4 text-sm text-[#667085]">
+                      <td className="px-6 py-4  border-r border-[#E9EAEB] text-sm text-[#667085]">
                         {index + 1 + (currentPage - 1) * 10}
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="px-6 py-4 border-r border-[#E9EAEB]" >
                         <span className="text-xs font-mono font-medium  text-[#344054] ">
                           {res.formResponseId.slice(-8).toUpperCase()}
                         </span>
                       </td>
-                      <td className="px-6 py-4 text-sm text-[#667085]">
+                      <td className="px-6 py-4 text-sm border-r border-[#E9EAEB] text-[#667085]">
                         {new Date(res.createdAt).toLocaleDateString()}
                       </td>
-                      {displayedQuestions.map((q) => {
+                      {displayedQuestions.map((q,qIndex) => {
                         const answer = res.responseValue.find((rv) => rv.formFieldId === q.id);
                         const val = answer ? (Array.isArray(answer.value) ? answer.value.join(", ") : answer.value) : "—";
-                        return <td key={q.id} className="px-6 py-4 text-sm text-[#475467]">{val}</td>;
+                        const isLast = qIndex === displayedQuestions.length - 1;
+                        return <td key={q.id} className={`px-6 py-4 text-sm text-[#475467] ${!isLast ? 'border-r border-[#E9EAEB]' : ''}`}>{val}</td>;
                       })}
                     </motion.tr>
                   ))
