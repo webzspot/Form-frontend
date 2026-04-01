@@ -136,8 +136,29 @@ const Form = () => {
           headers: { Authorization: `Bearer ${token}` },
         })
         setMasterFields(res.data.data)
-      } catch (err) {
-        toast.error("Error loading master fields")
+      }catch (error) {
+   
+       const status = error.response?.status;
+           const message = error.response?.data?.message;
+       
+           
+           if (status === 404 && message?.toLowerCase().includes("no")) {
+             setMasterFields([]);
+           }
+           
+           else if(status===429){
+             toast.error("Too many requests. Please try again later.")
+           }
+          
+           else if (status === 401) {
+             toast.error("Session expired. Please login again.");
+             
+           }
+       
+           else {
+             toast.error("Failed to load data");
+             console.error("REAL ERROR:", error);
+           }
       }
       finally {
         setintroLoading(false);
@@ -1358,7 +1379,26 @@ text-[#2B4BAB]
               </motion.div>
             ))}
           </motion.div>
-        ) : (
+        ) : forms.length === 0 ? (<motion.div 
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    className={`flex flex-col items-center justify-center py-20 px-4 text-center rounded-md border-2 border-dashed ${
+      isDarkMode ? "bg-slate-900/50 border-slate-800" : "bg-white border-gray-200"
+    }`}
+  >
+    <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 ${
+      isDarkMode ? "bg-slate-800 text-indigo-400" : "bg-indigo-50 text-[#2B4BAB]"
+    }`}>
+      <Layers size={32} />
+    </div>
+    <h3 className={`text-xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+      No forms created yet
+    </h3>
+    <p className={`mt-2 max-w-xs ${isDarkMode ? "text-slate-400" : "text-gray-500"}`}>
+      Your workspace is empty. Create your first professional form in just a few seconds.
+    </p>
+    
+  </motion.div>):(
           <motion.div
             layout
             variants={containerVariants}

@@ -11,7 +11,7 @@ import UserNavbar from "../user/UserNavbar";
 import TableSkeleton from './TableSkeleton';
 import usePagination from "../../hooks/usePagination";
 import toast from 'react-hot-toast';
-import UserFooter from '../user/userFooter';
+import UserFooter from '../user/UserFooter';
 import CardSkeleton from './CardSkeleton';
 const AllReports = () => {
   const token = sessionStorage.getItem("token");
@@ -172,16 +172,16 @@ const [updatingId, setUpdatingId] = useState(null);
       </div>
 
         {/* Table Container */}
-        <div className="hidden md:block bg-white rounded-2xl overflow-hidden border border-gray-100 shadow-sm">
+        <div className="hidden md:block bg-white rounded-md overflow-hidden border border-gray-100 shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full text-left">
               <thead className="bg-gray-50 border-b border-[#E5E7EB]">
                 <tr className="text-[#535862]">
-                  <th className="px-6 py-4 text-[12px] font-semibold">No.</th>
-                  <th className="px-6 py-4 text-[12px] font-semibold">Ref ID</th>
-                  <th className="px-6 py-4 text-[12px] font-semibold">Issue Details</th>
-                  <th className="px-6 py-4 text-center text-[12px] font-semibold">Status Action</th>
-                  <th className="px-6 py-4 text-right text-[12px] font-semibold">Date </th>
+                  <th className="px-6 py-4 text-[12px] font-semibold border-r border-[#E9EAEB]">No.</th>
+                  <th className="px-6 py-4 text-[12px] font-semibold border-r border-[#E9EAEB]">Ref ID</th>
+                  <th className="px-6 py-4 text-[12px] font-semibold border-r border-[#E9EAEB]">Issue Details</th>
+                  <th className="px-6 py-4  text-[12px] font-semibold border-r border-[#E9EAEB]">Status Action</th>
+                  <th className="px-6 py-4 text-[12px] font-semibold ">Date </th>
                 </tr>
               </thead>
               <tbody className="">
@@ -201,15 +201,15 @@ const [updatingId, setUpdatingId] = useState(null);
                       <motion.tr key={report.reportId}   initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.3, delay: idx * 0.05 }}   className="hover:bg-[#F5F6F8] border-b border-[#E9EAEB] transition-colors group">
-                        <td className="px-6 py-4 text-sm text-gray-400">
+                        <td className="px-6 py-4 text-sm text-[#181D27] border-r border-[#E9EAEB]">
                           {(currentPage - 1) * 10 + idx + 1}
                         </td>
-                        <td className="px-6 py-4">
-                          <span className="font-mono text-[11px] text-gray-600">
+                        <td className="px-6 py-4 border-r border-[#E9EAEB]">
+                          <span className="font-mono text-[11px] text-[#181D27]">
                             {report.reportId.slice(-8).toUpperCase()}
                           </span>
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-6 py-4 border-r border-[#E9EAEB]">
                           <div className="flex flex-col">
                             <span className="text-xs font-bold text-indigo-900 uppercase">
                               {report.reportData?.issueType || report.reportData?.sub}
@@ -219,8 +219,8 @@ const [updatingId, setUpdatingId] = useState(null);
                             </span>
                           </div>
                         </td>
-                       <td className="px-6 py-4 relative">
-  <div className="flex justify-center">
+                       <td className="px-6 py-4 border-r border-[#E9EAEB] relative">
+  <div className="flex justify-start">
     <button
       onClick={() => setOpenStatusId(openStatusId === report.reportId ? null : report.reportId)}
       disabled={updatingId === report.reportId}
@@ -285,8 +285,8 @@ const [updatingId, setUpdatingId] = useState(null);
     )}
   </AnimatePresence>
 </td>
-                        <td className="px-6 py-4 text-right">
-                          <span className="text-[11px] font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                        <td className="px-6 py-4 ">
+                          <span className="text-[11px] font-medium text-[#181D27] ">
                             {new Date(report.createdAt).toLocaleDateString()}
                           </span>
                         </td>

@@ -526,9 +526,9 @@ const AllForms = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left">
               <thead>
-                <tr className="border-b border-slate-50 text-slate-400 text-[11px] font-bold uppercase tracking-widest">
+                <tr className="border-b  border-[#E9EAEB] text-[#535862] tracking-widest">
 
-                  <th className="px-6 py-4 text-xs font-semibold ">
+                  <th className="px-6 py-4 text-xs font-semibold border-r border-[#E9EAEB]">
                     <div className="flex items-center gap-2 group cursor-pointer">
 
 
@@ -538,7 +538,7 @@ const AllForms = () => {
 
                     </div>
                   </th>
-                  <th className="px-6 py-4 text-xs font-semibold ">
+                  <th className="px-6 py-4 text-xs font-semibold border-r border-[#E9EAEB] ">
                     <div className="flex items-center gap-2 group cursor-pointer">
 
 
@@ -548,7 +548,7 @@ const AllForms = () => {
 
                     </div>
                   </th>
-                  <th className="px-6 py-4 text-xs font-semibold ">
+                  <th className="px-6 py-4 text-xs font-semibold border-r border-[#E9EAEB]">
                     <div className="flex items-center gap-2 group cursor-pointer">
 
 
@@ -586,14 +586,14 @@ const AllForms = () => {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.3, delay: index * 0.05 }}
                         className="hover:bg-[#F5F6F8] border-b border-[#E9EAEB] transition-colors group">
-                        <td className="px-8 py-4">
+                        <td className="px-6 py-4 border-r border-[#E9EAEB]">
                           <div className="flex items-center gap-3">
 
-                            <span className="text-sm font-medium text-slate-700">{form.title}</span>
+                            <span className="text-sm font-medium text-[#181D27]">{form.title}</span>
                           </div>
                         </td>
-                        <td className="px-6 py-4 text-sm text-slate-600">{form.user?.name || "Macd"}</td>
-                        <td className="px-6 py-4 text-sm text-slate-600">{form.user?.role || "User"}</td>
+                        <td className="px-6 py-4 text-sm border-r border-[#E9EAEB] text-[#181D27]">{form.user?.name || "User"}</td>
+                        <td className="px-6 py-4 text-sm border-r border-[#E9EAEB] text-[#181D27]">{form.user?.role || "User"}</td>
                         <td className="px-6 py-4">
                           <span className={`text-[13px] font-medium ${form.isPublic ? 'text-emerald-500' : 'text-slate-400'}`}>
                             {form.isPublic ? "Active" : "Inactive"}
