@@ -622,7 +622,7 @@ const ProfileSettings = () => {
       const res = await axios.get(`${API_BASE}/profile`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      //console.log(res)
+      console.log(res)
       setUser(res.data.data);
       // Add this where you receive the 'res' from your API
 

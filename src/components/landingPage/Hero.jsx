@@ -128,7 +128,7 @@
 import React from 'react'
 import { FaArrowRight, FaCheck } from "react-icons/fa";
 import { Link } from 'react-router-dom';
-import home from "../../assets/home.png"
+import home from "../../assets/home2.png"
 const Hero = () => {
   const token = sessionStorage.getItem("token");
   const role = sessionStorage.getItem("role");
