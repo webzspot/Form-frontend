@@ -136,8 +136,29 @@ const Form = () => {
           headers: { Authorization: `Bearer ${token}` },
         })
         setMasterFields(res.data.data)
-      } catch (err) {
-        toast.error("Error loading master fields")
+      }catch (error) {
+   
+       const status = error.response?.status;
+           const message = error.response?.data?.message;
+       
+           
+           if (status === 404 && message?.toLowerCase().includes("no")) {
+             setMasterFields([]);
+           }
+           
+           else if(status===429){
+             toast.error("Too many requests. Please try again later.")
+           }
+          
+           else if (status === 401) {
+             toast.error("Session expired. Please login again.");
+             
+           }
+       
+           else {
+             toast.error("Failed to load data");
+             console.error("REAL ERROR:", error);
+           }
       }
       finally {
         setintroLoading(false);
@@ -386,21 +407,21 @@ const getUser = useCallback(async () => {
   if (!isLocked) return children;
 
   return (
-    <div className="relative group">
+    <div className="relative group ">
       {/* 1. The "Dimmed" UI */}
       <div className="opacity-40 grayscale pointer-events-none select-none blur-[1px] transition-all">
         {children}
       </div>
 
       {/* 2. The Lock Overlay */}
-      <div className="absolute inset-0 z-20 flex items-center justify-center bg-white/30 backdrop-blur-[2px] rounded-xl border border-gray-200/50">
-        <div className="bg-white p-5 rounded-2xl shadow-xl border border-gray-100 flex flex-col items-center text-center max-w-[280px] animate-in fade-in zoom-in duration-300">
-          <div className="w-12 h-12 bg-indigo-50 rounded-full flex items-center justify-center mb-3">
+      {/* <div className="absolute inset-0 z-20 flex items-center justify-center bg-white/30 backdrop-blur-[2px] rounded-md border border-gray-200/50">
+        <div className="bg-white p-5 rounded-md shadow-xl border border-gray-100 flex flex-col items-center text-center max-w-[280px] animate-in fade-in zoom-in duration-300">
+          <div className="w-5 h-5 bg-indigo-50 rounded-full flex items-center justify-center mb-3">
             <Lock className="w-6 h-6 text-indigo-600" />
           </div>
           <h3 className="text-sm font-bold text-gray-900 tracking-tight">Premium Themes</h3>
           <p className="text-[11px] text-gray-500 mt-1 leading-relaxed">
-            Custom colors and branding are available for Pro members.
+            Custom colorsare available for Pro members.
           </p>
           <button 
             onClick={() => window.location.href = '/pricing'}
@@ -409,7 +430,7 @@ const getUser = useCallback(async () => {
             UPGRADE NOW
           </button>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };
@@ -1358,7 +1379,26 @@ text-[#2B4BAB]
               </motion.div>
             ))}
           </motion.div>
-        ) : (
+        ) : forms.length === 0 ? (<motion.div 
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    className={`flex flex-col items-center justify-center py-20 px-4 text-center rounded-md border-2 border-dashed ${
+      isDarkMode ? "bg-slate-900/50 border-slate-800" : "bg-white border-gray-200"
+    }`}
+  >
+    <div className={`w-16 h-16 rounded-full flex items-center justify-center mb-4 ${
+      isDarkMode ? "bg-slate-800 text-indigo-400" : "bg-indigo-50 text-[#2B4BAB]"
+    }`}>
+      <Layers size={32} />
+    </div>
+    <h3 className={`text-xl font-bold ${isDarkMode ? "text-white" : "text-gray-900"}`}>
+      No forms created yet
+    </h3>
+    <p className={`mt-2 max-w-xs ${isDarkMode ? "text-slate-400" : "text-gray-500"}`}>
+      Your workspace is empty. Create your first professional form in just a few seconds.
+    </p>
+    
+  </motion.div>):(
           <motion.div
             layout
             variants={containerVariants}

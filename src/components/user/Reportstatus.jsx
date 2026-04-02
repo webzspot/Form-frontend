@@ -35,8 +35,27 @@ const Reportstatus = () => {
   new Date(b.createdAt) - new Date(a.createdAt)
 );
         setUserReportStatus(sortedData);
-      } catch (err) {
-        toast.error("Failed to load reports", err);
+      } catch (error) {
+        //toast.error("Failed to load reports", err);
+        const status = error.response?.status;
+  const message = error.response?.data?.message || "";
+
+ 
+  if (status === 404 && (message.toLowerCase().includes("empty") || message.toLowerCase().includes("no"))) {
+    setUserReportStatus([]); // Set to empty so the "No reports found" UI shows
+    return; 
+  }
+  
+ 
+  if (status === 429) {
+    toast.error("Too many requests. Please try again later.");
+  } else if (status === 401) {
+    toast.error("Session expired. Please login again.");
+  } else {
+  
+    toast.error("Failed to load data");
+    console.error("REAL ERROR:", error);
+  }
       } finally {
         setLoading(false);
       }
@@ -158,17 +177,17 @@ const Reportstatus = () => {
       </div>
   </div>
         {/* Table */}
-        <div className="bg-white rounded-2xl hidden md:block overflow-hidden border border-gray-100 shadow-sm">
+        <div className="bg-white rounded-md hidden md:block overflow-hidden border border-gray-100 shadow-sm">
           <div className="overflow-x-auto">
             <table className="w-full text-left">
               <thead className="bg-gray-50 border-b border-[#E5E7EB]">
                 <tr className="text-[#535862]">
-                  <th className="px-6 py-4 text-[12px] font-semibold">No.</th>
-                  <th className="px-6 py-4 text-[12px] font-semibold">Ref ID</th>
-                  <th className="px-6 py-4 text-[12px] font-semibold">Issue Details</th>
-                  <th className="px-6 py-4 text-[12px] font-semibold">Status</th>
-                  <th className="px-6 py-4 text-[12px] font-semibold">Priority</th>
-                  <th className="px-6 py-4 text-[12px] font-semibold">Date</th>
+                  <th className="px-6 py-4 text-[12px] border-r border-[#E9EAEB] font-semibold">No.</th>
+                  <th className="px-6 py-4 text-[12px] border-r border-[#E9EAEB] font-semibold">Ref ID</th>
+                  <th className="px-6 py-4 text-[12px] border-r border-[#E9EAEB] font-semibold">Issue Details</th>
+                  <th className="px-6 py-4 text-[12px] border-r border-[#E9EAEB] font-semibold">Status</th>
+                  <th className="px-6 py-4 text-[12px] border-r border-[#E9EAEB] font-semibold">Priority</th>
+                  <th className="px-6 py-4 text-[12px] border-r border-[#E9EAEB] font-semibold">Date</th>
                 </tr>
               </thead>
               <tbody >
@@ -184,25 +203,25 @@ const Reportstatus = () => {
                       <motion.tr key={report.reportId}    initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.3, delay: idx * 0.05 }}    className="hover:bg-[#F5F6F8] border-b border-[#E9EAEB] transition-colors group"  >
-                        <td className="px-6 py-4 text-sm text-gray-400">{(currentPage - 1) * 10 + idx + 1}</td>
-                        <td className="px-6 py-4">
+                        <td className="px-6 border-r border-[#E9EAEB] py-4 text-sm text-gray-400">{(currentPage - 1) * 10 + idx + 1}</td>
+                        <td className="px-6 border-r border-[#E9EAEB]  py-4">
                           <span className="font-mono text-[11px] text-gray-600">
                             {report.reportId.slice(-8).toUpperCase()}
                           </span>
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-6 py-4 border-r border-[#E9EAEB]">
                           <div className="flex flex-col">
                             <span className="text-xs font-bold text-indigo-900 uppercase">{report.reportData?.issueType}</span>
                             <span className="text-sm text-gray-600 line-clamp-1">{report.reportData?.description}</span>
                           </div>
                         </td>
-                        <td className="px-6 py-4">
+                        <td className="px-6 py-4 border-r border-[#E9EAEB]">
                           <div className={`flex items-center w-30 gap-2 px-4 py-1.5 justify-start rounded-full text-[11px] font-bold border ${status.color}`}>
                             {status.icon} {status.label}
                           </div>
                         </td>
-                        <td className="px-6 py-4 text-xs font-bold text-slate-600">{report.reportData?.priority || 'Low'}</td>
-                        <td className="px-6 py-4 text-[11px] font-medium text-gray-600">
+                        <td className="px-6 py-4 text-xs font-bold border-r border-[#E9EAEB] text-slate-600">{report.reportData?.priority || 'Low'}</td>
+                        <td className="px-6 py-4 text-[11px] font-medium text-gray-600 ">
                           {new Date(report.createdAt).toLocaleDateString()}
                         </td>
                       </motion.tr>

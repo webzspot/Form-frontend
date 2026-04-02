@@ -280,7 +280,7 @@ const filteredData = fullData.filter(resp => {
          initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
         
-       className={` hidden md:block rounded-2xl overflow-hidden mt-8 transition-all duration-300  bg-[#FFFFFF] border border-[#E5E7EB] shadow-[0_4px_20px_-5px_rgba(0,0,0,0.05)]`}>
+       className={` hidden md:block rounded-md overflow-hidden mt-8 transition-all duration-300  bg-[#FFFFFF] border border-[#E5E7EB] shadow-[0_4px_20px_-5px_rgba(0,0,0,0.05)]`}>
           <div className="overflow-x-auto custom-scrollbar">
             <table className="w-full text-left border-collapse">
              
@@ -288,7 +288,7 @@ const filteredData = fullData.filter(resp => {
               <thead className={`border-b  border-[#E5E7EB]`}>
   <tr className={theme.tableHeader}>
     {/* Column: No. with Checkbox and Icon */}
-    <th className="px-6 py-4 text-[12px] font-semibold text-[#535862]">
+    <th className="px-6 py-4 text-[12px] font-semibold border-r border-[#E9EAEB] text-[#535862]">
       <div className="flex items-center gap-3">
      
         
@@ -303,7 +303,7 @@ const filteredData = fullData.filter(resp => {
       </div>
     </th>
 
-    <th className="px-6 py-4 text-[12px] font-semibold text-[#535862]">
+    <th className="px-6 py-4 text-[12px] border-r border-[#E9EAEB] font-semibold text-[#535862]">
       <div className="flex items-center gap-2 group cursor-pointer">
         <span>Ref Id</span>
        
@@ -312,7 +312,7 @@ const filteredData = fullData.filter(resp => {
       </div>
     </th>
 
-    <th className="px-6 py-4 text-[12px] font-semibold text-[#535862]">
+    <th className="px-6 py-4 text-[12px] border-r border-[#E9EAEB] font-semibold text-[#535862]">
       <div className="flex items-center gap-2 group cursor-pointer">
         <span>Timestamp</span>
       
@@ -320,7 +320,7 @@ const filteredData = fullData.filter(resp => {
        
       </div>
     </th>
-
+{/* 
     {displayedFields.map((f) => (
       <th key={f.key} className="px-6 py-4 text-[12px] font-semibold text-[#535862] whitespace-nowrap">
         <div className="flex items-center gap-2 group cursor-pointer">
@@ -330,7 +330,22 @@ const filteredData = fullData.filter(resp => {
        
         </div>
       </th>
-    ))}
+    ))} */}
+
+    {displayedFields.map((f, index) => {
+  const isLast = index === displayedFields.length - 1;
+  return (
+    <th 
+      key={f.key} 
+      className={`px-6 py-4 text-[12px] font-semibold text-[#535862] whitespace-nowrap ${!isLast ? 'border-r border-[#E9EAEB]' : ''}`}
+    >
+      <div className="flex items-center gap-2 group cursor-pointer">
+        {f.label}
+        <FaArrowDown className="" />
+      </div>
+    </th>
+  );
+})}
   </tr>
 </thead>
 
@@ -354,18 +369,18 @@ const filteredData = fullData.filter(resp => {
     className="hover:bg-[#F5F6F8] border-b border-[#E9EAEB] transition-colors group"
                   
                   >
-                    <td className="px-6 py-4 text-sm text-[#475467]">{(currentPage - 1) * 10 + idx + 1}</td>
-                   <td className="px-6 py-4 text-sm text-[#475467]">
-  <span className={`font-mono text-[10px] px-2 py-1 rounded-lg 
+                    <td className="px-6 py-4 text-sm text-[#667085] border-r border-[#E9EAEB]">{(currentPage - 1) * 10 + idx + 1}</td>
+                   <td className="px-6 py-4 text-sm text-[#475467] border-r border-[#E9EAEB]">
+  <span className={`font-mono text-xs text-[#344054]
   `}>
     {resp.formResponseId.slice(-8).toUpperCase()}
   </span>
 </td>
 
                      
-                     <td className="px-6 py-4 text-sm text-[#475467]">
+                     <td className="px-6 py-4 text-sm text-[#667085] border-r border-[#E9EAEB]">
   <div className="flex flex-col">
-    <span className="text-xs font-bold">
+    <span className="text-xs font-medium">
       {new Date(resp.createdAt).toLocaleDateString()}
     </span>
    
@@ -373,7 +388,7 @@ const filteredData = fullData.filter(resp => {
 </td>
 
                   
-                    {displayedFields.map(f => (
+                    {/* {displayedFields.map(f => (
                      <td className="px-6 py-4 text-sm text-[#475467]">
   
   <span
@@ -388,7 +403,26 @@ const filteredData = fullData.filter(resp => {
 
 </td>
 
-                    ))}
+                    ))} */}
+
+
+                    {displayedFields.map((f, index) => {
+  const isLast = index === displayedFields.length - 1;
+  const val = getResponseValue(resp.values, f.key);
+  
+  return (
+    <td 
+      key={f.key} 
+      className={`px-6 py-4 text-sm font-medium text-[#667085] ${!isLast ? 'border-r border-[#E9EAEB]' : ''}`}
+    >
+      <span
+        className={`text-sm font-medium ${val === "—" ? "opacity-30" : ""}`}
+      >
+        {val}
+      </span>
+    </td>
+  );
+})}
                    
                   </motion.tr>
                 )))}

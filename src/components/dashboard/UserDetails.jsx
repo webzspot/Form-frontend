@@ -1,3 +1,5 @@
+
+
 // import React, { useState, useEffect, useMemo, useRef } from 'react';
 // import axios from 'axios';
 // import { 
@@ -29,6 +31,7 @@
 //     const [pendingAction, setPendingAction] = useState(null);
 //     const [showConfirmModal, setShowConfirmModal] = useState(false);
 //     const [loading, setLoading] = useState(false);
+//     const [statusLoading, setStatusLoading] = useState(null);
 //     const { isDarkMode } = useFormContext();
 //     const token = sessionStorage.getItem("token");
 //     const navigate = useNavigate();
@@ -93,44 +96,82 @@
       
 //     };
 
-//     const handleUpdate = async () => {
-//         try {
-//             const res = await axios.put(`${API_BASE_URL}/${editingUser.userId}`, 
-//             {
-//                 name: editingUser.name,
-//                 email: editingUser.email,
-//                 role: editingUser.role,
-//                ...(editingUser.password && { password: editingUser.password })
-//             }, 
-           
-       
-//             {
-//                 headers: { Authorization: `Bearer ${token}` }
-//             });
-             
 
-//             setUserData(userData.map(user => user.userId === editingUser.userId ? res.data.user : user));
-//             toast.success("User updated successfully!");
-//             handleDismiss();
-//         } catch (err) {
-//             toast.error("Failed to update user");
-//         }
-//     };
 
-//     const handleDeleteConfirm = async () => {
-//         if (!pendingAction) return;
-//         try {
-//             await axios.delete(`${API_BASE_URL}/${pendingAction.payload.userId}`, {
-//                 headers: { Authorization: `Bearer ${token}` }
-//             });
-//             setUserData(userData.filter(user => user.userId !== pendingAction.payload.userId));
-//             toast.success("User deleted successfully");
-//             setShowConfirmModal(false);
-//             setPendingAction(null);
-//         } catch (err) {
-//             toast.error("Delete failed");
+// const handleUpdate = async () => {
+//     try {
+//         const payload = {
+//             name: editingUser.name,
+//             email: editingUser.email,
+//             role: editingUser.role,
+//         };
+
+//         // Only add password if the admin actually typed a new one
+//         if (editingUser.password && editingUser.password.trim() !== "") {
+//             payload.password = editingUser.password;
 //         }
-//     };
+
+//         const res = await axios.put(`${API_BASE_URL}/${editingUser.userId}`, payload, {
+//             headers: { Authorization: `Bearer ${token}` }
+//         });
+
+//         setUserData(userData.map(user => user.userId === editingUser.userId ? res.data.user : user));
+//         toast.success("User updated successfully!");
+//         handleDismiss();
+//     } catch (err) {
+//         toast.error("Failed to update user");
+//     }
+// };
+
+
+  
+
+
+//     const toggleUserStatus = async (user) => {
+//         setStatusLoading(user.userId);
+
+//   const newStatus = user.AccountStatus === "ACTIVE" ? "SUSPENDED" : "ACTIVE";
+  
+//   try {
+//     // 2. Tell the server to change the status
+//    await axios.patch(
+//       `${API_BASE_URL}/${user.userId}/status`, 
+//       { status: newStatus }, 
+//       { headers: { Authorization: `Bearer ${token}` } }
+//     );
+    
+//     // 3. Update the screen immediately so you see the change
+//     setUserData(prev => prev.map(u => 
+//       u.userId === user.userId ? { ...u, AccountStatus: newStatus } : u
+//     ));
+    
+//     toast.success(`User is now ${newStatus.toLowerCase()}`);
+//   } catch (err) {
+// if (err.response) {
+//       const status = err.response.status;
+//       const serverMessage = err.response.data?.message;
+
+//       if (status === 404) {
+//         toast.error("User not found on the server.");
+//       } else if (status === 429) {
+//         toast.error("Too many requests! Please slow down.");
+//       } else if (status === 500) {
+//         toast.error("Server error. Something went wrong on the backend.");
+//       } else {
+//         // This catches any other error (like 400 or 403) and shows the backend's reason
+//         toast.error(serverMessage || "Update failed.");
+//       }
+//     } else {
+//       // This happens if the internet is down or the server is not responding at all
+//       toast.error("Network error. Please check your connection.");
+//     }
+//   }
+//   finally{
+//     setStatusLoading(null);
+//       setOpenMenuIndex(null); // Close the little menu
+//   }
+
+// };
 
 //     const handleDismiss = () => {
 //         setEditingUser(null);
@@ -278,9 +319,9 @@
 
 //                         <div className='hidden md:block overflow-x-auto rounded-md border bg-[#FFFFFF] border-[#E9EAEB] mb-4 ' >
 //                             <table className={`w-full text-left `}>
-//                                 <thead className={`bg-white  text-[#535862] border-b border-[#E9EAEB]`}>
+//                                 <thead className={`bg-white  text-[#535862] border-b  border-[#E9EAEB]`}>
 //                                     <tr>
-//                                          <th className="px-6 py-4 text-xs font-semibold ">
+//                                          <th className="px-6 py-4 border-[#E9EAEB] border-r  text-xs font-semibold ">
 //                                            <div className="flex items-center gap-2 group cursor-pointer">
                                       
         
@@ -291,7 +332,7 @@
 //                                            </div>
 //                                            </th>
                                       
-//                                      <th className="px-6 py-4 text-xs font-semibold ">
+//                                      <th className="px-6 py-4 text-xs border-[#E9EAEB] border-r font-semibold ">
 //                                            <div className="flex items-center gap-2 group cursor-pointer">
 //                                              <span>Role</span>
                                             
@@ -300,28 +341,35 @@
 //                                            </div>
 //                                          </th>
                                      
-//                                          <th className="px-6 py-4 text-xs font-semibold ">
+//                                          <th className="px-6 py-4 border-[#E9EAEB] border-r text-xs font-semibold ">
 //                                            <div className="flex items-center gap-2 group cursor-pointer">
 //                                              <span>Joined Date</span>
                                             
 //                                                 <FaArrowDown className="" />
                                              
 //                                            </div></th>
-//                                            <th className="px-6 py-4 text-xs font-semibold ">
+//                                            <th className="px-6 py-4 text-xs  border-[#E9EAEB] border-r font-semibold ">
 //                                            <div className="flex items-center gap-2 group cursor-pointer">
 //                                              <span>Activity</span>
                                             
 //                                                 <FaArrowDown className="" />
                                              
 //                                            </div></th>
-//                                          <th className="px-6 py-4 text-xs font-semibold ">
+//                                          <th className="px-6 py-4 text-xs border-[#E9EAEB] border-r font-semibold ">
 //                                            <div className="flex items-center gap-2 group cursor-pointer">
 //                                              <span>Status</span>
                                             
 //                                                 <FaArrowDown className="" />
                                              
 //                                            </div></th>
-//                                               <th className="px-6 py-4 text-xs font-semibold ">
+//                                              <th className="px-6 py-4 text-xs border-[#E9EAEB] border-r font-semibold ">
+//                                            <div className="flex items-center gap-2 group cursor-pointer">
+//                                              <span>Account</span>
+                                            
+//                                                 <FaArrowDown className="" />
+                                             
+//                                            </div></th>
+//                                               <th className="px-6 py-4 text-xs  font-semibold ">
 //                                            <div className="flex items-center gap-2 group cursor-pointer">
 //                                              <span>Action</span>
                                             
@@ -336,7 +384,7 @@
                                 
 //                                 <tbody >
 //                                     {loading ? (
-//                                           <TableSkeleton rows={5} columns={6}  />
+//                                           <TableSkeleton rows={5} columns={7}  />
 //                                     ) : currentData.length === 0 ? (
 //                                         <tr>
 //                                              <td colSpan="6" className="px-6 py-20 text-center">
@@ -353,25 +401,29 @@
 //                         animate={{ opacity: 1, x: 0 }}
 //                         transition={{ duration: 0.3, delay: index * 0.05 }}
 //                                             className="hover:bg-[#F5F6F8] border-b border-[#E9EAEB] transition-colors group">
-//                                                 <td className="px-6 py-4">
+//                                                 <td className="px-6 py-4 border-r border-[#E9EAEB]">
 //                                                     <div className="flex items-center gap-3">
                                                       
-//                                                         <div >
+//                                                         <div className='flex flex-col gap-1' >
                                                             
 //                                                             <div className="text-sm font-medium leading-5 tracking-normal text-[#181D27] ">{user.name}</div>
+//                                                              <span className={`text-xs font-normal  text-gray-600 capitalize`}>
+//       {user.plan?.toLowerCase()}
+//     </span>
                                                            
 //                                                         </div>
 //                                                     </div>
 //                                                 </td>
-//                                                 <td className="px-6 py-4">
+//                                                 <td className="px-6 py-4 border-r border-[#E9EAEB]">
 //                                                     <span className={   ` text-sm font-medium leading-5 tracking-normal text-[#181D27]  `}>
 //                                                         {user.role}
 //                                                     </span>
 //                                                 </td>
-//                                                 <td className="px-6 py-4 text-sm font-medium leading-5 tracking-normal text-[#181D27] ">
+    
+//                                                 <td className="px-6 py-4 text-sm font-medium leading-5 tracking-normal text-[#181D27] border-r border-[#E9EAEB] ">
 //                                                     <div>{new Date(user.createdAt).toLocaleDateString()}</div>
 //                                                 </td>
-//                                                 <td className=" px-6 py-4 cursor-pointer text-sm font-medium leading-5 tracking-normal text-[#181D27]">
+//                                                 <td className=" px-6 py-4 cursor-pointer text-sm font-medium leading-5 tracking-normal text-[#181D27] border-r border-[#E9EAEB]">
 //                                                     <button 
 //                                                         onClick={() => navigate(`/admin/users/${user.userId}/activity`)}
 //                                                       className={`
@@ -381,13 +433,23 @@
 //                                                         View
 //                                                     </button>
 //                                                 </td>
-//                                                 <td className="px-6 py-4">
-//                                                     <span className={`inline-flex items-center  text-sm font-medium leading-5 tracking-normal    ${user.status === "Active" ? " text-gray-600 " : " text-[#00B712]"}`}>
+//                                                 <td className="px-6 py-4 border-r border-[#E9EAEB]">
+//                                                     <span className={`inline-flex items-center  text-sm font-medium leading-5 tracking-normal   ${user.status === "Active" ? " text-gray-600 " : " text-[#00B712]"}`}>
                                                         
 //                                                         {user.status || "Inactive"}
 //                                                     </span>
 //                                                 </td>
-//                                                 <td className="px-6 py-4 text-start relative">
+
+//                                                 <td className="px-6 py-4  border-r border-[#E9EAEB]">
+//             <span className={`inline-flex items-center capitalize  text-sm font-medium leading-5 tracking-normal ${
+//                 user.AccountStatus === 'ACTIVE' 
+//                 ? ' text-[#00B712]' 
+//                 : ' text-gray-600'
+//             }`}>
+//                 {user.AccountStatus.toLowerCase()}
+//             </span>
+//         </td>
+//                                                 <td className="px-6 py-4 text-start relative ">
 //                                                     <button 
 //                                                         onClick={() => setOpenMenuIndex(openMenuIndex === user.userId ? null : user.userId)}
 //                                                         className="w-8 h-8 flex items-center justify-center hover:bg-slate-200 rounded-full   transition-all"
@@ -398,14 +460,37 @@
 //                                                         <div className={`absolute right-12 top-0 ${theme.card}  rounded-xl shadow-2xl z-50 min-w-[140px] py-2`}>
 //                                                             <div className="flex justify-between items-center px-3 pb-2  mb-1">
 //                                                                 <span className="text-[10px] font-bold  uppercase">Options</span>
-//                                                                 <button onClick={() => setOpenMenuIndex(null)} className="text-slate-300 hover:text-red-500 transition-colors"><FaTimes size={10}/></button>
+//                                                                 <button onClick={() => setOpenMenuIndex(null)} className="text-slate-800 hover:text-red-500 transition-colors"><FaTimes size={10}/></button>
 //                                                             </div>
-//                                                             <button onClick={() => { setEditingUser(user); setIsAddMode(false); setOpenMenuIndex(null); }} className="w-full flex items-center gap-3 px-4 py-2 text-sm  hover:bg-violet-50 hover:text-violet-600 transition-colors">
+//                                                             <button onClick={() => { setEditingUser({ ...user, password: "" }); setIsAddMode(false); setOpenMenuIndex(null); }} className="w-full flex items-center gap-3 px-4 py-2 text-sm  hover:bg-violet-50 hover:text-indigo-600 transition-colors">
 //                                                                 <FaEdit size={12}/> Edit
 //                                                             </button>
-//                                                             <button onClick={() => { setPendingAction({ type: "delete", payload: user }); setShowConfirmModal(true); setOpenMenuIndex(null); }} className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">
-//                                                                 <FaTrash size={12}/> Delete
-//                                                             </button>
+                                                            
+
+  
+
+//   <button 
+//       onClick={() => toggleUserStatus(user)} 
+//       disabled={statusLoading === user.userId}
+//       className={`w-full flex items-center gap-3 px-4 py-2 text-black text-sm font-medium transition-colors ${
+//         user.AccountStatus === "ACTIVE" ? " text-black  hover:text-indigo-500" : "text-green-600 hover:text-indigo-500"
+//       } ${statusLoading === user.userId ? "opacity-50" : ""}`}
+//     >
+//       {statusLoading === user.userId ? (
+//         <span className="flex items-center gap-2">
+//           <div className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+//           Updating...
+//         </span>
+//       ) : (
+//         <>
+//           {user.AccountStatus === "ACTIVE" ? (
+//             <><FaTimesCircle size={12}/> Suspend</>
+//           ) : (
+//             <><FaCheckCircle size={12}/> Activate</>
+//           )}
+//         </>
+//       )}
+//     </button>
 //                                                         </div>
 //                                                     )}
 //                                                 </td>
@@ -475,12 +560,18 @@
 //         <div className="flex justify-between items-start mb-1">
 //           <div>
 //             <h3 className="text-sm font-bold text-[#181D27]">{user.name}</h3>
-//             <p className="text-xs text-[#6A7181]">{user.role}</p>
+//             <p className="text-xs text-[#6A7181] capitalize">{user.plan?.toLowerCase()}</p>
+            
 //           </div>
 //           {/* Status Badge */}
-//           <span className={`px-2 py-1 rounded-full text-[10px] font-bold ${user.status === "Active" ? "bg-gray-100 text-gray-600" : "bg-green-50 text-[#00B712]"}`}>
+//           <div className="flex  items-center gap-1">
+//           <span className={`px-2 py-1 rounded-md text-[10px] font-bold ${user.status === "Active" ? "bg-gray-100 text-gray-600" : "bg-green-50 text-[#00B712]"}`}>
 //             {user.status || "Inactive"}
 //           </span>
+//           <span className={`px-2 py-0.5 rounded-md text-[10px] capitalize font-bold ${user.AccountStatus === "ACTIVE" ? "bg-blue-50 text-blue-600" : "bg-blue-50 text-gray-600"}`}>
+//               {user.AccountStatus?.toLowerCase()}
+//             </span>
+//             </div>
 //         </div>
 
 //         {/* Details Row */}
@@ -508,12 +599,37 @@
 //         {/* Reusing your existing Menu Logic inside the card */}
 //         {openMenuIndex === user.userId && (
 //           <div className="absolute right-4 bottom-12 bg-white border border-[#E9EAEB] rounded-xl shadow-xl z-50 min-w-[140px] py-2">
-//             <button onClick={() => { setEditingUser(user); setIsAddMode(false); setOpenMenuIndex(null); }} className="w-full flex items-center gap-3 px-4 py-2 text-sm hover:bg-violet-50 hover:text-violet-600 transition-colors">
+//                                                                         <div className="flex justify-between items-center px-3  mb-1">
+//                                                                 <span className="text-[11px] font-normal uppercase">Options</span>
+//                                                                 <button onClick={() => setOpenMenuIndex(null)} className="text-slate-800 hover:text-red-500 transition-colors"><FaTimes size={10}/></button>
+//                                                             </div>
+//             <button onClick={() => { setEditingUser({ ...user, password: "" }); setIsAddMode(false); setOpenMenuIndex(null); }} className="w-full flex items-center gap-3 px-4 py-2 text-sm hover:bg-violet-50 hover:text-violet-600 transition-colors">
 //               <FaEdit size={12}/> Edit
 //             </button>
-//             <button onClick={() => { setPendingAction({ type: "delete", payload: user }); setShowConfirmModal(true); setOpenMenuIndex(null); }} className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">
-//               <FaTrash size={12}/> Delete
-//             </button>
+         
+          
+//             <button 
+//       onClick={() => toggleUserStatus(user)} 
+//       disabled={statusLoading === user.userId}
+//       className={`w-full flex items-center gap-3 px-4 py-2 text-sm font-medium transition-colors ${
+//         user.AccountStatus === "ACTIVE" ? " text-black  hover:text-indigo-500" : "text-green-600 hover:text-indigo-500"
+//       } ${statusLoading === user.userId ? "opacity-50" : ""}`}
+//     >
+//       {statusLoading === user.userId ? (
+//         <span className="flex items-center gap-2">
+//           <div className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+//           Updating...
+//         </span>
+//       ) : (
+//         <>
+//           {user.AccountStatus === "ACTIVE" ? (
+//             <><FaTimesCircle size={12}/> Suspend</>
+//           ) : (
+//             <><FaCheckCircle size={12}/> Activate</>
+//           )}
+//         </>
+//       )}
+//     </button>
 //           </div>
 //         )}
 //       </motion.div>
@@ -631,8 +747,8 @@
 //                                         name="password"
 //                                         value={editingUser.password || ""}
 //                                         onChange={handleEditChange}
-//                                         className="w-full px-4 py-3 pr-12 mt-4 rounded-xl border border-slate-200 outline-none"
-//                                         placeholder="••••••••"
+//                                         className="w-full px-4 py-3 pr-12 mt-4 rounded-md border border-slate-200 outline-none"
+//                                        placeholder={isAddMode ? "••••••••" : "Leave blank to keep the same"}
 //                                     />
 //                                     <div className='border p-2 mt-4 rounded-md border-[#E9EAEB]'>
 //                                         <button
@@ -682,50 +798,7 @@
 //     )}
 // </AnimatePresence>
 
-//             {/* Delete Modal */}
-//             <AnimatePresence>
-//                 {showConfirmModal && (
-//                     <div className="fixed inset-0 flex items-center justify-center z-100 sm:p-4 p-7">
-//                         <motion.div 
-//                             initial={{ opacity: 0 }} 
-//                             animate={{ opacity: 1 }} 
-//                             exit={{ opacity: 0 }} 
-//                             onClick={handleDismiss} 
-//                             className={`fixed inset-0 bg-slate-900/40 backdrop-blur-sm
-//     }`}
-//                         />
-//                         <motion.div 
-//                             initial={{ scale: 0.9, opacity: 0 }} 
-//                             animate={{ scale: 1, opacity: 1 }} 
-//                             exit={{ scale: 0.9, opacity: 0 }} 
-//                            className={`rounded-md p-8 w-[300px] shadow-2xl bg-white/80 backdrop-blur-xl border border-white/60 shadow-[0_8px_32px_0_rgba(31,38,135,0.15)]`}
-//                         >
-//                             <div className="sm:w-20 sm:h-20 w-10 h-10 bg-linear-to-br from-red-100 to-red-200 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-//                                 <FaTrash size={25} />
-//                             </div>
-//                             <h2 className={`text-xl font-bold text-gray-500 mb-2`}>Confirm Delete</h2>
-//                             <p className={`text-gray-500 text-[10px] sm:text-sm mb-8`}>
-//                                 Are you sure you want to remove <span className="font-bold text-slate-700">{pendingAction?.payload?.name}</span>? This action cannot be undone.
-//                             </p>
-//                             <div className="flex gap-3">
-//                                 <button 
-//                                     onClick={handleDeleteConfirm} 
-//                                     className="flex-1 bg-linear-to-r from-red-600 to-red-700 text-white sm:py-3 py-1 text-[10px] sm:text-sm rounded-md font-semibold hover:from-red-700 hover:to-red-800 transition-all shadow-lg"
-//                                 >
-//                                     Delete
-//                                 </button>
-//                                 <button 
-//                                     onClick={handleDismiss} 
-//                                     className="flex-1 bg-slate-100 text-slate-600 sm:py-3 py-1 text-[10px] sm:text-sm rounded-md font-semibold hover:bg-slate-200 transition-all"
-//                                 >
-//                                     Cancel
-//                                 </button>
-//                             </div>
-//                         </motion.div>
-                        
-//                     </div>
-//                 )}
-//             </AnimatePresence>
+           
 //     <UserFooter/>
 //         </>
 //     );
@@ -765,6 +838,7 @@ const UserDetails= () => {
     const [pendingAction, setPendingAction] = useState(null);
     const [showConfirmModal, setShowConfirmModal] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [statusLoading, setStatusLoading] = useState(null);
     const { isDarkMode } = useFormContext();
     const token = sessionStorage.getItem("token");
     const navigate = useNavigate();
@@ -829,29 +903,6 @@ const UserDetails= () => {
       
     };
 
-//     const handleUpdate = async () => {
-//         try {
-//             const res = await axios.put(`${API_BASE_URL}/${editingUser.userId}`, 
-//             {
-//                 name: editingUser.name,
-//                 email: editingUser.email,
-//                 role: editingUser.role,
-// //...(editingUser.password && { password: editingUser.password })
-//             }, 
-           
-       
-//             {
-//                 headers: { Authorization: `Bearer ${token}` }
-//             });
-             
-
-//             setUserData(userData.map(user => user.userId === editingUser.userId ? res.data.user : user));
-//             toast.success("User updated successfully!");
-//             handleDismiss();
-//         } catch (err) {
-//             toast.error("Failed to update user");
-//         }
-//     };
 
 
 const handleUpdate = async () => {
@@ -880,20 +931,54 @@ const handleUpdate = async () => {
 };
 
 
-    const handleDeleteConfirm = async () => {
-        if (!pendingAction) return;
-        try {
-            await axios.delete(`${API_BASE_URL}/${pendingAction.payload.userId}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            setUserData(userData.filter(user => user.userId !== pendingAction.payload.userId));
-            toast.success("User deleted successfully");
-            setShowConfirmModal(false);
-            setPendingAction(null);
-        } catch (err) {
-            toast.error("Delete failed");
-        }
-    };
+  
+
+
+    const toggleUserStatus = async (user) => {
+        setStatusLoading(user.userId);
+
+  const newStatus = user.AccountStatus === "ACTIVE" ? "SUSPENDED" : "ACTIVE";
+  
+  try {
+    // 2. Tell the server to change the status
+   await axios.patch(
+      `${API_BASE_URL}/${user.userId}/status`, 
+      { status: newStatus }, 
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+    
+    // 3. Update the screen immediately so you see the change
+    setUserData(prev => prev.map(u => 
+      u.userId === user.userId ? { ...u, AccountStatus: newStatus } : u
+    ));
+    
+    toast.success(`User is now ${newStatus.toLowerCase()}`);
+  } catch (err) {
+if (err.response) {
+      const status = err.response.status;
+      const serverMessage = err.response.data?.message;
+
+      if (status === 404) {
+        toast.error("User not found on the server.");
+      } else if (status === 429) {
+        toast.error("Too many requests! Please slow down.");
+      } else if (status === 500) {
+        toast.error("Server error. Something went wrong on the backend.");
+      } else {
+        // This catches any other error (like 400 or 403) and shows the backend's reason
+        toast.error(serverMessage || "Update failed.");
+      }
+    } else {
+      // This happens if the internet is down or the server is not responding at all
+      toast.error("Network error. Please check your connection.");
+    }
+  }
+  finally{
+    setStatusLoading(null);
+      setOpenMenuIndex(null); // Close the little menu
+  }
+
+};
 
     const handleDismiss = () => {
         setEditingUser(null);
@@ -1041,9 +1126,9 @@ const handleUpdate = async () => {
 
                         <div className='hidden md:block overflow-x-auto rounded-md border bg-[#FFFFFF] border-[#E9EAEB] mb-4 ' >
                             <table className={`w-full text-left `}>
-                                <thead className={`bg-white  text-[#535862] border-b border-[#E9EAEB]`}>
+                                <thead className={`bg-white  text-[#535862] border-b  border-[#E9EAEB]`}>
                                     <tr>
-                                         <th className="px-6 py-4 text-xs font-semibold ">
+                                         <th className="px-6 py-4 border-[#E9EAEB] border-r  text-xs font-semibold ">
                                            <div className="flex items-center gap-2 group cursor-pointer">
                                       
         
@@ -1054,7 +1139,7 @@ const handleUpdate = async () => {
                                            </div>
                                            </th>
                                       
-                                     <th className="px-6 py-4 text-xs font-semibold ">
+                                     <th className="px-6 py-4 text-xs border-[#E9EAEB] border-r font-semibold ">
                                            <div className="flex items-center gap-2 group cursor-pointer">
                                              <span>Role</span>
                                             
@@ -1063,28 +1148,35 @@ const handleUpdate = async () => {
                                            </div>
                                          </th>
                                      
-                                         <th className="px-6 py-4 text-xs font-semibold ">
+                                         <th className="px-6 py-4 border-[#E9EAEB] border-r text-xs font-semibold ">
                                            <div className="flex items-center gap-2 group cursor-pointer">
                                              <span>Joined Date</span>
                                             
                                                 <FaArrowDown className="" />
                                              
                                            </div></th>
-                                           <th className="px-6 py-4 text-xs font-semibold ">
+                                           <th className="px-6 py-4 text-xs  border-[#E9EAEB] border-r font-semibold ">
                                            <div className="flex items-center gap-2 group cursor-pointer">
                                              <span>Activity</span>
                                             
                                                 <FaArrowDown className="" />
                                              
                                            </div></th>
-                                         <th className="px-6 py-4 text-xs font-semibold ">
+                                         <th className="px-6 py-4 text-xs border-[#E9EAEB] border-r font-semibold ">
                                            <div className="flex items-center gap-2 group cursor-pointer">
                                              <span>Status</span>
                                             
                                                 <FaArrowDown className="" />
                                              
                                            </div></th>
-                                              <th className="px-6 py-4 text-xs font-semibold ">
+                                             <th className="px-6 py-4 text-xs border-[#E9EAEB] border-r font-semibold ">
+                                           <div className="flex items-center gap-2 group cursor-pointer">
+                                             <span>Account</span>
+                                            
+                                                <FaArrowDown className="" />
+                                             
+                                           </div></th>
+                                              <th className="px-6 py-4 text-xs  font-semibold ">
                                            <div className="flex items-center gap-2 group cursor-pointer">
                                              <span>Action</span>
                                             
@@ -1099,7 +1191,7 @@ const handleUpdate = async () => {
                                 
                                 <tbody >
                                     {loading ? (
-                                          <TableSkeleton rows={5} columns={6}  />
+                                          <TableSkeleton rows={5} columns={7}  />
                                     ) : currentData.length === 0 ? (
                                         <tr>
                                              <td colSpan="6" className="px-6 py-20 text-center">
@@ -1116,25 +1208,29 @@ const handleUpdate = async () => {
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.3, delay: index * 0.05 }}
                                             className="hover:bg-[#F5F6F8] border-b border-[#E9EAEB] transition-colors group">
-                                                <td className="px-6 py-4">
+                                                <td className="px-6 py-4 border-r border-[#E9EAEB]">
                                                     <div className="flex items-center gap-3">
                                                       
-                                                        <div >
+                                                        <div className='flex flex-col gap-1' >
                                                             
                                                             <div className="text-sm font-medium leading-5 tracking-normal text-[#181D27] ">{user.name}</div>
+                                                             <span className={`text-xs font-normal  text-gray-600 capitalize`}>
+      {user.plan?.toLowerCase()}
+    </span>
                                                            
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td className="px-6 py-4">
+                                                <td className="px-6 py-4 border-r border-[#E9EAEB]">
                                                     <span className={   ` text-sm font-medium leading-5 tracking-normal text-[#181D27]  `}>
                                                         {user.role}
                                                     </span>
                                                 </td>
-                                                <td className="px-6 py-4 text-sm font-medium leading-5 tracking-normal text-[#181D27] ">
+    
+                                                <td className="px-6 py-4 text-sm font-medium leading-5 tracking-normal text-[#181D27] border-r border-[#E9EAEB] ">
                                                     <div>{new Date(user.createdAt).toLocaleDateString()}</div>
                                                 </td>
-                                                <td className=" px-6 py-4 cursor-pointer text-sm font-medium leading-5 tracking-normal text-[#181D27]">
+                                                <td className=" px-6 py-4 cursor-pointer text-sm font-medium leading-5 tracking-normal text-[#181D27] border-r border-[#E9EAEB]">
                                                     <button 
                                                         onClick={() => navigate(`/admin/users/${user.userId}/activity`)}
                                                       className={`
@@ -1144,13 +1240,23 @@ const handleUpdate = async () => {
                                                         View
                                                     </button>
                                                 </td>
-                                                <td className="px-6 py-4">
-                                                    <span className={`inline-flex items-center  text-sm font-medium leading-5 tracking-normal    ${user.status === "Active" ? " text-gray-600 " : " text-[#00B712]"}`}>
+                                                <td className="px-6 py-4 border-r border-[#E9EAEB]">
+                                                    <span className={`inline-flex items-center  text-sm font-medium leading-5 tracking-normal   ${user.status === "Online" ? "text-[#00B712] " : "text-red-600 "}`}>
                                                         
                                                         {user.status || "Inactive"}
                                                     </span>
                                                 </td>
-                                                <td className="px-6 py-4 text-start relative">
+
+                                                <td className="px-6 py-4  border-r border-[#E9EAEB]">
+            <span className={`inline-flex items-center capitalize  text-sm font-medium leading-5 tracking-normal ${
+                user.AccountStatus === 'ACTIVE' 
+                ? ' text-[#00B712]' 
+                : ' text-gray-600'
+            }`}>
+                {user.AccountStatus.toLowerCase()}
+            </span>
+        </td>
+                                                <td className="px-6 py-4 text-start relative ">
                                                     <button 
                                                         onClick={() => setOpenMenuIndex(openMenuIndex === user.userId ? null : user.userId)}
                                                         className="w-8 h-8 flex items-center justify-center hover:bg-slate-200 rounded-full   transition-all"
@@ -1161,14 +1267,37 @@ const handleUpdate = async () => {
                                                         <div className={`absolute right-12 top-0 ${theme.card}  rounded-xl shadow-2xl z-50 min-w-[140px] py-2`}>
                                                             <div className="flex justify-between items-center px-3 pb-2  mb-1">
                                                                 <span className="text-[10px] font-bold  uppercase">Options</span>
-                                                                <button onClick={() => setOpenMenuIndex(null)} className="text-slate-300 hover:text-red-500 transition-colors"><FaTimes size={10}/></button>
+                                                                <button onClick={() => setOpenMenuIndex(null)} className="text-slate-800 hover:text-red-500 transition-colors"><FaTimes size={10}/></button>
                                                             </div>
-                                                            <button onClick={() => { setEditingUser({ ...user, password: "" }); setIsAddMode(false); setOpenMenuIndex(null); }} className="w-full flex items-center gap-3 px-4 py-2 text-sm  hover:bg-violet-50 hover:text-violet-600 transition-colors">
+                                                            <button onClick={() => { setEditingUser({ ...user, password: "" }); setIsAddMode(false); setOpenMenuIndex(null); }} className="w-full flex items-center gap-3 px-4 py-2 text-sm  hover:bg-violet-50 hover:text-indigo-600 transition-colors">
                                                                 <FaEdit size={12}/> Edit
                                                             </button>
-                                                            <button onClick={() => { setPendingAction({ type: "delete", payload: user }); setShowConfirmModal(true); setOpenMenuIndex(null); }} className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">
-                                                                <FaTrash size={12}/> Delete
-                                                            </button>
+                                                            
+
+  
+
+  <button 
+      onClick={() => toggleUserStatus(user)} 
+      disabled={statusLoading === user.userId}
+      className={`w-full flex items-center gap-3 px-4 py-2 text-black text-sm font-medium transition-colors ${
+        user.AccountStatus === "ACTIVE" ? " text-black  hover:text-indigo-500" : "text-green-600 hover:text-indigo-500"
+      } ${statusLoading === user.userId ? "opacity-50" : ""}`}
+    >
+      {statusLoading === user.userId ? (
+        <span className="flex items-center gap-2">
+          <div className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+          Updating...
+        </span>
+      ) : (
+        <>
+          {user.AccountStatus === "ACTIVE" ? (
+            <><FaTimesCircle size={12}/> Suspend</>
+          ) : (
+            <><FaCheckCircle size={12}/> Activate</>
+          )}
+        </>
+      )}
+    </button>
                                                         </div>
                                                     )}
                                                 </td>
@@ -1238,12 +1367,18 @@ const handleUpdate = async () => {
         <div className="flex justify-between items-start mb-1">
           <div>
             <h3 className="text-sm font-bold text-[#181D27]">{user.name}</h3>
-            <p className="text-xs text-[#6A7181]">{user.role}</p>
+            <p className="text-xs text-[#6A7181] capitalize">{user.plan?.toLowerCase()}</p>
+            
           </div>
           {/* Status Badge */}
-          <span className={`px-2 py-1 rounded-full text-[10px] font-bold ${user.status === "Active" ? "bg-gray-100 text-gray-600" : "bg-green-50 text-[#00B712]"}`}>
+          <div className="flex  items-center gap-1">
+          <span className={`px-2 py-1 rounded-md text-[10px] font-bold ${user.status === "Online" ? "bg-green-50 text-[#00B712] " : "bg-red-50  text-red-600"}`}>
             {user.status || "Inactive"}
           </span>
+          <span className={`px-2 py-0.5 rounded-md text-[10px] capitalize font-bold ${user.AccountStatus === "ACTIVE" ? "bg-green-50 text-[#00B712]" : "bg-blue-50 text-gray-600"}`}>
+              {user.AccountStatus?.toLowerCase()}
+            </span>
+            </div>
         </div>
 
         {/* Details Row */}
@@ -1271,12 +1406,37 @@ const handleUpdate = async () => {
         {/* Reusing your existing Menu Logic inside the card */}
         {openMenuIndex === user.userId && (
           <div className="absolute right-4 bottom-12 bg-white border border-[#E9EAEB] rounded-xl shadow-xl z-50 min-w-[140px] py-2">
+                                                                        <div className="flex justify-between items-center px-3  mb-1">
+                                                                <span className="text-[11px] font-normal uppercase">Options</span>
+                                                                <button onClick={() => setOpenMenuIndex(null)} className="text-slate-800 hover:text-red-500 transition-colors"><FaTimes size={10}/></button>
+                                                            </div>
             <button onClick={() => { setEditingUser({ ...user, password: "" }); setIsAddMode(false); setOpenMenuIndex(null); }} className="w-full flex items-center gap-3 px-4 py-2 text-sm hover:bg-violet-50 hover:text-violet-600 transition-colors">
               <FaEdit size={12}/> Edit
             </button>
-            <button onClick={() => { setPendingAction({ type: "delete", payload: user }); setShowConfirmModal(true); setOpenMenuIndex(null); }} className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors">
-              <FaTrash size={12}/> Delete
-            </button>
+         
+          
+            <button 
+      onClick={() => toggleUserStatus(user)} 
+      disabled={statusLoading === user.userId}
+      className={`w-full flex items-center gap-3 px-4 py-2 text-sm font-medium transition-colors ${
+        user.AccountStatus === "ACTIVE" ? " text-black  hover:text-indigo-500" : "text-green-600 hover:text-indigo-500"
+      } ${statusLoading === user.userId ? "opacity-50" : ""}`}
+    >
+      {statusLoading === user.userId ? (
+        <span className="flex items-center gap-2">
+          <div className="w-3 h-3 border-2 border-current border-t-transparent rounded-full animate-spin"></div>
+          Updating...
+        </span>
+      ) : (
+        <>
+          {user.AccountStatus === "ACTIVE" ? (
+            <><FaTimesCircle size={12}/> Suspend</>
+          ) : (
+            <><FaCheckCircle size={12}/> Activate</>
+          )}
+        </>
+      )}
+    </button>
           </div>
         )}
       </motion.div>
@@ -1394,8 +1554,8 @@ const handleUpdate = async () => {
                                         name="password"
                                         value={editingUser.password || ""}
                                         onChange={handleEditChange}
-                                        className="w-full px-4 py-3 pr-12 mt-4 rounded-xl border border-slate-200 outline-none"
-                                        placeholder="••••••••"
+                                        className="w-full px-4 py-3 pr-12 mt-4 rounded-md border border-slate-200 outline-none"
+                                       placeholder={isAddMode ? "••••••••" : "Leave blank to keep the same"}
                                     />
                                     <div className='border p-2 mt-4 rounded-md border-[#E9EAEB]'>
                                         <button
@@ -1445,50 +1605,7 @@ const handleUpdate = async () => {
     )}
 </AnimatePresence>
 
-            {/* Delete Modal */}
-            <AnimatePresence>
-                {showConfirmModal && (
-                    <div className="fixed inset-0 flex items-center justify-center z-100 sm:p-4 p-7">
-                        <motion.div 
-                            initial={{ opacity: 0 }} 
-                            animate={{ opacity: 1 }} 
-                            exit={{ opacity: 0 }} 
-                            onClick={handleDismiss} 
-                            className={`fixed inset-0 bg-slate-900/40 backdrop-blur-sm
-    }`}
-                        />
-                        <motion.div 
-                            initial={{ scale: 0.9, opacity: 0 }} 
-                            animate={{ scale: 1, opacity: 1 }} 
-                            exit={{ scale: 0.9, opacity: 0 }} 
-                           className={`rounded-md p-8 w-[300px] shadow-2xl bg-white/80 backdrop-blur-xl border border-white/60 shadow-[0_8px_32px_0_rgba(31,38,135,0.15)]`}
-                        >
-                            <div className="sm:w-20 sm:h-20 w-10 h-10 bg-linear-to-br from-red-100 to-red-200 text-red-600 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
-                                <FaTrash size={25} />
-                            </div>
-                            <h2 className={`text-xl font-bold text-gray-500 mb-2`}>Confirm Delete</h2>
-                            <p className={`text-gray-500 text-[10px] sm:text-sm mb-8`}>
-                                Are you sure you want to remove <span className="font-bold text-slate-700">{pendingAction?.payload?.name}</span>? This action cannot be undone.
-                            </p>
-                            <div className="flex gap-3">
-                                <button 
-                                    onClick={handleDeleteConfirm} 
-                                    className="flex-1 bg-linear-to-r from-red-600 to-red-700 text-white sm:py-3 py-1 text-[10px] sm:text-sm rounded-md font-semibold hover:from-red-700 hover:to-red-800 transition-all shadow-lg"
-                                >
-                                    Delete
-                                </button>
-                                <button 
-                                    onClick={handleDismiss} 
-                                    className="flex-1 bg-slate-100 text-slate-600 sm:py-3 py-1 text-[10px] sm:text-sm rounded-md font-semibold hover:bg-slate-200 transition-all"
-                                >
-                                    Cancel
-                                </button>
-                            </div>
-                        </motion.div>
-                        
-                    </div>
-                )}
-            </AnimatePresence>
+           
     <UserFooter/>
         </>
     );

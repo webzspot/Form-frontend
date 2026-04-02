@@ -214,7 +214,7 @@ const Admindetails = () => {
                             <table className="w-full text-left">
                                 <thead className={`bg-white  text-[#535862] border-b border-[#E9EAEB]`}>
                                     <tr>
-                                       <th className="px-6 py-4 text-xs font-semibold ">
+                                       <th className="px-6 py-4 text-xs font-semibold border-r border-[#E9EAEB] ">
                                                                                  <div className="flex items-center gap-2 group cursor-pointer">
                                                                                  
                                               
@@ -224,7 +224,7 @@ const Admindetails = () => {
                                                                                    
                                                                                  </div>
                                                                                  </th>
-                                       <th className="px-6 py-4 text-xs font-semibold ">
+                                       <th className="px-6 py-4 text-xs font-semibold  border-r border-[#E9EAEB] ">
                                                                                   <div className="flex items-center gap-2 group cursor-pointer">
                                                                                     <span>Role</span>
                                                                                    
@@ -232,7 +232,7 @@ const Admindetails = () => {
                                                                                     
                                                                                   </div>
                                                                                 </th>
-                                    <th className="px-6 py-4 text-xs font-semibold ">
+                                    <th className="px-6 py-4 text-xs font-semibold border-r border-[#E9EAEB] ">
                                                                                <div className="flex items-center gap-2 group cursor-pointer">
                                                                                  <span>Joined Date</span>
                                                                                 
@@ -252,7 +252,7 @@ const Admindetails = () => {
                                                                                 </th>
                                     </tr>
                                 </thead>
-                                <tbody >
+                                <tbody  >
                                     {loading ? ( <TableSkeleton rows={5} columns={4}  />
                                                                         ):
                                                                          currentData.length === 0 ? (
@@ -269,7 +269,7 @@ const Admindetails = () => {
                                         <motion.tr key={user.userId}   initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.3, delay: index * 0.05 }} className="hover:bg-[#F5F6F8] border-b border-[#E9EAEB] transition-colors group">
-                                            <td className="px-6 py-4">
+                                            <td className="px-6 py-4 border-r border-[#E9EAEB]">
                                                 <div className="flex items-center gap-3">
                                                                                                           
                                     
@@ -280,15 +280,15 @@ const Admindetails = () => {
                                                     </div>
                                                 </div>
                                             </td>
-                                              <td className="px-6 py-4">
+                                              <td className="px-6 py-4 border-r border-[#E9EAEB] ">
                                                     <span className={   ` text-sm font-medium leading-5 tracking-normal text-[#181D27]  `}>
                                                         {user.role}
                                                     </span>
                                                 </td>
-                                           <td className="px-6 py-4 text-sm font-medium leading-5 tracking-normal text-[#181D27] ">
+                                           <td className="px-6 py-4 text-sm font-medium leading-5 tracking-normal text-[#181D27] border-r border-[#E9EAEB] ">
                                                     <div>{new Date(user.createdAt).toLocaleDateString()}</div>
                                                 </td>
-                                            <td className="px-6 py-4 text-start relative">
+                                            <td className="px-6 py-4 text-start relative ">
                                                 <button onClick={() => setOpenMenuIndex(openMenuIndex === user.userId ? null : user.userId)}
                                                  className="w-8 h-8 flex items-center justify-center hover:bg-slate-200 rounded-full   transition-all">
                                                    <MoreVertical size={20}  className='text-[#535862]'/> 

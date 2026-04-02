@@ -254,21 +254,23 @@
 import React, { useState, useEffect} from "react";
 import { useLocation } from "react-router-dom";
 import { useParams, Link, useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { Rocket, Lock, ArrowRight, CheckCircle2, AlertCircle, X, Eye, EyeOff } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const ResetPassword = () => {
  
-  const { token: pathToken } = useParams(); 
-  const location = useLocation();
+  //  const { token: pathToken } = useParams(); 
+  //  const location = useLocation();
   const navigate = useNavigate();
 
-
-  const queryToken = new URLSearchParams(location.search).get("token");
-  const token = pathToken || queryToken
  
+  const [searchParams, setSearchParams] = useSearchParams();
   const [newPassword, setNewPassword] = useState("");
+  const queryToken =searchParams.get("token") 
+  console.log(queryToken)
+  const token = queryToken
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [toast, setToast] = useState({ show: false, message: "", type: "success" });
@@ -295,7 +297,7 @@ const ResetPassword = () => {
     try {
     
       const response = await axios.post(
-        `https://formbuilder-saas-backend.onrender.com/reset-password/${token}`, 
+        `https://formbuilder-saas-backend.onrender.com/reset-password/${queryToken}`, 
         { newPassword }
       );
       
@@ -477,7 +479,7 @@ const ResetPassword = () => {
                   onClick={() => setShowPassword(!showPassword)}
                   className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 >
-                  {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  {/* {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />} */}
                 </button>
               </div>
             </div>
