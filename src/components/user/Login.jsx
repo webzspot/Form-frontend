@@ -43,8 +43,9 @@ const Login = () => {
         { email, password }
         
       );
-      // console.log(response)
+     console.log(response)
       const { token, user } = response.data;
+ 
       
       // Save to Local Storage
       // localStorage.setItem("token", token);

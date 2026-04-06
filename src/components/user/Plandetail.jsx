@@ -250,10 +250,13 @@ import UserFooter from './UserFooter';
 import toast from 'react-hot-toast';
 import { Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import ErrorLayout from '../shared/ErrorLayout'
 const Plandetail = () => {
   const [subscription, setSubscription] = useState(null);
   const [userStats, setUserStats] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [apiError, setApiError] = useState(null);
+const [errorMessage, setErrorMessage] = useState("");
   const navigate=useNavigate()
 
   const token = sessionStorage.getItem("token");
@@ -273,12 +276,14 @@ const Plandetail = () => {
       axios.get(`${API_BASE}/api/users/profile`, { headers: { Authorization: `Bearer ${token}` } })
     ]);
       setSubscription(subRes.data.data);
+      console.log(subRes.data.data)
       setUserStats(profileRes.data.data);
-      // console.log(profileRes)
-        // console.log(subRes)
+      console.log(profileRes.data.data)
+      setApiError(null);
     } catch (err) {
     
-      toast.error("Failed to fetch billing details",err);
+   setApiError(err.response?.status || 500);
+   setErrorMessage(err.response?.data?.message || "Failed to fetch billing details");
     } finally {
       setLoading(false);
     }
@@ -298,15 +303,17 @@ const Plandetail = () => {
     }
   };
 
-  // if (loading) {
-  //   return (
-  //     <div className="min-h-screen flex flex-col items-center justify-center bg-[#FDFDFD]">
-  //       <RefreshCw className="w-10 h-10 text-[#2B4BAB] animate-spin mb-4" />
-  //       <p className="text-slate-400 font-medium">Loading subscription data...</p>
-  //     </div>
-  //   );
-  // }
+  
 
+  if (apiError) {
+  return (
+    <ErrorLayout 
+      status={apiError} 
+      message={errorMessage} 
+     
+    />
+  );
+}
   return (
     <>
       <div className="min-h-screen bg-[#FDFDFD] font-sans selection:bg-blue-100">
@@ -392,73 +399,146 @@ const Plandetail = () => {
                 />
               </div>
 
-          <div className="rounded-md border border-slate-100 p-8 bg-white shadow-sm">
-  <div className="flex items-center gap-3 mb-8">
-    <div className="w-1.5 h-6 bg-[#2B4BAB] rounded-full"></div>
-    <h2 className="font-bold text-lg text-slate-900 uppercase tracking-tight">Usage & Quota</h2>
-  </div>
-
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-    {/* Card 1: Forms Created */}
-    <div className="p-5 rounded-md bg-white shadow-sm border border-slate-100">
-      <div className="flex justify-between items-start mb-4">
-        <p className="text-sm font-bold text-slate-600">Forms Created</p>
-        <span className="px-2 py-1 bg-white rounded-md text-[10px] font-bold text-[#2B4BAB] shadow-sm uppercase">
-          {subscription?.plan === "FREE" ? "Limit: 3" : "Unlimited"}
-        </span>
-      </div>
-      <div className="flex items-baseline gap-2">
-        <h4 className="text-3xl font-black text-slate-900">{userStats?.formCount || 0}</h4>
-        <p className="text-slate-400 text-xs">Active forms</p>
+        {/* USAGE LIMITS SECTION */}
+{userStats && userStats.role !== "ADMIN" && (
+  <div className="mt-10 p-8 rounded-md border border-slate-100 bg-white shadow-[0_10px_30px_rgba(0,0,0,0.02)]">
+    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
+      <div className="flex items-center gap-3">
+        <div className="w-1.5 h-6 bg-[#2B4BAB] rounded-full"></div>
+        <div>
+          <h2 className="font-bold text-xl text-slate-900 tracking-tight">Plan Usage & Quotas</h2>
+          <p className="text-sm text-slate-400 font-medium">
+            Monitoring your <span className="text-[#2B4BAB]">{subscription?.plan || "Free"}</span> limits
+          </p>
+        </div>
       </div>
       
-
-      <p className="text-slate-400 mt-4 text-xs">
-  {subscription?.plan === "FREE" 
-    ? `${3 - (userStats?.formCount || 0)} forms remaining` 
-    : "Unlimited forms available"}
-</p>
-      {/* Show progress bar ONLY for Free users */}
-      {subscription?.plan === "FREE" && (
-        <div className="mt-4 h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
-          <div 
-            className="h-full bg-[#2B4BAB] rounded-full" 
-            style={{ width: `${((userStats?.formCount || 0) / 3) * 100}%` }}
-          />
-        </div>
-      )}
+      <div className="flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-100 rounded-md">
+        <div className="w-2 h-2 bg-blue-500 rounded-md animate-pulse"></div>
+        <span className="text-blue-700 font-bold text-xs uppercase tracking-widest">
+          {subscription?.plan || "Free"} Plan
+        </span>
+      </div>
     </div>
+    
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      
+      {/* 1. MONTHLY RESPONSES */}
+      <div className="relative p-6 rounded-md bg-white border border-slate-200 group">
+        <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Monthly Submissions</p>
+        <div className="flex items-baseline gap-1">
+          <p className="text-3xl font-black text-slate-800">{userStats.limits?.monthly?.used || 0}</p>
+          <p className="text-slate-400 font-bold text-sm">/ {userStats.limits?.monthly?.limit || 0}</p>
+        </div>
+        
+        <div className="mt-6">
+          <div className="flex justify-between text-[10px] font-bold text-slate-500 mb-2 uppercase">
+            <span>Utilization</span>
+            <span>{Math.round(((userStats.limits?.monthly?.used || 0) / (userStats.limits?.monthly?.limit || 1)) * 100)}%</span>
+          </div>
+          <div className="w-full bg-slate-200 h-2.5 rounded-md overflow-hidden">
+            <motion.div 
+              initial={{ width: 0 }}
+              animate={{ width: `${((userStats.limits?.monthly?.used || 0) / (userStats.limits?.monthly?.limit || 1)) * 100}%` }}
+              className="bg-emerald-500 h-full rounded-md shadow-[0_0_10px_rgba(16,185,129,0.2)]" 
+            />
+          </div>
+          <p className="text-[10px] mt-3 text-slate-400 font-bold uppercase">{userStats.limits?.monthly?.remaining || 0} remaining this month</p>
+        </div>
+      </div>
 
-    {/* Card 2: Responses */}
-  {/* Card 2: Responses */}
-<div className="p-5 rounded-md bg-white border border-slate-100 shadow-sm">
-  <div className="flex justify-between items-start mb-4">
-    <p className="text-sm font-bold text-slate-600">Responses</p>
-    {/* This span now shows 100, 2000, or 50,000 depending on the plan */}
-    <span className="px-2 py-1 bg-white rounded-md text-[10px] font-bold text-[#2B4BAB] shadow-sm uppercase">
-      {subscription?.plan === "FREE" ? "Limit: 100" : 
-       subscription?.plan === "PRO" ? "Limit: 2,000" : "Limit: 50,000"}
-    </span>
+      {/* 2. FORM CREATION LIMIT */}
+      <div className="p-6 rounded-md bg-white border border-slate-200">
+        <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Active Forms</p>
+        <div className="flex items-baseline gap-1">
+          <p className="text-3xl font-black text-slate-800">{userStats.limits?.forms?.used || 0}</p>
+          <p className="text-slate-400 font-bold text-sm">/ {userStats.limits?.forms?.limit || 0}</p>
+        </div>
+        
+        <div className="mt-6">
+          <div className="flex justify-between text-[10px] font-bold text-slate-500 mb-2 uppercase">
+            <span>Utilization</span>
+            <span>{Math.round(((userStats.limits?.forms?.used || 0) / (userStats.limits?.forms?.limit || 1)) * 100)}%</span>
+          </div>
+          <div className="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
+            <motion.div 
+              initial={{ width: 0 }}
+              animate={{ width: `${((userStats.limits?.forms?.used || 0) / (userStats.limits?.forms?.limit || 1)) * 100}%` }}
+              className="bg-[#2B4BAB] h-full rounded-full" 
+            />
+          </div>
+          <p className="text-[10px] mt-3 text-[#2B4BAB] font-bold uppercase">{userStats.limits?.forms?.remaining || 0} creations left</p>
+        </div>
+      </div>
+
+      {/* 3. DAILY ROLLING LIMIT */}
+      {/* <div className="p-6 rounded-md bg-white border-2 border-slate-200 flex flex-col justify-center">
+        <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Daily Rolling Limit</p>
+        <div className="flex items-baseline gap-1">
+          <p className="text-2xl font-black text-slate-700">{userStats.limits?.daily?.remaining || 0}</p>
+          <p className="text-xs font-medium text-slate-400">left today</p>
+        </div>
+        
+        <div className="mt-6 w-full bg-slate-100 h-1.5 rounded-full overflow-hidden">
+             <div 
+              className="bg-amber-400 h-full rounded-md" 
+              style={{ width: `${((userStats.limits?.daily?.used || 0) / (userStats.limits?.daily?.limit || 1)) * 100}%` }}
+            />
+        </div>
+
+        <div className="flex items-center gap-2 mt-4">
+            <p className="text-[10px] text-slate-400 font-medium italic leading-tight">
+              Used {userStats.limits?.daily?.used || 0} of {userStats.limits?.daily?.limit || 0} daily limit.
+            </p>
+        </div>
+      </div> */}
+
+
+      {/* 3. DAILY ROLLING LIMIT - FIXED TO MATCH */}
+      <div className="p-6 rounded-md bg-white border border-slate-200">
+        <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Daily Rolling Limit</p>
+        <div className="flex items-baseline gap-1">
+          <p className="text-3xl font-black text-slate-800">{userStats.limits?.daily?.remaining || 0}</p>
+          <p className="text-slate-400 font-bold text-sm">left today</p>
+        </div>
+        
+        <div className="mt-6">
+          <div className="flex justify-between text-[10px] font-bold text-slate-500 mb-2 uppercase">
+            <span>Utilization</span>
+            <span>{Math.round(((userStats.limits?.daily?.used || 0) / (userStats.limits?.daily?.limit || 1)) * 100)}%</span>
+          </div>
+          <div className="w-full bg-slate-200 h-2.5 rounded-md overflow-hidden">
+            <motion.div 
+              initial={{ width: 0 }}
+              animate={{ width: `${((userStats.limits?.daily?.used || 0) / (userStats.limits?.daily?.limit || 1)) * 100}%` }}
+              className="bg-amber-400 h-full rounded-md" 
+            />
+          </div>
+          <p className="text-[10px] mt-3 text-amber-600 font-bold uppercase">Used {userStats.limits?.daily?.used || 0} of {userStats.limits?.daily?.limit || 0}</p>
+        </div>
+      </div>
+
+      {/* 4. OTHER ASSETS (API Keys & Seats) */}
+      <div className="md:col-span-2 lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-50">
+          <div className="flex items-center gap-4 p-4 rounded-md hover:bg-slate-50 transition-colors">
+              <div className="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold">API</div>
+              <div>
+                  <p className="text-xs font-bold text-slate-400 uppercase">API Access</p>
+                  <p className="text-sm font-bold text-slate-700">{userStats.limits?.apiKeys?.limit || 0} Key(s) Allowed</p>
+              </div>
+          </div>
+          <div className="flex items-center gap-4 p-4 rounded-md hover:bg-slate-50 transition-colors">
+              <div className="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold">S</div>
+              <div>
+                  <p className="text-xs font-bold text-slate-400 uppercase">User Seats</p>
+                  <p className="text-sm font-bold text-slate-700">{userStats.limits?.users?.limit || 0} Active Workspace Seat(s)</p>
+              </div>
+          </div>
+      </div>
+
+    </div>
   </div>
-  <div className="flex items-baseline gap-2">
-    <h4 className="text-3xl font-black text-slate-900">{userStats?.monthlyResponseCount || 0}</h4>
-    <p className="text-slate-400 text-xs">Monthly responses</p>
-  </div>
-  
-  {/* The progress bar now calculates based on the plan limit */}
-  <div className="mt-4 h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
-    <div 
-      className="h-full bg-emerald-500 rounded-full transition-all duration-500" 
-      style={{ 
-        width: `${Math.min(((userStats?.monthlyResponseCount || 0) / 
-          (subscription?.plan === "FREE" ? 100 : 
-           subscription?.plan === "PRO" ? 2000 : 50000)) * 100, 100)}%` 
-      }}
-    />
-  </div>
-</div>
-  </div>
-</div>
+)}
 
               {/* Danger Zone */}
               <div className="mt-12 pt-10 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-6">

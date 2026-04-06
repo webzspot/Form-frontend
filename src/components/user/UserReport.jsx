@@ -12,7 +12,7 @@ import {
   ResponsiveContainer 
 } from "recharts";
 import UserNavbar from "./UserNavbar";
-import UserFooter from "./userFooter";
+import UserFooter from "./UserFooter";
 import toast from "react-hot-toast";
 import { 
   FiAlertCircle, 

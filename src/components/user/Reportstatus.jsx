@@ -15,17 +15,20 @@ import UserFooter from './UserFooter';
 import usePagination from "../../hooks/usePagination";
 import toast from 'react-hot-toast';
 import CardSkeleton from '../dashboard/CardSkeleton';
+import ErrorLayout from '../shared/ErrorLayout';
 const Reportstatus = () => {
   const token = sessionStorage.getItem("token");
   const [userReportStatus, setUserReportStatus] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("ALL");
+ const [apiError, setApiError] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  useEffect(() => {
-    const fetchReport = async () => {
+   const fetchReport = async () => {
       try {
         setLoading(true);
+      
         const response = await axios.get(
           "https://formbuilder-saas-backend.onrender.com/api/dashboard/user-report",
           { headers: { Authorization: `Bearer ${token}` } }
@@ -35,33 +38,25 @@ const Reportstatus = () => {
   new Date(b.createdAt) - new Date(a.createdAt)
 );
         setUserReportStatus(sortedData);
+        setApiError(null);
       } catch (error) {
-        //toast.error("Failed to load reports", err);
-        const status = error.response?.status;
-  const message = error.response?.data?.message || "";
-
- 
-  if (status === 404 && (message.toLowerCase().includes("empty") || message.toLowerCase().includes("no"))) {
-    setUserReportStatus([]); // Set to empty so the "No reports found" UI shows
-    return; 
-  }
-  
- 
-  if (status === 429) {
-    toast.error("Too many requests. Please try again later.");
-  } else if (status === 401) {
-    toast.error("Session expired. Please login again.");
-  } else {
-  
-    toast.error("Failed to load data");
-    console.error("REAL ERROR:", error);
-  }
+       
+setApiError(error.response?.status || 500); 
+    
+    
+    setErrorMessage(error.response?.data?.message || "Check your internet connection or try again later.");
+      
       } finally {
         setLoading(false);
       }
     };
+  useEffect(() => {
+   
     if (token) fetchReport();
   }, [token]);
+
+
+ 
 
   const filteredReports = useMemo(() => {
     return userReportStatus.filter(report => {
@@ -107,6 +102,17 @@ const Reportstatus = () => {
     textSub: "text-[#6A7181]"
   };
 
+
+
+   
+  if (apiError) return ( 
+    <ErrorLayout 
+      status={apiError} 
+      message={errorMessage} 
+     
+      
+    />
+  );
   return (
     <>
     <div className={` flex flex-col min-h-screen font-sans ${theme.pageBg} `}>
@@ -115,7 +121,7 @@ const Reportstatus = () => {
         
         {/* Header */}
         <div className="mb-8">
-          <span className="px-4 py-1 rounded-md text-xs font-medium bg-[#2B4BAB1A] text-[#2B4BAB]">
+          <span className="px-4 py-1 rounded-md text-3xl md:text-xs font-medium bg-[#2B4BAB1A] text-[#2B4BAB]">
             Support Analytics
           </span>
           <h1 className="text-xl md:text-3xl font-bold mt-2 text-[#14181F]">Ticket Status Tracking</h1>

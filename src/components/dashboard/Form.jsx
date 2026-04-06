@@ -30,7 +30,7 @@ import Design from "./Design"
 import WaveBackground from "../dashboard/WaveBackground"
 import { FaSpinner } from "react-icons/fa"
 import LoadingScreen from "../shared/LoadingScreen"
-
+import ErrorLayout from "../shared/ErrorLayout"
 
 
 // Enhanced animation variants
@@ -78,6 +78,9 @@ const Form = () => {
   const [isAddingMaster, setIsAddingMaster] = useState(false)
   const [newField, setNewField] = useState({ label: "", type: "TEXT", options: [""] })
   const [introloading, setintroLoading] = useState(true);
+  const [apiError, setApiError] = useState(null);
+const [errorMessage, setErrorMessage] = useState("");
+ const [visibleCount, setVisibleCount] = useState(6); 
   // formfield
   const { forms, setForms, updateFormLocally, deleteFormLocally } = useFormContext()
   const [loading, setLoading] = useState(true)
@@ -128,42 +131,30 @@ const Form = () => {
   const URL = import.meta.env.VITE_URL
   const navi = useNavigate()
 
-  // 1. Fetch Master Fields
-  useEffect(() => {
-    const getMasterFields = async () => {
+
+
+   const getMasterFields = async () => {
       try {
         const res = await axios.get("https://formbuilder-saas-backend.onrender.com/api/dashboard/master-fields", {
           headers: { Authorization: `Bearer ${token}` },
         })
         setMasterFields(res.data.data)
+         setApiError(null);
       }catch (error) {
    
-       const status = error.response?.status;
-           const message = error.response?.data?.message;
+    setApiError(error.response?.status || 500);
+    setErrorMessage(error.response?.data?.message || "Failed to load ");
        
            
-           if (status === 404 && message?.toLowerCase().includes("no")) {
-             setMasterFields([]);
-           }
            
-           else if(status===429){
-             toast.error("Too many requests. Please try again later.")
-           }
-          
-           else if (status === 401) {
-             toast.error("Session expired. Please login again.");
-             
-           }
-       
-           else {
-             toast.error("Failed to load data");
-             console.error("REAL ERROR:", error);
-           }
       }
       finally {
         setintroLoading(false);
       }
     }
+  // 1. Fetch Master Fields
+  useEffect(() => {
+   
     getMasterFields()
   }, [token])
 
@@ -248,21 +239,25 @@ const Form = () => {
     }
   }
 
-  // 5. Fetch All Forms
-  useEffect(() => {
-    const fetchForms = async () => {
+
+
+   const fetchForms = async () => {
       setLoading(true)
       try {
         const res = await axios.get("https://formbuilder-saas-backend.onrender.com/api/dashboard/forms", {
           headers: { Authorization: `Bearer ${token}` },
         })
         setForms(res.data.data)
+         
       } catch (err) {
         toast.error("Failed to load forms")
       } finally {
         setLoading(false)
       }
     }
+  // 5. Fetch All Forms
+  useEffect(() => {
+   
     fetchForms()
   }, [token])
 
@@ -458,21 +453,38 @@ const getUser = useCallback(async () => {
       </div>
     </div>
   )
-  //  if (loading) {
-  //   return <LoadingScreen isDarkMode={isDarkMode} />;
-  // }
+     
+
+  // Add this line to fix the "undefined" error
+const filteredForms = forms || []; 
+
+// Your existing line will now work:
+const displayedForms = filteredForms.slice(0, visibleCount);
+ 
+
+
+
+
+
+if (apiError) {
+  return (
+    <ErrorLayout 
+      status={apiError} 
+      message={errorMessage} 
+     
+    />
+  );
+}
+   
+
+
   return (
     <>
       <UserNavbar/>
     <div className={`min-h-screen relative w-full  ${theme.pageBg} `}>
     
      
-      {/* <WaveBackground position="top" height="h-120" color={isDarkMode ? "#1e1b4b" : "#6c2bd9"} />
      
-    <WaveBackground position="bottom" height="h-100" color={isDarkMode ? "#1e1b4b" : "#6c2bd9"} />
-  
-     
-    <WaveBackground position="bottom" height="h-100" color={isDarkMode ? "#1e1b4b" : "#6c2bd9"} /> */}
   
 
       <div className="max-w-7xl relative z-10 mx-auto px-4 md:px-6 py-8">
@@ -487,7 +499,7 @@ const getUser = useCallback(async () => {
                 <motion.h1
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                 className={`text-4xl font-bold  leading-10 tracking-tight align-middle  ${theme.text}`}
+                 className={`text-3xl font-bold  leading-10 tracking-tight align-middle  ${theme.text}`}
                 >
                   Your Forms
                 </motion.h1>
@@ -774,6 +786,7 @@ const getUser = useCallback(async () => {
     initial="hidden"
     animate="visible"
     className="space-y-2.5 overflow-y-auto max-h-[40vh] lg:max-h-[50vh] pr-2 custom-scrollbar"
+    
   >
     {masterFields.map((field, index) => {
       // Find the correct icon based on field type
@@ -875,7 +888,7 @@ const getUser = useCallback(async () => {
       onClick={() => setIsAddingMaster(!isAddingMaster)}
       whileHover={{ scale: 1.01 }}
       whileTap={{ scale: 0.99 }}
-      className={`w-full py-2 rounded-sm font-semibold flex items-center justify-center gap-3 transition-all duration-300 border-2 ${
+      className={`w-full py-2  rounded-sm font-semibold flex items-center justify-center gap-3 transition-all duration-300 border-2 ${
         isAddingMaster
           ? "bg-white border-gray-200 text-gray-600"
           : "bg-[#2B4BAB] border-[#2B4BAB] text-white shadow-lg shadow-blue-900/10"
@@ -1379,7 +1392,7 @@ text-[#2B4BAB]
               </motion.div>
             ))}
           </motion.div>
-        ) : forms.length === 0 ? (<motion.div 
+        ) : displayedForms.length === 0 ? (<motion.div 
     initial={{ opacity: 0, y: 20 }}
     animate={{ opacity: 1, y: 0 }}
     className={`flex flex-col items-center justify-center py-20 px-4 text-center rounded-md border-2 border-dashed ${
@@ -1407,7 +1420,7 @@ text-[#2B4BAB]
             className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-6"
           >
             <AnimatePresence mode="popLayout">
-              {forms.map((form, index) => (
+              {displayedForms.map((form, index) => (
                 <motion.div
                   key={form.formId}
                   layout
@@ -1550,6 +1563,26 @@ text-[#2B4BAB]
         )}
 
       </div>
+
+
+      {/* Load More Button */}
+{!loading && visibleCount < forms.length && (
+  <motion.div 
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    className="flex justify-center mt-6 pb-6 "
+  >
+    <button
+      onClick={() => setVisibleCount((prev) => prev + 6)}
+      className="group relative flex items-center gap-3 px-8 py-3 bg-gray-100 text-gray-500 rounded-md font-bold shadow-lg hover:shadow-indigo-500/40 hover:scale-105 transition-all active:scale-95"
+    >
+      <span>Load More Forms</span>
+      <div className="w-6 h-6 rounded-md bg-white/20 flex items-center justify-center text-[10px]">
+        {forms.length - visibleCount}
+      </div>
+    </button>
+  </motion.div>
+)}
 
       {/* Delete Modal */}
       <AnimatePresence>

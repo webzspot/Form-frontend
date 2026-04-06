@@ -270,6 +270,7 @@ import { useNavigate,useLocation } from "react-router-dom";
 import { useFormContext } from "../dashboard/FormContext"; 
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import toast from "react-hot-toast";
+import { FaCreditCard,FaShieldAlt } from 'react-icons/fa';
 const UserNavbar = () => {
   const navigate = useNavigate();
   const location = useLocation(); // 2. Initialize location
@@ -310,6 +311,8 @@ React.useEffect(() => {
     { label: "User Details", path: "/admindashboard", icon: <LayoutDashboard size={16} />, allowedRoles: ["admin"] },
     { label: "User Reports", path: "/adminreport", icon: <BarChart3 size={16} />, allowedRoles: ["admin"] },
     { label: "Admin Details", path: "/admindetails", icon: <MdOutlineAdminPanelSettings size={18} />, allowedRoles: ["admin"] },
+     { label: "Plan Details", path: "/adminplandetail", icon: <FaShieldAlt size={18} />, allowedRoles: ["admin"] },
+      { label: "Payment Settings", path: "/paymentsettings", icon: <FaCreditCard size={18} />, allowedRoles: ["admin"] },
    
   ];
 

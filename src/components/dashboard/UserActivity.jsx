@@ -9,6 +9,7 @@ import { X, FileText, Calendar, Eye,CheckCircle, MessageSquare, ArrowLeft} from 
 import { FaCheckCircle, FaSpinner, FaSearch, FaArrowLeft } from "react-icons/fa";
 import UserFooter from "../user/UserFooter";
 
+import ErrorLayout from "../shared/ErrorLayout"
 const UserActivity = () => {
 
   const { id } = useParams();
@@ -31,7 +32,8 @@ const UserActivity = () => {
 const [searchTerm, setSearchTerm] = useState(""); 
  
 
- 
+ const [apiError, setApiError] = useState(null);
+const [errorMessage, setErrorMessage] = useState("");
 
 
 
@@ -42,13 +44,21 @@ const [searchTerm, setSearchTerm] = useState("");
   const fetchUserActivity = async () => {
     try {
       setPageLoading(true);
+     
       const res = await axios.get(API_URL, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      setUser(res.data.user);
-      setForms(res.data.user.form || []);
-    } catch (err) {
-      toast.error("Failed to load user activity");
+      
+      setUser(res.data.data);
+      console.log(res.data)
+      setForms(res.data.data.form || []);
+     
+      setApiError(null);
+    } catch (error) {
+        setApiError(error.response?.status ); 
+    
+    
+    setErrorMessage(error.response?.data?.message );
     } finally {
       setFormsLoading(false);
       setPageLoading(false);
@@ -157,8 +167,41 @@ const filteredForms = forms.filter((form) =>
 // Slice the array to only show the "visible" amount
 const displayedForms = filteredForms.slice(0, visibleCount);
 
- 
 
+
+const QuotaSkeleton = () => (
+  <div className="mt-10 p-8 rounded-md border border-slate-100 bg-white animate-pulse">
+    <div className="flex justify-between mb-10">
+      <div className="flex items-center gap-3">
+        <div className="w-1.5 h-6 bg-slate-200 rounded-full"></div>
+        <div className="space-y-2">
+          <div className="h-5 w-40 bg-slate-200 rounded"></div>
+          <div className="h-3 w-32 bg-slate-100 rounded"></div>
+        </div>
+      </div>
+      <div className="h-8 w-24 bg-slate-100 rounded-2xl"></div>
+    </div>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {[1, 2, 3].map((i) => (
+        <div key={i} className="p-6 rounded-md border border-slate-100">
+          <div className="h-3 w-20 bg-slate-100 mb-4 rounded"></div>
+          <div className="h-8 w-32 bg-slate-200 mb-6 rounded"></div>
+          <div className="w-full bg-slate-100 h-2.5 rounded-md"></div>
+        </div>
+      ))}
+    </div>
+  </div>
+);
+ 
+  if (apiError) {
+  return (
+    <ErrorLayout 
+      status={apiError} 
+      message={errorMessage} 
+      
+    />
+  );
+}
   
    
 
@@ -186,7 +229,7 @@ const displayedForms = filteredForms.slice(0, visibleCount);
   initial={{ opacity: 0, y: 20 }}
   animate={{ opacity: 1, y: 0 }}
   transition={{ duration: 0.5 }}
-  className={` rounded-md overflow-hidden border border-[#E7EAEC] shadow-xl  `}
+  className={` rounded-md bg-white overflow-hidden border border-[#E7EAEC] shadow-xl  `}
 >
   {/* Header Banner  */}
   <div className={`h-20   relative`}>
@@ -248,6 +291,134 @@ const displayedForms = filteredForms.slice(0, visibleCount);
 </motion.div>
          
 
+
+
+
+{/* USAGE LIMITS SECTION - ADMIN VIEW */}
+{pageLoading ? (
+  <QuotaSkeleton />
+) : (
+  user && (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.1 }}
+      className="mt-10 p-8 rounded-md border border-[#E7EAEC] bg-white shadow-sm"
+    >
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
+        <div className="flex items-center gap-3">
+          <div className="w-1.5 h-6 bg-[#2B4BAB] rounded-full"></div>
+          <div>
+            <h2 className="font-bold text-xl text-slate-900 tracking-tight">Plan Usage & Quotas</h2>
+            <p className="text-sm text-slate-400 font-medium">
+              Currently on <span className="text-[#2B4BAB] font-bold">{user.plan?.name || "Free"}</span> limits
+            </p>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-100 rounded-md">
+          <div className={`w-2 h-2 rounded-md animate-pulse ${user.AccountStatus === "ACTIVE" ? 'bg-green-500' : 'bg-amber-500'}`}></div>
+          <span className="text-blue-700 font-bold text-xs uppercase tracking-widest">
+            {user.AccountStatus} Account
+          </span>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* 1. MONTHLY RESPONSES */}
+        <div className="relative p-6 rounded-md bg-white border border-slate-200 group">
+          <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Monthly Submissions</p>
+          <div className="flex items-baseline gap-1">
+            <p className="text-3xl font-black text-slate-800">{user.monthlyResponseCount || 0}</p>
+            <p className="text-slate-400 font-bold text-sm">/ {user.limits?.monthly?.limit || 0}</p>
+          </div>
+
+          <div className="mt-6">
+            <div className="flex justify-between text-[10px] font-bold text-slate-500 mb-2 uppercase">
+              <span>Utilization</span>
+              <span>{Math.round(((user.monthlyResponseCount || 0) / (user.limits?.monthly?.limit || 1)) * 100)}%</span>
+            </div>
+            <div className="w-full bg-slate-200 h-2.5 rounded-md overflow-hidden">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${((user.monthlyResponseCount || 0) / (user.limits?.monthly?.limit || 1)) * 100}%` }}
+                className="bg-emerald-500 h-full rounded-md shadow-[0_0_10px_rgba(16,185,129,0.2)]"
+              />
+            </div>
+            <p className="text-[10px] mt-3 text-slate-400 font-bold uppercase">{user.limits?.monthly?.remaining || 0} remaining this month</p>
+          </div>
+        </div>
+
+        {/* 2. FORM CREATION LIMIT */}
+        <div className="p-6 rounded-md bg-white border border-slate-200">
+          <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Active Forms</p>
+          <div className="flex items-baseline gap-1">
+            <p className="text-3xl font-black text-slate-800">{user.formCount || 0}</p>
+            <p className="text-slate-400 font-bold text-sm">/ {user.limits?.forms?.limit || 0}</p>
+          </div>
+
+          <div className="mt-6">
+            <div className="flex justify-between text-[10px] font-bold text-slate-500 mb-2 uppercase">
+              <span>Utilization</span>
+              <span>{Math.round(((user.formCount || 0) / (user.limits?.forms?.limit || 1)) * 100)}%</span>
+            </div>
+            <div className="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${((user.formCount || 0) / (user.limits?.forms?.limit || 1)) * 100}%` }}
+                className="bg-[#2B4BAB] h-full rounded-full"
+              />
+            </div>
+            <p className="text-[10px] mt-3 text-[#2B4BAB] font-bold uppercase">{user.limits?.forms?.remaining || 0} creations left</p>
+          </div>
+        </div>
+
+        {/* 3. DAILY ROLLING LIMIT */}
+        <div className="p-6 rounded-md bg-white border border-slate-200">
+          <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Daily Rolling Limit</p>
+          <div className="flex items-baseline gap-1">
+            <p className="text-3xl font-black text-slate-800">{user.limits?.daily?.remaining || 0}</p>
+            <p className="text-slate-400 font-bold text-sm">left today</p>
+          </div>
+
+          <div className="mt-6">
+            <div className="flex justify-between text-[10px] font-bold text-slate-500 mb-2 uppercase">
+              <span>Utilization</span>
+              <span>{Math.round(((user.dailyResponseCount || 0) / (user.limits?.daily?.limit || 1)) * 100)}%</span>
+            </div>
+            <div className="w-full bg-slate-200 h-2.5 rounded-md overflow-hidden">
+              <motion.div
+                initial={{ width: 0 }}
+                animate={{ width: `${((user.dailyResponseCount || 0) / (user.limits?.daily?.limit || 1)) * 100}%` }}
+                className="bg-amber-400 h-full rounded-md"
+              />
+            </div>
+            <p className="text-[10px] mt-3 text-amber-600 font-bold uppercase">Used {user.dailyResponseCount || 0} of {user.limits?.daily?.limit || 0}</p>
+          </div>
+        </div>
+
+        {/* 4. OTHER ASSETS (API Keys & Seats) */}
+        <div className="md:col-span-2 lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-50">
+          <div className="flex items-center gap-4 p-4 rounded-md hover:bg-slate-50 transition-colors">
+            <div className="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold">API</div>
+            <div>
+              <p className="text-xs font-bold text-slate-400 uppercase">API Access</p>
+              <p className="text-sm font-bold text-slate-700">{user.limits?.apiKeys?.limit || 0} Key(s) Allowed</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-4 p-4 rounded-md hover:bg-slate-50 transition-colors">
+            <div className="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold">S</div>
+            <div>
+              <p className="text-xs font-bold text-slate-400 uppercase">Account Status</p>
+              <p className="text-sm font-bold text-slate-700">{user.AccountStatus} Workspace</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  )
+)}
+
           {/* Forms Section */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -295,7 +466,7 @@ const displayedForms = filteredForms.slice(0, visibleCount);
   {formsLoading
     ? 
       Array.from({ length: 6 }).map((_, i) => (
-        <div key={i} className={`animate-pulse border border-gray-200 rounded-md h-64 flex flex-col justify-between p-6 `}>
+        <div key={i} className={`animate-pulse border bg-white border-gray-200 rounded-md h-64 flex flex-col justify-between p-6 `}>
           <div className={`w-12 h-12  bg-slate-200 rounded-xl mb-4 `}></div>
           <div className={`h-6 bg-slate-200 rounded w-3/4 mb-2`}></div>
           <div className={`h-4 bg-slate-200 rounded w-full mb-2`}></div>
@@ -309,7 +480,7 @@ const displayedForms = filteredForms.slice(0, visibleCount);
           <FileText className="text-gray-400" size={36} />
         </div>
         <p className={`font-semibold text-lg mb-1 text-gray-500`}>No Forms Yet</p>
-        <p className="text-gray-400">{user.name} has not created any forms yet.</p>
+        <p className="text-gray-400">{user?.name} has not created any forms yet.</p>
       </div>
     : 
       displayedForms.map((form, index) => (
@@ -386,10 +557,10 @@ const displayedForms = filteredForms.slice(0, visibleCount);
   >
     <button
       onClick={() => setVisibleCount((prev) => prev + 6)}
-      className="group relative flex items-center gap-2 px-8 py-3 bg-[#2B4BAB] text-white rounded-full font-bold shadow-lg hover:shadow-indigo-500/40 hover:scale-105 transition-all active:scale-95"
+      className="group relative flex items-center gap-2 px-8 py-3 bg-gray-100 text-gray-500 rounded-md font-bold shadow-lg hover:shadow-indigo-500/40 hover:scale-105 transition-all active:scale-95"
     >
       <span>Load More Forms</span>
-      <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center text-[10px]">
+      <div className="w-5 h-5 rounded-md bg-white/20 flex items-center justify-center text-[10px]">
         {filteredForms.length - visibleCount}
       </div>
     </button>

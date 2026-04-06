@@ -20,6 +20,7 @@ import UserFooter from './UserFooter';
 import toast from "react-hot-toast";
 import { useFormContext } from "../dashboard/FormContext"; 
 import LoadingScreen from '../shared/LoadingScreen';
+import ErrorLayout from '../shared/ErrorLayout'
 import Preview from './Preview';
 import { MdEmail, MdNumbers, MdRadioButtonChecked, MdTextFields } from 'react-icons/md';
 const Home = () => {
@@ -33,6 +34,9 @@ const Home = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isRequired, setIsRequired] = useState(false);
 const [isReadOnly, setIsReadOnly] = useState(false);
+
+const [apiError, setApiError] = useState(null); 
+const [errorMessage, setErrorMessage] = useState("");
   const token = sessionStorage.getItem("token");
 
   // Sidebar Field Config
@@ -50,34 +54,20 @@ const [isReadOnly, setIsReadOnly] = useState(false);
   ];
 
   const fetchField = async () => {
+   
     try {
+     
       const res = await axios.get("https://formbuilder-saas-backend.onrender.com/api/dashboard/master-fields", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setPreviewFields(res.data.data);
-    } catch (error) {
-    //  toast.error("Fetch error", error);
-    const status = error.response?.status;
-    const message = error.response?.data?.message;
-
-    
-    if (status === 404 && message?.toLowerCase().includes("no")) {
-      setPreviewFields([]);
-    }
-    
-    else if(status===429){
-      toast.error("Too many requests. Please try again later.")
-    }
-   
-    else if (status === 401) {
-      toast.error("Session expired. Please login again.");
+      setApiError(null);
       
-    }
-
-    else {
-      toast.error("Failed to load data");
-      console.error("REAL ERROR:", error);
-    }
+    } catch (error) {
+     setApiError(error.response?.status || 500); 
+    
+  
+    setErrorMessage(error.response?.data?.message || "Check your internet connection or try again later.");
     } finally {
       setLoading(false); 
     }
@@ -139,7 +129,19 @@ const [isReadOnly, setIsReadOnly] = useState(false);
     ))}
   </div>
 );
- 
+//if (loading) return <LoadingScreen />;
+
+  if (apiError) return ( 
+    <ErrorLayout 
+      status={apiError} 
+      message={errorMessage} 
+     
+    />
+  );
+
+
+
+
   return (
     <div className={`min-h-screen flex flex-col bg-[#F5F6F8]`}>
       <UserNavbar />
@@ -168,7 +170,13 @@ const [isReadOnly, setIsReadOnly] = useState(false);
             {FieldTypes.map((field) => (
               <button
                 key={field.id}
-                onClick={() => setSelectedType(field.id)}
+              onClick={() => {
+    setSelectedType(field.id);
+    // If switching to Radio or Checkbox, clear the placeholder
+    if (["RADIO", "CHECKBOX"].includes(field.id)) {
+      setPlaceholder("");
+    }
+  }}
                 className={`w-full flex items-center gap-3 px-4 py-3 rounded-md transition-all text-sm font-medium ${
                   selectedType === field.id
                     ? "bg-[#2B4BAB] text-white shadow-md"
@@ -201,7 +209,7 @@ const [isReadOnly, setIsReadOnly] = useState(false);
               />
             </div>
 
-            <div>
+            {/* <div>
               <label className="block text-sm font-medium text-gray-600 mb-2">Placeholder</label>
               <input
                 type="text"
@@ -210,7 +218,24 @@ const [isReadOnly, setIsReadOnly] = useState(false);
                 placeholder="e.g. Enter your name"
                 className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#2B4BAB]/20 outline-none transition-all"
               />
-            </div>
+            </div> */}
+            {/* Hide placeholder for Radio and Checkbox types */}
+{!["RADIO", "CHECKBOX"].includes(selectedType) && (
+  <motion.div 
+    initial={{ opacity: 0, height: 0 }} 
+    animate={{ opacity: 1, height: "auto" }}
+    exit={{ opacity: 0, height: 0 }}
+  >
+    <label className="block text-sm font-medium text-gray-600 mb-2">Placeholder</label>
+    <input
+      type="text"
+      value={placeholder}
+      onChange={(e) => setPlaceholder(e.target.value)}
+      placeholder="e.g. Enter your name"
+      className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:ring-2 focus:ring-[#2B4BAB]/20 outline-none transition-all"
+    />
+  </motion.div>
+)}
 
             <div>
               <label className="block text-sm font-medium text-gray-600 mb-2">Selected Type</label>
@@ -240,7 +265,7 @@ const [isReadOnly, setIsReadOnly] = useState(false);
               value={opt}
               onChange={(e) => handleoptionchange(i, e.target.value)}
               placeholder={`Option ${i + 1}`}
-              className="w-full px-4 py-2.5 rounded-xl outline-none border border-gray-200 focus:ring-2 focus:ring-[#2B4BAB]/20 transition-all text-sm"
+              className="w-full px-4 py-2.5 rounded-md outline-none border border-gray-200  focus:ring-[#2B4BAB]/20 text-sm"
             />
           </div>
           {options.length > 1 && (
@@ -335,7 +360,7 @@ const [isReadOnly, setIsReadOnly] = useState(false);
 
     {/* Checkbox & Radio Fix */}
     {["CHECKBOX", "RADIO"].includes(selectedType) && (
-      <div className="space-y-3 py-1">
+      <div className="flex flex-wrap gap-x-6 gap-y-3 py-2">
         {options.map((opt, i) => (
           <div key={i} className="flex items-center gap-3 group">
             <div className={`w-5 h-5 border-2 flex items-center justify-center transition-all ${

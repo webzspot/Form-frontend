@@ -598,7 +598,7 @@ import UserNavbar from "./UserNavbar";
 import { useNavigate, Link } from "react-router-dom";
 import { useFormContext } from "../dashboard/FormContext";
 import UserFooter from "./UserFooter";
-
+import ErrorLayout from "../shared/ErrorLayout";
 const ProfileSettings = () => {
   const { isDarkMode } = useFormContext();
   const [user, setUser] = useState(null);
@@ -607,7 +607,8 @@ const ProfileSettings = () => {
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
   const [passcode, setpasscode] = useState("");
-
+ const [apiError, setApiError] = useState(null);
+const [errorMessage, setErrorMessage] = useState("");
   // Password Change States
   const [showPasswordFields, setShowPasswordFields] = useState(false);
   const [passwords, setPasswords] = useState({ currentPassword: "", newPassword: "" });
@@ -616,20 +617,29 @@ const ProfileSettings = () => {
   const token = sessionStorage.getItem("token");
   const API_BASE = "https://formbuilder-saas-backend.onrender.com/api/users";
 
+
+  
   const getUser = useCallback(async () => {
-    if (!token) return;
+   if (!token) {
+  navigate("/login");
+  return;
+}
     try {
       const res = await axios.get(`${API_BASE}/profile`, {
         headers: { Authorization: `Bearer ${token}` },
       });
-      // console.log(res)
+     
       setUser(res.data.data);
-      // console.log(res)
-      // Add this where you receive the 'res' from your API
+      console.log(res.data.data)
+      setApiError(null);
+     
 
-    } catch (err) {
-      toast.error("Session expired. Please login again.");
-      navigate("/login");
+    } catch (error) {
+     setApiError(error.response?.status || 500); 
+   
+    // // If the backend sends a message, use it. 
+    // // Otherwise, show a friendly default message.
+    setErrorMessage(error.response?.data?.message || "Check your internet connection or try again later.");
     } finally {
       setLoading(false);
     }
@@ -707,7 +717,17 @@ const ProfileSettings = () => {
   const labelClasses = "text-[11px] font-bold uppercase tracking-[0.1em] mb-1 text-[#2B4BAB]/60";
   const valueClasses = "text-lg font-semibold text-slate-800";
   const inputClasses = "w-full px-5 py-3.5 rounded-md border border-slate-200 outline-none focus:border-[#2B4BAB] focus:ring-4 focus:ring-[#2B4BAB]/5 transition-all font-medium bg-white";
+  
 
+
+
+  if (apiError) return (
+  <ErrorLayout 
+    status={apiError} 
+    message={errorMessage} 
+   
+  />
+);
   return (
     <>
       <div className="min-h-screen bg-[#FDFDFD] font-sans selection:bg-blue-100">
@@ -894,6 +914,8 @@ const ProfileSettings = () => {
                     </AnimatePresence>
                   </div>
 
+
+
                   {/* Plan and Danger Zone */}
                   <div className="mt-12 flex flex-col md:flex-row items-center justify-between gap-6 px-4">
                     {/* <Link to="/plandetail" className="group flex items-center gap-3">
@@ -906,7 +928,7 @@ const ProfileSettings = () => {
                     {user?.role !== "ADMIN" ? (
     <Link to="/plandetail" className="group flex items-center gap-3">
       <div className="px-3 py-1 bg-[#2B4BAB]/5 text-[#2B4BAB] rounded-lg text-xs font-black uppercase tracking-widest">
-        {user?.plan} Plan
+        {user?.plan?.name} Plan
       </div>
       <div className="h-px w-8 bg-slate-200 transition-all group-hover:w-16 group-hover:bg-[#2B4BAB]"></div>
     </Link>

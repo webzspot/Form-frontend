@@ -16,6 +16,7 @@ import TableSkeleton from "./TableSkeleton";
 import {motion } from "framer-motion"
 import CardSkeleton from "./CardSkeleton";
 import UserFooter from "../user/UserFooter";
+import ErrorLayout from "../shared/ErrorLayout";
 const AdminFormResponses = () => {
   const { formId } = useParams();
   const token = sessionStorage.getItem("token");
@@ -28,6 +29,8 @@ const AdminFormResponses = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [formTitle, setFormTitle] = useState("");
  const [expandedId, setExpandedId] = useState(null);
+  const [apiError, setApiError] = useState(null);
+   const [errorMessage, setErrorMessage] = useState("");
   const theme = {
     pageBg: "bg-[#F9FAFB]",
     card: "bg-white border border-[#EAECF0] rounded-md shadow-sm",
@@ -50,8 +53,15 @@ const AdminFormResponses = () => {
         `https://formbuilder-saas-backend.onrender.com/api/admin/form/responses/${formId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
+      
       const data = res.data.data || [];
+     
+
+  
+    
+  
       setResponses(data);
+      
       if (data.length > 0) setFormTitle(data[0].form?.title || "Form Responses");
 
       const questionMap = {};
@@ -66,8 +76,13 @@ const AdminFormResponses = () => {
         });
       });
       setQuestions(Object.values(questionMap));
-    } catch (err) {
-      toast.error("Failed to load responses");
+      setApiError(null)
+    } catch (error) {
+   setApiError(error.response?.status || 500); 
+    
+    
+    setErrorMessage(error.response?.data?.message || "Failed to load responses.");
+     
     } finally {
       setLoading(false);
     }
@@ -119,6 +134,18 @@ const AdminFormResponses = () => {
 
   const { currentData, currentPage, totalPages, nextPage, prevPage } = usePagination(filteredResponses, 10);
 
+
+
+   if (apiError) return ( 
+      <ErrorLayout 
+        status={apiError} 
+        message={errorMessage} 
+       
+        
+      />
+    );
+     
+
   return (
     <>
     <div className={`min-h-screen ${theme.pageBg} font-sans pb-20`}>
@@ -134,7 +161,7 @@ const AdminFormResponses = () => {
 
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-[#101828] tracking-tight">{formTitle}</h1>
+            <h1 className="text-3xl font-bold text-[#101828] tracking-tight">{formTitle || "Form Responses"}</h1>
             <p className="text-[#667085] mt-1 text-sm">Analyze and manage user-submitted data.</p>
           </div>
           
