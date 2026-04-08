@@ -196,7 +196,7 @@ const Admindetails = () => {
                             <div className="relative  w-full md:flex-1">
                                 <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
                                 <input
-                                    className="w-full px-10 py-2 text-[10px] sm:text-sm font-semibold placeholder:text-gray-400 border border-white/10 rounded-xl outline-none transition-all"
+                                    className="w-full px-10 py-2 text-[10px] sm:text-sm font-semibold placeholder:text-gray-400 border border-white/10 rounded-md outline-none transition-all"
                                     type="text"
                                     placeholder="Search name or email..."
                                    value={searchedUser} onChange={(e) => setSearchedUser(e.target.value)}
@@ -296,7 +296,7 @@ const Admindetails = () => {
                                                 
                                                 <AnimatePresence>
                                                     {openMenuIndex === user.userId && (
-                                                         <div className={`absolute right-12 top-0 ${theme.card}  rounded-xl shadow-2xl z-50 min-w-[140px] py-2`}>
+                                                         <div className={`absolute right-12 top-0 ${theme.card}  rounded-md shadow-2xl z-50 min-w-[140px] py-2`}>
                                                                                                                     <div className="flex justify-between items-center px-3 pb-2  mb-1">
                                                                                                                         <span className="text-[10px] font-bold  uppercase">Options</span>
                                                                                                                         <button onClick={() => setOpenMenuIndex(null)} className="text-slate-300 hover:text-red-500 transition-colors"><FaTimes size={10}/></button>
@@ -374,7 +374,7 @@ const Admindetails = () => {
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                className="absolute right-0 top-8 bg-white border border-[#E9EAEB] rounded-xl shadow-2xl z-50 min-w-[140px] py-2"
+                className="absolute right-0 top-8 bg-white border border-[#E9EAEB] rounded-md shadow-2xl z-50 min-w-[140px] py-2"
             >
                 <div className="flex justify-between items-center px-3 pb-2 mb-1 border-b border-gray-50">
                     <span className="text-[10px] font-bold uppercase text-gray-400">Options</span>
@@ -410,7 +410,7 @@ const Admindetails = () => {
                 </motion.div>
             ))
         ) : (
-             <div className="bg-white py-10 rounded-xl border text-center">
+             <div className="bg-white py-10 rounded-md border text-center">
                 <FaFileAlt className="text-slate-300 mx-auto mb-2" size={30} />
                 <p className="text-sm font-medium">No details found</p>
              </div>
@@ -492,7 +492,7 @@ const Admindetails = () => {
                                         <input  className={`w-full px-4 py-3 mt-4 rounded-md text-semibold outline-none border border-[#E9EAEB]`} name="email" value={editingUser.email} onChange={handleEditChange} required disabled={!isAddMode}   placeholder="admin@gmail.com"/>
                                     </div>
                                     </div>
-                                        <div className="relative border mb-4 border-[#E9EAEB] p-6 rounded-xl">
+                                        <div className="relative border mb-4 border-[#E9EAEB] p-6 rounded-md">
                                     {isAddMode ? (
                                         <>
                                             <label  className="font-medium text-base text-[#1D2026] ">Create Password</label>

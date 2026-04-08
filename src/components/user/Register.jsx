@@ -123,7 +123,8 @@ const Register = () => {
             initial={{ opacity: 0, y: -20, x: 20 }}
             animate={{ opacity: 1, y: 0, x: 0 }}
             exit={{ opacity: 0, y: -20, x: 20 }}
-            className={`fixed top-5 right-5 z-50 flex items-center gap-3 px-4 py-3 rounded-xl shadow-2xl border ${
+            className={`fixed top-5 right-5 z-50 flex items-center gap-3 px-4 py-3 rounded-md
+               shadow-2xl border ${
               toast.type === "success" 
                 ? "bg-white border-green-500/20 text-green-700" 
                 : "bg-white border-red-500/20 text-red-600"
@@ -162,7 +163,7 @@ const Register = () => {
         {/* Content */}
         <div className="relative z-10 flex flex-col justify-between h-full text-white">
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="text-2xl lg:text-3xl flex items-center gap-3 font-bold">
-            <div className="w-10 h-8 bg-gradient-to-br from-violet-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg shadow-violet-500/30">
+            <div className="w-10 h-8 bg-gradient-to-br from-violet-500 to-indigo-600 rounded-md flex items-center justify-center shadow-lg shadow-violet-500/30">
               <Rocket className="w-5 h-5" />
             </div>
             <span>Stellar</span>

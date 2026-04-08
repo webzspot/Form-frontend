@@ -420,7 +420,7 @@ const displayedForms = filteredForms.slice(0, visibleCount);
           w-full max-w-md
           max-h-[85vh]
           flex flex-col
-          rounded-xl
+          rounded-md
           overflow-hidden
           shadow-2xl
           mt-17
@@ -474,7 +474,7 @@ const displayedForms = filteredForms.slice(0, visibleCount);
                 transition={{ delay: index * 0.06 }}
                 className={`
                 
-                  p-5 rounded-2xl
+                  p-5 rounded-md
                   border border-purple-500/10
                   hover:border-purple-500/30
                   transition

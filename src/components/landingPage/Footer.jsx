@@ -64,8 +64,7 @@ const resourceLinks = ["Documentation", "API Reference", "Community", "Status"];
 
 <button className="
   flex items-center justify-center
-  w-36 h-12 rounded-lg 
-  text-[#6C7993] text-base font-semibold font-sans
+  w-36 h-12 text-[#6C7993] text-base font-semibold font-sans
   hover:text-white transition-colors
 ">
  

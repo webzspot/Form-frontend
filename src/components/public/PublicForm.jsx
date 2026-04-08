@@ -399,7 +399,7 @@ const theme = {
 
   if (loading) return (
     <div className="h-screen flex items-center justify-center">
-      <Loader2 className="animate-spin text-indigo-600" size={40} />
+      <Loader2 className="animate-spin text-[#2B4BAB]" size={40} />
     </div>
   );
 

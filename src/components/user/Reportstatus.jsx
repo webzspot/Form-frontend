@@ -131,7 +131,7 @@ const Reportstatus = () => {
             { label: 'Resolved', count: stats.resolved, icon: FiCheckCircle, bg: 'bg-[#ABF7BB]', iconColor: 'text-[#17852F]' }
           ].map((stat, i) => (
             <div  key={i} className="bg-white p-6 rounded-md flex items-center gap-4 shadow-sm hover:shadow-md transition-shadow border border-gray-100">
-              <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${stat.bg}`}>
+              <div className={`w-12 h-12 rounded-md flex items-center justify-center ${stat.bg}`}>
                 <stat.icon size={20} className={stat.iconColor} />
               </div>
               <div>
@@ -272,7 +272,7 @@ const Reportstatus = () => {
        <CardSkeleton />
     </div>
   ) : currentData.length === 0 ? (
-    <div className="bg-white p-10 text-center rounded-xl border border-[#E9EAEB]">
+    <div className="bg-white p-10 text-center rounded-md border border-[#E9EAEB]">
        <FaRegFileAlt className="mx-auto text-gray-300 mb-4" size={36} />
        <p className="font-semibold text-lg text-slate-900">No reports found</p>
     </div>

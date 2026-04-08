@@ -140,7 +140,7 @@ const AdminFormResponses = () => {
           
           <button
             onClick={exportToCSV}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold shadow-sm transition-all ${theme.buttonPrimary}`}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-md text-sm font-semibold shadow-sm transition-all ${theme.buttonPrimary}`}
           >
             <FaDownload size={14} /> Export CSV
           </button>
@@ -154,7 +154,7 @@ const AdminFormResponses = () => {
             { label: 'Total Questions', count: questions.length, icon: FaRegFileAlt, color: 'text-[#17852F]', bg: 'bg-[#ABF7BB]' }
           ].map((stat, i) => (
             <div key={i} className={`${theme.card} p-5 flex items-start gap-4`}>
-              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${stat.bg} ${stat.color}`}>
+              <div className={`w-10 h-10 rounded-md flex items-center justify-center ${stat.bg} ${stat.color}`}>
                 <stat.icon size={20} />
               </div>
               <div>
@@ -343,14 +343,14 @@ const AdminFormResponses = () => {
               <button
                 onClick={prevPage}
                 disabled={currentPage === 1}
-                className={`px-4 py-2 rounded-lg text-sm font-semibold border ${theme.buttonSecondary} disabled:opacity-50`}
+                className={`px-4 py-2 rounded-md text-sm font-semibold border ${theme.buttonSecondary} disabled:opacity-50`}
               >
                 Previous
               </button>
               <button
                 onClick={nextPage}
                 disabled={currentPage === totalPages}
-                className={`px-4 py-2 rounded-lg text-sm font-semibold border ${theme.buttonSecondary} disabled:opacity-50`}
+                className={`px-4 py-2 rounded-md text-sm font-semibold border ${theme.buttonSecondary} disabled:opacity-50`}
               >
                 Next
               </button>
@@ -373,7 +373,7 @@ const AdminFormResponses = () => {
            <CardSkeleton />
        </div>
   ) : currentData.length === 0 ? (
-    <div className="bg-white p-10 text-center rounded-xl border border-[#E5E7EB]">
+    <div className="bg-white p-10 text-center rounded-md border border-[#E5E7EB]">
       <FaRegFileAlt size={40} className="mx-auto mb-4 text-gray-300" />
       <p className="font-bold text-gray-500">No entries found</p>
     </div>
@@ -388,7 +388,7 @@ const AdminFormResponses = () => {
       return (
         <motion.div 
           key={res.formResponseId}
-          className="bg-white p-3 rounded-lg border border-[#EAECF0] shadow-sm"
+          className="bg-white p-3 rounded-md border border-[#EAECF0] shadow-sm"
         >
           {/* Header: Entry No & Ref ID */}
           <div className="flex justify-between items-center mb-2">

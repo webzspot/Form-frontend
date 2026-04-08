@@ -191,16 +191,16 @@ const Subscription = ({ standalone = true }) => {
                   whileInView={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.1 }}
                   viewport={{ once: true }}
-                  className={`relative bg-white border border-gray-200 rounded-sm p-8 flex flex-col transition-all duration-300 hover:shadow-lg ${plan.highlight ? 'border-[#2B4BAB] border-2' : ''}`}
+                  className={`relative bg-white border border-gray-200 rounded-md p-8 flex flex-col transition-all duration-300 hover:shadow-lg ${plan.highlight ? 'border-[#2B4BAB] border-2' : ''}`}
                 >
                   {plan.highlight && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#2B4BAB] text-white text-[10px] font-bold px-3 py-1 rounded-sm uppercase tracking-wider">
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#2B4BAB] text-white text-[10px] font-bold px-3 py-1 rounded-md uppercase tracking-wider">
                       Most Popular
                     </div>
                   )}
 
                   <div className="mb-8 text-center sm:text-left">
-                    <div className="w-12 h-12 rounded-sm flex items-center justify-center mb-6 bg-[#2B4BAB]/10 text-[#2B4BAB]">
+                    <div className="w-12 h-12 rounded-md flex items-center justify-center mb-6 bg-[#2B4BAB]/10 text-[#2B4BAB]">
                       {plan.icon}
                     </div>
                     <h3 className="text-xl font-bold text-[#14181F]">{plan.name}</h3>
@@ -213,7 +213,7 @@ const Subscription = ({ standalone = true }) => {
                   <div className="space-y-4 mb-10 flex-1 border-t border-gray-100 pt-8">
                     {plan.features.map((feature, fIdx) => (
                       <div key={fIdx} className="flex items-center gap-3">
-                        <div className={`w-5 h-5 rounded-sm flex items-center justify-center ${feature.active ? 'bg-[#2B4BAB]/10' : 'bg-gray-100'}`}>
+                        <div className={`w-5 h-5 rounded-md flex items-center justify-center ${feature.active ? 'bg-[#2B4BAB]/10' : 'bg-gray-100'}`}>
                           {feature.active ? (
                             <Check size={12} className="text-[#2B4BAB] stroke-[3px]" />
                           ) : (
@@ -228,14 +228,14 @@ const Subscription = ({ standalone = true }) => {
                   </div>
 
                   {isActive ? (
-                    <div className="w-full py-4 rounded-sm font-bold text-sm flex items-center justify-center gap-2 border border-gray-200 text-gray-400 bg-gray-50">
+                    <div className="w-full py-4 rounded-md font-bold text-sm flex items-center justify-center gap-2 border border-gray-200 text-gray-400 bg-gray-50">
                       <Check size={18} />
                       Active Plan
                     </div>
                   ) : (
                     <button 
                       onClick={() => planApi(plan.id)}
-                      className="w-full py-4 rounded-sm font-bold text-sm flex items-center bg-[#2B4BAB] justify-center gap-2 transition-all text-white hover:brightness-110 shadow-md shadow-[#2B4BAB]/20"
+                      className="w-full py-4 rounded-md font-bold text-sm flex items-center bg-[#2B4BAB] justify-center gap-2 transition-all text-white hover:brightness-110 shadow-md shadow-[#2B4BAB]/20"
                     >
                       {plan.cta} <ArrowRight size={16} />
                     </button>

@@ -32,6 +32,7 @@ import Apidocumentation from './components/user/Apidocumentation.jsx';
 import ApiReference from './components/user/ApiReference.jsx';
 import Subscription from './components/user/Subscription.jsx';
 import Plandetail from './components/user/Plandetail.jsx';
+import Adminplandetail from './components/dashboard/Adminplandetail.jsx';
 
 const App = () => {
 
@@ -191,6 +192,13 @@ const App = () => {
           <Route path="/plandetail" element={
       <ProtectedRoute allowedRoles={["USER"]}>
    <Plandetail/>
+      </ProtectedRoute>
+      } />
+
+
+            <Route path="/adminplandetail" element={
+      <ProtectedRoute allowedRoles={["ADMIN"]}>
+   <Adminplandetail/>
       </ProtectedRoute>
       } />
 
