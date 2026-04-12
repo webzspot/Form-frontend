@@ -428,15 +428,15 @@ const [errorMessage, setErrorMessage] = useState("");
       });
      
       setUser(res.data.data);
-      console.log(res.data.data)
+      //console.log(res.data.data)
       setApiError(null);
      
 
     } catch (error) {
-       setApiError(error.response?.status || 500); 
-    
-    // If the backend sends a message, use it. 
-    // Otherwise, show a friendly default message.
+     setApiError(error.response?.status || 500); 
+   
+    // // If the backend sends a message, use it. 
+    // // Otherwise, show a friendly default message.
     setErrorMessage(error.response?.data?.message || "Check your internet connection or try again later.");
     } finally {
       setLoading(false);
@@ -578,7 +578,7 @@ const [errorMessage, setErrorMessage] = useState("");
 
                 {/* BOTTOM SECTION */}
                 <div className="p-10">
-                  <div className="rounded-[2rem] border border-slate-100 p-8 md:p-10 bg-[#FBFDFF]">
+                  <div className="rounded-md border border-slate-100 p-8 md:p-10 bg-[#FBFDFF]">
                     <div className="flex justify-between items-center mb-10">
                       <div className="flex items-center gap-3">
                         <div className="w-1.5 h-6 bg-[#2B4BAB] rounded-full"></div>
@@ -653,17 +653,18 @@ const [errorMessage, setErrorMessage] = useState("");
                                 onClick={() => setShowPasswordFields(!showPasswordFields)}
                                 className="flex items-center gap-2 text-sm font-bold text-[#2B4BAB] hover:underline mb-4"
                             >
-                                <FiLock /> {showPasswordFields ? "Hide Password Settings" : "Change Password?"}
+                                {/* <FiLock /> {showPasswordFields ? "Hide Password Settings" : "Change Password?"} */}
+                                <FiLock/> Change passcode
                             </button>
 
-                            <AnimatePresence>
+                            {/* <AnimatePresence>
                                 {showPasswordFields && (
                                     <motion.div 
                                         initial={{ height: 0, opacity: 0 }}
                                         animate={{ height: "auto", opacity: 1 }}
                                         exit={{ height: 0, opacity: 0 }}
                                         className="grid grid-cols-1 md:grid-cols-2 gap-6 overflow-hidden"
-                                    >
+                                    > */}
                                         <div className="space-y-2">
                                             <label className={labelClasses}>Current Password</label>
                                             <input 
@@ -684,9 +685,9 @@ const [errorMessage, setErrorMessage] = useState("");
                                                 className={inputClasses}
                                             />
                                         </div>
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
+                                    {/* </motion.div> */}
+                                {/* )} */}
+                            {/* </AnimatePresence> */}
                           </div>
 
                           <div className="flex gap-4 pt-4">
@@ -714,106 +715,6 @@ const [errorMessage, setErrorMessage] = useState("");
 
 
 
- {/* USAGE LIMITS SECTION - Only visible to non-admins */}
-{user?.role !== "ADMIN" && (
-  <div className="mt-10 p-8 rounded-3xl border border-slate-100 bg-white shadow-[0_10px_30px_rgba(0,0,0,0.02)]">
-    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
-      <div className="flex items-center gap-3">
-        <div className="w-1.5 h-6 bg-[#2B4BAB] rounded-full"></div>
-        <div>
-          <h2 className="font-bold text-xl text-slate-900 tracking-tight">Plan Usage & Quotas</h2>
-          <p className="text-sm text-slate-400 font-medium">Monitoring your {user?.plan?.name} limits</p>
-        </div>
-      </div>
-      
-      {/* Plan Badge */}
-      <div className="flex items-center gap-2 px-4 py-2 bg-blue-50 border border-blue-100 rounded-2xl">
-        <div className="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-        <span className="text-blue-700 font-bold text-xs uppercase tracking-widest">{user?.plan?.name}</span>
-      </div>
-    </div>
-    
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      
-      {/* 1. TOTAL MONTHLY RESPONSES (The big one) */}
-      <div className="relative p-6 rounded-2xl bg-slate-50 border border-slate-100 group">
-        <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Monthly Submissions</p>
-        <div className="flex items-baseline gap-1">
-          <p className="text-3xl font-black text-slate-800">{user?.limits?.monthly?.used}</p>
-          <p className="text-slate-400 font-bold text-sm">/ {user?.limits?.monthly?.limit}</p>
-        </div>
-        
-        {/* Progress Bar */}
-        <div className="mt-6">
-          <div className="flex justify-between text-[10px] font-bold text-slate-500 mb-2 uppercase">
-            <span>Utilization</span>
-            <span>{Math.round((user?.limits?.monthly?.used / user?.limits?.monthly?.limit) * 100)}%</span>
-          </div>
-          <div className="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
-            <motion.div 
-              initial={{ width: 0 }}
-              animate={{ width: `${(user?.limits?.monthly?.used / user?.limits?.monthly?.limit) * 100}%` }}
-              className="bg-green-500 h-full rounded-full shadow-[0_0_10px_rgba(34,197,94,0.3)]" 
-            />
-          </div>
-        </div>
-      </div>
-
-      {/* 2. FORM CREATION LIMIT */}
-      <div className="p-6 rounded-2xl bg-slate-50 border border-slate-100">
-        <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Active Forms</p>
-        <div className="flex items-baseline gap-1">
-          <p className="text-3xl font-black text-slate-800">{user?.limits?.forms?.used}</p>
-          <p className="text-slate-400 font-bold text-sm">/ {user?.limits?.forms?.limit}</p>
-        </div>
-        
-        <div className="mt-6">
-          <div className="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden">
-            <motion.div 
-              initial={{ width: 0 }}
-              animate={{ width: `${(user?.limits?.forms?.used / user?.limits?.forms?.limit) * 100}%` }}
-              className="bg-[#2B4BAB] h-full rounded-full" 
-            />
-          </div>
-          <p className="text-[10px] mt-3 text-[#2B4BAB] font-bold uppercase">{user?.limits?.forms?.remaining} creations available</p>
-        </div>
-      </div>
-
-      {/* 3. DAILY TRAFFIC (Progress Circle or simple box) */}
-      <div className="p-6 rounded-2xl bg-white border-2 border-dashed border-slate-100 flex flex-col justify-center">
-        <p className="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1">Daily Rolling Limit</p>
-        <p className="text-2xl font-black text-slate-700">{user?.limits?.daily?.remaining} <span className="text-xs font-medium text-slate-400">left today</span></p>
-        <div className="flex items-center gap-2 mt-4">
-            <div className="flex -space-x-1">
-                {[...Array(3)].map((_, i) => (
-                    <div key={i} className="w-4 h-4 rounded-full border-2 border-white bg-slate-200" />
-                ))}
-            </div>
-            <p className="text-[10px] text-slate-400 font-medium italic leading-tight text-left">Resets automatically at midnight GMT.</p>
-        </div>
-      </div>
-
-      {/* 4. OTHER ASSETS (API Keys & Seats) */}
-      <div className="md:col-span-2 lg:col-span-3 grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-50">
-          <div className="flex items-center gap-4 p-4 rounded-xl hover:bg-slate-50 transition-colors">
-              <div className="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold">API</div>
-              <div>
-                  <p className="text-xs font-bold text-slate-400 uppercase">API Access</p>
-                  <p className="text-sm font-bold text-slate-700">{user?.limits?.apiKeys?.limit} Keys Allowed</p>
-              </div>
-          </div>
-          <div className="flex items-center gap-4 p-4 rounded-xl hover:bg-slate-50 transition-colors">
-              <div className="w-10 h-10 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center font-bold">S</div>
-              <div>
-                  <p className="text-xs font-bold text-slate-400 uppercase">User Seats</p>
-                  <p className="text-sm font-bold text-slate-700">{user?.limits?.users?.limit} Active Workspace Seat</p>
-              </div>
-          </div>
-      </div>
-
-    </div>
-  </div>
-)}
                   {/* Plan and Danger Zone */}
                   <div className="mt-12 flex flex-col md:flex-row items-center justify-between gap-6 px-4">
                     {/* <Link to="/plandetail" className="group flex items-center gap-3">
@@ -825,7 +726,7 @@ const [errorMessage, setErrorMessage] = useState("");
 
                     {user?.role !== "ADMIN" ? (
     <Link to="/plandetail" className="group flex items-center gap-3">
-      <div className="px-3 py-1 bg-[#2B4BAB]/5 text-[#2B4BAB] rounded-lg text-xs font-black uppercase tracking-widest">
+      <div className="px-3 py-1 bg-[#2B4BAB]/5 text-[#2B4BAB] rounded-md text-xs font-black uppercase tracking-widest">
         {user?.plan?.name} Plan
       </div>
       <div className="h-px w-8 bg-slate-200 transition-all group-hover:w-16 group-hover:bg-[#2B4BAB]"></div>
@@ -857,7 +758,7 @@ const [errorMessage, setErrorMessage] = useState("");
                 exit={{ scale: 0.9, opacity: 0 }}
                 className="bg-white rounded-md p-10 max-w-sm w-full text-center shadow-2xl border border-slate-100"
               >
-                <div className="w-16 h-16 bg-red-50 text-red-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                <div className="w-16 h-16 bg-red-50 text-red-500 rounded-md flex items-center justify-center mx-auto mb-6">
                   <FiTrash2 size={30} />
                 </div>
                 <h2 className="text-2xl font-black text-slate-900 mb-2">Are you sure?</h2>

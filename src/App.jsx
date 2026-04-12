@@ -19,6 +19,7 @@ import Form from './components/dashboard/Form.jsx';
 import { Toaster } from "react-hot-toast";
 import PublicForm from './components/public/PublicForm.jsx';
 import UserDetails from "./components/dashboard/UserDetails.jsx"
+import PaymentSettings from './components/dashboard/PaymentSettings.jsx';
 import Response from './components/user/Response.jsx';
 import ProfileSettings from './components/user/ProfileSettings.jsx';
 import AllReports from './components/dashboard/AllReports.jsx';
@@ -29,10 +30,11 @@ import AdminFormResponses from './components/dashboard/AdminFormResponses.jsx';
 import Reportstatus from './components/user/Reportstatus.jsx';
 import Admindetails from './components/dashboard/Admindetails.jsx';
 import Apidocumentation from './components/user/Apidocumentation.jsx';
+import Adminplandetail from './components/dashboard/Adminplandetail.jsx'
 import ApiReference from './components/user/ApiReference.jsx';
 import Subscription from './components/user/Subscription.jsx';
 import Plandetail from './components/user/Plandetail.jsx';
-import Adminplandetail from './components/dashboard/Adminplandetail.jsx';
+//import Adminplandetail from './components/dashboard/Adminplandetail.jsx';
 
 const App = () => {
 
@@ -43,7 +45,7 @@ const App = () => {
         position="top-right"
         reverseOrder={false}
         toastOptions={{
-          duration: 3000,
+          duration: 5000,
         }}
          containerStyle={{
     top: 60, 
@@ -137,6 +139,16 @@ const App = () => {
         </ProtectedRoute>
         } />
 
+
+          <Route
+  path="/paymentsettings"
+  element={
+    <ProtectedRoute allowedRoles={["ADMIN"]}>
+      <PaymentSettings/>
+    </ProtectedRoute>
+  }
+/>
+
       <Route
   path="/admin/users/:id/activity"
   element={
@@ -168,6 +180,12 @@ const App = () => {
       </ProtectedRoute>
       } />
 
+
+<Route path="/adminplandetail" element={
+      <ProtectedRoute allowedRoles={["ADMIN"]}>
+      <Adminplandetail/>
+      </ProtectedRoute>
+      } />
 <Route path="/apidocumentation" element={
       <ProtectedRoute allowedRoles={["USER"]}>
       <Apidocumentation/>
