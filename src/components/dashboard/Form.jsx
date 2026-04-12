@@ -2118,6 +2118,7 @@ const [errorMessage, setErrorMessage] = useState("");
         const res = await axios.get("https://formbuilder-saas-backend.onrender.com/api/dashboard/forms", {
           headers: { Authorization: `Bearer ${token}` },
         })
+        console.log(res)
         setForms(res.data.data)
          
       } catch (err) {
@@ -3141,7 +3142,7 @@ text-[#2B4BAB]
 `}
                       >
                        
-                        {form.isPublic ? "Public" : "Private"}
+                        {form.isPublic ? "Live" : "Draft"}
                       </motion.span>
                       <div className="flex gap-2">
                         <motion.button
