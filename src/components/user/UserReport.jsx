@@ -13,6 +13,7 @@ import {
 } from "recharts";
 import UserNavbar from "./UserNavbar";
 
+
 import toast from "react-hot-toast";
 import { 
   FiAlertCircle, 
@@ -119,9 +120,9 @@ const UserReport = () => {
             </motion.p>
           </div>
 
-          <div className={`grid grid-cols-1 lg:grid-cols-12 gap-6 w-full rounded-xl ${theme.formCard}`}> 
+          <div className={`grid grid-cols-1 lg:grid-cols-12 gap-6 w-full rounded-md ${theme.formCard}`}> 
             {/* LEFT PANEL */}
-            <div className="lg:col-span-6 sm:p-12 md:pt-6 md:pl-4 relative border rounded-xl border-[#E5E7EB]">
+            <div className="lg:col-span-6 sm:p-12 md:pt-6 md:pl-4 relative border rounded-md border-[#E5E7EB]">
               <div className="p-2">
                 <h2 className="font-medium text-2xl text-[#14181F]">Submit Report</h2>
                 <p className="font-normal text-sm text-[#6A7181] mb-6">Select priority to visualize impact.</p>
@@ -131,11 +132,11 @@ const UserReport = () => {
                 <div className="grid grid-cols-1 p-2 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <label className="font-medium text-sm text-[#6A7181]">Issue Type *</label>
-                    <div className="relative border border-[#E5E7EB] rounded-xl">
+                    <div className="relative border border-[#E5E7EB] rounded-md">
                        <select
                          value={issuetype}
                          onChange={(e) => setIssuetype(e.target.value)}
-                         className={`w-full rounded-xl px-4 py-3.5 text-sm outline-none appearance-none cursor-pointer ${theme.input}`}
+                         className={`w-full rounded-md px-4 py-3.5 text-sm outline-none appearance-none cursor-pointer ${theme.input}`}
                        >
                          <option value="">Select Category</option>
                          <option value="Bug">Bug Report</option>
@@ -147,11 +148,11 @@ const UserReport = () => {
 
                   <div className="space-y-2">
                     <label className="font-medium text-sm text-[#6A7181]">Priority Level</label>
-                    <div className="relative border border-[#E5E7EB] rounded-xl">
+                    <div className="relative border border-[#E5E7EB] rounded-md">
                       <select
                         value={priority}
                         onChange={(e) => setPriority(e.target.value)}
-                        className={`w-full rounded-xl px-4 py-3.5 text-sm outline-none appearance-none cursor-pointer ${theme.input}`}
+                        className={`w-full rounded-md px-4 py-3.5 text-sm outline-none appearance-none cursor-pointer ${theme.input}`}
                       >
                         <option value="">Select Priority...</option>
                         <option value="Low">Low (Stable)</option>
@@ -169,7 +170,7 @@ const UserReport = () => {
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     placeholder="Describe the phenomenon..."
-                    className={`w-full rounded-xl px-4 py-3.5 text-sm border border-[#E5E7EB] outline-none resize-none ${theme.input}`}
+                    className={`w-full rounded-md px-4 py-3.5 text-sm border border-[#E5E7EB] outline-none resize-none ${theme.input}`}
                   />
                 </div>
 
@@ -179,7 +180,7 @@ const UserReport = () => {
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: "auto" }}
                       exit={{ opacity: 0, height: 0 }}
-                      className="flex items-center gap-2 text-red-500 bg-red-50 border border-red-200 p-3 rounded-xl mx-2"
+                      className="flex items-center gap-2 text-red-500 bg-red-50 border border-red-200 p-3 rounded-md mx-2"
                     >
                       <FiAlertCircle />
                       <span className="text-sm font-semibold">{message}</span>
@@ -201,7 +202,7 @@ const UserReport = () => {
             </div> 
 
             {/* RIGHT PANEL (VISUALIZATION) */}
-            <div className="hidden lg:flex lg:col-span-6 min-h-[442px] flex-col rounded-xl border border-[#E5E7EB] bg-white relative overflow-hidden">
+            <div className="hidden lg:flex lg:col-span-6 min-h-[442px] flex-col rounded-md border border-[#E5E7EB] bg-white relative overflow-hidden">
               <div className="flex-1 flex flex-col items-center justify-center p-8">
                 <AnimatePresence mode="wait">
                   {!priority ? (

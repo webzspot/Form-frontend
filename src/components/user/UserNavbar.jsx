@@ -264,12 +264,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   Menu, X, Bug, FileText, Home, Sparkles, 
   FileChartColumn, User2Icon, User2, BarChart3,Activity,
-  DockIcon,LayoutDashboard,LogOut
+  DockIcon,LayoutDashboard,LogOut,
+  Zap
 } from "lucide-react";
 import { useNavigate,useLocation } from "react-router-dom";
 import { useFormContext } from "../dashboard/FormContext"; 
 import { MdOutlineAdminPanelSettings } from "react-icons/md";
 import toast from "react-hot-toast";
+import { FaCreditCard,FaShieldAlt } from 'react-icons/fa';
 const UserNavbar = () => {
   const navigate = useNavigate();
   const location = useLocation(); // 2. Initialize location
@@ -305,13 +307,15 @@ React.useEffect(() => {
     { label: "Forms", path: "/form", icon: <FileText size={16} strokeWidth={2} />, allowedRoles: ["user"] },
     { label: "Report", path: "/userreport", icon: <BarChart3 size={16} strokeWidth={2} />, allowedRoles: ["user"] },
     { label: "Status", path: "/reportstatus", icon: <Activity size={16} strokeWidth={2}/> , allowedRoles: ["user"] },
-   { label: "Plan & Pricing", path: "/plandetail", icon: <Sparkles size={16} strokeWidth={2} />, allowedRoles: ["user"] },
+   { label: "Plan & Pricing", path: "/plandetail", icon: <Zap size={16} strokeWidth={2} />, allowedRoles: ["user"] },
     
     { label: "User Details", path: "/admindashboard", icon: <LayoutDashboard size={16} />, allowedRoles: ["admin"] },
     { label: "User Reports", path: "/adminreport", icon: <BarChart3 size={16} />, allowedRoles: ["admin"] },
     { label: "Admin Details", path: "/admindetails", icon: <MdOutlineAdminPanelSettings size={18} />, allowedRoles: ["admin"] },
+     { label: "Plan Details", path: "/adminplandetail", icon: <FaShieldAlt size={18} />, allowedRoles: ["admin"] },
+      { label: "Payment Settings", path: "/paymentsettings", icon: <FaCreditCard size={18} />, allowedRoles: ["admin"] },
    
-  ];
+  ]; 
 
   const visibleItems = navItems.filter((item) =>
     item.allowedRoles.includes(role)
@@ -342,7 +346,7 @@ React.useEffect(() => {
             className="flex items-center  gap-3 cursor-pointer group" 
             onClick={() => navigate("/home")}
           >
-            <div className="w-8 h-8 bg-[#2B4BAB] rounded-lg flex items-center justify-center shadow-sm">
+            <div className="w-8 h-8 bg-[#2B4BAB] rounded-md flex items-center justify-center shadow-sm">
            
             </div>
             <span className={`font-semibold text-lg tracking-normal leading-[25.2px] align-middle text-[#14181F]`}>
@@ -450,7 +454,7 @@ React.useEffect(() => {
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
               transition={{ type: "spring", stiffness: 260, damping: 30 }}
-              className={`fixed top-0 left-0 h-full w-64 z-70 shadow-xl p-6 rounded-r-2xl border-r transition-colors bg-white border-slate-100"
+              className={`fixed top-0 left-0 h-full w-64 z-70 shadow-xl p-6 rounded-r-md border-r transition-colors bg-white border-slate-100"
               `}
             >
               {/* Drawer Header with Logo & Close button */}
@@ -475,7 +479,7 @@ React.useEffect(() => {
                     <button
                       key={item.label}
                       onClick={() => { navigate(item.path); setOpen(false); }}
-                      className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all ${
+                      className={`flex items-center gap-3 px-4 py-3 rounded-md transition-all ${
                         isActive 
                         ? "bg-[#2B4BAB]/10 text-[#2B4BAB] font-bold" 
                         : "text-[#6A7181]"

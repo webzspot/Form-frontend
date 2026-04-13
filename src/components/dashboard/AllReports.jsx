@@ -13,6 +13,7 @@ import usePagination from "../../hooks/usePagination";
 import toast from 'react-hot-toast';
 import UserFooter from '../user/UserFooter';
 import CardSkeleton from './CardSkeleton';
+import ErrorLayout from "../shared/ErrorLayout";
 const AllReports = () => {
   const token = sessionStorage.getItem("token");
   const [fetchReports, setFetchReports] = useState([]);
@@ -20,6 +21,10 @@ const AllReports = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [openStatusId, setOpenStatusId] = useState(null);
+
+  const [apiError, setApiError] = useState(null);
+  const [errorMessage, setErrorMessage] = useState("");
+  
   
 const [updatingId, setUpdatingId] = useState(null);
   useEffect(() => {
@@ -39,8 +44,12 @@ const [updatingId, setUpdatingId] = useState(null);
       return new Date(b.createdAt) - new Date(a.createdAt);
     });
       setFetchReports(sortedData);
-    } catch (err) {
-      toast.error("Failed to load reports");
+      setApiError(null)
+    } catch (error) {
+      setApiError(error.response?.status || 500); 
+    
+   
+    setErrorMessage(error.response?.data?.message || "Failed to load reports.");
     } finally {
       setLoading(false);
     }
@@ -106,6 +115,19 @@ const [updatingId, setUpdatingId] = useState(null);
 
   const STATUS_OPTIONS = ["RISED", "INPROGRESS", "RESOLVED", "CLOSED", "REJECTED"];
 
+
+
+  
+    if (apiError) {
+      return (
+          <ErrorLayout 
+              status={apiError} 
+              message={errorMessage} 
+               
+          />
+      );
+  }
+  
   return (
     <>
     <div className="min-h-screen font-sans bg-[#F5F6F8] pb-20">
@@ -173,7 +195,7 @@ const [updatingId, setUpdatingId] = useState(null);
 
         {/* Table Container */}
         <div className="hidden md:block bg-white rounded-md overflow-hidden border border-gray-100 shadow-sm">
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto ">
             <table className="w-full text-left">
               <thead className="bg-gray-50 border-b border-[#E5E7EB]">
                 <tr className="text-[#535862]">
@@ -255,7 +277,7 @@ const [updatingId, setUpdatingId] = useState(null);
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: 10 }}
-        className="absolute z-20 left-1/2 -translate-x-1/2 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl p-1.5 w-40"
+        className="absolute z-100 left-1/2 -translate-x-1/2 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl p-1.5 w-40"
       >
         {STATUS_OPTIONS.map((opt) => {
           const order = ["RISED", "INPROGRESS", "RESOLVED", "CLOSED", "REJECTED"];

@@ -18,12 +18,8 @@ import {
 } from "react-icons/fa";
 import UserFooter from './UserFooter';
 import CardSkeleton from '../dashboard/CardSkeleton';
-   // --- Custom Sparkle Icon for consistency ---
-const SparkleIcon = ({ className }) => (
-  <svg viewBox="0 0 24 24" fill="currentColor" className={className}>
-    <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z" />
-  </svg>
-);
+import ErrorLayout from '../shared/ErrorLayout'
+   
 
 
 const Response = () => {
@@ -37,7 +33,8 @@ const Response = () => {
   const token = sessionStorage.getItem("token");
  const [selectedField, setSelectedField] = useState("ALL");
 const [expandedId, setExpandedId] = useState(null);
-
+ const [apiError, setApiError] = useState(null); // To track the status code (404, 500, etc.)
+const [errorMessage, setErrorMessage] = useState("");
   // --- Theme Logic (Matching Admin UI) ---
   const theme = {
     pageBg:"bg-[#F5F6F8] text-[#4c1d95] selection:bg-indigo-200",
@@ -72,9 +69,10 @@ const [expandedId, setExpandedId] = useState(null);
       values: row,  // Keep all fields in 'values'
     }));
     setFullData(normalizedRows);
-
+    setApiError(null);
   } catch (err) {
-    toast.error("Failed to sync response data");
+    setApiError(err.response?.status || 500);
+    setErrorMessage(err.response?.data?.message || "Failed to sync response data");
   } finally {
     setLoading(false);
   }
@@ -163,6 +161,15 @@ const filteredData = fullData.filter(resp => {
   
   toast.success("CSV Downloaded!");
 };
+
+ if (apiError) return ( 
+    <ErrorLayout 
+      status={apiError} 
+      message={errorMessage} 
+      
+      
+    />
+  );
    
 
   return (
@@ -192,7 +199,7 @@ const filteredData = fullData.filter(resp => {
         >
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div className="">
-            <span className={`px-4 py-1 rounded-md  text-xs tracking-normal leading-4 align-middle font-medium  bg-[#2B4BAB1A] text-[#2B4BAB]`}>
+            <span className={`px-4 py-1 rounded-md text-3xl  md:text-xs tracking-normal leading-4 align-middle font-medium  bg-[#2B4BAB1A] text-[#2B4BAB]`}>
               Data Analytics
             </span>
             <h1 className={`text-xl md:text-3xl leading-tight tracking-tight align-middle  mt-2 font-bold mb-1 text-[#14181F]`}>
@@ -206,7 +213,7 @@ const filteredData = fullData.filter(resp => {
               </div>
                   <button
                           onClick={exportToCSV}
-                          className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold shadow-sm transition-all ${theme.buttonPrimary}`}
+                          className={`flex items-center gap-2 px-5 py-2.5 rounded-md text-sm font-semibold shadow-sm transition-all ${theme.buttonPrimary}`}
                         >
                           <FaDownload size={14} /> Export CSV
                         </button>
@@ -221,7 +228,7 @@ const filteredData = fullData.filter(resp => {
 
           ].map((stat, i) => (
             <motion.div key={i} className={`${theme.card} sm:p-6 p-2 rounded-md max-w-xl h-24 flex items-center mt-4 gap-3 `}>
-              <div className={`w-10 h-10 shrink-0 rounded-lg flex items-center justify-center ${stat.bg}`}>
+              <div className={`w-10 h-10 shrink-0 rounded-md flex items-center justify-center ${stat.bg}`}>
         
         <stat.icon size={20} className={stat.iconColor} />
       </div>
@@ -320,17 +327,7 @@ const filteredData = fullData.filter(resp => {
        
       </div>
     </th>
-{/* 
-    {displayedFields.map((f) => (
-      <th key={f.key} className="px-6 py-4 text-[12px] font-semibold text-[#535862] whitespace-nowrap">
-        <div className="flex items-center gap-2 group cursor-pointer">
-          {f.label}
-         
-             <FaArrowDown className="" />
-       
-        </div>
-      </th>
-    ))} */}
+
 
     {displayedFields.map((f, index) => {
   const isLast = index === displayedFields.length - 1;
@@ -388,22 +385,7 @@ const filteredData = fullData.filter(resp => {
 </td>
 
                   
-                    {/* {displayedFields.map(f => (
-                     <td className="px-6 py-4 text-sm text-[#475467]">
-  
-  <span
-  className={`text-sm font-medium    ${
-    getResponseValue(resp.values, f.key) === "—" ? "opacity-30" :""
-    
-        
-  }`}
->
-  {getResponseValue(resp.values, f.key)}
-</span>
-
-</td>
-
-                    ))} */}
+                  
 
 
                     {displayedFields.map((f, index) => {
@@ -438,7 +420,7 @@ const filteredData = fullData.filter(resp => {
       <button
         onClick={prevPage}
         disabled={currentPage === 1}
-className={`px-4 py-2 rounded-lg text-[14px] font-semibold border transition-all disabled:opacity-50 
+className={`px-4 py-2 rounded-md text-[14px] font-semibold border transition-all disabled:opacity-50 
          bg-white border-[#E7EAEC] text-[#344054] shadow-sm
         `}
       
@@ -449,7 +431,7 @@ className={`px-4 py-2 rounded-lg text-[14px] font-semibold border transition-all
       <button
         onClick={nextPage}
         disabled={currentPage === totalPages}
-       className={`px-4 py-2 rounded-lg text-[14px] font-semibold border transition-all disabled:opacity-50 bg-white border-[#E7EAEC] text-[#344054] shadow-sm
+       className={`px-4 py-2 rounded-md text-[14px] font-semibold border transition-all disabled:opacity-50 bg-white border-[#E7EAEC] text-[#344054] shadow-sm
         `}>
       
         Next
@@ -466,95 +448,105 @@ className={`px-4 py-2 rounded-lg text-[14px] font-semibold border transition-all
           
 
           {/* --- MOBILE CARDS --- */}
+{/* --- MOBILE CARDS --- */}
 <div className="grid grid-cols-1 max-w-md w-full mb-8 gap-4 md:hidden mx-auto mt-6">
   {loading ? (
     <div className="flex flex-col gap-4">
       <CardSkeleton />
       <CardSkeleton />
-        <CardSkeleton />
+      <CardSkeleton />
     </div>
   ) : currentData.length === 0 ? (
-    <div className="bg-white p-10 text-center rounded-xl border border-[#E5E7EB]">
+    <div className="bg-white p-10 text-center rounded-md border border-[#E5E7EB]">
        <FaRegFileAlt size={40} className="mx-auto mb-4 text-gray-300" />
        <p className="font-bold text-gray-500">No entries found</p>
     </div>
   ) : (
-  currentData.map((resp, idx) => {
-  
-  const firstThreeFields = displayedFields.slice(0, 1);
-  const remainingFields = displayedFields.slice(1);
-  const hasMore = displayedFields.length > 3;
-
-  return (
-    <motion.div 
-      key={resp.formResponseId}
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: idx * 0.05 }}
-      className="bg-white p-3 rounded-md border border-[#E9EAEB] shadow-sm mb-2"
-    >
-      {/* Card Header */}
-      <div className="flex justify-between items-start mb-1">
-        <span className="text-[10px] font-bold text-gray-600 ">
-          Entry{(currentPage - 1) * 10 + idx + 1}
-        </span>
-        <span className="font-mono text-[10px] text-gray-400">
-          Ref Id: {resp.formResponseId.slice(-8).toUpperCase()}
-        </span>
-      </div>
-
-      {/* Dynamic Fields Section */}
-      <div className="space-y-4">
+    currentData.map((resp, idx) => {
+      // Split fields: First one is the title, the rest are hidden
+      const firstField = displayedFields.slice(0, 1);
+      const remainingFields = displayedFields.slice(1);
       
-        {firstThreeFields.map((f) => (
-          <div key={f.key} className="flex flex-col border-b border-slate-50 pb-1">
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">
-              {f.label}
-            </p>
-            <p className="text-sm font-semibold text-[#14181F] mt-0.5">
-              {getResponseValue(resp.values, f.key) || "—"}
-            </p>
+      // FIX: Show button if there is AT LEAST one extra field to show
+      const hasMore = displayedFields.length > 1;
+
+      return (
+        <motion.div 
+          key={resp.formResponseId}
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: idx * 0.05 }}
+          className="bg-white p-3 rounded-md border border-[#EAECF0] shadow-sm mb-2"
+        >
+          {/* Card Header: Entry No & Ref ID */}
+          <div className="flex justify-between items-center mb-2">
+            <span className="text-[10px] font-bold text-gray-600">
+              Entry {(currentPage - 1) * 10 + idx + 1}
+            </span>
+            <span className="text-[10px] font-mono text-gray-400">
+              Ref Id: {resp.formResponseId.slice(-6).toUpperCase()}
+            </span>
           </div>
-        ))}
 
-      
-     {hasMore && (
-  <div className="pt-1">
-    <button 
-      onClick={() => setExpandedId(expandedId === resp.formResponseId ? null : resp.formResponseId)}
-      className="w-full py-2 bg-slate-50 text-[#2B4BAB] text-xs font-bold rounded-lg border border-[#2B4BAB]/10"
-    >
-      {expandedId === resp.formResponseId ? "↑ Show Less" : `+ View ${remainingFields.length} more fields`}
-    </button>
-  </div>
-)}
+          {/* Primary Question (Always Visible) */}
+          <div className="mb-2">
+            {firstField.map((f) => (
+              <div key={f.key}>
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-tight">
+                  {f.label}
+                </p>
+                <p className="text-sm font-bold text-[#101828] truncate">
+                  {getResponseValue(resp.values, f.key) || "—"}
+                </p>
+              </div>
+            ))}
+          </div>
 
-{/* Show the remaining fields only when this card is expanded */}
-{expandedId === resp.formResponseId && (
-  <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="mt-1 space-y-2">
-    {remainingFields.map((f) => (
-      <div key={f.key} className="flex flex-col border-b border-slate-50 pb-1">
-        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">{f.label}</p>
-        <p className="text-sm font-semibold text-[#14181F] mt-0.5">
-          {getResponseValue(resp.values, f.key) || "—"}
-        </p>
-      </div>
-    ))}
-  </motion.div>
-)}
-      </div>
+          {/* Toggle Button: Exactly like Admin version */}
+          {hasMore && (
+            <div className="pt-1">
+              <button 
+                onClick={() => setExpandedId(expandedId === resp.formResponseId ? null : resp.formResponseId)}
+                className="w-full py-1.5 bg-slate-50 text-[#2B4BAB] text-xs font-bold rounded border border-gray-200 transition-all active:scale-[0.98]"
+              >
+                {expandedId === resp.formResponseId 
+                  ? "↑ Show Less" 
+                  : `+ View ${remainingFields.length} more fields`}
+              </button>
+            </div>
+          )}
 
-      {/* Card Footer */}
-      <div className="mt-2 pt-1 flex justify-between items-center border-t border-slate-50">
-         <p className="text-[10px] font-bold text-slate-400 uppercase">Submitted On</p>
-         <p className="text-xs font-bold text-[#14181F]">
-           {new Date(resp.createdAt).toLocaleDateString()}
-         </p>
-      </div>
-    </motion.div>
-  )
-}))}
-  
+          {/* Expanded Content: Slides down when open */}
+          {expandedId === resp.formResponseId && (
+            <motion.div 
+              initial={{ opacity: 0, height: 0 }} 
+              animate={{ opacity: 1, height: "auto" }}
+              className="mt-3 pt-3 border-t border-gray-100 space-y-3"
+            >
+              {remainingFields.map((f) => (
+                <div key={f.key}>
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-tight">
+                    {f.label}
+                  </p>
+                  <p className="text-xs font-semibold text-[#344054]">
+                    {getResponseValue(resp.values, f.key) || "—"}
+                  </p>
+                </div>
+              ))}
+              
+              {/* Submission Date inside expanded view to match Admin */}
+              <div className="pt-2 flex justify-between text-[10px] font-medium text-gray-400 border-t border-gray-50">
+                <span>Submitted On:</span>
+                <span>{new Date(resp.createdAt).toLocaleDateString()}</span>
+              </div>
+            </motion.div>
+          )}
+
+        
+        </motion.div>
+      );
+    })
+  )}
 </div>
 
  <div className=" md:hidden flex  flex-col md:flex-row justify-between items-center gap-4 px-6  py-4 border-t border-[#E9EAEB]">
@@ -592,212 +584,3 @@ className={`px-4 py-2 rounded-lg text-[14px] font-semibold border transition-all
 
 export default Response;
 
-
-
-// import { useParams, useNavigate } from 'react-router-dom';
-// import { motion } from 'framer-motion';
-// import axios from 'axios';
-// import toast from 'react-hot-toast';
-// import UserNavbar from './UserNavbar';
-// import usePagination from "../../hooks/usePagination";
-// import TableSkeleton from '../dashboard/TableSkeleton';
-// import { 
-//   FaSearch, FaLayerGroup, FaArrowLeft, 
-//   FaRegFileAlt, FaArrowDown, FaGlobe, FaLock 
-// } from "react-icons/fa";
-// import UserFooter from './userFooter'; 
-
-// const Response = () => {
-//   const { formId } = useParams();
-//   const navigate = useNavigate();
-//   const [fullData, setFullData] = useState([]);
-//   const [formFields, setFormFields] = useState([]);
-//   const [loading, setLoading] = useState(true);
-//   const [searchTerm, setSearchTerm] = useState("");
-//   const token = sessionStorage.getItem("token");
-//   const [selectedField, setSelectedField] = useState("ALL");
-
-//   // --- Theme extracted from your screenshot ---
-//   const theme = {
-//     pageBg: "bg-[#F9FAFB]", // Very light gray background
-//     card: "bg-white border border-[#EAECF0] rounded-xl shadow-sm",
-//     tableHeader: "bg-[#F9FAFB] text-[#667085]", // Soft gray for headers
-//     textMain: "text-[#101828]", // Deep charcoal/black
-//     textSub: "text-[#667085]", // Slate gray
-//   };
-
-//   const fetchData = async () => {
-//     setLoading(true);
-//     try {
-//       const res = await axios.get(
-//         `https://formbuilder-saas-backend.onrender.com/api/dashboard/form/responses/${formId}`,
-//         { headers: { Authorization: `Bearer ${token}` } }
-//       );
-//       const data = res.data.data;
-//       setFormFields(data.columns);
-//       const normalizedRows = data.rows.map(row => ({
-//         formResponseId: row.id,
-//         createdAt: row.submittedAt,
-//         values: row,
-//       }));
-//       setFullData(normalizedRows);
-//     } catch (err) {
-//       toast.error("Failed to sync response data");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   useEffect(() => { if (formId) fetchData(); }, [formId]);
-
-//   const getResponseValue = (values, key) => {
-//     if (!values || values[key] === undefined || values[key] === null) return "—";
-//     return Array.isArray(values[key]) ? values[key].join(" | ") : values[key];
-//   };
-
-//   const filteredData = fullData.filter(resp => {
-//     const matchesSearch = searchTerm
-//       ? Object.values(resp.values).map(v => (v?.toString() || "").toLowerCase()).join(" ").includes(searchTerm.toLowerCase())
-//       : true;
-//     return matchesSearch;
-//   });
-
-//   const { currentData, currentPage, totalPages, nextPage, prevPage } = usePagination(filteredData, 10); 
-
-//   return (
-//     <>
-//     <div className={`min-h-screen ${theme.pageBg} font-sans`}>
-//       <UserNavbar />
-      
-//       <main className="max-w-7xl mx-auto px-4 md:px-8 py-8">
-//         {/* Back Link - Styled like your screenshot */}
-//         <button
-//           onClick={() => navigate("/form")}
-//           className="flex items-center gap-2 text-sm text-[#667085] hover:text-[#101828] transition-colors mb-6"
-//         >
-//           <FaArrowLeft size={12} /> Back to Dashboard
-//         </button>
-
-//         {/* Page Header */}
-//         <div className="mb-8">
-//           <h1 className="text-3xl font-bold text-[#101828] tracking-tight">Form Submissions</h1>
-//           <p className="text-[#667085] mt-1 text-sm">
-//             Manage and monitor all responses for this form. You can filter and search through specific entries.
-//           </p>
-//         </div>
-
-//         {/* Stats Grid - Matching the visual style of your screenshot cards */}
-//         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-//           {[
-//             { label: 'Total Submissions', count: fullData.length, icon: FaLayerGroup, iconBg: 'bg-[#F4F3FF]', iconColor: 'text-[#53389E]' },
-//             { label: 'Exportable Data', count: filteredData.length, icon: FaGlobe, iconBg: 'bg-[#F0F9FF]', iconColor: 'text-[#026AA2]' },
-//             { label: 'Active Fields', count: formFields.length, icon: FaLock, iconBg: 'bg-[#ECFDF3]', iconColor: 'text-[#027A48]' }
-//           ].map((stat, i) => (
-//             <div key={i} className={`${theme.card} p-5 flex items-start gap-4`}>
-//               <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${stat.iconBg} ${stat.iconColor}`}>
-//                 <stat.icon size={18} />
-//               </div>
-//               <div>
-//                 <p className="text-sm font-bold text-[#101828]">{stat.label}</p>
-//                 <p className="text-2xl font-bold text-[#101828]">{stat.count}</p>
-//               </div>
-//             </div>
-//           ))}
-//         </div>
-
-//         {/* Table Container */}
-//         <div className={`${theme.card} overflow-hidden`}>
-//           {/* Internal Table Search/Filter Placeholder (optional, keeping it clean) */}
-//           <div className="p-4 border-b border-[#EAECF0] flex justify-between items-center bg-white">
-//              <div className="relative w-72">
-//                 <FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={14} />
-//                 <input 
-//                   type="text" 
-//                   placeholder="Search entries..."
-//                   className="w-full pl-10 pr-4 py-2 text-sm border border-[#D0D5DD] rounded-lg focus:ring-1 focus:ring-gray-300 outline-none"
-//                   value={searchTerm}
-//                   onChange={(e) => setSearchTerm(e.target.value)}
-//                 />
-//              </div>
-//           </div>
-
-//           <div className="overflow-x-auto">
-//             <table className="w-full text-left border-collapse">
-//               <thead>
-//                 <tr className={`${theme.tableHeader} border-b border-[#EAECF0]`}>
-//                   <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
-//                     <div className="flex items-center gap-2">No. <FaArrowDown size={10} /></div>
-//                   </th>
-//                   <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">Submission ID</th>
-//                   <th className="px-6 py-3 text-xs font-medium uppercase tracking-wider">Timestamp</th>
-//                   {formFields.map((f) => (
-//                     <th key={f.key} className="px-6 py-3 text-xs font-medium uppercase tracking-wider">
-//                        {f.label}
-//                     </th>
-//                   ))}
-//                 </tr>
-//               </thead>
-//               <tbody className="divide-y divide-[#EAECF0]">
-//                 {loading ? (
-//                   <tr><td colSpan={100}><TableSkeleton rows={5} columns={4} /></td></tr>
-//                 ) : currentData.length === 0 ? (
-//                   <tr>
-//                     <td colSpan={100} className="py-20 text-center text-[#667085]">
-//                       <FaRegFileAlt size={32} className="mx-auto mb-2 opacity-20" />
-//                       <p>No submissions found</p>
-//                     </td>
-//                   </tr>
-//                 ) : (
-//                   currentData.map((resp, idx) => (
-//                     <tr key={resp.formResponseId} className="hover:bg-[#F9FAFB] transition-colors">
-//                       <td className="px-6 py-4 text-sm text-[#667085]">{(currentPage - 1) * 10 + idx + 1}</td>
-//                       <td className="px-6 py-4 text-sm font-medium text-[#101828]">
-//                         {resp.formResponseId.slice(-8).toUpperCase()}
-//                       </td>
-//                       <td className="px-6 py-4 text-sm text-[#667085]">
-//                         {new Date(resp.createdAt).toLocaleDateString()}
-//                       </td>
-//                       {formFields.map(f => (
-//                         <td key={f.key} className="px-6 py-4 text-sm text-[#667085]">
-//                           {getResponseValue(resp.values, f.key)}
-//                         </td>
-//                       ))}
-//                     </tr>
-//                   ))
-//                 )}
-//               </tbody>
-//             </table>
-//           </div>
-
-//           {/* Pagination - Matching the look of your bottom bar */}
-//           <div className="px-6 py-4 border-t border-[#EAECF0] flex items-center justify-between bg-white">
-//             <div className="flex gap-2">
-//               <button
-//                 onClick={prevPage}
-//                 disabled={currentPage === 1}
-//                 className="px-4 py-2 border border-[#D0D5DD] rounded-lg text-sm font-semibold text-[#344054] hover:bg-gray-50 disabled:opacity-50"
-//               >
-//                 Previous
-//               </button>
-//               <button
-//                 onClick={nextPage}
-//                 disabled={currentPage === totalPages}
-//                 className="px-4 py-2 border border-[#D0D5DD] rounded-lg text-sm font-semibold text-[#344054] hover:bg-gray-50 disabled:opacity-50"
-//               >
-//                 Next
-//               </button>
-//             </div>
-//             <span className="text-sm text-[#667085]">
-//               Page {currentPage} of {totalPages}
-//             </span>
-//           </div>
-//         </div>
-//       </main>
-
-//     </div>
-//       <UserFooter />
-//     </>
-//   );
-// };
-
-// export default Response;

@@ -85,7 +85,8 @@ const Preview = ({ previewFields, refreshFields }) => {
 
 
  
-      <section className="flex-[5] bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden flex flex-col">
+      <section className="flex-[5] bg-white rounded-md
+       border border-gray-200 shadow-sm overflow-hidden flex flex-col">
         {/* Header */}
         <div className="flex justify-between items-center px-6 py-4 border-b border-gray-100 bg-gray-50/50 shrink-0">
           <div className="flex items-center gap-2">
@@ -106,7 +107,7 @@ const Preview = ({ previewFields, refreshFields }) => {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   key={field._id || field.masterFieldId || idx}
-                  className="p-5 border border-gray-100 rounded-xl bg-white shadow-sm hover:border-blue-200 transition-colors relative group"
+                  className="p-5 border border-gray-100 rounded-md bg-white shadow-sm hover:border-blue-200 transition-colors relative group"
                 >
                   <div className="flex justify-between items-start mb-2">
                     <span className="text-[9px] font-bold bg-blue-50 text-[#2B4BAB] px-2 py-0.5 rounded uppercase tracking-tighter">
@@ -202,7 +203,7 @@ const Preview = ({ previewFields, refreshFields }) => {
             <motion.div 
               initial={{ scale: 0.95, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden border border-gray-100"
+              className="bg-white rounded-md shadow-xl w-full max-w-md overflow-hidden border border-gray-100"
             >
               <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
                 <h3 className="font-bold text-gray-700">Rename Field</h3>
@@ -216,19 +217,19 @@ const Preview = ({ previewFields, refreshFields }) => {
                   autoFocus
                   value={updatedName}
                   onChange={(e) => setUpdatedName(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500/20 outline-none"
+                  className="w-full px-4 py-2 border border-gray-200 rounded-md focus:ring-2 focus:ring-blue-500/20 outline-none"
                 />
                 <div className="flex gap-3 mt-6">
                   <button 
                     onClick={() => setUpdatePop(false)}
-                    className="flex-1 px-4 py-2 text-sm font-bold text-gray-500 bg-gray-100 rounded-lg hover:bg-gray-200"
+                    className="flex-1 px-4 py-2 text-sm font-bold text-gray-500 bg-gray-100 rounded-md hover:bg-gray-200"
                   >
                     Cancel
                   </button>
                   <button 
                     onClick={handleUpdate}
                     disabled={isUpdating}
-                    className="flex-1 px-4 py-2 text-sm font-bold text-white bg-[#2B4BAB] rounded-lg hover:bg-[#1e3a8a] disabled:opacity-50"
+                    className="flex-1 px-4 py-2 text-sm font-bold text-white bg-[#2B4BAB] rounded-md hover:bg-[#1e3a8a] disabled:opacity-50"
                   >
                     {isUpdating ? "Saving..." : "Save Changes"}
                   </button>

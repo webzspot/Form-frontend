@@ -16,6 +16,7 @@ import TableSkeleton from "./TableSkeleton";
 import {motion } from "framer-motion"
 import CardSkeleton from "./CardSkeleton";
 import UserFooter from "../user/UserFooter";
+import ErrorLayout from "../shared/ErrorLayout";
 const AdminFormResponses = () => {
   const { formId } = useParams();
   const token = sessionStorage.getItem("token");
@@ -28,6 +29,8 @@ const AdminFormResponses = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [formTitle, setFormTitle] = useState("");
  const [expandedId, setExpandedId] = useState(null);
+  const [apiError, setApiError] = useState(null);
+   const [errorMessage, setErrorMessage] = useState("");
   const theme = {
     pageBg: "bg-[#F9FAFB]",
     card: "bg-white border border-[#EAECF0] rounded-md shadow-sm",
@@ -50,8 +53,15 @@ const AdminFormResponses = () => {
         `https://formbuilder-saas-backend.onrender.com/api/admin/form/responses/${formId}`,
         { headers: { Authorization: `Bearer ${token}` } }
       );
+      
       const data = res.data.data || [];
+     
+
+  
+    
+  
       setResponses(data);
+      
       if (data.length > 0) setFormTitle(data[0].form?.title || "Form Responses");
 
       const questionMap = {};
@@ -66,8 +76,13 @@ const AdminFormResponses = () => {
         });
       });
       setQuestions(Object.values(questionMap));
-    } catch (err) {
-      toast.error("Failed to load responses");
+      setApiError(null)
+    } catch (error) {
+   setApiError(error.response?.status || 500); 
+    
+    
+    setErrorMessage(error.response?.data?.message || "Failed to load responses.");
+     
     } finally {
       setLoading(false);
     }
@@ -119,6 +134,18 @@ const AdminFormResponses = () => {
 
   const { currentData, currentPage, totalPages, nextPage, prevPage } = usePagination(filteredResponses, 10);
 
+
+
+   if (apiError) return ( 
+      <ErrorLayout 
+        status={apiError} 
+        message={errorMessage} 
+       
+        
+      />
+    );
+     
+
   return (
     <>
     <div className={`min-h-screen ${theme.pageBg} font-sans pb-20`}>
@@ -134,13 +161,13 @@ const AdminFormResponses = () => {
 
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div>
-            <h1 className="text-3xl font-bold text-[#101828] tracking-tight">{formTitle}</h1>
+            <h1 className="text-3xl font-bold text-[#101828] tracking-tight">{formTitle || "Form Responses"}</h1>
             <p className="text-[#667085] mt-1 text-sm">Analyze and manage user-submitted data.</p>
           </div>
           
           <button
             onClick={exportToCSV}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-semibold shadow-sm transition-all ${theme.buttonPrimary}`}
+            className={`flex items-center gap-2 px-5 py-2.5 rounded-md text-sm font-semibold shadow-sm transition-all ${theme.buttonPrimary}`}
           >
             <FaDownload size={14} /> Export CSV
           </button>
@@ -154,7 +181,7 @@ const AdminFormResponses = () => {
             { label: 'Total Questions', count: questions.length, icon: FaRegFileAlt, color: 'text-[#17852F]', bg: 'bg-[#ABF7BB]' }
           ].map((stat, i) => (
             <div key={i} className={`${theme.card} p-5 flex items-start gap-4`}>
-              <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${stat.bg} ${stat.color}`}>
+              <div className={`w-10 h-10 rounded-md flex items-center justify-center ${stat.bg} ${stat.color}`}>
                 <stat.icon size={20} />
               </div>
               <div>
@@ -343,14 +370,14 @@ const AdminFormResponses = () => {
               <button
                 onClick={prevPage}
                 disabled={currentPage === 1}
-                className={`px-4 py-2 rounded-lg text-sm font-semibold border ${theme.buttonSecondary} disabled:opacity-50`}
+                className={`px-4 py-2 rounded-md text-sm font-semibold border ${theme.buttonSecondary} disabled:opacity-50`}
               >
                 Previous
               </button>
               <button
                 onClick={nextPage}
                 disabled={currentPage === totalPages}
-                className={`px-4 py-2 rounded-lg text-sm font-semibold border ${theme.buttonSecondary} disabled:opacity-50`}
+                className={`px-4 py-2 rounded-md text-sm font-semibold border ${theme.buttonSecondary} disabled:opacity-50`}
               >
                 Next
               </button>
@@ -373,7 +400,7 @@ const AdminFormResponses = () => {
            <CardSkeleton />
        </div>
   ) : currentData.length === 0 ? (
-    <div className="bg-white p-10 text-center rounded-xl border border-[#E5E7EB]">
+    <div className="bg-white p-10 text-center rounded-md border border-[#E5E7EB]">
       <FaRegFileAlt size={40} className="mx-auto mb-4 text-gray-300" />
       <p className="font-bold text-gray-500">No entries found</p>
     </div>
@@ -388,7 +415,7 @@ const AdminFormResponses = () => {
       return (
         <motion.div 
           key={res.formResponseId}
-          className="bg-white p-3 rounded-lg border border-[#EAECF0] shadow-sm"
+          className="bg-white p-3 rounded-md border border-[#EAECF0] shadow-sm"
         >
           {/* Header: Entry No & Ref ID */}
           <div className="flex justify-between items-center mb-2">
