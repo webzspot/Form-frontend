@@ -21,6 +21,7 @@ import LoadingScreen from '../shared/LoadingScreen';
 import ErrorLayout from '../shared/ErrorLayout'
 import Preview from './Preview';
 import { MdEmail, MdNumbers, MdRadioButtonChecked, MdTextFields } from 'react-icons/md';
+
 const Home = () => {
  // const { isDarkMode } = useFormContext(); 
   const [loading, setLoading] = useState(true);
@@ -408,6 +409,8 @@ const [errorMessage, setErrorMessage] = useState("");
 )}
     </div>
   </div>
+
+
 </main>
 
       <UserFooter/>

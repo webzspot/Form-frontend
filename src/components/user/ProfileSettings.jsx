@@ -477,7 +477,7 @@ const [errorMessage, setErrorMessage] = useState("");
           console.log(res)
       }
 
-      toast.success("Profile updated successfully");
+      toast.success("Passcode updated successfully");
       setEditingUser(null);
       setShowPasswordFields(false);
       setPasswords({ currentPassword: "", newPassword: "" });
@@ -653,18 +653,18 @@ const [errorMessage, setErrorMessage] = useState("");
                                 onClick={() => setShowPasswordFields(!showPasswordFields)}
                                 className="flex items-center gap-2 text-sm font-bold text-[#2B4BAB] hover:underline mb-4"
                             >
-                                {/* <FiLock /> {showPasswordFields ? "Hide Password Settings" : "Change Password?"} */}
-                                <FiLock/> Change passcode
+                                <FiLock /> {showPasswordFields ? "Hide Password Settings" : "Change Password?"}
+                                {/* <FiLock/> Change passcode */}
                             </button>
 
-                            {/* <AnimatePresence>
+                            <AnimatePresence>
                                 {showPasswordFields && (
                                     <motion.div 
                                         initial={{ height: 0, opacity: 0 }}
                                         animate={{ height: "auto", opacity: 1 }}
                                         exit={{ height: 0, opacity: 0 }}
                                         className="grid grid-cols-1 md:grid-cols-2 gap-6 overflow-hidden"
-                                    > */}
+                                    >
                                         <div className="space-y-2">
                                             <label className={labelClasses}>Current Password</label>
                                             <input 
@@ -685,9 +685,9 @@ const [errorMessage, setErrorMessage] = useState("");
                                                 className={inputClasses}
                                             />
                                         </div>
-                                    {/* </motion.div> */}
-                                {/* )} */}
-                            {/* </AnimatePresence> */}
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
                           </div>
 
                           <div className="flex gap-4 pt-4">
@@ -727,7 +727,7 @@ const [errorMessage, setErrorMessage] = useState("");
                     {user?.role !== "ADMIN" ? (
     <Link to="/plandetail" className="group flex items-center gap-3">
       <div className="px-3 py-1 bg-[#2B4BAB]/5 text-[#2B4BAB] rounded-md text-xs font-black uppercase tracking-widest">
-        {user?.plan?.name} Plan
+        {user?.plan?.name}
       </div>
       <div className="h-px w-8 bg-slate-200 transition-all group-hover:w-16 group-hover:bg-[#2B4BAB]"></div>
     </Link>

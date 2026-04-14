@@ -1498,9 +1498,9 @@ const [errorMessage, setErrorMessage] = useState("");
       axios.get(`${API_BASE}/api/users/profile`, { headers: { Authorization: `Bearer ${token}` } })
     ]);
       setSubscription(subRes.data.data);
-      console.log(subRes.data.data)
+      //console.log(subRes.data.data)
       setUserStats(profileRes.data.data);
-      console.log(profileRes.data.data)
+      //console.log(profileRes.data.data)
       setApiError(null);
     } catch (err) {
     
@@ -1594,9 +1594,9 @@ const [errorMessage, setErrorMessage] = useState("");
                     Upgrade Now
                   </button>
                
-                <button className="p-3 rounded-md border border-slate-100 text-slate-400 hover:bg-slate-50 transition-all">
+                {/* <button className="p-3 rounded-md border border-slate-100 text-slate-400 hover:bg-slate-50 transition-all">
                   <Download size={20}/>
-                </button>
+                </button> */}
               </div>
             </div>
 
