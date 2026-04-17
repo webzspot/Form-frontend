@@ -121,7 +121,7 @@ setApiError(error.response?.status || 500);
         
         {/* Header */}
         <div className="mb-8">
-          <span className="px-4 py-1 rounded-md text-3xl md:text-xs font-medium bg-[#2B4BAB1A] text-[#2B4BAB]">
+          <span className="px-4 py-1 rounded-md text-lg  md:text-xs font-medium bg-[#2B4BAB1A] text-[#2B4BAB]">
             Support Analytics
           </span>
           <h1 className="text-xl md:text-3xl font-bold mt-2 text-[#14181F]">Ticket Status Tracking</h1>
@@ -236,9 +236,7 @@ setApiError(error.response?.status || 500);
                 )}
               </tbody>
             </table>
-          </div>
-
-          {/* Pagination */}
+             {/* Pagination */}
         
 
         {!loading && filteredReports.length > 0 &&( <div className="hidden md:flex flex-col md:flex-row justify-between items-center gap-4 px-6 py-4 border-t border-[#E9EAEB]">
@@ -265,6 +263,9 @@ setApiError(error.response?.status || 500);
         </button>
     </div>
 </div>)}
+          </div>
+
+         
         </div>
 
 
@@ -334,7 +335,7 @@ setApiError(error.response?.status || 500);
 </div>
 
 
- <div className=" md:hidden flex  flex-col md:flex-row justify-between items-center gap-4 px-6  py-4 border-t border-[#E9EAEB]">
+  {!loading && filteredReports.length > 0 &&(<div className=" md:hidden flex  flex-col md:flex-row justify-between items-center gap-4 px-6  py-4 border-t border-[#E9EAEB]">
     
    
     <span className="text-sm text-[#414651] font-medium order-1 md:order-2">
@@ -357,7 +358,7 @@ setApiError(error.response?.status || 500);
             Next
         </button>
     </div>
-</div>
+</div>)}
  
       </main>
     

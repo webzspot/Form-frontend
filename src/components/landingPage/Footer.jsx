@@ -80,13 +80,13 @@ const resourceLinks = ["Documentation", "API Reference", "Community", "Status"];
   
   
   {/* Container Two */}
-      <div className="mt-5 md:mt-10 lg:mt-20 border-t border-slate-700/20 pt-2 md:pt-4 lg:pt-16">
+       <div className="mt-5 md:mt-10 lg:mt-20 border-t border-slate-700/20 pt-2 md:pt-4 lg:pt-16">
         
         
-        <div className="flex flex-col items-center md:items-start  md:flex-row gap-10 lg:gap-0">
+       <div className="flex flex-col md:flex-row md:justify-between justify-center items-center   md:items-start gap-12">
           
         
-          <div className="w-full    max-w-72 px-0 md:px-2 shrink-0">
+          <div className="w-full   px-10 md:px-0 max-w-72  md:max-w-64  shrink-0">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-7 h-7 rounded-md flex items-center justify-center text-white font-bold text-xs bg-linear-to-br from-[#10B77F] to-[#1AA2E6]">
                 F
@@ -108,31 +108,24 @@ const resourceLinks = ["Documentation", "API Reference", "Community", "Status"];
           </div>
 
           
-          <div className="flex-1  grid grid-cols-3 md:grid-cols-3 gap-5">
-            {/* Product */}
+      <div  className='grid grid-cols-3 md:contents   gap-10'>
             <div className="flex flex-col">
               <h3 className="text-[#D3D7DE] text-xs font-bold font-['Space_Grotesk'] uppercase tracking-tight mb-4">
                 Product
               </h3>
               <ul className="flex flex-col gap-4">
-                {/* {productLinks.map((link) => (
-                  <li key={link}>
-                    <a href="#" className="text-[#6C7993] text-xs font-normal font-sans hover:text-white transition-colors">
-                      {link}
-                    </a>
-                  </li>
-                ))} */}
+              
                 {productLinks.map((link) => (
   <li key={link}>
     {link === "Features" ? (
       <span 
         onClick={() => scrollToSection("features")} 
-        className="text-[#6C7993] text-xs font-normal font-sans hover:text-white transition-colors cursor-pointer"
+        className="text-[#6C7993] text-[10px] md:text-xs font-normal font-sans hover:text-white transition-colors cursor-pointer"
       >
         {link}
       </span>
     ) : (
-      <a href="#" className="text-[#6C7993] text-xs font-normal font-sans hover:text-white transition-colors">
+      <a href="#" className="text-[#6C7993] text-[10px] md:text-xs font-normal font-sans hover:text-white transition-colors">
         {link}
       </a>
     )}
@@ -141,31 +134,25 @@ const resourceLinks = ["Documentation", "API Reference", "Community", "Status"];
               </ul>
             </div>
 
-            {/* Company */}
+            
             <div className="flex flex-col">
               <h3 className="text-[#D3D7DE] text-xs font-bold font-['Space_Grotesk'] uppercase tracking-tight mb-4">
                 Company
               </h3>
               <ul className="flex flex-col gap-4">
-                {/* {companyLinks.map((link) => (
-                  <li key={link}>
-                    <a href="#" className="text-[#6C7993] text-xs font-normal font-sans hover:text-white transition-colors">
-                      {link}
-                    </a>
-                  </li>
-                ))} */}
+             
 
                 {companyLinks.map((link) => (
   <li key={link}>
     {link === "About" ? (
       <span 
         onClick={() => scrollToSection("about")} 
-        className="text-[#6C7993] text-xs font-normal font-sans hover:text-white transition-colors cursor-pointer"
+        className="text-[#6C7993] text-[10px] md:text-xs font-normal font-sans hover:text-white transition-colors cursor-pointer"
       >
         {link}
       </span>
     ) : (
-      <a href="#" className="text-[#6C7993] text-xs font-normal font-sans hover:text-white transition-colors">
+      <a href="#" className="text-[#6C7993] text-[10px] md:text-xs font-normal font-sans hover:text-white transition-colors">
         {link}
       </a>
     )}
@@ -174,25 +161,7 @@ const resourceLinks = ["Documentation", "API Reference", "Community", "Status"];
               </ul>
             </div>
 
-            {/* Resources */}
-            {/* <div className="flex flex-col">
-              <h3 className="text-[#D3D7DE] text-xs font-bold font-['Space_Grotesk'] uppercase tracking-tight mb-4">
-                Resources
-              </h3>
-              <ul className="flex flex-col gap-4">
-                {resourceLinks.map((link) => (
-                  <li key={link}>
-                    <a href="#" className="text-[#6C7993] text-xs font-normal font-sans hover:text-white transition-colors">
-                      {link}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div> */}
-
-
-
-            {/* Resources */}
+           
 <div className="flex flex-col">
   <h3 className="text-[#D3D7DE] text-xs font-bold font-['Space_Grotesk'] uppercase tracking-tight mb-4">
     Resources
@@ -209,12 +178,12 @@ const resourceLinks = ["Documentation", "API Reference", "Community", "Status"];
             <Link 
              
               to={!token ? "/login" : targetPath} 
-              className="text-[#6C7993] text-xs font-normal font-sans hover:text-white transition-colors"
+              className="text-[#6C7993] text-[10px] md:text-xs font-normal font-sans hover:text-white transition-colors"
             >
               {link}
             </Link>
           ) : (
-            <a href="#" className="text-[#6C7993] text-xs font-normal font-sans hover:text-white transition-colors">
+            <a href="#" className="text-[#6C7993] text-[10px] md:text-xs font-normal font-sans hover:text-white transition-colors">
               {link}
             </a>
           )}
@@ -223,9 +192,9 @@ const resourceLinks = ["Documentation", "API Reference", "Community", "Status"];
     })}
   </ul>
 </div>
-          </div>
-        </div>
-
+      </div>
+      
+</div>
 
 <div className="mt-20 pt-6 border-t border-[#6C7993]/10 flex flex-col md:flex-row justify-between items-center gap-4 pb-15">
            
@@ -239,7 +208,9 @@ const resourceLinks = ["Documentation", "API Reference", "Community", "Status"];
               <a href="#" className="text-[#6C7993] text-xs font-normal hover:text-white transition-colors">Cookies</a>
             </div>
           </div>
-       </div>
+       </div> 
+
+
 
 </div> 
 

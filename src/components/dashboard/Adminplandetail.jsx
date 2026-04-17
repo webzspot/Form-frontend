@@ -950,7 +950,7 @@ const filteredPlans = useMemo(() => {
     return (
         <>
             <UserNavbar />
-            <div className="min-h-screen bg-[#F5F6F8] pb-12 font-sans">
+            <div className="min-h-screen bg-[#F5F6F8] pb-4 font-sans">
                 <div className="max-w-7xl mx-auto px-4 md:px-6 pt-8">
                     
                     {/* Header */}
@@ -1006,7 +1006,7 @@ const filteredPlans = useMemo(() => {
           </div>
         </div>
                     {/* Desktop Table */}
-                    <div className="hidden lg:block bg-white border border-[#E9EAEB] rounded-md overflow-hidden shadow-sm">
+                    <div className="hidden md:block bg-white border border-[#E9EAEB] rounded-md overflow-hidden shadow-sm">
                         <table className="w-full text-left border-collapse">
                             <thead className="bg-[#F9FAFB] text-[#535862]">
                                 <tr className="text-[11px] uppercase border-b border-[#E9EAEB]  tracking-wider font-bold">
@@ -1019,11 +1019,18 @@ const filteredPlans = useMemo(() => {
                                     <th className="px-6 py-4 text-center border-r border-[#E9EAEB]">Action</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-[#E9EAEB]">
+                            <tbody className="">
     {loading ? 
         (
                                                   <TableSkeleton rows={5} columns={6}  />
-                                            ) 
+                                            ) : currentData.length === 0 ? (
+                                                              <tr>
+                                                                <td colSpan={5} className="py-20 text-center">
+                                                                  <FaFileAlt className="mx-auto text-gray-400 mb-4" size={40} />
+                                                                  <p className="text-[#6A7181] font-medium">No Plans found</p>
+                                                                </td>
+                                                              </tr>
+                                                            ) 
      : currentData.map((plan,index) => (
         <motion.tr key={plan.id} className={`transition-colors border-b border-[#E9EAEB]  ${!plan.isActive ? 'bg-gray-50/50 opacity-80' : 'hover:bg-gray-50'}`}  initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
@@ -1112,7 +1119,7 @@ const filteredPlans = useMemo(() => {
 </tbody>
                         </table>
                                                         
-<div className=" hidden md:flex flex-col md:flex-row justify-between items-center gap-4 px-6 py-4 border-t border-[#E9EAEB]">
+{!loading && filteredPlans.length > 0 && (<div className=" hidden md:flex flex-col md:flex-row justify-between items-center gap-4 px-6 py-4 border-t border-[#E9EAEB]">
     
     
     <span className="text-sm text-[#414651] font-medium order-1 md:order-2">
@@ -1136,12 +1143,12 @@ const filteredPlans = useMemo(() => {
             Next
         </button>
     </div>
-</div>
+</div>)}
      
                     </div>
 
                     {/* Mobile Card Layout */}
-                    <div className="lg:hidden space-y-4">
+                    <div className="md:hidden space-y-4">
                         {loading ? (
                           <div className="flex flex-col gap-4">
                             <CardSkeleton />
@@ -1227,7 +1234,7 @@ const filteredPlans = useMemo(() => {
                     </div>
                 </div>
                                           
-<div className=" md:hidden flex flex-col md:flex-row justify-between items-center gap-4 px-6 py-4 border-t border-[#E9EAEB]">
+{!loading && filteredPlans.length > 0 && (<div className=" md:hidden flex flex-col md:flex-row justify-between items-center gap-4 px-6 py-4 border-t border-[#E9EAEB]">
     
  
     <span className="text-sm text-[#414651] font-medium order-1 md:order-2">
@@ -1251,7 +1258,7 @@ const filteredPlans = useMemo(() => {
             Next
         </button>
     </div>
-</div>
+</div>)}
             </div>
 
             

@@ -102,7 +102,7 @@ const UserReport = () => {
   return (
     <>
       <UserNavbar />
-      <div className={`w-full min-h-screen relative font-sans flex justify-center items-start pt-8 overflow-hidden ${theme.pageBg}`}>
+      <div className={`w-full min-h-screen relative font-sans flex justify-center items-start pt-8 pb-12 overflow-hidden ${theme.pageBg}`}>
         <motion.div
           initial={{ scale: 0.95, y: 30, opacity: 0 }}
           animate={{ scale: 1, y: 0, opacity: 1 }}
@@ -191,7 +191,7 @@ const UserReport = () => {
                     whileTap={{ scale: 0.97 }}
                     whileHover={{ scale: 1.02 }}
                     disabled={loading}
-                    className={`w-full max-w-[411px] h-11 flex items-center justify-center gap-2 rounded-md font-medium text-sm ${theme.button}`}
+                    className={`w-full max-w-[250px]  md:max-w-[411px] h-11 flex items-center justify-center gap-2 rounded-md font-medium text-sm ${theme.button}`}
                   >
                     {loading ? <span>Processing...</span> : <span>Submit Report</span>}
                   </motion.button>

@@ -439,7 +439,7 @@ const theme = {
                 <form onSubmit={handleSubmit} className="space-y-6">
                   {activePublicForm?.formField?.map((field) => (
                     <div key={field.formFieldId} className="space-y-2">
-                      <label className="block font-bold text-sm" style={{ color: styles.labelColor }}>
+                      <label className="block font-bold text-base" style={{ color: styles.labelColor }}>
                         {field.label} {field.required && <span className="text-red-500">*</span>}
                       </label>
 
@@ -450,7 +450,7 @@ const theme = {
                           placeholder={`Enter ${field.label.toLowerCase()}...`}
                           onChange={(e) => handleInputChange(field.formFieldId, e.target.value)}
                           style={{ backgroundColor: styles.input, borderRadius: `calc(${styles.radius} / 2)` }}
-                          className="w-full border border-gray-200 p-4 outline-none focus:ring-2 focus:ring-opacity-50 transition-all shadow-sm"
+                          className="w-full border border-gray-200 p-2 outline-none focus:ring-2 focus:ring-opacity-50 transition-all shadow-sm"
                         />
                       )}   
 
@@ -460,7 +460,7 @@ const theme = {
     type="date"
     onChange={(e) => handleInputChange(field.formFieldId, e.target.value)}
     style={{ backgroundColor: styles.input, borderRadius: `calc(${styles.radius} / 2)` }}
-    className="w-full border border-gray-200 p-4 outline-none focus:ring-2 focus:ring-opacity-50 transition-all shadow-sm"
+    className="w-full border border-gray-200 p-2 outline-none focus:ring-2 focus:ring-opacity-50 transition-all shadow-sm"
   />
 )}
 
@@ -481,7 +481,7 @@ const theme = {
                           <select
                             onChange={(e) => handleInputChange(field.formFieldId, e.target.value)}
                             style={{ backgroundColor: styles.input, borderRadius: `calc(${styles.radius} / 2)` }}
-                            className="w-full border border-gray-200 p-4 outline-none appearance-none focus:ring-2 focus:ring-opacity-50 transition-all shadow-sm cursor-pointer"
+                            className="w-full border border-gray-200 p-2 outline-none appearance-none focus:ring-2 focus:ring-opacity-50 transition-all shadow-sm cursor-pointer"
                           >
                             <option value="">Select an option</option>
                             {field.options?.map((opt, idx) => (
@@ -496,7 +496,7 @@ const theme = {
                       {field.type === "RADIO" && (
                         <div className="grid grid-cols-1 gap-2">
                           {field.options?.map((opt, idx) => (
-                            <label key={idx} className="flex items-center gap-3 p-3 border border-gray-100 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors">
+                            <label key={idx} className="flex items-center gap-3 p-2 border border-gray-100 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors">
                               <input
                                 type="radio"
                                 name={field.formFieldId}
@@ -514,7 +514,7 @@ const theme = {
                       {field.type === "CHECKBOX" && (
                         <div className="grid grid-cols-1 gap-2">
                           {field.options?.map((opt, idx) => (
-                            <label key={idx} className="flex items-center gap-3 p-3 border border-gray-100 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors">
+                            <label key={idx} className="flex items-center gap-3 p-2 border border-gray-100 rounded-xl cursor-pointer hover:bg-gray-50 transition-colors">
                               <input
                                 type="checkbox"
                                 onChange={(e) => {
@@ -539,7 +539,7 @@ const theme = {
                     type="submit"
                     disabled={submitting}
                     style={{ backgroundColor: styles.button, borderRadius: `calc(${styles.radius} / 2)` }}
-                    className="w-full text-white py-4 font-bold text-lg shadow-lg hover:brightness-95 active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-4"
+                    className="w-full text-white py-2.5 font-bold text-base shadow-lg hover:brightness-95 active:scale-[0.98] transition-all flex items-center justify-center gap-2 mt-4"
                   >
                     {submitting ? (
                       <Loader2 className="animate-spin" size={24} />

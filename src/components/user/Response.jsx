@@ -199,7 +199,7 @@ const filteredData = fullData.filter(resp => {
         >
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div className="">
-            <span className={`px-4 py-1 rounded-md text-3xl  md:text-xs tracking-normal leading-4 align-middle font-medium  bg-[#2B4BAB1A] text-[#2B4BAB]`}>
+            <span className={`px-4 py-1 rounded-md text-lg  md:text-xs tracking-normal align-middle font-medium  bg-[#2B4BAB1A] text-[#2B4BAB]`}>
               Data Analytics
             </span>
             <h1 className={`text-xl md:text-3xl leading-tight tracking-tight align-middle  mt-2 font-bold mb-1 text-[#14181F]`}>
@@ -409,9 +409,9 @@ const filteredData = fullData.filter(resp => {
                   </motion.tr>
                 )))}
               </tbody>
+              
             </table>
-          </div>
-          {/* Pagination */}
+                  {/* Pagination */}
 {!loading && filteredData.length > 0 && (
   <div className={`p-6 hidden md:flex items-center justify-between border-t border-gray-100`}>
 
@@ -444,6 +444,8 @@ className={`px-4 py-2 rounded-md text-[14px] font-semibold border transition-all
 
   </div>
 )}
+          </div>
+    
         </motion.div>
           
 
@@ -549,7 +551,7 @@ className={`px-4 py-2 rounded-md text-[14px] font-semibold border transition-all
   )}
 </div>
 
- <div className=" md:hidden flex  flex-col md:flex-row justify-between items-center gap-4 px-6  py-4 border-t border-[#E9EAEB]">
+ {!loading && filteredData.length > 0 && (<div className=" md:hidden flex  flex-col md:flex-row justify-between items-center gap-4 px-6  py-4 border-t border-[#E9EAEB]">
     
  
     <span className="text-sm text-[#414651] font-medium order-1 md:order-2">
@@ -573,7 +575,7 @@ className={`px-4 py-2 rounded-md text-[14px] font-semibold border transition-all
             Next
         </button>
     </div>
-</div>
+</div>)}
       </main>
       
     </div>

@@ -650,7 +650,7 @@ const AllForms = () => {
           </div>
 
           {/* Pagination */}
-          <div className="hidden md:flex px-8 py-5 border-t border-slate-50 justify-between items-center">
+        {!loading && filteredForms.length > 0 && (<div className="hidden md:flex px-8 py-5 border-t border-slate-50 justify-between items-center">
             <div className="flex gap-3">
               <button
                 onClick={prevPage}
@@ -670,7 +670,7 @@ const AllForms = () => {
             <p className="text-sm text-slate-500 font-medium">
               Page {currentPage} of {totalPages || 1}
             </p>
-          </div>
+          </div>)}
         </div>
       
   
@@ -725,7 +725,7 @@ const AllForms = () => {
   )}
 </div>
                 
-<div className=" md:hidden flex flex-col md:flex-row justify-between items-center gap-4 px-6 py-4 border-t border-[#E9EAEB]">
+{!loading && filteredForms.length > 0 && (<div className=" md:hidden flex flex-col md:flex-row justify-between items-center gap-4 px-6 py-4 border-t border-[#E9EAEB]">
     
     
     <span className="text-sm text-[#414651] font-medium order-1 md:order-2">
@@ -749,7 +749,7 @@ const AllForms = () => {
             Next
         </button>
     </div>
-</div> 
+</div>)}
       </div>
       
     </div>

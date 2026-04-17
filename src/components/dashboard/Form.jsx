@@ -78,6 +78,7 @@ const Form = () => {
   const [isAddingMaster, setIsAddingMaster] = useState(false)
   const [newField, setNewField] = useState({ label: "", type: "TEXT", options: [""] })
   const [introloading, setintroLoading] = useState(true);
+  const [isSavingMasterField, setIsSavingMasterField] = useState(false);
   const [apiError, setApiError] = useState(null);
 const [errorMessage, setErrorMessage] = useState("");
  const [visibleCount, setVisibleCount] = useState(6); 
@@ -300,7 +301,7 @@ const getUser = useCallback(async () => {
   // }, [token])
   const handleInlineCreate = async () => {
     if (!newField.label) return toast.error("Label name required")
-
+    setIsSavingMasterField(true);
     try {
       const res = await axios.post(
         "https://formbuilder-saas-backend.onrender.com/api/dashboard/master-fields",
@@ -316,7 +317,9 @@ const getUser = useCallback(async () => {
       setIsAddingMaster(false)
     } catch (err) {
       toast.error("Failed to add master field")
-    }
+    }finally {
+    setIsSavingMasterField(false); 
+  }
   }
 
   // 2. Toggle field selection
@@ -1452,10 +1455,18 @@ return (
             )}
 
             <button
-              onClick={handleInlineCreate}
-              className="w-full py-3 rounded-sm bg-[#2B4BAB] text-white text-xs font-semibold hover:bg-black transition-all"
+              onClick={handleInlineCreate} disabled={isSavingMasterField}
+
+              className="w-full py-3 rounded-sm bg-[#2B4BAB] flex items-center justify-center gap-2 text-white text-xs font-semibold hover:bg-black  disabled:opacity-50 transition-all"
             >
-              Save New Field
+             {isSavingMasterField ? (
+    <>
+      <FaSpinner className="animate-spin" /> 
+      <span>Saving...</span>
+    </>
+  ) : (
+    "Save Master Field"
+  )}
             </button>
           </div>
         </motion.div>
