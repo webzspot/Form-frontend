@@ -43,7 +43,7 @@ const Login = () => {
         { email, password }
         
       );
-     console.log(response)
+     //console.log(response)
       const { token, user } = response.data;
  
       
@@ -52,7 +52,7 @@ const Login = () => {
       // localStorage.setItem("role", user.role);
       // localStorage.setItem("Name", user.name);
       sessionStorage.setItem("token", token);
-      console.log(token)
+      //console.log(token)
       sessionStorage.setItem("role", user.role);
        sessionStorage.setItem("Name", user.name);
       
