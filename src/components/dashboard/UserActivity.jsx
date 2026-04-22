@@ -542,7 +542,7 @@ const QuotaSkeleton = () => (
   
   disabled={pageLoading !== false} 
   onClick={() => openFormModal(form.formId)}
-  className={`flex-1 py-2.5 rounded-lg font-medium text-sm text-white bg-[#2B4BAB] transition-all flex items-center justify-center gap-2 ${
+  className={`flex-1 py-2.5 rounded-lg font-medium text-sm text-white bg-[#2B4BAB] hover:bg-[rgb(17,54,165)] transition-all flex items-center justify-center gap-2 ${
     pageLoading === form.formId ? "opacity-80 cursor-not-allowed" : ""
   }`}
 >
@@ -706,7 +706,7 @@ const QuotaSkeleton = () => (
           </button>
           <button
             onClick={closeFormModal}
-             className={`flex-1 py-2.5 rounded-lg font-medium text-sm text-white bg-gray-400 transition-all`}
+             className={`flex-1 py-2.5 rounded-lg font-medium text-sm text-white bg-[#2B4BAB] hover:bg-[rgb(17,54,165)] transition-all`}
           >
             Cancel
           </button>

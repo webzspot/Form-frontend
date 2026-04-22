@@ -872,6 +872,7 @@ const Subscription = ({ standalone = true }) => {
   const [userPlan, setUserPlan] = useState(null);
   const [loading, setLoading] = useState(true);
    const [availablePlans, setAvailablePlans] = useState([]); 
+   const [processingId, setProcessingId] = useState(null);
    const [apiError, setApiError] = useState(null);
  const [errorMessage, setErrorMessage] = useState("");
   const token = sessionStorage.getItem("token");
@@ -994,6 +995,7 @@ const Subscription = ({ standalone = true }) => {
 
 
   const planApi = async (planId) => {
+    setProcessingId(planId);
   const currentToken = sessionStorage.getItem("token");
 
   if (!currentToken) {
@@ -1017,11 +1019,15 @@ const Subscription = ({ standalone = true }) => {
     const options = {
       key: res.data.keyId,
       subscription_id: res.data.subscriptionId,
+      modal: {
+        ondismiss: () => setProcessingId(null), // 2. Stop loading if they close the popup
+      },
       name: "FormCraft",
       description: `Plan Upgrade`,
       handler: function (response) {
         toast.success("Payment Successful!");
       setUserPlan(planId);
+      setProcessingId(null);
       getUser();
         navi("/home");
       },
@@ -1036,6 +1042,7 @@ const Subscription = ({ standalone = true }) => {
   } catch (error) {
    console.log("Payment Error:", error);
     toast.error(error.response?.data?.message || "Something went wrong.");
+    setProcessingId(null);
   }
 };
 
@@ -1157,10 +1164,26 @@ const Subscription = ({ standalone = true }) => {
         ) : (
           <button 
             onClick={() => planApi(plan.id)}
-            className="w-full py-4 rounded-sm font-bold text-sm flex items-center bg-[#2B4BAB] justify-center gap-2 transition-all text-white hover:brightness-110 shadow-md shadow-[#2B4BAB]/20"
-          >
-            Upgrade Now <ArrowRight size={16} />
+          
+         disabled={processingId !== null} 
+  className={`w-full py-4 rounded-sm font-bold text-sm flex items-center justify-center gap-2 transition-all text-white bg-[#2B4BAB] ${
+    processingId !== null ? 'opacity-50 cursor-not-allowed' : 'hover:brightness-110 shadow-md'
+  }`}
+         
+         >
+           {processingId === plan.id ? (
+    <>
+      <Loader2 className="animate-spin" size={18} />
+      <span>Processing...</span>
+    </>
+  ) : (
+    <>
+      <span>Upgrade Now</span>
+      <ArrowRight size={16} />
+    </>
+  )}
           </button>
+       
         )}
       </div>
     </motion.div>

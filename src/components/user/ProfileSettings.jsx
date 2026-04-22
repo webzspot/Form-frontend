@@ -405,6 +405,7 @@ const ProfileSettings = () => {
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
   const [passcode, setpasscode] = useState("");
+  
  const [apiError, setApiError] = useState(null);
 const [errorMessage, setErrorMessage] = useState("");
   // Password Change States
@@ -579,7 +580,7 @@ const [errorMessage, setErrorMessage] = useState("");
                 {/* BOTTOM SECTION */}
                 <div className="p-10">
                   <div className="rounded-md border border-slate-100 p-8 md:p-10 bg-[#FBFDFF]">
-                    <div className="flex justify-between items-center mb-10">
+                    <div className=" flex flex-col gap-5 md:flex-row justify-start items-start md:justify-between md:items-center mb-10">
                       <div className="flex items-center gap-3">
                         <div className="w-1.5 h-6 bg-[#2B4BAB] rounded-full"></div>
                         <h2 className="font-bold text-lg text-slate-900 uppercase tracking-tight">Profile Information</h2>
@@ -588,7 +589,7 @@ const [errorMessage, setErrorMessage] = useState("");
                       {!editingUser && (
                         <button 
                           onClick={() => setEditingUser({ name: user.name, email: user.email })}
-                          className="px-6 py-2.5 text-sm font-bold rounded-md bg-[#2B4BAB] text-white hover:bg-[#1e3a8a] shadow-lg shadow-[#2B4BAB]/20 transition-all active:scale-95"
+                          className=" px-6 py-2.5 text-sm font-bold rounded-md bg-[#2B4BAB] text-white hover:bg-[#1e3a8a] shadow-lg shadow-[#2B4BAB]/20 transition-all active:scale-95"
                         >
                           Edit Profile
                         </button>

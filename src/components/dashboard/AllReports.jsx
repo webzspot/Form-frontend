@@ -130,7 +130,7 @@ const [updatingId, setUpdatingId] = useState(null);
   
   return (
     <>
-    <div className="min-h-screen font-sans bg-[#F5F6F8] pb-20">
+    <div className="min-h-screen font-sans bg-[#F5F6F8] pb-4">
       <UserNavbar />
       
       <main className="max-w-7xl mt-4 w-full mx-auto px-4 md:px-6 py-12">
@@ -322,7 +322,7 @@ const [updatingId, setUpdatingId] = useState(null);
 
           {/* Pagination */}
           {!loading && filteredReports.length > 0 && (
-            <div className="hidden p-6 md:flex items-center justify-between border-t border-gray-100 bg-gray-50/30">
+            <div className="hidden px-6 py-4 md:flex items-center justify-between border-t border-gray-100 bg-gray-50/30">
             
               <div className="flex gap-3">
                 <button 
@@ -349,7 +349,7 @@ const [updatingId, setUpdatingId] = useState(null);
 
 
         {/* --- MOBILE CARDS  --- */}
-<div className="grid grid-cols-1 max-w-md w-full mb-8 gap-4 md:hidden mx-auto">
+<div className="grid grid-cols-1 max-w-md w-full mb-4 gap-4 md:hidden mx-auto">
   {loading ? (
     <div className="flex flex-col gap-4"><CardSkeleton /><CardSkeleton /><CardSkeleton /></div>
   ) : currentData.length === 0 ? (
@@ -438,7 +438,7 @@ const [updatingId, setUpdatingId] = useState(null);
   )}
 </div>
 
-<div className=" md:hidden flex flex-col md:flex-row justify-between items-center gap-4 px-6 py-4 border-t border-[#E9EAEB]">
+{!loading && filteredReports.length > 0 &&(<div className=" md:hidden flex flex-col md:flex-row justify-between items-center gap-4 px-6 py-4 border-t border-[#E9EAEB]">
     
     
     <span className="text-sm text-[#414651] font-medium order-1 md:order-2">
@@ -462,7 +462,7 @@ const [updatingId, setUpdatingId] = useState(null);
             Next
         </button>
     </div>
-</div> 
+</div>)} 
       </main>
      
     </div>

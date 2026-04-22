@@ -1088,7 +1088,7 @@ if (err.response) {
 return (
         <>
             <UserNavbar />
-            <div className={`relative  font-sans bg-[#F5F6F8]  min-h-screen w-full overflow-hidden `}> 
+            <div className={`relative  font-sans bg-[#F5F6F8] pb-4  min-h-screen w-full overflow-hidden `}> 
   
                 <div className="relative z-10  max-w-7xl mx-auto px-4 md:px-6 text-slate-900">
                   
@@ -1376,7 +1376,7 @@ return (
                             
                        
                                  
-<div className=" hidden md:flex flex-col md:flex-row justify-between items-center gap-4 px-6 py-4 border-t border-[#E9EAEB]">
+{!loading && processedUsers.length > 0 && (<div className=" hidden md:flex flex-col md:flex-row justify-between items-center gap-4 px-6 py-4 border-t border-[#E9EAEB]">
     
     
     <span className="text-sm text-[#414651] font-medium order-1 md:order-2">
@@ -1400,7 +1400,7 @@ return (
             Next
         </button>
     </div>
-</div>
+</div>)}
                         </div>
 
                     </div>
@@ -1511,7 +1511,7 @@ return (
   )}
 </div>
                            
-<div className=" md:hidden flex flex-col md:flex-row justify-between items-center gap-4 px-6 py-4 border-t border-[#E9EAEB]">
+{!loading && processedUsers.length > 0 && (<div className=" md:hidden flex flex-col md:flex-row justify-between items-center gap-4 px-6 py-4 border-t border-[#E9EAEB]">
     
  
     <span className="text-sm text-[#414651] font-medium order-1 md:order-2">
@@ -1535,7 +1535,7 @@ return (
             Next
         </button>
     </div>
-</div> 
+</div>)}
             </div>
 
 

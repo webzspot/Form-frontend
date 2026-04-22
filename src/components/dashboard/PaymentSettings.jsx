@@ -43,7 +43,7 @@ const handleSubmit=async(e)=>{
   <>
     <UserNavbar />
     {/* 1. Updated Background to match Admindetails gradient */}
-    <div className="relative min-h-screen w-full bg-[#F5F6F8] transition-colors duration-500">
+    <div className="relative min-h-screen pb-8 w-full bg-[#F5F6F8] transition-colors duration-500">
         
         <div className="relative z-10 px-4 md:px-6 max-w-7xl mx-auto">
             
@@ -117,7 +117,7 @@ const handleSubmit=async(e)=>{
                     </div>
 
                     {/* Submit Button - Matches 'Create New Admin' button style */}
-                    <div className="pt-4 flex justify-end">
+                    <div className="pt-4 flex justify-center md:justify-end">
                         <button
                             type="submit"
                             disabled={loading}

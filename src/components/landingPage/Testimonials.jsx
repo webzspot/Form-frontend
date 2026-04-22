@@ -37,7 +37,7 @@ const Testimonials = () => {
     <>
          {/*Testimonials Section*/}
             
-            <section id="testimonials" className='py-20 md:py-26 relative  w-full  bg-[#F3F4F680]'>
+            <section id="testimonials" className='py-10 md:py-15 relative  w-full  bg-[#F3F4F680]'>
               <div className='max-w-7xl mx-auto px-4 md:px-6'>
         
                 {/*Paragraph Section */}
@@ -47,14 +47,14 @@ const Testimonials = () => {
   transition={{ duration: 0.6 }}
   viewport={{ once: false, amount: 0.2 }}
    className='flex flex-col items-start'>
-                  <p className="text-[#10B77F]  font-['DM_Sans']  font-semibold text-sm leading-5 tracking-widest align-middle uppercase">Testimonials</p>
+                  <p className="text-[#10B77F]  font-['DM_Sans']   font-semibold text-sm leading-5 tracking-widest align-middle uppercase">Testimonials</p>
                   <h2 className="font-bold font-['Space_Grotesk'] text-4xl max-w-md mt-4 leading-11 tracking-tighter align-middle text-[#14181F]">Loved by teams who care about quality</h2>
                 </motion.div>  
         
         
         
         
-                <div className='grid grid-cols-1 md:grid-cols-3 gap-6 mt-16 '>
+                <div className='grid grid-cols-1 md:grid-cols-3 gap-6 mt-10 md:mt-16 '>
         
                   {
                     testimonials.map((item,index)=>{

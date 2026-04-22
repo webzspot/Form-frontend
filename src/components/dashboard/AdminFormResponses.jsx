@@ -148,7 +148,7 @@ const AdminFormResponses = () => {
 
   return (
     <>
-    <div className={`min-h-screen ${theme.pageBg} font-sans pb-20`}>
+    <div className={`min-h-screen ${theme.pageBg} font-sans pb-4`}>
       <UserNavbar />
 
       <main className="max-w-7xl mx-auto px-4 md:px-8 py-8">
@@ -197,7 +197,7 @@ const AdminFormResponses = () => {
 
 
 
-                                                <div className="pr-2 py-2 p-3 rounded-md mb-8 flex flex-col md:flex-row gap-4 justify-between bg-[#FFFFFF] border border-[#E5E7EB] shadow-sm items-center">
+                                                <div className="pr-2 py-2  rounded-md mb-8 flex flex-col md:flex-row gap-4 justify-between md:bg-[#FFFFFF] md:border md:border-[#E5E7EB] md:shadow-sm items-center">
                             
                           
                             <div className="relative  w-full md:flex-1">
@@ -363,9 +363,8 @@ const AdminFormResponses = () => {
                 )}
               </tbody>
             </table>
-          </div>
-
-          <div className=" px-6 py-4 border-t border-[#EAECF0] flex md:hidden items-center justify-between bg-white">
+                                             
+{!loading && filteredResponses.length > 0 &&(<div className=" px-6 py-4 border-t border-[#EAECF0]  items-center hidden md:flex justify-between bg-white">
               <div className="flex gap-2">
               <button
                 onClick={prevPage}
@@ -386,7 +385,10 @@ const AdminFormResponses = () => {
               Page {currentPage} of {totalPages}
             </p>
           
+          </div>)}
           </div>
+
+         
         </div>
 
   
@@ -473,7 +475,7 @@ const AdminFormResponses = () => {
 
 
                                    
-<div className=" md:hidden flex flex-col md:flex-row justify-between items-center gap-4 px-6 py-4 border-t border-[#E9EAEB]">
+{!loading && filteredResponses.length > 0 && (<div className=" md:hidden flex flex-col md:flex-row justify-between items-center gap-4 px-6 py-4 border-t border-[#E9EAEB]">
     
     
     <span className="text-sm text-[#414651] font-medium order-1 md:order-2">
@@ -497,7 +499,7 @@ const AdminFormResponses = () => {
             Next
         </button>
     </div>
-</div> 
+</div>)}
       </main>
     </div>
     <UserFooter/>

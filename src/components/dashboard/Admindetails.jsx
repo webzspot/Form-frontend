@@ -155,7 +155,7 @@ const Admindetails = () => {
     return (
         <>
             <UserNavbar />
-            <div className={`relative min-h-screen w-full bg-[#F5F6F8] transition-colors duration-500`}>
+            <div className={`relative min-h-screen pb-4 w-full bg-[#F5F6F8] transition-colors duration-500`}>
 
 
 
@@ -327,7 +327,7 @@ const Admindetails = () => {
                                 </tbody>
                             </table>
 
-                            <div className=" hidden  md:flex justify-between items-center gap-4 px-6 py-4 border-t border-[#E9EAEB]">
+                           {!loading && processedUsers.length > 0 &&( <div className=" hidden  md:flex justify-between items-center gap-4 px-6 py-4 border-t border-[#E9EAEB]">
 
 
                                 <span className="text-sm text-[#414651] font-medium order-1 md:order-2">
@@ -351,7 +351,7 @@ const Admindetails = () => {
                                         Next
                                     </button>
                                 </div>
-                            </div>
+                            </div>)}
                         </div>
                     </div>
 
@@ -432,7 +432,7 @@ const Admindetails = () => {
                     </div>
 
 
-                    <div className=" md:hidden flex flex-col md:flex-row justify-between items-center gap-4 px-6 py-4 border-t border-[#E9EAEB]">
+                   {!loading && processedUsers.length > 0 && ( <div className=" md:hidden flex flex-col md:flex-row justify-between items-center gap-4 px-6 py-4 border-t border-[#E9EAEB]">
 
 
                         <span className="text-sm text-[#414651] font-medium order-1 md:order-2">
@@ -456,10 +456,10 @@ const Admindetails = () => {
                                 Next
                             </button>
                         </div>
-                    </div>
+                    </div>)}
                 </div>
 
-
+ </div>
 
 
                 {/* Sidebar Drawer */}
@@ -589,7 +589,7 @@ const Admindetails = () => {
                     )}
                 </AnimatePresence>
 
-            </div>
+           
             <UserFooter />
         </>
     );

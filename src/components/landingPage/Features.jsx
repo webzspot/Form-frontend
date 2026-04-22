@@ -90,7 +90,7 @@ const Features = () => {
     
     {/*Features Section */}
     
-           <section id="features" className='py-20 md:py-26  relative w-full bg-[#FCFCFC] '>
+           <section id="features" className='py-10 md:py-15  relative w-full bg-[#FCFCFC] '>
       <div className='max-w-7xl  mx-auto px-4 md:px-6'>
         
         {/* Paragraph Container */}
@@ -101,7 +101,7 @@ const Features = () => {
   transition={{ duration: 0.6 }}
   viewport={{ once: false }}
         className='flex flex-col items-start'>
-          <p className="text-[#10B77F] uppercase font-semibold text-sm leading-5  tracking-widest font-[DM_Sans]">Features</p>
+          <p className="text-[#10B77F] uppercase font-semibold  text-sm leading-5  tracking-widest font-[DM_Sans]">Features</p>
          
           <h2 className="text-[#14181F] font-bold max-w-xl mt-4 text-4xl font-['Space_Grotesk'] leading-11 tracking-tighter align-middle">
             Everything you need,<br className="hidden md:block" /> nothing you don't
