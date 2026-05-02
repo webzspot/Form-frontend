@@ -1743,20 +1743,20 @@ const [errorMessage, setErrorMessage] = useState("");
 
       {/* 4. OTHER ASSETS (API Keys & Seats) */}
       <div className="md:col-span-2 lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-6 pt-4 border-t border-slate-50">
-          <div className="flex items-center gap-4 p-4 rounded-md hover:bg-slate-50 transition-colors">
-              <div className="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold">API</div>
+          {/* <div className="flex items-center gap-4 p-4 rounded-md hover:bg-slate-50 transition-colors"> */}
+              {/* <div className="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold">API</div>
               <div>
                   <p className="text-xs font-bold text-slate-400 uppercase">API Access</p>
                   <p className="text-sm font-bold text-slate-700">{userStats.limits?.apiKeys?.limit || 0} Key(s) Allowed</p>
-              </div>
-          </div>
-          <div className="flex items-center gap-4 p-4 rounded-md hover:bg-slate-50 transition-colors">
-              <div className="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold">S</div>
-              <div>
+              </div> */}
+          {/* </div> */}
+          {/* <div className="flex items-center gap-4 p-4 rounded-md hover:bg-slate-50 transition-colors"> */}
+              {/* <div className="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold">S</div> */}
+              {/* <div>
                   <p className="text-xs font-bold text-slate-400 uppercase">User Seats</p>
                   <p className="text-sm font-bold text-slate-700">{userStats.limits?.users?.limit || 0} Active Workspace Seat(s)</p>
-              </div>
-          </div>
+              </div> */}
+          {/* </div> */}
 
           <div className="flex items-center gap-4 p-4 rounded-md hover:bg-slate-50 transition-colors">
                <div className="w-10 h-10 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center font-bold">T</div>
